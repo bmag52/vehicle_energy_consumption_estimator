@@ -12,8 +12,7 @@ The directory contains a `Vagrantfile` which is the build script, and a `package
 * Make sure you install the required software above
 * Clone the repo: `git clone https://github.com/UWEcoCAR/UW-Infotainment.git`
 * Download the `package.box` (large file) [here](https://drive.google.com/open?id=0B-HGy6dgp_EHMGtzTW1rOGdJYVE). Save it in the `VM/` subdirectory of this repo.
-* `cd` to the `VM/` directory
-* Install the box: `vagrant box add infotainment package.box` 
+* Install the box: `vagrant box add DriverPredictionGensetControl VM/package.box` 
 * Run `vagrant up` (this will install the latest packages for the dev environment). Vagrant will now start Virtual Box, SSH in and automatically install packages. Hopefully everything updates installs correctly.
 * The `package.box` file can now be deleted
 * The VM is perminantly in the Virtual Box's default directory
@@ -22,6 +21,9 @@ The directory contains a `Vagrantfile` which is the build script, and a `package
 * Run `vagrant up` in the `VM/` directory to open the vm
 * `vagrant reload`can reload a running vm
 * the `--provision` argument will rerun the install scripts in the above commands
+* 'vagrant halt' shutsdown vm outside of vm
+* 'vagrant ssh' opens shell
+* 'exit' once ssh'ed into vm
 
 #### Update:
 * Update Vm: `git pull` this repo for the latest `Vagrantfile`

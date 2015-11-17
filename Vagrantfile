@@ -2,12 +2,12 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "infotainment"
+  config.vm.box = "DriverPredictionGensetControl"
   config.ssh.username = "vagrant"
   config.ssh.password = "vagrant"
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
-    vb.gui = true
+    vb.gui = false
     # Customize the amount of memory on the VM:
     # vb.memory = "1024"
   end
@@ -15,19 +15,11 @@ Vagrant.configure(2) do |config|
   # Bash Script
   #  config.vm.provision :shell, :path => "script.sh" # runs script file
   config.vm.provision "shell", inline: <<-SHELL
-    sudo apt-add-repository -y ppa:webupd8team/atom
     sudo apt-get update
 
     # install programs
     echo "---------------INSTALLING PACKAGES---------------"
     declare -a program=(
-      "chromium-browser"
-      "curl"
-      "git"
-      "npm"
-      "vim"
-      "terminator"
-      "atom"
       "python"
       "python-pip"
       "python-numpy" )
@@ -35,32 +27,6 @@ Vagrant.configure(2) do |config|
       do
          echo "Installing $i ..."
          apt-get -y install "$i"
-      done
-
-    # install pip python packages
-    echo "---------------INSTALLING PYTHON PACKAGES---------------"
-    declare -a py=(
-      "flask"
-      "virtualenv"
-      "requests"
-      "ipython"
-      "csv"  )
-    for i in "${py[@]}"
-      do
-         echo "Installing $i ..."
-         pip install "$i"
-      done
-
-    # install npm node packages
-    sudo ln -s /usr/bin/nodejs /usr/bin/node # symlink for node
-    echo "---------------INSTALLING NODE PACKAGES---------------"
-    declare -a node=(
-      "electron-prebuilt"
-      "gulp" )
-    for i in "${node[@]}"
-      do
-         echo "Installing $i ..."
-         npm install -g "$i"
       done
 
     # upgrade and clean up

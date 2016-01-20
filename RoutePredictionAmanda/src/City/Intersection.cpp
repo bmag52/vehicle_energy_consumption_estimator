@@ -21,8 +21,7 @@ Intersection::Intersection(Road* roadInput, std::string intersectType,
 }
 
 Intersection::~Intersection() {
-	delete roads;
-	delete coordinates;
+
 
 }
 

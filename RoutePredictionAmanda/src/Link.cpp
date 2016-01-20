@@ -6,7 +6,7 @@
  */
 
 #include "Link.h"
-#include "boost/utility/binary.hpp"
+
 
 namespace DriverPrediction {
 
@@ -32,15 +32,7 @@ Link Link::copy(int direction, int linkNumber) {
 
 
 int Link::get_hash(Link link) {
-	std::string linkDirToString = std::to_string(link_direction);
-	std::string linkNumToBin = convertToBinary(link_number);
-	std::string totalString = linkNumToBin + linkDirToString;
-	return BOOST_BINARY(totalString);
-	//???
-
-	//return BOOST_BINARY( 100 111000 01 1 110 );
-	//MATLAB CODE
-	//hash = bin2dec(strcat(dec2bin(obj.link_number),num2str(obj.link_direction)));
+	return 2 * link_direction + link_number;
 }
 
 bool Link::isEqual(Link other) {
@@ -59,22 +51,11 @@ int Link::getDirection() {
 	return link_direction;
 }
 
-//converts to binary
-std::string Link::convertToBinary(int number) {
-	int result = number;
-	std::string binary = "";
-	while (number != 0) {
-		int bin = result % 2;
-		binary = bin + binary;
-		result = result / 2;
-	}
-	return binary;
-}
 
 Link Link::new_link_from_hash(int hash) {
 	std::string binaryStuff = convertToBinary(hash);
 	///???
-
+	//do we need this method?
 	//MATLAB CODE
 	/**
 	 * hash_bin = dec2bin(hash);
@@ -85,8 +66,16 @@ Link Link::new_link_from_hash(int hash) {
 }
 
 // %represents the link at the end of a route, when the vehicle stopes
+//
 Link Link::final_link() {
 	return Link(0, 0);
+}
+
+Link Link::link_from_road(City::Road road, City::Intersection intersection) {
+	int link_num = road.road_id;
+	road.end_node = intersection.number;
+	int link_dir = road.end_node;
+	return Link(link_dir, link_num);
 }
 
 } /* namespace DriverPrediction */

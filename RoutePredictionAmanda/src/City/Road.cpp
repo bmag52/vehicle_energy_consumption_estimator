@@ -21,8 +21,7 @@ Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID)
 }
 
 Road::~Road() {
-	delete elevation_data;
-	delete speed_limit_data;
+
 }
 
 } /* namespace City */

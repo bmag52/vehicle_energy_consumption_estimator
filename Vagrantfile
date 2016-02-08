@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-	config.vm.box = "DriverPredictionGensetControl"
+	config.vm.box = "predictive_thermo_controller"
 	config.ssh.username = "vagrant"
 	config.ssh.password = "vagrant"
 	config.vm.provider "virtualbox" do |vb|

@@ -25,8 +25,9 @@ end
 		"python"
 		"python-pip"
 		"python-numpy"
-		"g++"
-		"gcc"
+		"build-essentials"
+		"openssh-server"
+		"htop"
 		"eclipse"
 		"eclipse-cdt"
 		"git")
@@ -34,7 +35,7 @@ end
 	for i in "${program[@]}"
 	do
 		echo "Installing $i ..."
-		apt-get -y install "$i"
+		sudo apt-get -y install "$i" --upgrade
 	done
 
 	# upgrade and clean up

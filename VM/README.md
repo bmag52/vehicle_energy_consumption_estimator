@@ -18,8 +18,8 @@ The directory contains a `Vagrantfile` which is the build script, and a `package
 
 #### Usage:
 * Run `vagrant up` in the `VM/` directory to open the vm
-* `vagrant reload`can reload a running vm
-* the `--provision` argument will rerun the install scripts in the above commands
+* `vagrant reload` can reload a running vm
+* `vagrant provision` will rerun the install scripts in the above commands and update all packages
 * 'vagrant halt' shutsdown vm outside of vm
 * 'vagrant ssh' opens shell
 * 'exit' once ssh'ed into vm

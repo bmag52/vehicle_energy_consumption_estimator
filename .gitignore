@@ -28,5 +28,4 @@
 *.app
 
 # misc. 
-VM/*
 .vagrant

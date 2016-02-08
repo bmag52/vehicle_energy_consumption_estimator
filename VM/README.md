@@ -11,7 +11,7 @@ The directory contains a `Vagrantfile` which is the build script, and a `package
 #### Installation:
 * Download the `S32V_BSP.zip` [here](https://drive.google.com/a/uw.edu/file/d/0Bxacre40weBuM2RXWWxNUFJpWnc/view) and extract it to the `VM/` subdirectory of the repo. 
 * Download the `package.box` (large file) [here](https://drive.google.com/open?id=0B-HGy6dgp_EHMGtzTW1rOGdJYVE). Save it in the `VM/` subdirectory of this repo.
-* Install the box: `vagrant box add DriverPredictionGensetControl VM/package.box` 
+* Install the box: `vagrant box add predictive_thermo_controller VM/package.box` 
 * Run `vagrant up` (this will install the latest packages for the dev environment). Vagrant will now start Virtual Box, SSH in and automatically install packages. Hopefully everything updates installs correctly.
 * The `package.box` file can now be deleted
 * The VM is perminantly in the Virtual Box's default directory

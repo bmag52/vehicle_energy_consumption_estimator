@@ -6,7 +6,7 @@
 * [VirtualBox  Extension Pack](http://download.virtualbox.org/virtualbox/5.0.10/Oracle_VM_VirtualBox_Extension_Pack-5.0.10-104061.vbox-extpack)
 
 #### Info:
-The directory contains a `Vagrantfile` which is the build script, and a `package.box` which is the virtual machine image. Vagrant combines these to create and launch an up-to-date virtual machine and launches it in Virtual Box. A board support package (BSP) is used to compile code for the S32V development board
+The directory contains a `Vagrantfile` which is the build script, and a `package.box` which is the virtual machine image. Vagrant combines these to create and launch an up-to-date virtual machine and launches it in Virtual Box. The cross-compiler from the S32V board support package is linked to the eclipse tool chain in the VM.
 
 #### Installation:
 * Download the `S32V_BSP.zip` [here](https://drive.google.com/a/uw.edu/file/d/0Bxacre40weBuM2RXWWxNUFJpWnc/view) and extract it to the `VM/` subdirectory of the repo. 
@@ -17,13 +17,13 @@ The directory contains a `Vagrantfile` which is the build script, and a `package
 * The VM is perminantly in the Virtual Box's default directory
 
 #### Usage:
-* Run `vagrant up` in the `VM/` directory to open the vm
+* Run `vagrant up` in the top level directory to open the vm
 * `vagrant reload` can reload a running vm
 * `vagrant provision` will rerun the install scripts in the above commands and update all packages
-* 'vagrant halt' shutsdown vm outside of vm
-* 'vagrant ssh' opens shell
-* 'exit' once ssh'ed into vm
-* shared folder between host and VM in VM is /vagrant
+* `vagrant halt` shutsdown vm outside of vm
+* `vagrant ssh` opens shell
+* `exit` once ssh'ed into vm
+* shared folder between host and VM in VM is `/vagrant`
 
 #### Update:
 * Update Vm: `git pull` this repo for the latest `Vagrantfile`

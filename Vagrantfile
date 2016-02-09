@@ -20,27 +20,31 @@ end
 	sudo apt-get update
 
 	# install programs
-	echo "---------------INSTALLING PACKAGES---------------"
+	echo "***************************************************"
+	echo "--------------- INSTALLING PACKAGES ---------------"
+	echo "***************************************************"
+	echo ""
 	declare -a program=(
 		"python"
 		"python-pip"
 		"python-numpy"
-		"build-essentials"
+		"build-essential"
 		"openssh-server"
 		"htop"
 		"eclipse"
+		"libeigen3-dev"
 		"eclipse-cdt"
+		"libboost-all-dev"
 		"git")
 
 	for i in "${program[@]}"
 	do
-		echo "Installing $i ..."
+		echo "----------------- Installing $i ... -----------------"
 		sudo apt-get -y install "$i" --upgrade
 	done
 
 	# upgrade and clean up
 	sudo apt-get upgrade -y
-
 	# sudo apt-get dist-upgrade -y
 	sudo apt-get autoremove -y
 	sudo apt-get autoclean -y

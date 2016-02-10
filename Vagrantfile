@@ -35,7 +35,8 @@ end
 		"libeigen3-dev"
 		"eclipse-cdt"
 		"libboost-all-dev"
-		"git")
+		"git"
+		"wine")
 
 	for i in "${program[@]}"
 	do
@@ -43,6 +44,7 @@ end
 		sudo apt-get -y install "$i" --upgrade
 	done
 
+	echo "------------- house keeping ------------- "
 	# upgrade and clean up
 	sudo apt-get upgrade -y
 	# sudo apt-get dist-upgrade -y

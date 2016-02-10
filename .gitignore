@@ -27,7 +27,15 @@ Compiled Object files
 *.out
 *.app
 
+# Cross-Compiler Ish
+PTC_eclipse/linaro_EVB
+PTC_eclipse/linaro_linux
+
+# Eclipse Ish
+.metadata
+
 # misc. 
 .vagrant
 VM/S32V_BSP
 VM/package.box
+

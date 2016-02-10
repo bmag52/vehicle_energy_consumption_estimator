@@ -9,7 +9,7 @@
 The directory contains a `Vagrantfile` which is the build script, and a `package.box` which is the virtual machine image. Vagrant combines these to create and launch an up-to-date virtual machine and launches it in Virtual Box. The cross-compiler for the S32V board support package (BSP) is linked to the eclipse tool chain in the VM.
 
 #### Installation:
-* Download the `S32V_BSP.zip` [here](https://drive.google.com/a/uw.edu/file/d/0Bxacre40weBuM2RXWWxNUFJpWnc/view) and extract it to the `VM/` subdirectory of the repo. 
+* Download the `S32V_BSP.zip` [here](https://drive.google.com/open?id=0Bxacre40weBuZEZDdEswTVRIZms) and extract it to the `VM/` subdirectory of the repo. 
 * Download the `package.box` (large file) [here](https://drive.google.com/open?id=0B-HGy6dgp_EHMGtzTW1rOGdJYVE). Save it in the `VM/` subdirectory of this repo.
 * Install the box: `vagrant box add predictive_thermo_controller VM/package.box` 
 * Run `vagrant up` (this will install the latest packages for the dev environment). Vagrant will now start Virtual Box, SSH in and automatically install packages. Hopefully everything updates installs correctly.

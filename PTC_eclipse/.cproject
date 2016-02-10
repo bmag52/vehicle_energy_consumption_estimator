@@ -173,25 +173,27 @@
 							<targetPlatform id="cdt.managedbuild.target.gnu.platform.exe.debug.2011829306" name="Debug Platform" superClass="cdt.managedbuild.target.gnu.platform.exe.debug"/>
 							<builder buildPath="${workspace_loc:/PTC_eclipse}/Debug" id="cdt.managedbuild.target.gnu.builder.exe.debug.1150903556" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" superClass="cdt.managedbuild.target.gnu.builder.exe.debug"/>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.454991744" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
-							<tool command="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/bin/aarch64-none-elf-g++.exe " id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1025823127" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug">
+							<tool command="wine /vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/bin/aarch64-none-elf-g++.exe " id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1025823127" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug">
 								<option id="gnu.cpp.compiler.exe.debug.option.optimization.level.743482228" name="Optimization Level" superClass="gnu.cpp.compiler.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.1064402540" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.option.include.paths.664802454" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+								<option id="gnu.cpp.compiler.option.include.paths.664802454" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/include"/>
 								</option>
+								<option id="gnu.cpp.compiler.option.dialect.std.1082384575" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.include.files.1604955585" name="Include files (-include)" superClass="gnu.cpp.compiler.option.include.files" valueType="includeFiles"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1253867522" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
-							<tool command="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/bin/aarch64-none-elf-gcc.exe" id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1701799104" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
+							<tool command="wine /vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/bin/aarch64-none-elf-gcc-4.9.3.exe" id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1701799104" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
 								<option defaultValue="gnu.c.optimization.level.none" id="gnu.c.compiler.exe.debug.option.optimization.level.1658523176" name="Optimization Level" superClass="gnu.c.compiler.exe.debug.option.optimization.level" valueType="enumerated"/>
 								<option id="gnu.c.compiler.exe.debug.option.debugging.level.555004181" name="Debug Level" superClass="gnu.c.compiler.exe.debug.option.debugging.level" value="gnu.c.debugging.level.max" valueType="enumerated"/>
-								<option id="gnu.c.compiler.option.include.paths.1928902415" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
+								<option id="gnu.c.compiler.option.include.paths.1928902415" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/include"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.1068778765" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1895347433" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
-							<tool command="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/bin/aarch64-none-elf-g++.exe" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1118600813" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
-								<option id="gnu.cpp.link.option.paths.982243097" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
+							<tool command="wine /vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/bin/aarch64-none-elf-g++.exe" id="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug.1118600813" name="GCC C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.exe.debug">
+								<option id="gnu.cpp.link.option.paths.982243097" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/lib"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1237419106" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
@@ -199,7 +201,7 @@
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
 								</inputType>
 							</tool>
-							<tool command="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/bin/aarch64-none-elf-as.exe" id="cdt.managedbuild.tool.gnu.assembler.exe.debug.2026751495" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug">
+							<tool command="wine /vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/bin/aarch64-none-elf-as.exe" id="cdt.managedbuild.tool.gnu.assembler.exe.debug.2026751495" name="GCC Assembler" superClass="cdt.managedbuild.tool.gnu.assembler.exe.debug">
 								<inputType id="cdt.managedbuild.tool.gnu.assembler.input.768112209" superClass="cdt.managedbuild.tool.gnu.assembler.input"/>
 							</tool>
 						</toolChain>
@@ -231,5 +233,18 @@
 		</scannerConfigBuildInfo>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
-	<storageModule moduleId="refreshScope"/>
+	<storageModule moduleId="refreshScope" versionNumber="2">
+		<configuration configurationName="Release">
+			<resource resourceType="PROJECT" workspacePath="/PTC_eclipse"/>
+		</configuration>
+		<configuration configurationName="linaro_linux">
+			<resource resourceType="PROJECT" workspacePath="/PTC_eclipse"/>
+		</configuration>
+		<configuration configurationName="linaro_EVB">
+			<resource resourceType="PROJECT" workspacePath="/PTC_eclipse"/>
+		</configuration>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/PTC_eclipse"/>
+		</configuration>
+	</storageModule>
 </cproject>

@@ -35,14 +35,17 @@ end
 		"libeigen3-dev"
 		"eclipse-cdt"
 		"libboost-all-dev"
-		"git"
-		"wine")
+		"git")
 
 	for i in "${program[@]}"
 	do
 		echo "----------------- Installing $i ... -----------------"
 		sudo apt-get -y install "$i" --upgrade
 	done
+
+	# for wine
+	echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+	sudo apt-get install ttf-mscorefonts-installer
 
 	echo "------------- house keeping ------------- "
 	# upgrade and clean up

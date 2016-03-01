@@ -16,9 +16,9 @@ public:
 	int* speed_limit_data;
 	int start_node;
 	int end_node;
-	RoadTypes road_type;
+//	RoadTypes road_type;
 	int road_id;
-	Road(std::string, int*, int*, int);
+//	Road(std::string, int*, int*, int);
 	virtual ~Road();
 };
 

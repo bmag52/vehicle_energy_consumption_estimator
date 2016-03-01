@@ -12,13 +12,13 @@ namespace City {
 
 class RoadTypes {
 public:
-	std::string color;
+//	std::string color;
 	int max_speed;
 	int min_speed;
 	int max_distance;
 	int min_distance;
-	std::string toString;
-	RoadTypes(std::string);
+//	std::string toString;
+//	RoadTypes(std::string);
 	virtual ~RoadTypes();
 };
 

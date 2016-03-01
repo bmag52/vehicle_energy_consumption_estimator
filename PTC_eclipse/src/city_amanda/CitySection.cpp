@@ -9,22 +9,21 @@
 
 namespace City {
 
-CitySection::CitySection() {
-	// TODO Auto-generated constructor stub
+//CitySection::CitySection() {
+//	// TODO Auto-generated constructor stub
+//}
 
-}
+//CitySection::CitySection(std::string roadType, int x, int y) {
+//	roadType = RoadTypes(roadType);
+//	x_dim = x;
+//	y_dim = y;
+//}
 
-CitySection::CitySection(std::string roadType, int x, int y) {
-	roadType = RoadTypes(roadType);
-	x_dim = x;
-	y_dim = y;
-}
-
-CitySection::~CitySection() {
-	delete elevation;
-	delete pairing;
-	delete coordinates;
-	delete intersections;
-}
+//CitySection::~CitySection() {
+//	delete elevation;
+//	delete pairing;
+//	delete coordinates;
+//	delete intersections;
+//}
 
 } /* namespace City */

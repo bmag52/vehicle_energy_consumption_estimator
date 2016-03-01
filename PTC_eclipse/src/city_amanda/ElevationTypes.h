@@ -16,8 +16,8 @@ public:
 	int deviation;
 	double max_section_length;
 	double min_section_length;
-	std::string toString;
-	ElevationTypes(std::string);
+//	std::string toString;
+//	ElevationTypes(std::string);
 	virtual ~ElevationTypes();
 };
 

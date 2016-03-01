@@ -12,11 +12,11 @@ namespace City {
 
 class IntersectionTypes {
 public:
-	std::string toString;
+//	std::string toString;
 	double min_stop_time; //time in seconds
 	double max_stop_time; //time in seconds
-	IntersectionTypes(std::string);
-	double stop_time(std::string, IntersectionTypes, IntersectionTypes);
+//	IntersectionTypes(std::string);
+//	double stop_time(std::string, IntersectionTypes, IntersectionTypes);
 	IntersectionTypes();
 	virtual ~IntersectionTypes();
 };

@@ -12,14 +12,14 @@ namespace City {
 //city_section describes a square section of a city
 class CitySection {
 public:
-	RoadTypes roadType;
+//	RoadTypes roadType;
 	int x_dim;
 	int y_dim;
 	int* elevation;
 	int* pairing; //what are pairings?
-	std::pair<int, int>* coordinates;
-	IntersectionTypes* intersections;
-	CitySection(std::string, int, int);
+//	std::pair<int, int>* coordinates;
+//	IntersectionTypes* intersections;
+//	CitySection(std::string, int, int);
 
 	CitySection();
 	virtual ~CitySection();

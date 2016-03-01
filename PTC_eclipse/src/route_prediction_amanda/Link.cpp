@@ -53,7 +53,7 @@ int Link::getDirection() {
 
 
 Link Link::new_link_from_hash(int hash) {
-	std::string binaryStuff = convertToBinary(hash);
+	//std::string binaryStuff = convertToBinary(hash);
 	///???
 	//do we need this method?
 	//MATLAB CODE
@@ -71,11 +71,11 @@ Link Link::final_link() {
 	return Link(0, 0);
 }
 
-Link Link::link_from_road(City::Road road, City::Intersection intersection) {
-	int link_num = road.road_id;
-	road.end_node = intersection.number;
-	int link_dir = road.end_node;
-	return Link(link_dir, link_num);
-}
+//Link Link::link_from_road(City::Road road, City::Intersection intersection) {
+//	int link_num = road.road_id;
+//	road.end_node = intersection.number;
+//	int link_dir = road.end_node;
+//	return Link(link_dir, link_num);
+//}
 
 } /* namespace DriverPrediction */

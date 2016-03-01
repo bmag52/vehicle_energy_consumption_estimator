@@ -12,12 +12,12 @@ namespace City {
 
 class Intersection {
 public:
-	Road* roads; //%array of roads that connect to this intersection
-	IntersectionTypes interSectionType;
-	std::pair<int, int>* coordinates;
+//	Road* roads; //%array of roads that connect to this intersection
+//	IntersectionTypes interSectionType;
+//	std::pair<int, int>* coordinates;
 	int elevation;
 	int number;
-	Intersection(Road*, std::string intersectType, std::pair<int, int>*, int, int);
+//	Intersection(Road*, std::string intersectType, std::pair<int, int>*, int, int);
 	virtual ~Intersection();
 };
 

@@ -22,10 +22,10 @@ public:
 	bool isEqual(Link);
 	int getNumber();
 	int getDirection();
-	static std::string convertToBinary(int);
+//	static std::string convertToBinary(int);
 	static Link new_link_from_hash(int);
 	static Link final_link();
-	static Link link_from_road(City::Road, City::Intersection);
+//	static Link link_from_road(City::Road, City::Intersection);
 	//static Link link_from_road(road, current_intersection);
 
 };

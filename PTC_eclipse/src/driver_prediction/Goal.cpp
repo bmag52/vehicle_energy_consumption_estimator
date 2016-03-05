@@ -7,7 +7,7 @@
 
 #include "Goal.h"
 
-namespace InnovationModel {
+namespace DriverPrediction {
 
 //Goal::Goal(int destination, int bin[], int size) {
 //	this->destination = destination;

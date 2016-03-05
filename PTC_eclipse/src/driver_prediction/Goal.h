@@ -8,7 +8,7 @@
 #ifndef DRIVER_PREDICTION_GOAL_H_
 #define DRIVER_PREDICTION_GOAL_H_
 
-namespace InnovationModel {
+namespace DriverPrediction {
 
 class Goal {
 private:

@@ -24,7 +24,7 @@ Route Route::copy() {
 	for(int i = 0; i < length; i++) {
 		int number = this->links[i].getNumber();
 		int direction = this->links[i].getDirection();
-		links[i] = this->links[i].copy(number, direction);
+		links[i] = this->links[i].copy(direction, number);
 	}
 	return Route(links, goal);
 }

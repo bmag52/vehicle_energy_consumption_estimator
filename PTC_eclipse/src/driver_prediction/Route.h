@@ -1,3 +1,10 @@
+/*
+ * Route.h
+ *
+ *  Created on: Mar 6, 2016
+ *      Author: vagrant
+ */
+
 namespace DriverPrediction {
 
 class Route {
@@ -10,7 +17,6 @@ public:
 	void addlink(Link &link);
 	bool isequal(Route &other);
 	Route copy();
-	void initiateiterator();
 	Link nextlink();
 };
 

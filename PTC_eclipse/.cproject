@@ -121,6 +121,7 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.148106758" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1304514605" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-x86_64_aarch64-linux-gnu/include"/>
+									<listOptionValue builtIn="false" value="/usr/include/eigen3"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1362353290" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
@@ -178,6 +179,7 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.1064402540" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.664802454" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/include"/>
+									<listOptionValue builtIn="false" value="/usr/include/eigen3"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.1082384575" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.files.1604955585" name="Include files (-include)" superClass="gnu.cpp.compiler.option.include.files"/>

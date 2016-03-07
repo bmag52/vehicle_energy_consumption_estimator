@@ -6,6 +6,8 @@
  */
 
 #include "Goal.h"
+#include <functional>
+#include <math.h>
 
 namespace InnovationModel {
 
@@ -41,7 +43,52 @@ bool Goal::isequal(Goal& other) {
 	return issimilar(other) && this->destination == other.destination;
 }
 
+int* Goal::getBins() const {
+	return bins;
+}
+
+void Goal::setBins(int bins[]) {
+	this->bins = bins;
+}
+
+int Goal::getDestination() const {
+	return destination;
+}
+
+void Goal::setDestination(int destination) {
+	this->destination = destination;
+}
+
+int Goal::getSize() const {
+	return size;
+}
+
+size_t Goal::get_hash() const {
+	size_t hash = (size_t) destination;
+	int bits;
+	for (int i = 0; i < size; i++) {
+	  bits = (int) log2(bins[i]);
+	  hash = hash << bits;
+	  hash += i;
+	}
+	return hash;
+}
+
+void Goal::setSize(int size) {
+	this->size = size;
+}
+
 Goal::~Goal() {
 }
 
 } /* namespace InnovationModel */
+
+namespace std {
+  template <> struct hash<InnovationModel::Goal>
+  {
+    size_t operator()(const InnovationModel::Goal & x) const
+    {
+      return x.get_hash();
+    }
+  };
+}

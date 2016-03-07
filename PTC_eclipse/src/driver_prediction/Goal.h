@@ -13,7 +13,7 @@ namespace InnovationModel {
 class Goal {
 private:
 	int destination;
-	int bins[];
+	int *bins;
 	int size;
 public:
 	Goal(int destination, int bin[], int size);

@@ -19,7 +19,6 @@ public:
 	void addlink(Link &link);
 	bool isequal(Route &other);
 	Route copy();
-	void initiateiterator();
 	Link nextlink();
 };
 

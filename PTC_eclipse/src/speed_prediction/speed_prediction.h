@@ -18,16 +18,16 @@ class speed_prediction {
 private:
 	double alpha; 			// learning rate
 	int I;					// number of input units
-	int HN[];				// number of neurons in each hidden layer
+	int *HN;				// number of neurons in each hidden layer
 	int HL;					// number of hidden layers
 	int O;					// number of output units
-	int totalLayers[];		// total number of layers
+	int *totalLayers;		// total number of layers
 	Eigen::MatrixXd * Wts;	// Matrix of weights
 	double * spd_trc[];		// input speed trace
 public:
 	speed_prediction();
 	speed_prediction(Eigen::MatrixXd * Wts);
-	void initzialize(double * spd_trc[]);
+	void init_params();
 };
 
 }

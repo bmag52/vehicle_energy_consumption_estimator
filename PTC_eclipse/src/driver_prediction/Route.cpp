@@ -18,7 +18,7 @@ Route::Route(Link links[], Goal &goal) {
 
 //returns copy of current route
 Route Route::copy() {
-	goal = Goal(this->goal.destination, this->goal.bins, this->goal.size);
+	goal = Goal(this->goal.destination, this->goal.bins, this->goal.size);	//is this the right? Goal variables are all private, but not sure if there's a better way
 	int length = sizeof(this->links) / sizeof(Link);
 	links = Link[length];
 	for(int i = 0; i < length; i++) {

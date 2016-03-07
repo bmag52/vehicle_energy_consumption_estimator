@@ -6,6 +6,7 @@
  */
 
 namespace DriverPrediction {
+using namespace InnovationModel;
 
 class Route {
 private:

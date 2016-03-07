@@ -42,7 +42,6 @@ bool Goal::isequal(Goal& other) {
 }
 
 Goal::~Goal() {
-	 TODO Auto-generated destructor stub
 }
 
 } /* namespace InnovationModel */

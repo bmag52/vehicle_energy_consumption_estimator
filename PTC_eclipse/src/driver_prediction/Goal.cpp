@@ -14,7 +14,7 @@ namespace InnovationModel {
 //	this->bins = bin;
 //	this->size = size;
 //}
-
+//
 //Goal::Goal(Goal& other) {
 //	this->destination = other.destination;
 //	this->size = other.size;
@@ -23,7 +23,7 @@ namespace InnovationModel {
 //		this->bins[i] = other.bins[i];
 //	}
 //}
-
+//
 //bool Goal::issimilar(Goal& other) {
 //	if (this->size == other.size) {
 //		for (size_t i = 0; i < size; i++) {
@@ -36,11 +36,11 @@ namespace InnovationModel {
 //		return false;
 //	}
 //}
-
+//
 //bool Goal::isequal(Goal& other) {
 //	return issimilar(other) && this->destination == other.destination;
 //}
-
+//
 //Goal::~Goal() {
 //	// TODO Auto-generated destructor stub
 //}

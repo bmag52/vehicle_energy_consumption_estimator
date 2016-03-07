@@ -19,7 +19,7 @@ void speed_prediction::initzialize(double * spd_trc[])
 {
 	this->alpha = 10.0;
 	this->I = 100;
-//	this->HN = {80, 65, 50, 35, 20};
+	this->HN = {80, 65, 50, 35, 20};
 	this->HL = sizeof(this->HN);
 	this->O = 14;
 //	this->totalLayers =

@@ -25,8 +25,8 @@ private:
 	Eigen::MatrixXd * Wts;	// Matrix of weights
 	double * spd_trc[];		// input speed trace
 public:
-	speed_prediction(double * spd_trc[]);
-	speed_prediction(double * spd_trc[], Eigen::MatrixXd * Wts);
+	speed_prediction();
+	speed_prediction(Eigen::MatrixXd * Wts);
 	void initzialize(double * spd_trc[]);
 };
 

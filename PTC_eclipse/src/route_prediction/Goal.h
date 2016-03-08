@@ -8,6 +8,8 @@
 #ifndef DRIVER_PREDICTION_GOAL_H_
 #define DRIVER_PREDICTION_GOAL_H_
 
+#include <functional>
+
 namespace InnovationModel {
 
 class Goal {
@@ -20,6 +22,7 @@ public:
 	Goal(Goal& other);
 	bool issimilar(Goal &other);
 	bool isequal(Goal &other);
+	size_t get_hash() const;
 	virtual ~Goal();
 };
 

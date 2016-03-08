@@ -9,8 +9,8 @@
 #include <iostream>
 using namespace std;
 
-int main() {
-	//Link static1(3, 4)
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-	return 0;
-}
+//int main() {
+//	//Link static1(3, 4)
+//	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+//	return 0;
+//}

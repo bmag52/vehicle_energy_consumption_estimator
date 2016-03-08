@@ -35,7 +35,8 @@ end
 		"libeigen3-dev"
 		"eclipse-cdt"
 		"libboost-all-dev"
-		"git")
+		"git"
+		"gdb")
 
 	for i in "${program[@]}"
 	do

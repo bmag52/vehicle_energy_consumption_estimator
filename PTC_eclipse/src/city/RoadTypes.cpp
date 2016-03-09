@@ -48,8 +48,8 @@ namespace City {
 //				+ max_speed + " Min Distance " + min_distance + " Max Distance" + max_distance;
 //}
 
-RoadTypes::~RoadTypes() {
-	// TODO Auto-generated destructor stub
-}
+//RoadTypes::~RoadTypes() {
+//	// TODO Auto-generated destructor stub
+//}
 
 } /* namespace City */

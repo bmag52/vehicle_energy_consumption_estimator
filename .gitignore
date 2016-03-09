@@ -27,9 +27,10 @@ Compiled Object files
 *.out
 *.app
 
-# Cross-Compiler Ish
+# Compiler Ish
 PTC_eclipse/linaro_EVB
 PTC_eclipse/linaro_linux
+PTC_eclipse/Debug
 
 # Eclipse Ish
 .metadata

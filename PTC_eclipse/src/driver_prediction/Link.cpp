@@ -52,18 +52,18 @@ int Link::getDirection() {
 }
 
 
-Link Link::new_link_from_hash(int hash) {
-	//std::string binaryStuff = convertToBinary(hash);
-	///???
-	//do we need this method?
-	//MATLAB CODE
-	/**
-	 * hash_bin = dec2bin(hash);
-            dir = bin2dec(hash_bin(end));
-            link_num = bin2dec(hash_bin(1:(end-1)));
-            new_link = Link(link_num, dir);
-	 */
-}
+//Link Link::new_link_from_hash(int hash) {
+//	//std::string binaryStuff = convertToBinary(hash);
+//	///???
+//	//do we need this method?
+//	//MATLAB CODE
+//	/**
+//	 * hash_bin = dec2bin(hash);
+//            dir = bin2dec(hash_bin(end));
+//            link_num = bin2dec(hash_bin(1:(end-1)));
+//            new_link = Link(link_num, dir);
+//	 */
+//}
 
 // %represents the link at the end of a route, when the vehicle stopes
 //

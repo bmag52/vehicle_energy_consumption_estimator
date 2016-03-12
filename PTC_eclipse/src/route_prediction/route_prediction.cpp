@@ -9,7 +9,7 @@
 #include <iostream>
 using namespace std;
 
-//int main() {
+//int stuff() {
 //	//Link static1(3, 4)
 //	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
 //	return 0;

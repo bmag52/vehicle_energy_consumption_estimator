@@ -19,7 +19,7 @@ InnovationModel::GenericMapIterator<K, V>::GenericMapIterator(
 template<class K, class V>
 GenericEntry<K, V> InnovationModel::GenericMapIterator<K, V>::next_entry() {
 	if (iterator != map.end()) {
-		GenericEntry<K,V> entry = GenericEntry<K,V>(iterator.first, iterator.second);
+		GenericEntry<K,V> entry = GenericEntry<K,V>(iterator->first, iterator->second);
 		++iterator;
 		return entry;
 	} else {

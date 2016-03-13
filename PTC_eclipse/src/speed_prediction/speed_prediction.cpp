@@ -57,18 +57,18 @@ speed_prediction::speed_prediction(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid
 void speed_prediction::init_params()
 {
 	// NN architectural params
-	this->alpha = 10.0;					// learning rate
 	this->I = 100;						// input neurons
 	this->O = 14;						// output neurons
 	int HN[] = {80, 65, 50, 35, 20};	// hidden layer neurons
 
 	// scaling parameters
+	this->alpha = 10.0;					// learning rate
 	this->maxSpeed = 200;				// max vehicle speed
 	this->lb_offset = .1;				// lower bound offset
 
 	// index vars
-	this->HL = sizeof(HN)/4-1;
-	this->lastLayer = this->HL+1;
+	this->HL = sizeof(HN)/4-1;			// last hidden layer
+	this->lastLayer = this->HL+1;		// last of all layers
 
 	// init hidden layers
 	this->HN = new int[this->HL+1];
@@ -110,7 +110,6 @@ void speed_prediction::predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_o
 		for(int j = 0; j < this->HN[i]; j++)
 		{
 			Eigen::MatrixXd tempWts = this->Wts[i].row(j);
-
 			double act = (this->yHid[i-1]*tempWts.transpose())(0);
 			this->yInHid[i](0,j) = act;
 			this->yHid[i](0,j) = 1 / (1 + exp(-act));

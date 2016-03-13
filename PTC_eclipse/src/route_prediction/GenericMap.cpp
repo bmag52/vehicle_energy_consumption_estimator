@@ -10,48 +10,54 @@
 namespace InnovationModel {
 
 template<class K, class V>
-GenericMap<K,V>::GenericMap() {
-	// TODO Auto-generated constructor stub
-
+InnovationModel::GenericMap<K, V>::GenericMap() {
 }
 
 template<class K, class V>
-inline GenericMap<K,V>::GenericMap(GenericMap& other)
-{
+InnovationModel::GenericMap<K, V>::GenericMap(GenericMap& other) {
 }
 
 template<class K, class V>
-inline void initialize_counter() {
+void InnovationModel::GenericMap<K, V>::initialize_counter() {
 }
 
 template<class K, class V>
-inline GenericEntry<K,V> next_entry() {
-	return NULL;
+GenericEntry<K, V> InnovationModel::GenericMap<K, V>::next_entry() {
 }
 
 template<class K, class V>
-inline GenericEntry<K,V> get_min_entry() {
-	return NULL;
+GenericEntry<K, V> InnovationModel::GenericMap<K, V>::get_min_entry() {
 }
 
 template<class K, class V>
-inline bool hash_in_map(K key) {
+bool InnovationModel::GenericMap<K, V>::hash_in_map(K key) {
 }
 
 template<class K, class V>
-inline bool get_entry(K key) {
+bool InnovationModel::GenericMap<K, V>::get_entry(K key) {
 }
 
 template<class K, class V>
-inline int get_size() {
+typename std::map<K, V>::iterator InnovationModel::GenericMap<K, V>::begin() {
+	return map.begin();
 }
 
 template<class K, class V>
-inline int sum_function_call(const std::function<int(int)>& f) {
+typename std::map<K, V>::iterator InnovationModel::GenericMap<K, V>::end() {
+	return map.end();
 }
 
 template<class K, class V>
-inline int add_entry(K key, V value) {
+int InnovationModel::GenericMap<K, V>::get_size() {
+}
+
+template<class K, class V>
+int InnovationModel::GenericMap<K, V>::sum_function_call(
+		const std::function<int(int)>& f) {
+}
+
+template<class K, class V>
+int InnovationModel::GenericMap<K, V>::add_entry(K key, V value) {
 }
 
 template<class K, class V>

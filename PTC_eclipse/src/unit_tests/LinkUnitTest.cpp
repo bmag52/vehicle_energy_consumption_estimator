@@ -6,13 +6,10 @@
  */
 
 #include "/vagrant/PTC_eclipse/src/driver_prediction/Link.h"
-#include <assert.h>
 #include <cstdlib>
 
+using namespace std;
 using namespace DriverPrediction;
-
-//write overall single method to be called
-//generate 5 random Links: 2 of the same, one final link, one using basic Link() constructor
 
 
 //Takes in two links, and a boolean stating whether or not the links are equal (expected)
@@ -44,13 +41,42 @@ DriverPrediction::Link * generate ()
 	r[2] = Link(r[1].getDirection(), r[1].getNumber());
 
 	//Fourth is random link
-	r[4] = Link(rand() % 2, rand());
+	r[3] = Link(rand() % 2, rand());
+
+	// to make sure r[3] never equals r[2]
+	while (compare_two_links(r[3], r[2], true) == true){
+		r[3] = Link(rand() % 2, rand());
+	}
 
 	//Last is a final link
-	r[5] = r[1].final_link();
-
+	r[4] = r[1].final_link();
 
 
 	return r;
+}
+
+//write overall single method to be called
+//generate 5 random Links: 2 of the same, one final link, one using basic Link() constructor
+bool overall_Test()
+{
+
+	DriverPrediction:: Link * r = generate();
+	bool testCompareLinks = compare_two_links(r[0], Link(), true);
+	testCompareLinks = testCompareLinks && compare_two_links(r[1], r[2], true);
+	testCompareLinks = testCompareLinks && compare_two_links(r[2], r[3], false);
+	testCompareLinks = testCompareLinks && compare_two_links(r[4], r[4].final_link(), true);
+
+	for (int i = 0; i < 5; i++)
+	{
+		int hash = 2 * r[i].getDirection() + r[i].getNumber();
+		if (test_hash_functions(r[i], hash) == false)
+		{
+			//should throw error message stating i
+			return false;
+		}
+
+	}
+
+	return testCompareLinks;
 }
 

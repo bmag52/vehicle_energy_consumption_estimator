@@ -1,16 +1,21 @@
-//============================================================================
-// Name        : RoutePredictionAmanda.cpp
-// Author      : 
-// Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
-//============================================================================
+/*
+ * RoutePrediction.cpp
+ *
+ *  Created on: Mar 12, 2016
+ *      Author: vagrant
+ */
 
-#include <iostream>
-using namespace std;
+#include "route_prediction.h"
 
-//int stuff() {
-//	//Link static1(3, 4)
-//	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
-//	return 0;
-//}
+namespace route_prediction {
+
+route_prediction::route_prediction() {
+	// TODO Auto-generated constructor stub
+
+}
+
+route_prediction::~route_prediction() {
+	// TODO Auto-generated destructor stub
+}
+
+} /* namespace InnovationModel */

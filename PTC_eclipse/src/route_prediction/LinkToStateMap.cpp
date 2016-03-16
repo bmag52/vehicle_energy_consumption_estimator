@@ -6,8 +6,14 @@
  */
 
 #include "LinkToStateMap.h"
+#include "GenericMap.h"
 
 namespace InnovationModel {
+
+//	LinkToStateMap::LinkToStateMap()
+//	{
+//		this->maps = GenericMap<int, LinkStateMapEntry>::GenericMap;
+//	}
 
 
 } /* namespace InnovationModel */

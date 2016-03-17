@@ -23,6 +23,11 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1184534496" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug">
 								<option id="gnu.cpp.compiler.exe.debug.option.optimization.level.1135942735" name="Optimization Level" superClass="gnu.cpp.compiler.exe.debug.option.optimization.level" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.1187278933" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.include.paths.1236022384" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
+									<listOptionValue builtIn="false" value="/usr/include/eigen3"/>
+								</option>
+								<option id="gnu.cpp.compiler.option.dialect.std.1252064735" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.option.other.other.874372252" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -std=c++11" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1571395920" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1253327570" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
@@ -121,7 +126,10 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.148106758" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1304514605" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-x86_64_aarch64-linux-gnu/include"/>
+									<listOptionValue builtIn="false" value="/usr/include/eigen3"/>
 								</option>
+								<option id="gnu.cpp.compiler.option.other.other.1933146402" name="Other flags" superClass="gnu.cpp.compiler.option.other.other" value="-c -fmessage-length=0 -std=c++11" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.dialect.std.354121156" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1362353290" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool command="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-x86_64_aarch64-linux-gnu/bin/aarch64-linux-gnu-gcc" id="cdt.managedbuild.tool.gnu.c.compiler.exe.debug.501973532" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.exe.debug">
@@ -130,6 +138,7 @@
 								<option id="gnu.c.compiler.option.include.paths.890738152" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-x86_64_aarch64-linux-gnu/include"/>
 								</option>
+								<option id="gnu.c.compiler.option.dialect.std.1783034837" superClass="gnu.c.compiler.option.dialect.std" value="gnu.c.compiler.dialect.default" valueType="enumerated"/>
 								<inputType id="cdt.managedbuild.tool.gnu.c.compiler.input.793085940" superClass="cdt.managedbuild.tool.gnu.c.compiler.input"/>
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.c.linker.exe.debug.1074367241" name="GCC C Linker" superClass="cdt.managedbuild.tool.gnu.c.linker.exe.debug"/>
@@ -178,6 +187,7 @@
 								<option id="gnu.cpp.compiler.exe.debug.option.debugging.level.1064402540" name="Debug Level" superClass="gnu.cpp.compiler.exe.debug.option.debugging.level" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.664802454" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="/vagrant/VM/S32V_BSP/gcc-linaro-4.9-2014.11-i686-mingw32_aarch64-elf/include"/>
+									<listOptionValue builtIn="false" value="/usr/include/eigen3"/>
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.std.1082384575" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.files.1604955585" name="Include files (-include)" superClass="gnu.cpp.compiler.option.include.files"/>
@@ -217,21 +227,6 @@
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="PTC_eclipse.cdt.managedbuild.target.gnu.exe.1164784984" name="Executable" projectType="cdt.managedbuild.target.gnu.exe"/>
 	</storageModule>
-	<storageModule moduleId="scannerConfiguration">
-		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1015901588;cdt.managedbuild.config.gnu.exe.release.1015901588.;cdt.managedbuild.tool.gnu.c.compiler.exe.release.226972014;cdt.managedbuild.tool.gnu.c.compiler.input.795708675">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.344636601;cdt.managedbuild.config.gnu.exe.debug.344636601.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1253327570;cdt.managedbuild.tool.gnu.c.compiler.input.1951634770">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1015901588;cdt.managedbuild.config.gnu.exe.release.1015901588.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1725564533;cdt.managedbuild.tool.gnu.cpp.compiler.input.1232743889">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.344636601;cdt.managedbuild.config.gnu.exe.debug.344636601.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1184534496;cdt.managedbuild.tool.gnu.cpp.compiler.input.1571395920">
-			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
-		</scannerConfigBuildInfo>
-	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
 		<configuration configurationName="Release">
@@ -247,4 +242,26 @@
 			<resource resourceType="PROJECT" workspacePath="/PTC_eclipse"/>
 		</configuration>
 	</storageModule>
+	<storageModule moduleId="scannerConfiguration">
+		<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.344636601.213128634;cdt.managedbuild.config.gnu.exe.debug.344636601.213128634.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.501973532;cdt.managedbuild.tool.gnu.c.compiler.input.793085940">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1015901588;cdt.managedbuild.config.gnu.exe.release.1015901588.;cdt.managedbuild.tool.gnu.c.compiler.exe.release.226972014;cdt.managedbuild.tool.gnu.c.compiler.input.795708675">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.344636601;cdt.managedbuild.config.gnu.exe.debug.344636601.;cdt.managedbuild.tool.gnu.c.compiler.exe.debug.1253327570;cdt.managedbuild.tool.gnu.c.compiler.input.1951634770">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.release.1015901588;cdt.managedbuild.config.gnu.exe.release.1015901588.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.release.1725564533;cdt.managedbuild.tool.gnu.cpp.compiler.input.1232743889">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.344636601.213128634;cdt.managedbuild.config.gnu.exe.debug.344636601.213128634.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.906386790;cdt.managedbuild.tool.gnu.cpp.compiler.input.1362353290">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+		<scannerConfigBuildInfo instanceId="cdt.managedbuild.config.gnu.exe.debug.344636601;cdt.managedbuild.config.gnu.exe.debug.344636601.;cdt.managedbuild.tool.gnu.cpp.compiler.exe.debug.1184534496;cdt.managedbuild.tool.gnu.cpp.compiler.input.1571395920">
+			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId=""/>
+		</scannerConfigBuildInfo>
+	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>

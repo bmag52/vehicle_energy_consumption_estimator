@@ -8,7 +8,7 @@
 #ifndef LINK_H_
 #define LINK_H_
 
-namespace DriverPrediction {
+namespace driver_prediction {
 
 class Link {
 public:
@@ -26,7 +26,7 @@ public:
 	static Link new_link_from_hash(int);
 	static Link final_link();
 //	static Link link_from_road(City::Road, City::Intersection);
-	//static Link link_from_road(road, current_intersection);
+//	static Link link_from_road(road, current_intersection);
 
 };
 

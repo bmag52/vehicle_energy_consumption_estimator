@@ -3,14 +3,14 @@
 
 using Eigen::MatrixXd;
 
-#include "speed_prediction.h"
+#include "SpeedPrediction.h"
 #include <assert.h>
 
-namespace speed_prediction {
+namespace SpeedPrediction {
 
-speed_prediction::speed_prediction()
+SpeedPrediction::SpeedPrediction()
 {
-	init_params();
+	initParams();
 
 	// initialize weights of NN
 	this->Wts = new Eigen::MatrixXd[this->lastLayer + 1];
@@ -45,16 +45,16 @@ speed_prediction::speed_prediction()
 	}
 }
 
-speed_prediction::speed_prediction(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
+SpeedPrediction::SpeedPrediction(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
 {
-	init_params();
+	initParams();
 
 	this->Wts = Wts;
 	this->yHid = yHid;
 	this->yInHid = yInHid;
 }
 
-void speed_prediction::init_params()
+void SpeedPrediction::initParams()
 {
 	// NN architectural params
 	this->I = 100;						// input neurons
@@ -89,7 +89,7 @@ void speed_prediction::init_params()
 
 // feed-forward prediction
 // assumes spd_in is historical data
-void speed_prediction::predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_out)
+void SpeedPrediction::predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_out)
 {
 	// fill input buffer with speed values
 	Eigen::MatrixXd x = *spd_in;
@@ -128,7 +128,7 @@ void speed_prediction::predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_o
 }
 
 // back-propagation
-void speed_prediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_act, Eigen::MatrixXd * spd_in)
+void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_act, Eigen::MatrixXd * spd_in)
 {
 	// delta matrix back propagated though all layers
 	Eigen::MatrixXd abc = Eigen::MatrixXd::Zero(this->O,this->totalLayers[this->lastLayer]+1);
@@ -228,25 +228,25 @@ void speed_prediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_
 
 // send address of weights
 // TODO have a copy function
-void speed_prediction::get_vals(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
+void SpeedPrediction::getVals(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
 {
 	Wts = this->Wts;
 	yHid = this->yHid;
 	yInHid = this->yInHid;
 }
 
-int speed_prediction::get_I()
+int SpeedPrediction::getI()
 {
 	return this->I;
 }
 
-int speed_prediction::get_O()
+int SpeedPrediction::getO()
 {
 	return this->O;
 }
 
 // scale input data and concatenate bias term
-void speed_prediction::format_inData(Eigen::MatrixXd * input)
+void SpeedPrediction::formatInData(Eigen::MatrixXd * input)
 {
 	assert((*input).cols() == this->I+1);
 	Eigen::MatrixXd offset = Eigen::MatrixXd::Ones(1,this->I+1) * this->lb_offset;
@@ -255,14 +255,14 @@ void speed_prediction::format_inData(Eigen::MatrixXd * input)
 }
 
 // scale output data
-void speed_prediction::format_outData(Eigen::MatrixXd * output)
+void SpeedPrediction::formatOutData(Eigen::MatrixXd * output)
 {
 	assert((*output).cols() == this->O);
 	Eigen::MatrixXd offset = Eigen::MatrixXd::Ones(1,this->O) * this->lb_offset;
 	(*output) = (*output) * this->maxSpeed - offset;
 }
 
-void speed_prediction::print_all()
+void SpeedPrediction::printAll()
 {
 	// Weights
 	std::cout << "Wts" << std::endl;

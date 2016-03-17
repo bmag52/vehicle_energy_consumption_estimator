@@ -8,32 +8,38 @@
 #include <iostream>
 #include <Eigen/Dense>
 
-#include "speed_prediction/speed_prediction.h"
+#include "speed_prediction/SpeedPrediction.h"
+#include "unit_tests/UnitTests.h"
 
 using namespace std;
-using namespace speed_prediction;
+using namespace SpeedPrediction;
+
 using Eigen::MatrixXd;
 
 int main() {
 
-	speed_prediction::speed_prediction sp;
+	// unit test function calls here
+	// TODO make a function that calls unit tests
+	link_UT();
 
-	int I = sp.get_I();
-	int O = sp.get_O();
+	SpeedPrediction::SpeedPrediction sp;
+
+	int I = sp.getI();
+	int O = sp.getO();
 
 	Eigen::MatrixXd spd_in = Eigen::MatrixXd::Random(1,I+1)*150;
 	Eigen::MatrixXd spd_act = Eigen::MatrixXd::Random(1,O);
 	Eigen::MatrixXd spd_pred = Eigen::MatrixXd::Zero(1,O);
 
 	std::cout << spd_in << std::endl;
-	sp.format_inData(&spd_in);
+	sp.formatInData(&spd_in);
 	std::cout << spd_in << std::endl;
 
 	sp.predict(&spd_in, &spd_pred);
 	sp.train(&spd_pred, &spd_act, &spd_in);
 
 	std::cout << spd_pred << std::endl;
-	sp.format_outData(&spd_pred);
+	sp.formatOutData(&spd_pred);
 	std::cout << spd_pred << std::endl;
 
 	return 0;

@@ -7,7 +7,7 @@
 
 #include "Link.h"
 
-namespace DriverPrediction {
+namespace driver_prediction {
 
 Link::Link() {
 	link_number = 0;

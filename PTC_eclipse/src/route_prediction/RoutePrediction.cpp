@@ -5,16 +5,16 @@
  *      Author: vagrant
  */
 
-#include "route_prediction.h"
+#include "RoutePrediction.h"
 
-namespace route_prediction {
+namespace RoutePrediction {
 
-route_prediction::route_prediction() {
+RoutePrediction::RoutePrediction() {
 	// TODO Auto-generated constructor stub
 
 }
 
-route_prediction::~route_prediction() {
+RoutePrediction::~RoutePrediction() {
 	// TODO Auto-generated destructor stub
 }
 

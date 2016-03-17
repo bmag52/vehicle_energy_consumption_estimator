@@ -29,7 +29,7 @@ GenericEntry<K, V> InnovationModel::GenericMapIterator<K, V>::next_entry() {
 
 template<class K, class V>
 GenericMapIterator<K,V>::~GenericMapIterator() {
-	// TODO Auto-generated destructor stub
+
 }
 
 } /* namespace InnovationModel */

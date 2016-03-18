@@ -38,29 +38,27 @@ public:
 };
 
 template<class K, class V>
-RoutePrediction::GenericMap<K, V>::GenericMap() {
+GenericMap<K, V>::GenericMap() {
 	this->map = std::map<K,V>();
-	this->iter = NULL;
 	this->hash_counter = 0;
 	this->array_counter = 0;
 }
 
 template<class K, class V>
-RoutePrediction::GenericMap<K, V>::GenericMap(GenericMap& other) {
+GenericMap<K, V>::GenericMap(GenericMap& other) {
 	this->map = std::map<K,V>();
-	this->iter = NULL;
 	this->hash_counter = 0;
 	this->array_counter = 0;
 }
 
 template<class K, class V>
-void RoutePrediction::GenericMap<K, V>::initialize_counter() {
+void GenericMap<K, V>::initialize_counter() {
 	this->hash_counter = 0;
 	this->array_counter = 0;
 }
 
 template<class K, class V>
-GenericEntry<K, V> RoutePrediction::GenericMap<K, V>::next_entry() {
+GenericEntry<K, V> GenericMap<K, V>::next_entry() {
 	if (this->iter == NULL) {
 		this->iter = this->map.begin();
 	}
@@ -74,7 +72,7 @@ GenericEntry<K, V> RoutePrediction::GenericMap<K, V>::next_entry() {
 }
 
 template<class K, class V>
-GenericEntry<K, V> RoutePrediction::GenericMap<K, V>::get_min_entry() {
+GenericEntry<K, V> GenericMap<K, V>::get_min_entry() {
 	typename std::map<K,V>::iterator iter = this->map.begin();
 	V min = NULL;
 	if (iter != this->map.end()) {
@@ -90,7 +88,7 @@ GenericEntry<K, V> RoutePrediction::GenericMap<K, V>::get_min_entry() {
 }
 
 template<class K, class V>
-bool RoutePrediction::GenericMap<K, V>::hash_in_map(K key) {
+bool GenericMap<K, V>::hash_in_map(K key) {
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
 		return true;
@@ -100,7 +98,7 @@ bool RoutePrediction::GenericMap<K, V>::hash_in_map(K key) {
 }
 
 template<class K, class V>
-V RoutePrediction::GenericMap<K, V>::get_entry(K key) {
+V GenericMap<K, V>::get_entry(K key) {
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
 		return iter.second;
@@ -110,12 +108,12 @@ V RoutePrediction::GenericMap<K, V>::get_entry(K key) {
 }
 
 template<class K, class V>
-typename std::map<K, V>::iterator RoutePrediction::GenericMap<K, V>::begin() {
+typename std::map<K, V>::iterator GenericMap<K, V>::begin() {
 	return map.begin();
 }
 
 template<class K, class V>
-typename std::map<K, V>::iterator RoutePrediction::GenericMap<K, V>::end() {
+typename std::map<K, V>::iterator GenericMap<K, V>::end() {
 	return map.end();
 }
 
@@ -125,7 +123,7 @@ int RoutePrediction::GenericMap<K, V>::get_size() {
 }
 
 template<class K, class V>
-int RoutePrediction::GenericMap<K, V>::add_entry(K key, V value) {
+int GenericMap<K, V>::add_entry(K key, V value) {
 	if (this->map.insert (std::pair<K,V>(key, value)).second == true) {
 		return 1;
 	} else {

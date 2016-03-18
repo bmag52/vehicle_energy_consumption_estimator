@@ -8,6 +8,7 @@
 #ifndef ROUTE_PREDICTION_LINKSTATEMAPENTRY_H_
 #define ROUTE_PREDICTION_LINKSTATEMAPENTRY_H_
 #include "GenericMap.h"
+#include "GenericMap.cpp"
 #include "Link.h"
 
 namespace InnovationModel {

@@ -6,8 +6,12 @@
  */
 
 #include "LinkStateMapEntry.h"
+#include "GenericMap.h"
 
 namespace InnovationModel {
+
+LinkStateMapEntry::~LinkStateMapEntry() {
+}
 
 
 } /* namespace InnovationModel */

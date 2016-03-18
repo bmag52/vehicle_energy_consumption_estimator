@@ -14,7 +14,7 @@
 
 namespace InnovationModel {
 
-template<class K, class V>
+template<typename K, typename V>
 class GenericMap {
 private:
 	std::map<K,V> map;

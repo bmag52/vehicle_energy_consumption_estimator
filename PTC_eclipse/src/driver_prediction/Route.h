@@ -5,8 +5,8 @@
  *      Author: vagrant
  */
 
-#ifndef ROUTE_H_
-#define ROUTE_H_
+//#ifndef DRIVER_PREDICTION_ROUTE_H_
+//#define DRIVER_PREDICTION_ROUTE_H_
 
 #include "../route_prediction/Link.h"
 #include "../route_prediction/Goal.h"
@@ -21,7 +21,7 @@ private:
 	int counter;
 public:
 	Route(Link links[], Goal& goal);
-	~Route();
+	virtual ~Route();
 	void addlink(Link link);
 	bool isequal(Route& other);
 	Route copy();
@@ -29,4 +29,4 @@ public:
 };
 
 }
-#endif
+//#endif

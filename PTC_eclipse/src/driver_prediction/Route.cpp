@@ -55,7 +55,7 @@ Route Route::copy() {
 		int direction = this->links[i].getDirection();
 		newLinks[i] = this->links[i].copy(direction, number);
 	}
-	Route* newRoute = new Route(newLinks, newGoal);
+	Route* newRoute= new Route(newLinks, newGoal);
 	return *newRoute;
 }
 

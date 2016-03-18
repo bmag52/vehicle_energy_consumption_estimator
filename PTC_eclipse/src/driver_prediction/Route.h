@@ -5,21 +5,28 @@
  *      Author: vagrant
  */
 
-namespace DriverPrediction {
-using namespace InnovationModel;
+#ifndef ROUTE_H_
+#define ROUTE_H_
+
+#include "../route_prediction/Link.h"
+#include "../route_prediction/Goal.h"
+
+
+namespace InnovationModel {
 
 class Route {
 private:
 	Link links[];
 	Goal goal;
 	int counter;
-
 public:
-	Route(Link links[], Goal &goal);
-	void addlink(Link &link);
-	bool isequal(Route &other);
+	Route(Link links[], Goal& goal);
+	~Route();
+	void addlink(Link link);
+	bool isequal(Route& other);
 	Route copy();
 	Link nextlink();
 };
 
 }
+#endif

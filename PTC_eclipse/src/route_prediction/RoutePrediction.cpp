@@ -18,4 +18,4 @@ RoutePrediction::~RoutePrediction() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */

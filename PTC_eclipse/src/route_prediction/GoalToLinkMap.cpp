@@ -7,7 +7,7 @@
 
 #include "GoalToLinkMap.h"
 
-namespace InnovationModel {
+namespace RoutePrediction {
 
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */

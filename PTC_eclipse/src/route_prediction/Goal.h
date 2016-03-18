@@ -10,7 +10,7 @@
 
 #include <functional>
 
-namespace InnovationModel {
+namespace RoutePrediction {
 
 class Goal {
 private:
@@ -26,6 +26,6 @@ public:
 	virtual ~Goal();
 };
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */
 
 #endif /* DRIVER_PREDICTION_GOAL_H_ */

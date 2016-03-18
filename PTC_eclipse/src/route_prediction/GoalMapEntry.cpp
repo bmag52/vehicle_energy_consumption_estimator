@@ -9,9 +9,9 @@
 #include "GenericMap.h"
 #include "Goal.h"
 
-namespace InnovationModel {
+namespace RoutePrediction {
 
 void GoalMapEntry::increment_count() {
 }
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */

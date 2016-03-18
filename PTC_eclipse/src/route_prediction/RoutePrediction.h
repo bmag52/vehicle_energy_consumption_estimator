@@ -10,12 +10,12 @@
 
 #include "LinkToStateMap.h"
 #include "GoalToLinkMap.h"
-#include "Link.h"
+#include "../driver_prediction/Link.h"
 #include "Goal.h"
 
 namespace RoutePrediction {
 
-using namespace InnovationModel;
+using namespace RoutePrediction;
 
 class RoutePrediction {
 private:
@@ -28,6 +28,6 @@ public:
 };
 
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */
 
 #endif /* ROUTE_PREDICTION_ROUTEPREDICTION_H_ */

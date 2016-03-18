@@ -11,7 +11,7 @@
 #include "UnitTests.h"
 
 using namespace std;
-using namespace driver_prediction;
+using namespace DriverPrediction;
 
 void link_UT() {
     

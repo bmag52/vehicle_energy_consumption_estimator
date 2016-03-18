@@ -9,10 +9,12 @@
 #define ROUTE_PREDICTION_GOALTOLINKMAP_H_
 #include "GenericMap.h"
 #include "GoalMapEntry.h"
-#include "Link.h"
+#include "../driver_prediction/Link.h"
 #include "Goal.h"
 
-namespace InnovationModel {
+using namespace DriverPrediction;
+
+namespace RoutePrediction {
 
 class GoalToLinkMap {
 public:
@@ -25,6 +27,6 @@ public:
 	virtual ~GoalToLinkMap();
 };
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */
 
 #endif /* ROUTE_PREDICTION_GOALTOLINKMAP_H_ */

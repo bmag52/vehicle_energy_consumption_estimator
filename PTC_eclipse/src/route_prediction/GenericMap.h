@@ -12,7 +12,7 @@
 #include <map>
 #include "GenericEntry.h"
 
-namespace InnovationModel {
+namespace RoutePrediction {
 
 template<typename K, typename V>
 class GenericMap {
@@ -38,7 +38,7 @@ public:
 };
 
 template<class K, class V>
-InnovationModel::GenericMap<K, V>::GenericMap() {
+RoutePrediction::GenericMap<K, V>::GenericMap() {
 	this->map = std::map<K,V>();
 	this->iter = NULL;
 	this->hash_counter = 0;
@@ -46,7 +46,7 @@ InnovationModel::GenericMap<K, V>::GenericMap() {
 }
 
 template<class K, class V>
-InnovationModel::GenericMap<K, V>::GenericMap(GenericMap& other) {
+RoutePrediction::GenericMap<K, V>::GenericMap(GenericMap& other) {
 	this->map = std::map<K,V>();
 	this->iter = NULL;
 	this->hash_counter = 0;
@@ -54,13 +54,13 @@ InnovationModel::GenericMap<K, V>::GenericMap(GenericMap& other) {
 }
 
 template<class K, class V>
-void InnovationModel::GenericMap<K, V>::initialize_counter() {
+void RoutePrediction::GenericMap<K, V>::initialize_counter() {
 	this->hash_counter = 0;
 	this->array_counter = 0;
 }
 
 template<class K, class V>
-GenericEntry<K, V> InnovationModel::GenericMap<K, V>::next_entry() {
+GenericEntry<K, V> RoutePrediction::GenericMap<K, V>::next_entry() {
 	if (this->iter == NULL) {
 		this->iter = this->map.begin();
 	}
@@ -74,7 +74,7 @@ GenericEntry<K, V> InnovationModel::GenericMap<K, V>::next_entry() {
 }
 
 template<class K, class V>
-GenericEntry<K, V> InnovationModel::GenericMap<K, V>::get_min_entry() {
+GenericEntry<K, V> RoutePrediction::GenericMap<K, V>::get_min_entry() {
 	typename std::map<K,V>::iterator iter = this->map.begin();
 	V min = NULL;
 	if (iter != this->map.end()) {
@@ -90,7 +90,7 @@ GenericEntry<K, V> InnovationModel::GenericMap<K, V>::get_min_entry() {
 }
 
 template<class K, class V>
-bool InnovationModel::GenericMap<K, V>::hash_in_map(K key) {
+bool RoutePrediction::GenericMap<K, V>::hash_in_map(K key) {
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
 		return true;
@@ -100,7 +100,7 @@ bool InnovationModel::GenericMap<K, V>::hash_in_map(K key) {
 }
 
 template<class K, class V>
-V InnovationModel::GenericMap<K, V>::get_entry(K key) {
+V RoutePrediction::GenericMap<K, V>::get_entry(K key) {
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
 		return iter.second;
@@ -110,22 +110,22 @@ V InnovationModel::GenericMap<K, V>::get_entry(K key) {
 }
 
 template<class K, class V>
-typename std::map<K, V>::iterator InnovationModel::GenericMap<K, V>::begin() {
+typename std::map<K, V>::iterator RoutePrediction::GenericMap<K, V>::begin() {
 	return map.begin();
 }
 
 template<class K, class V>
-typename std::map<K, V>::iterator InnovationModel::GenericMap<K, V>::end() {
+typename std::map<K, V>::iterator RoutePrediction::GenericMap<K, V>::end() {
 	return map.end();
 }
 
 template<class K, class V>
-int InnovationModel::GenericMap<K, V>::get_size() {
+int RoutePrediction::GenericMap<K, V>::get_size() {
 	return this->map.size();
 }
 
 template<class K, class V>
-int InnovationModel::GenericMap<K, V>::add_entry(K key, V value) {
+int RoutePrediction::GenericMap<K, V>::add_entry(K key, V value) {
 	if (this->map.insert (std::pair<K,V>(key, value)).second == true) {
 		return 1;
 	} else {
@@ -139,6 +139,6 @@ GenericMap<K,V>::~GenericMap() {
 }
 
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */
 
 #endif /* ROUTE_PREDICTION_GENERICMAP_H_ */

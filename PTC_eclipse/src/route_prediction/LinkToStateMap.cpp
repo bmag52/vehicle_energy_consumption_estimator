@@ -8,7 +8,7 @@
 #include "LinkToStateMap.h"
 #include "GenericMap.h"
 
-namespace InnovationModel {
+namespace RoutePrediction {
 
 //	LinkToStateMap::LinkToStateMap()
 //	{
@@ -16,4 +16,4 @@ namespace InnovationModel {
 //	}
 
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */

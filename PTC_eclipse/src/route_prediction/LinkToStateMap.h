@@ -11,7 +11,7 @@
 #include "LinkStateMapEntry.h"
 #include "Goal.h"
 
-namespace InnovationModel {
+namespace RoutePrediction {
 
 class LinkToStateMap {
 public:
@@ -23,6 +23,6 @@ public:
 	virtual ~LinkToStateMap();
 };
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */
 
 #endif /* ROUTE_PREDICTION_LINKTOSTATEMAP_H_ */

@@ -8,10 +8,14 @@
 #include "LinkStateMapEntry.h"
 #include "GenericMap.h"
 
-namespace InnovationModel {
+namespace RoutePrediction {
+
+//LinkStateMapEntry::LinkStateMapEntry() {
+//	this->entries = GenericMap<int, int>();
+//}
 
 LinkStateMapEntry::~LinkStateMapEntry() {
 }
 
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */

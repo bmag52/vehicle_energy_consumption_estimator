@@ -9,7 +9,7 @@
 #define ROUTE_PREDICTION_GENERICMAPITERATOR_H_
 #include "GenericMap.h"
 
-namespace InnovationModel {
+namespace RoutePrediction {
 
 template<class K, class V>
 class GenericMapIterator {
@@ -22,6 +22,30 @@ public:
 	virtual ~GenericMapIterator();
 };
 
-} /* namespace InnovationModel */
+
+template<class K, class V>
+RoutePrediction::GenericMapIterator<K, V>::GenericMapIterator(
+		GenericMap<K, V> map) {
+	this->map = map;
+	this->iterator = map.begin();
+}
+
+template<class K, class V>
+GenericEntry<K, V> RoutePrediction::GenericMapIterator<K, V>::next_entry() {
+	if (iterator != map.end()) {
+		GenericEntry<K,V> entry = GenericEntry<K,V>(iterator->first, iterator->second);
+		++iterator;
+		return entry;
+	} else {
+		return NULL;
+	}
+}
+
+template<class K, class V>
+GenericMapIterator<K,V>::~GenericMapIterator() {
+}
+
+
+} /* namespace RoutePrediction */
 
 #endif /* ROUTE_PREDICTION_GENERICMAPITERATOR_H_ */

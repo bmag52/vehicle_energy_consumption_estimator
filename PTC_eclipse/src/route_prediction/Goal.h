@@ -24,12 +24,6 @@ public:
 	bool isequal(Goal &other);
 	size_t get_hash() const;
 	virtual ~Goal();
-	int* getBins() const;
-	void setBins(int* bins);
-	int getDestination() const;
-	void setDestination(int destination);
-	int getSize() const;
-	void setSize(int size);
 };
 
 } /* namespace InnovationModel */

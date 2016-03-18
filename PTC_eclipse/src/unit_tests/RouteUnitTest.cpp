@@ -14,31 +14,6 @@
 
 using namespace InnovationModel;
 
-/*
- *
-    //Testing link() constructor, getDirection(), getNumber()
-    Link firstLink;
-    assert(firstLink.getDirection() == 0 && firstLink.getNumber() == 0);
-    //assert(firstLink.getDirection() == 0 && firstLink.getNumber() == 1);
-
-    //Testing link(x, x) constructor
-    Link secondLink(10, 20);
-    assert(secondLink.getDirection() == 10);
-    assert(secondLink.getNumber() == 20);
-    //assert(secondLink.getDirection() == 0 && secondLink.getNumber() == 0);
-
-    //Testing get_hash(Link) function
-    assert(secondLink.get_hash(secondLink) == 2 * secondLink.getDirection() + secondLink.getNumber());
-
-    Link thirdLink(10, 20);
-    Link fourthLink(10, 30);
-
-    assert(secondLink.isEqual(thirdLink));
-
-    Link final = thirdLink.final_link();
-    assert(final.getNumber() == 0);
-    assert(final.getDirection() == 0);
- * */
 void route_UT() {
 	Link firstLinks[0] = {};
 	Link secondLinks[1] = {Link(10, 20)};

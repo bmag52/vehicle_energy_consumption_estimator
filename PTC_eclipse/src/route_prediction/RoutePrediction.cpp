@@ -6,6 +6,12 @@
  */
 
 #include "RoutePrediction.h"
+#include "LinkToStateMap.h"
+#include "GoalToLinkMap.h"
+#include "../driver_prediction/Link.h"
+#include "Goal.h"
+
+using namespace DriverPrediction;
 
 namespace RoutePrediction {
 

@@ -13,13 +13,17 @@
 #include "../driver_prediction/Link.h"
 #include "Goal.h"
 
-namespace RoutePrediction {
 
-using namespace RoutePrediction;
+namespace RoutePrediction {
 
 class RoutePrediction {
 private:
-//	LinkToStateMap link_to_state;
+	LinkToStateMap linkToState;
+	GoalToLinkMap goalToState;
+	GenericMap<int, int> links;
+	GenericMap<int, int> goals;
+	GenericMap<int, int> states;
+
 
 
 public:

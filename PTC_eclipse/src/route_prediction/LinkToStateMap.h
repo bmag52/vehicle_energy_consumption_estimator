@@ -15,11 +15,11 @@ namespace RoutePrediction {
 
 class LinkToStateMap {
 public:
-	GenericMap<int, LinkStateMapEntry> maps;
-	int increment_transition(Link, Goal, Link);
-	GenericEntry<double, double> get_probability(Link, Link, Goal, bool);
+	GenericMap<int, LinkStateMapEntry*> maps;
+	int incrementTransition(Link, Goal, Link);
+	GenericEntry<double, double> getProbability(Link, Link, Goal, bool);
 	LinkToStateMap();
-	LinkToStateMap(LinkToStateMap &other);
+	LinkToStateMap(LinkToStateMap& other);
 	virtual ~LinkToStateMap();
 };
 

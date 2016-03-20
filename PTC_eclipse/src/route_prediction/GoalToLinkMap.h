@@ -18,7 +18,7 @@ namespace RoutePrediction {
 
 class GoalToLinkMap {
 public:
-	GenericMap<int,GoalMapEntry> maps;
+	GenericMap<int,GoalMapEntry*> maps;
 	int maps_size;
 	GoalToLinkMap();
 	GoalToLinkMap(GoalToLinkMap &other);

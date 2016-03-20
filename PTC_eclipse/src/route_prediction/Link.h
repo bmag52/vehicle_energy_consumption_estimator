@@ -8,7 +8,7 @@
 #ifndef LINK_H_
 #define LINK_H_
 
-namespace InnovationModel {
+namespace DriverPrediction {
 
 class Link {
 public:

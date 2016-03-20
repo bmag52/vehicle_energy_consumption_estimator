@@ -6,8 +6,8 @@
  */
 
 
-#include "../route_prediction/Link.h"
-#include "Goal.h"
+#include "Link.h"
+#include "../route_prediction/Goal.h"
 #include "Route.h"
 
 namespace DriverPrediction {

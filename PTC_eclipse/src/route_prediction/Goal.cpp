@@ -9,7 +9,7 @@
 #include <functional>
 #include <math.h>
 
-namespace InnovationModel {
+namespace RoutePrediction {
 
 Goal::Goal(int destination, int bin[], int size) {
 	this->destination = destination;
@@ -54,15 +54,18 @@ size_t Goal::get_hash() const {
 	return hash;
 }
 
+Goal::Goal() {
+}
+
 Goal::~Goal() {
 }
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */
 
 namespace std {
-  template <> struct hash<InnovationModel::Goal>
+  template <> struct hash<RoutePrediction::Goal>
   {
-    size_t operator()(const InnovationModel::Goal & x) const
+    size_t operator()(const RoutePrediction::Goal & x) const
     {
       return x.get_hash();
     }

@@ -6,16 +6,51 @@
  */
 
 #include "RoutePrediction.h"
+#include "LinkToStateMap.h"
+#include "GoalToLinkMap.h"
+#include "../driver_prediction/Link.h"
+#include "Goal.h"
+
+using namespace DriverPrediction;
+using namespace RoutePrediction;
 
 namespace RoutePrediction {
 
-RoutePrediction::RoutePrediction() {
+RoutePredictionObj::RoutePredictionObj() {
 	// TODO Auto-generated constructor stub
-
 }
 
-RoutePrediction::~RoutePrediction() {
+RoutePredictionObj::RoutePredictionObj(CityObj* city) {
+	this->city = city;
+}
+
+Route* RoutePredictionObj::startPrediction(Intersection* currentIntersection, int currentCondition) {
+}
+
+Route* RoutePredictionObj::predict(Link* linkTaken) {
+}
+
+void RoutePredictionObj::updateStates(Link* linkTaken) {
+}
+
+Route* RoutePredictionObj::predictPrivate(Route* currentRoute) {
+}
+
+Route* RoutePredictionObj::createRoute() {
+}
+
+Route* RoutePredictionObj::createRouteConditions(int time, int day, int loc) {
+}
+
+Route* RoutePredictionObj::createRouteIntersection(Intersection* intersection,
+		int time, int day, int loc) {
+}
+
+void RoutePredictionObj::parseRoute(Route* route) {
+}
+
+RoutePredictionObj::~RoutePredictionObj() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */

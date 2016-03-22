@@ -8,17 +8,26 @@
 #ifndef CITY_INTERSECTION_H_
 #define CITY_INTERSECTION_H_
 
+#include "IntersectionTypes.h"
+#include "Road.h"
+#include "../driver_prediction/Link.h"
+
+using namespace DriverPrediction;
+
 namespace City {
 
 class Intersection {
 public:
-//	Road* roads; //%array of roads that connect to this intersection
+	Road* roads; //%array of roads that connect to this intersection
 //	IntersectionTypes interSectionType;
-//	std::pair<int, int>* coordinates;
 	int elevation;
 	int number;
-//	Intersection(Road*, std::string intersectType, std::pair<int, int>*, int, int);
+	double lat;
+	double lon;
+	Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum);
+	Intersection();
 	virtual ~Intersection();
+	void getOutGoingLinks(Link * link);
 };
 
 } /* namespace City */

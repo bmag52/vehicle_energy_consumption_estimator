@@ -9,10 +9,12 @@
 #include <Eigen/Dense>
 
 #include "speed_prediction/SpeedPrediction.h"
+#include "route_prediction/GenericMap.h"
 #include "unit_tests/UnitTests.h"
 
 using namespace std;
 using namespace SpeedPrediction;
+using namespace RoutePrediction;
 
 using Eigen::MatrixXd;
 
@@ -22,7 +24,8 @@ int main() {
 	// TODO make a function that calls unit tests
 	link_UT();
 
-	SpeedPrediction::SpeedPrediction sp;
+	// speed_prediction muck around
+	SpeedPredictionObj sp;
 
 	int I = sp.getI();
 	int O = sp.getO();
@@ -41,6 +44,9 @@ int main() {
 	std::cout << spd_pred << std::endl;
 	sp.formatOutData(&spd_pred);
 	std::cout << spd_pred << std::endl;
+
+	// route_prediction muck around
+	GenericMap<int, int> test;
 
 	return 0;
 }

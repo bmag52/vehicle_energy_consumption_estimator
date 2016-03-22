@@ -10,7 +10,7 @@
 
 #include <functional>
 
-namespace InnovationModel {
+namespace RoutePrediction {
 
 class Goal {
 private:
@@ -18,6 +18,7 @@ private:
 	int *bins;
 	int size;
 public:
+	Goal();
 	Goal(int destination, int bin[], int size);
 	Goal(Goal& other);
 	bool issimilar(Goal &other);
@@ -26,6 +27,6 @@ public:
 	virtual ~Goal();
 };
 
-} /* namespace InnovationModel */
+} /* namespace RoutePrediction */
 
 #endif /* DRIVER_PREDICTION_GOAL_H_ */

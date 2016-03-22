@@ -5,12 +5,19 @@
  *      Author: Amanda
  */
 
-#include "CityObj.h"
+#include "City.h"
 
 namespace City {
 
 CityObj::CityObj() {
 	// TODO Auto-generated constructor stub
+}
+
+int CityObj::getRoadListSize() {
+	// TODO getRoadListSize
+}
+
+int CityObj::getInstersectionListSize() {
 }
 
 CityObj::~CityObj() {

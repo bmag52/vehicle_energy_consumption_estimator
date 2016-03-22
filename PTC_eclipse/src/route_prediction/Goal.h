@@ -18,6 +18,7 @@ private:
 	int *bins;
 	int size;
 public:
+	Goal();
 	Goal(int destination, int bin[], int size);
 	Goal(Goal& other);
 	bool issimilar(Goal &other);

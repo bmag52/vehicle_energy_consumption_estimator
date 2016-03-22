@@ -10,19 +10,19 @@
 namespace City {
 
 
-//Intersection::Intersection(Road* roadInput, std::string intersectType,
-//		std::pair<int, int>* coords, int elev, int intersectNum) {
-//	roads = roadInput;
-//	interSectionType = IntersectionTypes(intersectType);
-//	//if length coords is 2 set equal to, obj coordinates= coords else then it is equal to 0,0
-//	coordinates = coords;
-//	elevation = elev;
-//	number = intersectNum;
-//}
+Intersection::Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum) {
+	this->roads = roadInput;
+//	this->interSectionType = IntersectionTypes(intersectType);
+	this->lat = lat;
+	this->lon = lon;
+	this->elevation = elev;
+	this->number = intersectNum;
+}
 
 Intersection::~Intersection() {
+}
 
-
+void Intersection::getOutGoingLinks(Link* link) {
 }
 
 } /* namespace City */

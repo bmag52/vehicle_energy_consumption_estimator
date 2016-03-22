@@ -5,8 +5,12 @@
  *      Author: vagrant
  */
 
-namespace DriverPrediction {
-using namespace InnovationModel;
+#include "Goal.h"
+#include "../driver_prediction/Link.h"
+
+using namespace DriverPrediction;
+
+namespace RoutePrediction {
 
 class Route {
 private:
@@ -14,9 +18,9 @@ private:
 	Goal goal;
 	int counter;
 public:
-	Route(Link links[], Goal &goal);
-	void addlink(Link &link);
-	bool isequal(Route &other);
+	Route();
+	void addlink(Link link);
+	bool isequal(Route other);
 	Route copy();
 	Link nextlink();
 };

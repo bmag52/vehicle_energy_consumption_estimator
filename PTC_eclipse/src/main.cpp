@@ -25,7 +25,7 @@ int main() {
 	link_UT();
 
 	// speed_prediction muck around
-	SpeedPrediction::SpeedPrediction sp;
+	SpeedPredictionObj sp;
 
 	int I = sp.getI();
 	int O = sp.getO();

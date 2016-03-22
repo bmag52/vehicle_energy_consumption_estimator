@@ -5,8 +5,8 @@
  *      Author: Amanda
  */
 
-#ifndef CITY_CITYOBJ_H_
-#define CITY_CITYOBJ_H_
+#ifndef CITY_CITY_H_
+#define CITY_CITY_H_
 #define  max_slope_percent 6
 
 #include <string>
@@ -35,9 +35,11 @@ public:
 	Road* road_list; //list of roads in city should be indexed by road unique number
 	CityObj(Intersection*, std::string, std::string, int, std::map<int, int>);
 	CityObj();
+	int getRoadListSize();
+	int getInstersectionListSize();
 	virtual ~CityObj();
 };
 
 } /* namespace City */
 
-#endif /* CITY_CITYOBJ_H_ */
+#endif /* CITY_CITY_H_ */

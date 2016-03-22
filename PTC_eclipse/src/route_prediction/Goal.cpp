@@ -54,6 +54,9 @@ size_t Goal::get_hash() const {
 	return hash;
 }
 
+Goal::Goal() {
+}
+
 Goal::~Goal() {
 }
 

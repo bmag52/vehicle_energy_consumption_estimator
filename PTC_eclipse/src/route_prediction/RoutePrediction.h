@@ -10,25 +10,44 @@
 
 #include "LinkToStateMap.h"
 #include "GoalToLinkMap.h"
+#include "Route.h"
 #include "../driver_prediction/Link.h"
+#include "../city/City.h"
 #include "Goal.h"
+#include "../city/Intersection.h"
 
+using namespace DriverPrediction;
+using namespace City;
 
 namespace RoutePrediction {
 
-class RoutePrediction {
+class RoutePredictionObj {
 private:
 	LinkToStateMap linkToState;
 	GoalToLinkMap goalToState;
 	GenericMap<int, int> links;
 	GenericMap<int, int> goals;
 	GenericMap<int, int> states;
+	Route predictedRoute;
+	Route currentRoute;
+	double *probabilities;
+	CityObj *city;
+	Goal predictedGoal;
+	int minInitialProbability;
 
-
+	void updateStates(Link* linkTaken);
+	Route* predictPrivate(Route* currentRoute);
+	Route* createRoute();
+	Route* createRouteConditions(int time, int day, int loc);
+	Route* createRouteIntersection(Intersection* intersection, int time, int day, int loc);
 
 public:
-	RoutePrediction();
-	~RoutePrediction();
+	RoutePredictionObj();
+	RoutePredictionObj(CityObj * city);
+	Route* startPrediction(Intersection * currentIntersection, int currentCondition);
+	Route* predict(Link * linkTaken);
+	void parseRoute(Route* route);
+	~RoutePredictionObj();
 };
 
 

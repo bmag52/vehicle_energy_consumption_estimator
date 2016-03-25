@@ -23,7 +23,7 @@ Intersection::~Intersection() {
 }
 
 void Intersection::getOutgoingLinks(Link* link) {
-	// TODO
+	// TODO getOutgoingLinks
 }
 
 } /* namespace City */

@@ -20,6 +20,10 @@ int CityObj::getRoadListSize() {
 int CityObj::getInstersectionListSize() {
 }
 
+Link* CityObj::getNextLinks(Link* link) {
+	// TODO getNextLinks
+}
+
 CityObj::~CityObj() {
 	// TODO Auto-generated destructor stub
 }

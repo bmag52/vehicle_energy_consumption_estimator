@@ -22,8 +22,8 @@ public:
 	int maps_size;
 	GoalToLinkMap();
 	GoalToLinkMap(GoalToLinkMap &other);
-	int link_traversed(Link, Goal);
-	double probability_of_goals_given_link(Link, Goal, bool);
+	int linkTraversed(Link, Goal);
+	double probabilityOfGoalGivenLink(Link * link, Goal * goal, bool isSimilar);
 	virtual ~GoalToLinkMap();
 };
 

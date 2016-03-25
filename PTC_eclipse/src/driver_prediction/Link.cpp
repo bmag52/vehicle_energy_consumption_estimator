@@ -24,17 +24,18 @@ Link::~Link() {
 	// TODO Auto-generated destructor stub
 }
 
-Link Link::copy(int direction, int linkNumber) {
-	return Link(direction, linkNumber);
+Link* Link::copy(int direction, int linkNumber) {
+	Link link(direction, linkNumber);
+	return &link;
 }
 
 
-int Link::get_hash(Link link) {
+int Link::getHash(Link* link) {
 	return 2 * link_direction + link_number;
 }
 
-bool Link::isEqual(Link other) {
-	if (other.link_direction == link_direction && other.link_number == link_number) {
+bool Link::isEqual(Link* other) {
+	if ((*other).link_direction == link_direction && (*other).link_number == link_number) {
 		return true;
 	} else {
 		return false;
@@ -50,13 +51,15 @@ int Link::getDirection() {
 }
 
 //Takes in hash number and returns new link corresponding to hash
-Link Link::new_link_from_hash(int hash) {
-	return Link(hash % 2, hash / 2);
+Link* Link::newLinkFromHash(int hash) {
+	Link link(hash % 2, hash / 2);
+	return &link;
 }
 
 // %represents the link at the end of a route, when the vehicle stops
-Link Link::final_link() {
-	return Link(0, 0);
+Link* Link::finalLink() {
+	Link link(0, 0);
+	return &link;
 }
 
 /* Link Link::link_from_road(City::Road road, City::Intersection intersection) {

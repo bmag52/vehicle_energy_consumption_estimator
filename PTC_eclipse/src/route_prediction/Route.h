@@ -14,12 +14,13 @@ namespace RoutePrediction {
 
 class Route {
 private:
-	Link links[];
+	Link* links;
 	Goal goal;
 	int counter;
 public:
 	Route();
-	void addlink(Link link);
+	Route(Link* links, Goal* goal);
+	void addlink(Link* link);
 	bool isequal(Route other);
 	Route copy();
 	Link nextlink();

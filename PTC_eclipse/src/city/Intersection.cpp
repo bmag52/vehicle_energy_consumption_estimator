@@ -22,7 +22,8 @@ Intersection::Intersection(Road * roadInput, double lat, double lon, int elev, i
 Intersection::~Intersection() {
 }
 
-void Intersection::getOutGoingLinks(Link* link) {
+void Intersection::getOutgoingLinks(Link* link) {
+	// TODO
 }
 
 } /* namespace City */

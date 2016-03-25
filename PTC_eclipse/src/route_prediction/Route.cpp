@@ -17,8 +17,13 @@ Route::Route() {
 	this->counter = 0;
 }
 
+Route::Route(Link* links, Goal* goal) {
+	this->links = links;
+	this->goal = (*goal);
+}
+
 // adds new link to end of route
-void Route::addlink(Link link) {
+void Route::addlink(Link* link) {
 //	int length = sizeof(this->links) / sizeof(Link);
 //	Link temp[] = new Link[length];
 //	for(int i = 0; i < length; i++) {
@@ -69,3 +74,5 @@ Link Route::nextlink() {
 }
 
 }
+
+

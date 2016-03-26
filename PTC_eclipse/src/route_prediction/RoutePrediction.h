@@ -15,6 +15,7 @@
 #include "../city/City.h"
 #include "Goal.h"
 #include "../city/Intersection.h"
+#include "GenericMap.h"
 
 using namespace DriverPrediction;
 using namespace City;
@@ -39,7 +40,8 @@ private:
 	Route* unknownRoute;
 	Link link;
 
-	void updateStates(Link* linkTaken);
+	void updateStates(Link* link);
+	void getNextState(int* hash, Goal* goal);
 	Route* predictPrivate(Route* currentRoute);
 	Route* createRoute();
 	Route* createRouteConditions(int* currentCondition);

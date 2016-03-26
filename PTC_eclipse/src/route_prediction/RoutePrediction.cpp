@@ -10,12 +10,14 @@
 #include "GoalToLinkMap.h"
 #include "GenericEntry.h"
 #include "../driver_prediction/Link.h"
+#include "../city/City.h"
 #include "Goal.h"
+#include "stdlib.h"
 
 #include <algorithm>
 
 using namespace DriverPrediction;
-using namespace RoutePrediction;
+using namespace City;
 using namespace std;
 
 namespace RoutePrediction {
@@ -32,6 +34,12 @@ RoutePredictionObj::RoutePredictionObj(CityObj* city) {
 	this->unknownRoute = &unknownRoute;
 }
 
+void RoutePredictionObj::getNextState(int * hash, Goal * goal) {
+	GenericEntry<int, Goal*>* nextEntry = this->goals.nextEntry();
+	hash = &nextEntry->key;
+	goal = nextEntry->value;
+}
+
 Route* RoutePredictionObj::startPrediction(Intersection* currentIntersection, int* currentCondition) {
 	this->predictedGoal = Goal(1, currentCondition);
 
@@ -41,18 +49,18 @@ Route* RoutePredictionObj::startPrediction(Intersection* currentIntersection, in
 	this->probabilitySize = sizeof(*nextLinks)/sizeof(Link)*this->goals.getSize();
 	this->probabilities = new double[this->probabilitySize];
 
+	int* hash;
+	Goal* goal;
 	this->goals.initializeCounter();
-	GenericEntry<int, Goal*> nextEntry = this->goals.nextEntry();
-	int hash = nextEntry.key;
-	Goal* goal = nextEntry.value;
+	getNextState(hash, goal);
 
 	// creating the probability of each goal based on its relation to the conditions
 	int counter = 1;
-	while(hash != -1)
+	while((*hash) != -1)
 	{
 		for(int i = 0; i < sizeof(*nextLinks)/sizeof(Link); i++)
 		{
-			double goalProbability = this->goalToLink.probabilityOfGoalGivenLink(&nextLinks[i],goal,0);
+			double goalProbability = this->goalToLink.probabilityOfGoalGivenLink(&nextLinks[i],goal,false);
 			if(this->predictedGoal.isSimilar(goal))
 			{
 				// high probability since condition is right
@@ -68,9 +76,7 @@ Route* RoutePredictionObj::startPrediction(Intersection* currentIntersection, in
 			this->probabilities[counter] = max(this->minInitialProbability*1/this->goals.getSize(),goalProbability);
 			counter++;
 		}
-		GenericEntry<int, Goal*> nextEntry = this->goals.nextEntry();
-		hash = nextEntry.key;
-		goal = nextEntry.value;
+		getNextState(hash, goal);
 	}
 
 	// normalize probabilites
@@ -78,15 +84,74 @@ Route* RoutePredictionObj::startPrediction(Intersection* currentIntersection, in
 	for(int i = 0; i < this->probabilitySize; i++) { sum += this->probabilities[i]; }
 	for(int i = 0; i < this->probabilitySize; i++) { this->probabilities[i] /= sum; }
 
-	this->predictedRoute = predictPrivate(NULL);
 	this->currentIntersection = currentIntersection;
+	this->predictedRoute = predictPrivate(NULL);
 	return createRouteConditions(currentCondition);
 }
 
 Route* RoutePredictionObj::predict(Link* linkTaken) {
 }
 
-void RoutePredictionObj::updateStates(Link* linkTaken) {
+void RoutePredictionObj::updateStates(Link* chosenLink) {
+
+	// get next links
+	Link* nextLinks = this->city->getNextLinks(chosenLink);
+
+	// generate new data structures
+	GenericMap<int, pair<Link*,Goal*>*> newStates;
+	int newProbabilitySize = sizeof(*nextLinks)/sizeof(Link)*this->goals.getSize();
+	double* newProbabilities = new double[newProbabilitySize];
+
+	// generate reused fields
+	int* hash;
+	Link* li;
+	Goal* gi, gj;
+	double pSi, pGl, pLs, minProbability;
+	pair<Link*, Goal*>* sj;
+	int counter = 0;
+
+	// calculate new states and probabilities
+	for(int i = 0; i < sizeof(*nextLinks)/sizeof(Link); i++)
+	{
+		this->goals.initializeCounter();
+		getNextState(hash, gi);
+		li = &nextLinks[i];
+
+		while((*hash) != -1)
+		{
+			pSi = 0;
+			for(int j = 0; j < this->states.getSize(); j++)
+			{
+				sj = this->states.getEntry(j);
+				if(sj->first->isEqual(li))
+				{
+					gj = sj->second;
+					minProbability = this->minInitialProbability / this->goals.getSize();
+					pGl = this->goalToLink.probabilityOfGoalGivenLink(li, gi, 0);
+					pLs = this->linkToState.getProbability(li, chosenLink, gj, false);
+					pSi += max(minProbability,this->probabilities[j])*max(minProbability,pLs)*max(minProbability,pGl);
+				}
+			}
+			pair<Link*, Goal*> si (&nextLinks[i], gi);
+			newStates.addEntry(counter, &si);
+			newProbabilities[counter] = pSi;
+			getNextState(hash, gi);
+		}
+	}
+
+	// normalize probabilities
+	int sum = 0;
+	for(int i = 0; i < newProbabilitySize; i++) { sum += newProbabilities[i]; }
+	for(int i = 0; i < newProbabilitySize; i++) { newProbabilities[i] /= sum; }
+
+	// update probabilities and states
+	free(this->probabilities);
+	free(&this->probabilitySize);
+	free(&this->states);
+
+	this->probabilities = newProbabilities;
+	this->probabilitySize = newProbabilitySize;
+	this->states = newStates;
 }
 
 Route* RoutePredictionObj::predictPrivate(Route* currentRoute) {
@@ -111,15 +176,12 @@ Route* RoutePredictionObj::predictPrivate(Route* currentRoute) {
 
 	// get state with highest probability and add it to route
 	pair<Link*, Goal*> *nextState = this->states.getEntry(nextStateIndex);
-	Route* route;
-	if(currentRoute != NULL)
-	{
-		route = currentRoute;
-	}
-	(*route).addlink((*nextState).first);
-	if((*(*nextState).first).isEqual(this->link.finalLink()))
-	{
+	(*currentRoute).addlink(nextState->first);
 
+	if(!(*nextState->first).isEqual(this->link.finalLink()))
+	{
+		updateStates(nextState->first);
+		return predictPrivate(currentRoute);
 	}
 }
 

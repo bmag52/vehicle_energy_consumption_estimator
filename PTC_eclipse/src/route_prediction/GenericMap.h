@@ -25,8 +25,8 @@ public:
 	GenericMap();
 	GenericMap(GenericMap& other);
 	void initializeCounter();
-	GenericEntry<K,V> nextEntry();
-	GenericEntry<K,V> getMinEntry();
+	GenericEntry<K,V>* nextEntry();
+	GenericEntry<K,V>* getMinEntry();
 	bool hashInMap(K key);
 	V getEntry(K key);
 	typename std::map<K,V>::iterator iterator();
@@ -60,17 +60,17 @@ void GenericMap<K, V>::initializeCounter() {
 }
 
 template<class K, class V>
-GenericEntry<K, V> GenericMap<K, V>::nextEntry() {
+GenericEntry<K,V>* GenericMap<K, V>::nextEntry() {
 	if (this->iter == this->map.end()) {
 		this->iter = this->map.begin();
 	}
-	GenericEntry<K,V> entry = GenericEntry<K,V>(iter->first, iter->second);
+	GenericEntry<K,V> entry = GenericEntry<K,V>(this->iter->first,this->iter->second);
 	this->iter++;
-	return entry;
+	return &entry;
 }
 
 template<class K, class V>
-GenericEntry<K, V> GenericMap<K, V>::getMinEntry() {
+GenericEntry<K, V>* GenericMap<K, V>::getMinEntry() {
 	typename std::map<K,V>::iterator iter = this->map.begin();
 	V min = NULL;
 	if (iter != this->map.end()) {
@@ -82,7 +82,7 @@ GenericEntry<K, V> GenericMap<K, V>::getMinEntry() {
 			}
 		}
 	}
-	return min;
+	return &min;
 }
 
 template<class K, class V>

@@ -79,7 +79,7 @@ Route* RoutePredictionObj::startPrediction(Intersection* currentIntersection, in
 		getNextState(hash, goal);
 	}
 
-	// normalize probabilites
+	// normalize probabilities
 	int sum = 0;
 	for(int i = 0; i < this->probabilitySize; i++) { sum += this->probabilities[i]; }
 	for(int i = 0; i < this->probabilitySize; i++) { this->probabilities[i] /= sum; }
@@ -195,6 +195,31 @@ Route* RoutePredictionObj::createRouteIntersection(Intersection* intersection, i
 }
 
 void RoutePredictionObj::parseRoute(Route* route) {
+	int goalHash = route->getGoalHash();
+	if(this->goals.hashInMap(goalHash))
+	{
+		this->goals.getEntry(goalHash)->incrementNumSeen();
+	} else {
+		route->getGoalPtr()->setNumSeen(1);
+		this->goals.addEntry(goalHash, route->getGoalPtr());
+	}
+
+	for(int i = 0; i < route->getLinkSize(); i++)
+	{
+		Link* li; Link* lj;
+		lj = &route->getLinksPtr()[i];
+
+		if(i == route->getLinkSize())
+		{
+			li = this->link.finalLink();
+		} else {
+			li = &route->getLinksPtr()[i+1];
+		}
+
+		this->linkToState.incrementTransition(lj, route->getGoalPtr(), li);
+		this->goalToLink.linkTraversed(lj, route->getGoalPtr());
+		this->links.addEntry(lj->getHash(), lj);
+	}
 }
 
 RoutePredictionObj::~RoutePredictionObj() {

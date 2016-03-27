@@ -10,14 +10,14 @@
 namespace DriverPrediction {
 
 Link::Link() {
-	link_number = 0;
-	link_direction = 0;
+	this->link_number = 0;
+	this->link_direction = 0;
 
 }
 
 Link::Link(int direction, int linkNumber) {
-	link_direction = direction;
-	link_number = linkNumber;
+	this->link_direction = direction;
+	this->link_number = linkNumber;
 }
 
 Link::~Link() {
@@ -29,13 +29,8 @@ Link* Link::copy(int direction, int linkNumber) {
 	return &link;
 }
 
-
-int Link::getHash(Link* link) {
-	return 2 * link_direction + link_number;
-}
-
 bool Link::isEqual(Link* other) {
-	if ((*other).link_direction == link_direction && (*other).link_number == link_number) {
+	if ((*other).link_direction == this->link_direction && (*other).link_number == this->link_number) {
 		return true;
 	} else {
 		return false;
@@ -43,17 +38,21 @@ bool Link::isEqual(Link* other) {
 }
 
 int Link::getNumber() {
-	return link_number;
+	return this->link_number;
 }
 
 int Link::getDirection() {
-	return link_direction;
+	return this->link_direction;
 }
 
 //Takes in hash number and returns new link corresponding to hash
 Link* Link::newLinkFromHash(int hash) {
 	Link link(hash % 2, hash / 2);
 	return &link;
+}
+
+int Link::getHash() {
+	return 2 * this->link_direction + this->link_number;
 }
 
 // %represents the link at the end of a route, when the vehicle stops

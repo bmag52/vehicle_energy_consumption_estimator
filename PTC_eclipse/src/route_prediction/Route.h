@@ -15,13 +15,17 @@ namespace RoutePrediction {
 class Route {
 private:
 	Link* links;
-	Goal goal;
+	Goal* goal;
 	int counter;
 public:
 	Route();
 	Route(Link* links, Goal* goal);
 	void addlink(Link* link);
 	bool isequal(Route other);
+	int getGoalHash();
+	int getLinkSize();
+	Goal* getGoalPtr();
+	Link* getLinksPtr();
 	Route copy();
 	Link nextlink();
 };

@@ -19,7 +19,7 @@ Route::Route() {
 
 Route::Route(Link* links, Goal* goal) {
 	this->links = links;
-	this->goal = (*goal);
+	this->goal = goal;
 }
 
 // adds new link to end of route
@@ -59,6 +59,22 @@ Route Route::copy() {
 //		links[i] = this->links[i].copy(direction, number);
 //	}
 //	return Route(links, goal);
+}
+
+int Route::getGoalHash() {
+	return (*this->goal).getHash();
+}
+
+Goal* Route::getGoalPtr() {
+	return this->goal;
+}
+
+int Route::getLinkSize() {
+	return sizeof(*this->links)/sizeof(Link);
+}
+
+Link* Route::getLinksPtr() {
+	return this->links;
 }
 
 //returns next link in the iterator, returns 0 if there are no more links left

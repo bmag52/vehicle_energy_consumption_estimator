@@ -27,7 +27,7 @@ void link_UT() {
     //assert(secondLink.getDirection() == 0 && secondLink.getNumber() == 0);
     
     //Testing get_hash(Link) function
-    assert(secondLink.getHash(&secondLink) == 2 * secondLink.getDirection() + secondLink.getNumber());
+    assert(secondLink.getHash() == 2 * secondLink.getDirection() + secondLink.getNumber());
     
     Link thirdLink(10, 20);
     Link fourthLink(10, 30);

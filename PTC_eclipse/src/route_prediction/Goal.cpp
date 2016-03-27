@@ -69,6 +69,14 @@ Goal::Goal(int destination, int* bin) {
 	this->size = sizeof(bin) / sizeof(int);
 }
 
+void Goal::incrementNumSeen() {
+	this->numSeen++;
+}
+
+void Goal::setNumSeen(int numSeen) {
+	this->numSeen = numSeen;
+}
+
 Goal::~Goal() {
 }
 

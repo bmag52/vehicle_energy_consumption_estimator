@@ -28,6 +28,8 @@ public:
 	bool isEqual(Goal * other);
 	size_t getHash() const;
 	int getNumSeen();
+	void setNumSeen(int numSeen);
+	void incrementNumSeen();
 	virtual ~Goal();
 };
 

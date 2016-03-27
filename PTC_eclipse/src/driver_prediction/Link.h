@@ -18,7 +18,7 @@ public:
 	Link(int, int);
 	virtual ~Link();
 	Link* copy(int, int);
-	int getHash(Link* other);
+	int getHash();
 	bool isEqual(Link* other);
 	int getNumber();
 	int getDirection();

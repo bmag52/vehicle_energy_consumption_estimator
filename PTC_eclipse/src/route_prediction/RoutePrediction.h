@@ -27,7 +27,7 @@ class RoutePredictionObj {
 private:
 	LinkToStateMap linkToState;
 	GoalToLinkMap goalToLink;
-	GenericMap<int, int> links;
+	GenericMap<int, Link*> links;
 	GenericMap<int, Goal*> goals;
 	GenericMap<int, pair<Link*,Goal*>*> states;
 	Route* predictedRoute;

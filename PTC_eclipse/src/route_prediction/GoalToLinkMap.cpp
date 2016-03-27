@@ -15,7 +15,7 @@ GoalToLinkMap::GoalToLinkMap() {
 GoalToLinkMap::GoalToLinkMap(GoalToLinkMap& other) {
 }
 
-int GoalToLinkMap::linkTraversed(Link link, Goal goal) {
+int GoalToLinkMap::linkTraversed(Link* link, Goal* goal) {
 }
 
 double GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal *goal, bool isSimilar) {

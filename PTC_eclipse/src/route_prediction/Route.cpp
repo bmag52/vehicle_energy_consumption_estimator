@@ -20,10 +20,14 @@ Route::Route() {
 Route::Route(Link* links, Goal* goal) {
 	this->links = links;
 	this->goal = goal;
+	this->counter = 0;
+	Link error(-1, -1);
+	this->error = &error;
 }
 
 // adds new link to end of route
 void Route::addlink(Link* link) {
+	// todo addlink
 //	int length = sizeof(this->links) / sizeof(Link);
 //	Link temp[] = new Link[length];
 //	for(int i = 0; i < length; i++) {
@@ -35,6 +39,7 @@ void Route::addlink(Link* link) {
 
 // checks if the route is equal to the route passed in
 bool Route::isequal(Route other) {
+	// todo isequal
 //	int mylength = sizeof(this->links) / sizeof(Link);
 //	int otherlength = sizeof(other.links) / sizeof(Link);
 //	if(!(mylength == otherlength) || !((this->goal).isequal(other.goal))) {
@@ -50,6 +55,7 @@ bool Route::isequal(Route other) {
 
 //returns copy of current route
 Route Route::copy() {
+	// TODO copy
 //	Goal goal = Goal(this->goal.destination, this->goal.bins, this->goal.size);	//is this the right? Goal variables are all private, but not sure if there's a better way
 //	int length = sizeof(this->links) / sizeof(Link);
 //	links = Link[length];
@@ -70,11 +76,50 @@ Goal* Route::getGoalPtr() {
 }
 
 int Route::getLinkSize() {
-	return sizeof(*this->links)/sizeof(Link);
+	return this->counter;
 }
 
 Link* Route::getLinksPtr() {
 	return this->links;
+}
+
+void Route::setToIntersection(Intersection* other) {
+	this->intersection = other;
+	this->goalIsIntersection = true;
+}
+
+bool Route::isIntersection() {
+	return this->goalIsIntersection;
+}
+
+Intersection* Route::getIntersectionPtr() {
+	return this->intersection;
+}
+
+Link* Route::getLastLinkPtr() {
+	return &this->links[counter];
+}
+
+bool Route::isEmpty() {
+	return this->counter == 0;
+}
+
+Link* Route::getEntry(int index) {
+	if(index > this->counter)
+	{
+		return this->error;
+	}
+	return &this->links[index];
+}
+
+void Route::removeFirstLink() {
+	Link * newLinks = new Link[this->counter - 1];
+	for(int i = 0; i < this->counter - 1; i++)
+	{
+		newLinks[i] = this->links[i+1];
+	}
+	free(this->links);
+	this->links = newLinks;
 }
 
 //returns next link in the iterator, returns 0 if there are no more links left

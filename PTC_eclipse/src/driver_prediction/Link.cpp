@@ -61,11 +61,12 @@ Link* Link::finalLink() {
 	return &link;
 }
 
-/* Link Link::link_from_road(City::Road road, City::Intersection intersection) {
-	int link_num = road.road_id;
-	road.end_node = intersection.number;
-	int link_dir = road.end_node;
-	return Link(link_dir, link_num);
-}*/
+//Link Link::link_from_road(City::Road road, City::Intersection intersection) {
+// TODO linkFromRoad
+//	int link_num = road.road_id;
+//	road.end_node = intersection.number;
+//	int link_dir = road.end_node;
+//	return Link(link_dir, link_num);
+//}
 
 } /* namespace DriverPrediction */

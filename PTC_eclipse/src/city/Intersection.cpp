@@ -22,7 +22,7 @@ Intersection::Intersection(Road * roadInput, double lat, double lon, int elev, i
 Intersection::~Intersection() {
 }
 
-void Intersection::getOutgoingLinks(Link* link) {
+Link* Intersection::getOutgoingLinks() {
 	// TODO getOutgoingLinks
 }
 

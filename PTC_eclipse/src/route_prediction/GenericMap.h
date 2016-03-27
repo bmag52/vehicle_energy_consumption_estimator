@@ -24,6 +24,7 @@ private:
 public:
 	GenericMap();
 	GenericMap(GenericMap& other);
+	GenericMap* copy();
 	void initializeCounter();
 	GenericEntry<K,V>* nextEntry();
 	GenericEntry<K,V>* getMinEntry();
@@ -51,6 +52,11 @@ GenericMap<K, V>::GenericMap(GenericMap& other) {
 	this->iter = map.end();
 	this->hashCounter = 0;
 	this->arrayCounter = 0;
+}
+
+template<class K, class V>
+GenericMap<K, V>* GenericMap<K, V>::copy() {
+	// TODO copy();
 }
 
 template<class K, class V>

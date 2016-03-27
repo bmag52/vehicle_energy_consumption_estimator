@@ -14,17 +14,20 @@
 
 #include "Intersection.h"
 #include "Road.h"
+#include "../driver_prediction/Link.h"
+
+using namespace DriverPrediction;
 
 namespace City {
 
 class CityObj {
 public:
 	Intersection* intersections;
-	int datetime_created;
-	std::string road_file_name;
-	std:: string intersection_file_name;
-	int interval_distance = 1;
-	std::map<int,int> intersection_num_map;
+	int dateTimeCreated;
+	std::string roadFileName;
+	std:: string intersectionFileName;
+	int intervalDistance = 1;
+	std::map<int,int> intersectionNumMap;
 	/**
 	%maps the number of a intersection to the index in intersections
         %if an index in intersection_num_map is 0, then there is no
@@ -38,6 +41,7 @@ public:
 	int getRoadListSize();
 	int getInstersectionListSize();
 	Link* getNextLinks(Link* link);
+	Intersection* getIntersectionFromLink(Link* link);
 	virtual ~CityObj();
 };
 

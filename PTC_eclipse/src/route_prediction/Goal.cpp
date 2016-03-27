@@ -77,6 +77,10 @@ void Goal::setNumSeen(int numSeen) {
 	this->numSeen = numSeen;
 }
 
+int* Goal::getBins() {
+	return this->bins;
+}
+
 Goal::~Goal() {
 }
 

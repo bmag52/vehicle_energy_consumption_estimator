@@ -4,13 +4,6 @@
  *  Created on: Mar 6, 2016
  *      Author: vagrant
  */
-#include "Link.h"
-#include "../route_prediction/Goal.h"
-
-
-namespace DriverPrediction {
-
-using namespace InnovationModel;
 
 #include "Goal.h"
 #include "../driver_prediction/Link.h"
@@ -26,21 +19,14 @@ private:
 	int counter;
 public:
 	Route();
-<<<<<<< HEAD
-	Route(Link links[], Goal& goal);
-	void addlink(Link link);
-	bool isequal(Route& other);
-=======
 	Route(Link* links, Goal* goal);
 	void addlink(Link* link);
-	bool isequal(Route other);
+	bool isEqual(Route other);
 	int getGoalHash();
 	int getLinkSize();
 	Goal* getGoalPtr();
 	Link* getLinksPtr();
->>>>>>> master
 	Route copy();
-	void initiateiterator();
 	Link nextlink();
 };
 

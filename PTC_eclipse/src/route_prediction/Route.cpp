@@ -17,68 +17,48 @@ Route::Route() {
 	this->counter = 0;
 }
 
-<<<<<<< HEAD
-Route::Route(Link links[], Goal& goal) {
-	this->counter = 0;
-=======
 Route::Route(Link* links, Goal* goal) {
->>>>>>> master
 	this->links = links;
 	this->goal = goal;
 }
 
 // adds new link to end of route
-<<<<<<< HEAD
-void Route::addlink(Link link) {
-	int length = sizeof(this->links) / sizeof(Link);
-	Link temp[] = new Link[length];
-	for(int i = 0; i < length; i++) {
-		temp[i] = links[i];
-	}
-	temp[length] = link;
-	this->links = temp;
-=======
 void Route::addlink(Link* link) {
-//	int length = sizeof(this->links) / sizeof(Link);
-//	Link temp[] = new Link[length];
-//	for(int i = 0; i < length; i++) {
-//		temp[i] = links[i];
-//	}
-//	temp[length] = link;
-//	this->links = temp;
->>>>>>> master
+	int length = getLinkSize();
+	Link temp[] = new Link[length + 1];
+	for(int i = 0; i < length; i++) {
+		temp[i] = this->links[i];
+	}
+	temp[length] = *link;
 }
 
 // checks if the route is equal to the route passed in
-bool Route::isequal(Route& other) {
-	int mylength = sizeof(this->links) / sizeof(Link);
-	int otherlength = sizeof(other.links) / sizeof(Link);
-	if(!(mylength == otherlength) || !((this->goal).isequal(other.goal))) {
+bool Route::isEqual(Route other) {
+	int myLength = getLinkSize();
+	int otherLength = other.getLinkSize();
+	if((*(this->goal)).isEqual(other.goal) && myLength == otherLength) {
+		for(int i = 0; i < myLength; i++) {
+			if(!(this->links[i].isEqual(other.links[i]))) {
+				return false;
+			}
+		}
+		return true;
+	} else {
 		return false;
 	}
-	for(int i = 0; i < mylength; i++) {
-		if(!(this->links[i].isEqual(other.links[i]))) {
-			return false;
-		}
-	}
-	return true;
 }
 
 //returns copy of current route
 Route Route::copy() {
-	Goal goal = Goal(this->goal.destination, this->goal.bins, this->goal.size);
-	int length = sizeof(this->links) / sizeof(Link);
-	links = Link[length];
-	for(int i = 0; i < length; i++) {
-		int number = this->links[i].getNumber();
-		int direction = this->links[i].getDirection();
-		links[i] = this->links[i].copy(direction, number);
-	}
-	return Route(links, goal);
-}
-
-void initiateiterator() {
-	this->counter = 0;
+//	Goal goal = Goal(this->goal.destination, this->goal.bins, this->goal.size);	//is this the right? Goal variables are all private, but not sure if there's a better way
+//	int length = sizeof(this->links) / sizeof(Link);
+//	links = Link[length];
+//	for(int i = 0; i < length; i++) {
+//		int number = this->links[i].getNumber();
+//		int direction = this->links[i].getDirection();
+//		links[i] = this->links[i].copy(direction, number);
+//	}
+//	return Route(links, goal);
 }
 
 int Route::getGoalHash() {
@@ -110,5 +90,3 @@ Link Route::nextlink() {
 }
 
 }
-
-

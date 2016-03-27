@@ -10,10 +10,12 @@
 
 namespace RoutePrediction {
 
-int LinkToStateMap::incrementTransition(Link link, Goal goal, Link link1) {
+int LinkToStateMap::incrementTransition(Link* link1, Goal* goal, Link* link2) {
+	// TODO incrememntTransistion
 }
 
-GenericEntry<double, double> LinkToStateMap::getProbability(Link link, Link link1, Goal goal, bool bool1) {
+double LinkToStateMap::getProbability(Link* &link1, Link* &link2, Goal& goal, bool isSimilar) {
+	// TODO getProbability
 }
 
 LinkToStateMap::LinkToStateMap(){

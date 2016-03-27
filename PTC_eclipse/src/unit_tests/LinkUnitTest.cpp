@@ -27,14 +27,14 @@ void link_UT() {
     //assert(secondLink.getDirection() == 0 && secondLink.getNumber() == 0);
     
     //Testing get_hash(Link) function
-    assert(secondLink.get_hash(secondLink) == 2 * secondLink.getDirection() + secondLink.getNumber());
+    assert(secondLink.getHash() == 2 * secondLink.getDirection() + secondLink.getNumber());
     
     Link thirdLink(10, 20);
     Link fourthLink(10, 30);
     
-    assert(secondLink.isEqual(thirdLink));
+    assert(secondLink.isEqual(&thirdLink));
     
-    Link final = thirdLink.final_link();
+    Link final = *(thirdLink.finalLink());
     assert(final.getNumber() == 0);
     assert(final.getDirection() == 0);
 

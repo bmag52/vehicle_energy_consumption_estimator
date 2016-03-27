@@ -17,13 +17,18 @@ Route::Route() {
 	this->counter = 0;
 }
 
+<<<<<<< HEAD
 Route::Route(Link links[], Goal& goal) {
 	this->counter = 0;
+=======
+Route::Route(Link* links, Goal* goal) {
+>>>>>>> master
 	this->links = links;
 	this->goal = goal;
 }
 
 // adds new link to end of route
+<<<<<<< HEAD
 void Route::addlink(Link link) {
 	int length = sizeof(this->links) / sizeof(Link);
 	Link temp[] = new Link[length];
@@ -32,6 +37,16 @@ void Route::addlink(Link link) {
 	}
 	temp[length] = link;
 	this->links = temp;
+=======
+void Route::addlink(Link* link) {
+//	int length = sizeof(this->links) / sizeof(Link);
+//	Link temp[] = new Link[length];
+//	for(int i = 0; i < length; i++) {
+//		temp[i] = links[i];
+//	}
+//	temp[length] = link;
+//	this->links = temp;
+>>>>>>> master
 }
 
 // checks if the route is equal to the route passed in
@@ -66,6 +81,22 @@ void initiateiterator() {
 	this->counter = 0;
 }
 
+int Route::getGoalHash() {
+	return (*this->goal).getHash();
+}
+
+Goal* Route::getGoalPtr() {
+	return this->goal;
+}
+
+int Route::getLinkSize() {
+	return sizeof(*this->links)/sizeof(Link);
+}
+
+Link* Route::getLinksPtr() {
+	return this->links;
+}
+
 //returns next link in the iterator, returns 0 if there are no more links left
 Link Route::nextlink() {
 	int length = sizeof(this->links) / sizeof(Link);
@@ -79,3 +110,5 @@ Link Route::nextlink() {
 }
 
 }
+
+

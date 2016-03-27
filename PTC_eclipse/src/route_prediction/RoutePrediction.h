@@ -15,37 +15,43 @@
 #include "../city/City.h"
 #include "Goal.h"
 #include "../city/Intersection.h"
+#include "GenericMap.h"
 
 using namespace DriverPrediction;
 using namespace City;
+using namespace std;
 
 namespace RoutePrediction {
 
 class RoutePredictionObj {
 private:
 	LinkToStateMap linkToState;
-	GoalToLinkMap goalToState;
-	GenericMap<int, int> links;
-	GenericMap<int, int> goals;
-	GenericMap<int, int> states;
-	Route predictedRoute;
-	Route currentRoute;
+	GoalToLinkMap goalToLink;
+	GenericMap<int, Link*> links;
+	GenericMap<int, Goal*> goals;
+	GenericMap<int, pair<Link*,Goal*>*> states;
+	Route* predictedRoute;
+	Intersection* currentIntersection;
 	double *probabilities;
 	CityObj *city;
 	Goal predictedGoal;
-	int minInitialProbability;
+	double minInitialProbability;
+	int probabilitySize;
+	Route* unknownRoute;
+	Link link;
 
-	void updateStates(Link* linkTaken);
+	void updateStates(Link* link);
+	void getNextState(int* hash, Goal* goal);
 	Route* predictPrivate(Route* currentRoute);
 	Route* createRoute();
-	Route* createRouteConditions(int time, int day, int loc);
-	Route* createRouteIntersection(Intersection* intersection, int time, int day, int loc);
+	Route* createRouteConditions(int* currentCondition);
+	Route* createRouteIntersection(Intersection* intersection, int* currentCondition);
 
 public:
 	RoutePredictionObj();
-	RoutePredictionObj(CityObj * city);
-	Route* startPrediction(Intersection * currentIntersection, int currentCondition);
-	Route* predict(Link * linkTaken);
+	RoutePredictionObj(CityObj* city);
+	Route* startPrediction(Intersection* currentIntersection, int* currentCondition);
+	Route* predict(Link* linkTaken);
 	void parseRoute(Route* route);
 	~RoutePredictionObj();
 };

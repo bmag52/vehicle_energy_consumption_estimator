@@ -37,6 +37,7 @@ public:
 	CityObj();
 	int getRoadListSize();
 	int getInstersectionListSize();
+	Link* getNextLinks(Link* link);
 	virtual ~CityObj();
 };
 

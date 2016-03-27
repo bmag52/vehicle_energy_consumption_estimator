@@ -21,14 +21,24 @@ namespace RoutePrediction {
 
 class Route {
 private:
-	Link links[];
-	Goal goal;
+	Link* links;
+	Goal* goal;
 	int counter;
 public:
 	Route();
+<<<<<<< HEAD
 	Route(Link links[], Goal& goal);
 	void addlink(Link link);
 	bool isequal(Route& other);
+=======
+	Route(Link* links, Goal* goal);
+	void addlink(Link* link);
+	bool isequal(Route other);
+	int getGoalHash();
+	int getLinkSize();
+	Goal* getGoalPtr();
+	Link* getLinksPtr();
+>>>>>>> master
 	Route copy();
 	void initiateiterator();
 	Link nextlink();

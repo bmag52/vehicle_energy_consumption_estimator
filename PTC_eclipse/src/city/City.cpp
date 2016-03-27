@@ -18,6 +18,11 @@ int CityObj::getRoadListSize() {
 }
 
 int CityObj::getInstersectionListSize() {
+	// TODO getIntersectionListSize()
+}
+
+Link* CityObj::getNextLinks(Link* link) {
+	// TODO getNextLinks
 }
 
 CityObj::~CityObj() {

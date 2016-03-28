@@ -31,18 +31,20 @@ private:
 	GenericMap<int, Goal*> goals;
 	GenericMap<int, pair<Link*,Goal*>*> states;
 	Route* predictedRoute;
-	Intersection* currentIntersection;
+	Route* currentRoute;
 	double *probabilities;
 	CityObj *city;
 	Goal predictedGoal;
 	double minInitialProbability;
 	int probabilitySize;
 	Route* unknownRoute;
+	Route* overRoute;
 	Link link;
 
-	void updateStates(Link* link);
+	void updateStates(Link* chosenLink, GenericMap<int, pair<Link*,Goal*>*>* oldStates, double* oldProbabilities);
 	void getNextState(int* hash, Goal* goal);
-	Route* predictPrivate(Route* currentRoute);
+	double* copyProbs();
+	Route* predictPrivate(Route* currentRoute, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities);
 	Route* createRoute();
 	Route* createRouteConditions(int* currentCondition);
 	Route* createRouteIntersection(Intersection* intersection, int* currentCondition);

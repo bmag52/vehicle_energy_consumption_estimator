@@ -22,7 +22,7 @@ int main() {
 
 	// unit test function calls here
 	// TODO make a function that calls unit tests
-	link_UT();
+	// link_UT();
 
 	// speed_prediction muck around
 	SpeedPredictionObj sp;
@@ -46,7 +46,7 @@ int main() {
 	std::cout << spd_pred << std::endl;
 
 	// route_prediction muck around
-	GenericMap<int, int> test;
+	// GenericMap<int, int> test;
 
 	return 0;
 }

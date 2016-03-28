@@ -27,7 +27,7 @@ public:
 	Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum);
 	Intersection();
 	virtual ~Intersection();
-	void getOutgoingLinks(Link * link);
+	Link* getOutgoingLinks();
 };
 
 } /* namespace City */

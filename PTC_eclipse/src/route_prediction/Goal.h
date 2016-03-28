@@ -30,6 +30,7 @@ public:
 	int getNumSeen();
 	void setNumSeen(int numSeen);
 	void incrementNumSeen();
+	int* getBins();
 	virtual ~Goal();
 };
 

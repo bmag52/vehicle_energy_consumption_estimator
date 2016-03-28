@@ -6,6 +6,9 @@
  */
 
 #include "City.h"
+#include "../driver_prediction/Link.h"
+
+using namespace DriverPrediction;
 
 namespace City {
 
@@ -25,8 +28,20 @@ Link* CityObj::getNextLinks(Link* link) {
 	// TODO getNextLinks
 }
 
+Intersection* CityObj::getIntersectionFromLink(Link* link) {
+	// TODO getIntersectionFromLInk
+}
+
 CityObj::~CityObj() {
 	// TODO Auto-generated destructor stub
+}
+
+Link* CityObj::linkFromRoad(Road* road, Intersection* intersection) {
+	int linkNum = road->road_id;
+	road->end_node = intersection->number;
+	int linkDir = road->end_node;
+	Link newLink(linkDir, linkNum);
+	return &newLink;
 }
 
 } /* namespace City */

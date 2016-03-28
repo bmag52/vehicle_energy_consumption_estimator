@@ -27,44 +27,41 @@ Route::Route(Link* links, Goal* goal) {
 
 // adds new link to end of route
 void Route::addlink(Link* link) {
-	// todo addlink
-//	int length = sizeof(this->links) / sizeof(Link);
-//	Link temp[] = new Link[length];
-//	for(int i = 0; i < length; i++) {
-//		temp[i] = links[i];
-//	}
-//	temp[length] = link;
-//	this->links = temp;
+	this->counter++;
+	Link temp[] = new Link[counter];
+	for(int i = 0; i < counter - 1; i++) {
+		temp[i] = this->links[i];
+	}
+	temp[counter - 1] = *link;
 }
 
 // checks if the route is equal to the route passed in
 bool Route::isequal(Route other) {
-	// todo isequal
-//	int mylength = sizeof(this->links) / sizeof(Link);
-//	int otherlength = sizeof(other.links) / sizeof(Link);
-//	if(!(mylength == otherlength) || !((this->goal).isequal(other.goal))) {
-//		return false;
-//	}
-//	for(int i = 0; i < mylength; i++) {
-//		if(!(this->links[i].isEqual(other.links[i]))) {
-//			return false;
-//		}
-//	}
-//	return true;
+	int myLength = getLinkSize();
+	int otherLength = other.getLinkSize();
+	if((*(this->goal)).isEqual(other.goal) && myLength == otherLength) {
+		for(int i = 0; i < myLength; i++) {
+			if(!(this->links[i].isEqual(other.links[i]))) {
+				return false;
+			}
+		}
+		return true;
+	} else {
+		return false;
+	}
 }
 
 //returns copy of current route
 Route Route::copy() {
-	// TODO copy
-//	Goal goal = Goal(this->goal.destination, this->goal.bins, this->goal.size);	//is this the right? Goal variables are all private, but not sure if there's a better way
-//	int length = sizeof(this->links) / sizeof(Link);
-//	links = Link[length];
-//	for(int i = 0; i < length; i++) {
-//		int number = this->links[i].getNumber();
-//		int direction = this->links[i].getDirection();
-//		links[i] = this->links[i].copy(direction, number);
-//	}
-//	return Route(links, goal);
+	Goal goal = new Goal(this->goal);
+	Link newLinks[this->counter];
+	int length = sizeof(newLinks);
+	for(int i = 0; i < length; i++) {
+		int number = this->links[i].getNumber();
+		int direction = this->links[i].getDirection();
+		newLinks[i] = new Link(direction, number);
+	}
+	return new Route(&newLinks, &goal);
 }
 
 int Route::getGoalHash() {

@@ -45,7 +45,6 @@ int Link::getDirection() {
 	return this->link_direction;
 }
 
-//Takes in hash number and returns new link corresponding to hash
 Link* Link::newLinkFromHash(int hash) {
 	Link link(hash % 2, hash / 2);
 	return &link;
@@ -60,13 +59,5 @@ Link* Link::finalLink() {
 	Link link(0, 0);
 	return &link;
 }
-
-//Link Link::link_from_road(City::Road road, City::Intersection intersection) {
-// TODO linkFromRoad
-//	int link_num = road.road_id;
-//	road.end_node = intersection.number;
-//	int link_dir = road.end_node;
-//	return Link(link_dir, link_num);
-//}
 
 } /* namespace DriverPrediction */

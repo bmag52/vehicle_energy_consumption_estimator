@@ -8,6 +8,8 @@
 #ifndef LINK_H_
 #define LINK_H_
 
+//#include "../city/City.h"
+
 namespace DriverPrediction {
 
 class Link {
@@ -25,8 +27,6 @@ public:
 //	static std::string convertToBinary(int);
 	static Link* newLinkFromHash(int);
 	static Link* finalLink();
-//	static Link link_from_road(City::Road, City::Intersection);
-//	static Link link_from_road(road, current_intersection);
 
 };
 

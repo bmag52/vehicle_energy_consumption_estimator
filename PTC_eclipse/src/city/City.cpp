@@ -36,4 +36,12 @@ CityObj::~CityObj() {
 	// TODO Auto-generated destructor stub
 }
 
+Link* CityObj::linkFromRoad(Road* road, Intersection* intersection) {
+	int linkNum = road->road_id;
+	road->end_node = intersection->number;
+	int linkDir = road->end_node;
+	Link newLink(linkDir, linkNum);
+	return &newLink;
+}
+
 } /* namespace City */

@@ -17,17 +17,28 @@ using namespace DriverPrediction;
 namespace City {
 
 class Intersection {
-public:
+private:
 	Road* roads; //%array of roads that connect to this intersection
 //	IntersectionTypes interSectionType;
-	int elevation;
+	int roadCount;
 	int number;
+	double elevation;
 	double lat;
 	double lon;
+
+public:
 	Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum);
 	Intersection();
 	virtual ~Intersection();
+	void addRoad(Road* road, int roadDir);
 	Link* getOutgoingLinks();
+	int getNumber();
+	double getElevation();
+	double getLat();
+	double getLon();
+	Road* getRoads();
+	int* getAdjacentIntersectionNumbers();
+	int getNextIntersectionNumber(Road* road);
 };
 
 } /* namespace City */

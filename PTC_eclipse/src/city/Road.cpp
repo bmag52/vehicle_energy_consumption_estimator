@@ -9,19 +9,41 @@
 
 namespace City {
 
+Road::Road() {
+}
 
-//Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID) {
-//	elevation_data = elevationData;
-//	speed_limit_data = speedData;
-//	road_type = new RoadTypes(roadType);
-//	road_id = roadID;
-//	start_node = 0;
-//	end_node = 0;
-//
-//}
+Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID) {
+	this->elevationData = elevationData;
+	this->speedLimitData = speedData;
+//	this-> = new RoadTypes(roadType);
+	this->roadID = roadID;
+	this->startNumber = 0;
+	this->endNumber = 0;
+}
+
+void Road::setStartNumber(int intersectionNumber) {
+	this->startNumber = intersectionNumber;
+}
+
+int Road::getStartNumber() {
+	return this->startNumber;
+}
+
+void Road::setEndNumber(int intersectionNumber) {
+	this->endNumber = intersectionNumber;
+}
+
+int Road::getEndNumber() {
+	return this->endNumber;
+}
+
+int Road::getRoadID() {
+	return this->roadID;
+}
 
 Road::~Road() {
-
 }
 
 } /* namespace City */
+
+

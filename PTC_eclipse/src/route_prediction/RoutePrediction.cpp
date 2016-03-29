@@ -256,7 +256,7 @@ Route* RoutePredictionObj::createRouteConditions(int* currentConditions) {
 
 Route* RoutePredictionObj::createRouteIntersection(Intersection* intersection, int* currentConditions) {
 	free(&this->predictedGoal);
-	this->predictedGoal = Goal(intersection->number, currentConditions);
+	this->predictedGoal = Goal(intersection->getNumber(), currentConditions);
 	Route route(this->predictedRoute->getLinksPtr(), &this->predictedGoal);
 	return &route;
 }

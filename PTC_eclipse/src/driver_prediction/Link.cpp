@@ -54,7 +54,6 @@ int Link::getHash() {
 	return 2 * this->link_direction + this->link_number;
 }
 
-// %represents the link at the end of a route, when the vehicle stops
 Link* Link::finalLink() {
 	Link link(0, 0);
 	return &link;

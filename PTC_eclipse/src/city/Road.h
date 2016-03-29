@@ -8,18 +8,28 @@
 #ifndef ROAD_H_
 #define ROAD_H_
 
+#include <string>
+
 namespace City {
 
 class Road {
+private:
+	int* elevationData;
+	int* speedLimitData;
+	int startNumber;
+	int endNumber;
+//	RoadTypes roadType;
+	int roadID;
+
 public:
-	int* elevation_data;
-	int* speed_limit_data;
-	int start_node;
-	int end_node;
-//	RoadTypes road_type;
-	int road_id;
-//	Road(std::string, int*, int*, int);
+	Road();
+	Road(std::string roadType, int* elevationData, int* speedData, int roadID);
 	virtual ~Road();
+	void setStartNumber(int intersectionNumber);
+	int getStartNumber();
+	void setEndNumber(int intersectionNumber);
+	int getEndNumber();
+	int getRoadID();
 };
 
 } /* namespace City */

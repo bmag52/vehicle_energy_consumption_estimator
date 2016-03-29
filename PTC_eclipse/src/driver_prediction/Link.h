@@ -16,6 +16,7 @@ class Link {
 public:
 	int link_number;
 	int link_direction;
+
 	Link();
 	Link(int, int);
 	virtual ~Link();
@@ -24,12 +25,9 @@ public:
 	bool isEqual(Link* other);
 	int getNumber();
 	int getDirection();
-//	static std::string convertToBinary(int);
 	static Link* newLinkFromHash(int);
 	static Link* finalLink();
-
 };
-
 
 } /* namespace DriverPrediction */
 

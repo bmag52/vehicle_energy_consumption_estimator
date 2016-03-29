@@ -23,18 +23,18 @@ namespace City {
 class CityObj {
 public:
 	Intersection* intersections;
-	int dateTimeCreated;
 	std::string roadFileName;
 	std:: string intersectionFileName;
 	int intervalDistance = 1;
+	int dateTimeCreated;
 	std::map<int,int> intersectionNumMap;
-	Road* road_list;
-	CityObj(Intersection*, std::string, std::string, int, std::map<int, int>);
+	Road* roadList;
+
 	CityObj();
+	CityObj(Intersection*, std::string, std::string, int, std::map<int, int>);
 	int getRoadListSize();
 	int getInstersectionListSize();
 	Link* getNextLinks(Link* link);
-	Link* linkFromRoad(Road* road, Intersection* intersection);
 	Intersection* getIntersectionFromLink(Link* link);
 	virtual ~CityObj();
 };

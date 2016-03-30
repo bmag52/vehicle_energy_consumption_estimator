@@ -6,10 +6,6 @@
  */
 
 #include "Route.h"
-#include "Goal.h"
-#include "../driver_prediction/Link.h"
-
-
 
 namespace PredictivePowertrain {
 

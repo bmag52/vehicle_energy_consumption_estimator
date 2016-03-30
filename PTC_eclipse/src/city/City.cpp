@@ -6,9 +6,6 @@
  */
 
 #include "City.h"
-#include "../driver_prediction/Link.h"
-
-
 
 namespace PredictivePowertrain {
 
@@ -25,7 +22,7 @@ int CityObj::getInstersectionListSize() {
 }
 
 Link* CityObj::getNextLinks(Link* link) {
-	// TODO getNextLinks
+
 }
 
 Intersection* CityObj::getIntersectionFromLink(Link* link) {

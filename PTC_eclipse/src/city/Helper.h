@@ -8,14 +8,13 @@
 #ifndef CITY_HELPER_H_
 #define CITY_HELPER_H_
 
-#include "Road.h"
 #include "Intersection.h"
+#include "Road.h"
 #include "../driver_prediction/Link.h"
-
-
 
 namespace PredictivePowertrain {
 
+class Intersection;
 Link* linkFromRoad(Road* road, Intersection* intersection);
 
 }

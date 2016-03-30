@@ -9,9 +9,6 @@
 #include "../driver_prediction/Link.h"
 #include "../city/Intersection.h"
 
-
-
-
 namespace PredictivePowertrain {
 
 class Route {

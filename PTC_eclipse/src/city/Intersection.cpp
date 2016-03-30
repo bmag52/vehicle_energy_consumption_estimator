@@ -6,7 +6,6 @@
  */
 
 #include "Intersection.h"
-#include "Helper.h"
 
 #include <algorithm>
 
@@ -90,6 +89,7 @@ int Intersection::getNextIntersectionNumber(Road* road) {
 			}
 		}
 	}
+	return -1;
 }
 
 int* Intersection::getAdjacentIntersectionNumbers() {

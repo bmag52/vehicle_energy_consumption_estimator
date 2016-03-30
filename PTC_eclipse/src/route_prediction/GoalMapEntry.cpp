@@ -6,8 +6,6 @@
  */
 
 #include "GoalMapEntry.h"
-#include "GenericMap.h"
-#include "Goal.h"
 
 namespace PredictivePowertrain {
 

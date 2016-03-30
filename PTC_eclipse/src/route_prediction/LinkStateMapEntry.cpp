@@ -6,7 +6,6 @@
  */
 
 #include "LinkStateMapEntry.h"
-#include "GenericMap.h"
 
 namespace PredictivePowertrain {
 

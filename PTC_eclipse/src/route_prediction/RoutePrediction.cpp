@@ -6,13 +6,6 @@
  */
 
 #include "RoutePrediction.h"
-#include "LinkToStateMap.h"
-#include "GoalToLinkMap.h"
-#include "GenericEntry.h"
-#include "../driver_prediction/Link.h"
-#include "../city/City.h"
-#include "Goal.h"
-#include "stdlib.h"
 
 #include <algorithm>
 #include <assert.h>

@@ -15,8 +15,9 @@
 #include "Intersection.h"
 #include "Road.h"
 #include "../driver_prediction/Link.h"
+//#include "../route_prediction/Route.h"
 
-
+#include <assert.h>
 
 namespace PredictivePowertrain {
 
@@ -36,6 +37,8 @@ public:
 	int getInstersectionListSize();
 	Link* getNextLinks(Link* link);
 	Intersection* getIntersectionFromLink(Link* link);
+	Intersection* getIntersection(int intersectionNum);
+//	Route* getPath(Intersection* start, Intersection* end, int* conditions, int fastest);
 	virtual ~CityObj();
 };
 

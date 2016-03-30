@@ -6,6 +6,7 @@
  */
 
 #include "Goal.h"
+
 #include <functional>
 #include <math.h>
 

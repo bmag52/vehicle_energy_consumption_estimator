@@ -10,6 +10,7 @@
 
 #include "IntersectionTypes.h"
 #include "Road.h"
+#include "Helper.h"
 #include "../driver_prediction/Link.h"
 
 namespace PredictivePowertrain {
@@ -25,8 +26,8 @@ private:
 	double lon;
 
 public:
-	Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum);
 	Intersection();
+	Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum);
 	virtual ~Intersection();
 	void addRoad(Road* road, int roadDir);
 	Link* getOutgoingLinks();

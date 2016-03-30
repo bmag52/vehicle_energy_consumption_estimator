@@ -10,7 +10,7 @@
 
 #include <string>
 
-namespace City {
+namespace PredictivePowertrain {
 
 class Road {
 private:
@@ -32,6 +32,6 @@ public:
 	int getRoadID();
 };
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROAD_H_ */

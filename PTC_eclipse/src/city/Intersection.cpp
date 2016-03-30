@@ -10,7 +10,7 @@
 
 #include <algorithm>
 
-namespace City {
+namespace PredictivePowertrain {
 
 Intersection::Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum) {
 	this->roads = roadInput;
@@ -128,5 +128,5 @@ int* Intersection::getAdjacentIntersectionNumbers() {
 	return adjIntNums;
 }
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 

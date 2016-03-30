@@ -7,7 +7,7 @@
 
 #include "Link.h"
 
-namespace DriverPrediction {
+namespace PredictivePowertrain {
 
 Link::Link() {
 	this->link_number = 0;
@@ -59,4 +59,4 @@ Link* Link::finalLink() {
 	return &link;
 }
 
-} /* namespace DriverPrediction */
+} /* namespace PredictivePowertrain */

@@ -8,9 +8,9 @@
 #include "City.h"
 #include "../driver_prediction/Link.h"
 
-using namespace DriverPrediction;
 
-namespace City {
+
+namespace PredictivePowertrain {
 
 CityObj::CityObj() {
 	// TODO Auto-generated constructor stub
@@ -36,4 +36,4 @@ CityObj::~CityObj() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */

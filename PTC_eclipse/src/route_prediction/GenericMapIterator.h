@@ -9,7 +9,7 @@
 #define ROUTE_PREDICTION_GENERICMAPITERATOR_H_
 #include "GenericMap.h"
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 template<class K, class V>
 class GenericMapIterator {
@@ -46,6 +46,6 @@ GenericMapIterator<K,V>::~GenericMapIterator() {
 }
 
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_GENERICMAPITERATOR_H_ */

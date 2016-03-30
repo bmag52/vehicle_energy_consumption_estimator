@@ -17,11 +17,9 @@
 #include <algorithm>
 #include <assert.h>
 
-using namespace DriverPrediction;
-using namespace City;
 using namespace std;
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 RoutePredictionObj::RoutePredictionObj() {
 	// TODO Auto-generated constructor stub
@@ -295,4 +293,4 @@ RoutePredictionObj::~RoutePredictionObj() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */

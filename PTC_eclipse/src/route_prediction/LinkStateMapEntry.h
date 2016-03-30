@@ -10,9 +10,9 @@
 #include "GenericMap.h"
 #include "../driver_prediction/Link.h"
 
-using namespace DriverPrediction;
 
-namespace RoutePrediction {
+
+namespace PredictivePowertrain {
 
 class LinkStateMapEntry {
 private:
@@ -27,6 +27,6 @@ public:
 	static int total_m(LinkStateMapEntry);
 };
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_LINKSTATEMAPENTRY_H_ */

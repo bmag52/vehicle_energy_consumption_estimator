@@ -13,8 +13,7 @@
 #include "unit_tests/UnitTests.h"
 
 using namespace std;
-using namespace SpeedPrediction;
-using namespace RoutePrediction;
+using namespace PredictivePowertrain;
 
 using Eigen::MatrixXd;
 

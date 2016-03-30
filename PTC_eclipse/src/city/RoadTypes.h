@@ -8,7 +8,7 @@
 #ifndef ROADTYPES_H_
 #define ROADTYPES_H_
 
-namespace City {
+namespace PredictivePowertrain {
 
 class RoadTypes {
 public:
@@ -22,6 +22,6 @@ public:
 	virtual ~RoadTypes();
 };
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROADTYPES_H_ */

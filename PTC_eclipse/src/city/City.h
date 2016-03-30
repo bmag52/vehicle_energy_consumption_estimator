@@ -16,9 +16,9 @@
 #include "Road.h"
 #include "../driver_prediction/Link.h"
 
-using namespace DriverPrediction;
 
-namespace City {
+
+namespace PredictivePowertrain {
 
 class CityObj {
 public:
@@ -39,6 +39,6 @@ public:
 	virtual ~CityObj();
 };
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
 #endif /* CITY_CITY_H_ */

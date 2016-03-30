@@ -10,7 +10,7 @@
 
 #include <functional>
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 class Goal {
 private:
@@ -34,6 +34,6 @@ public:
 	virtual ~Goal();
 };
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* DRIVER_PREDICTION_GOAL_H_ */

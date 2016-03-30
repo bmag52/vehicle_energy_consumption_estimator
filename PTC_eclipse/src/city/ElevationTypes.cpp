@@ -7,7 +7,7 @@
 
 #include "ElevationTypes.h"
 
-namespace City {
+namespace PredictivePowertrain {
 //grade = 0; %max grade, in %
 //deviation: how many meters from intersection heights is allowed
 //%max length of a section, factor (0 to 1) of road length
@@ -62,4 +62,4 @@ namespace City {
 //	// TODO Auto-generated destructor stub
 //}
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */

@@ -7,7 +7,7 @@
 
 #include "GoalToLinkMap.h"
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 GoalToLinkMap::GoalToLinkMap() {
 	// todo GoalToLinkMap
@@ -29,4 +29,4 @@ GoalToLinkMap::~GoalToLinkMap() {
 	// todo ~GoalToLinkMap()
 }
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */

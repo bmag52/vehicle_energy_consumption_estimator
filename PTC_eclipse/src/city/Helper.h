@@ -12,9 +12,9 @@
 #include "Intersection.h"
 #include "../driver_prediction/Link.h"
 
-using namespace DriverPrediction;
 
-namespace City {
+
+namespace PredictivePowertrain {
 
 Link* linkFromRoad(Road* road, Intersection* intersection);
 

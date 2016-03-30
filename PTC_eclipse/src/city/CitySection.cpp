@@ -7,7 +7,7 @@
 
 #include "CitySection.h"
 
-namespace City {
+namespace PredictivePowertrain {
 
 //CitySection::CitySection() {
 //	// TODO Auto-generated constructor stub
@@ -26,4 +26,4 @@ namespace City {
 //	delete intersections;
 //}
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */

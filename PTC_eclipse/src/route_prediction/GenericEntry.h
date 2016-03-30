@@ -8,7 +8,7 @@
 #ifndef ROUTE_PREDICTION_GENERICENTRY_H_
 #define ROUTE_PREDICTION_GENERICENTRY_H_
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 template<class K, class V>
 class GenericEntry {
@@ -33,6 +33,6 @@ GenericEntry<K,V>::~GenericEntry() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_GENERICENTRY_H_ */

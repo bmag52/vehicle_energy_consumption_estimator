@@ -8,7 +8,7 @@
 #include "LinkStateMapEntry.h"
 #include "GenericMap.h"
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 //LinkStateMapEntry::LinkStateMapEntry() {
 //	this->entries = GenericMap<int, int>();
@@ -18,4 +18,4 @@ LinkStateMapEntry::~LinkStateMapEntry() {
 }
 
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */

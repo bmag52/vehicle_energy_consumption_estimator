@@ -11,7 +11,7 @@
 #include "LinkStateMapEntry.h"
 #include "Goal.h"
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 class LinkToStateMap {
 public:
@@ -23,6 +23,6 @@ public:
 	virtual ~LinkToStateMap();
 };
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_LINKTOSTATEMAP_H_ */

@@ -12,7 +12,7 @@
 #include <map>
 #include "GenericEntry.h"
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 template<typename K, typename V>
 class GenericMap {
@@ -122,7 +122,7 @@ typename std::map<K, V>::iterator GenericMap<K, V>::end() {
 }
 
 template<class K, class V>
-int RoutePrediction::GenericMap<K, V>::getSize() {
+int PredictivePowertrain::GenericMap<K, V>::getSize() {
 	return this->map.size();
 }
 
@@ -141,6 +141,6 @@ GenericMap<K,V>::~GenericMap() {
 }
 
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_GENERICMAP_H_ */

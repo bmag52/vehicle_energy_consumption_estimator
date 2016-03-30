@@ -9,7 +9,7 @@
 #include <functional>
 #include <math.h>
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 Goal::Goal(int destination) {
 	this->destination = destination;
@@ -88,12 +88,12 @@ int Goal::getNumSeen() {
 	return this->numSeen;
 }
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 namespace std {
-  template <> struct hash<RoutePrediction::Goal>
+  template <> struct hash<PredictivePowertrain::Goal>
   {
-    size_t operator()(const RoutePrediction::Goal & x) const
+    size_t operator()(const PredictivePowertrain::Goal & x) const
     {
       return x.getHash();
     }

@@ -7,7 +7,7 @@
 
 #include "Road.h"
 
-namespace City {
+namespace PredictivePowertrain {
 
 Road::Road() {
 }
@@ -44,6 +44,6 @@ int Road::getRoadID() {
 Road::~Road() {
 }
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
 

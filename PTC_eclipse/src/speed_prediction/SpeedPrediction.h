@@ -8,7 +8,7 @@
 #ifndef SPEED_PREDICTION_SPEEDPREDICTION_H_
 #define SPEED_PREDICTION_SPEEDPREDICTION_H_
 
-namespace SpeedPrediction {
+namespace PredictivePowertrain {
 
 class SpeedPredictionObj {
 private:

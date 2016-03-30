@@ -12,9 +12,7 @@
 #include "Road.h"
 #include "../driver_prediction/Link.h"
 
-using namespace DriverPrediction;
-
-namespace City {
+namespace PredictivePowertrain {
 
 class Intersection {
 private:
@@ -41,6 +39,6 @@ public:
 	int getNextIntersectionNumber(Road* road);
 };
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
 #endif /* CITY_INTERSECTION_H_ */

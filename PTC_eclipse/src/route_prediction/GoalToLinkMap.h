@@ -12,9 +12,9 @@
 #include "../driver_prediction/Link.h"
 #include "Goal.h"
 
-using namespace DriverPrediction;
 
-namespace RoutePrediction {
+
+namespace PredictivePowertrain {
 
 class GoalToLinkMap {
 public:
@@ -27,6 +27,6 @@ public:
 	virtual ~GoalToLinkMap();
 };
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_GOALTOLINKMAP_H_ */

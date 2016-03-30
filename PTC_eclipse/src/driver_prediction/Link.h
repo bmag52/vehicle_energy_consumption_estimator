@@ -10,7 +10,7 @@
 
 //#include "../city/City.h"
 
-namespace DriverPrediction {
+namespace PredictivePowertrain {
 
 class Link {
 public:
@@ -29,6 +29,6 @@ public:
 	static Link* finalLink();
 };
 
-} /* namespace DriverPrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* LINK_H_ */

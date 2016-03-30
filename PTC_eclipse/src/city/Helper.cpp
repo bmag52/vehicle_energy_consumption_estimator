@@ -9,8 +9,8 @@
 #include "Road.h"
 #include "Helper.h"
 
-using namespace DriverPrediction;
-namespace City {
+
+namespace PredictivePowertrain {
 
 Link* linkFromRoad(Road* road, Intersection* intersection) {
 	int linkNum = road->getRoadID();

@@ -9,10 +9,10 @@
 #include "../driver_prediction/Link.h"
 #include "../city/Intersection.h"
 
-using namespace DriverPrediction;
-using namespace City;
 
-namespace RoutePrediction {
+
+
+namespace PredictivePowertrain {
 
 class Route {
 private:

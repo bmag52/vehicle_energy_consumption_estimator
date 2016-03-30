@@ -9,9 +9,9 @@
 #include "GenericMap.h"
 #include "Goal.h"
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 void GoalMapEntry::increment_count() {
 }
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */

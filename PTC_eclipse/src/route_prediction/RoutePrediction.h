@@ -17,11 +17,11 @@
 #include "../city/Intersection.h"
 #include "GenericMap.h"
 
-using namespace DriverPrediction;
-using namespace City;
+
+
 using namespace std;
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 class RoutePredictionObj {
 private:
@@ -59,6 +59,6 @@ public:
 };
 
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_ROUTEPREDICTION_H_ */

@@ -6,7 +6,7 @@ using Eigen::MatrixXd;
 #include "SpeedPrediction.h"
 #include <assert.h>
 
-namespace SpeedPrediction {
+namespace PredictivePowertrain {
 
 SpeedPredictionObj::SpeedPredictionObj()
 {

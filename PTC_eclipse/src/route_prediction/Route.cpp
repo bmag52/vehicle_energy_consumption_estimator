@@ -9,9 +9,9 @@
 #include "Goal.h"
 #include "../driver_prediction/Link.h"
 
-using namespace DriverPrediction;
 
-namespace RoutePrediction {
+
+namespace PredictivePowertrain {
 
 Route::Route() {
 	this->counter = 0;

@@ -8,7 +8,7 @@
 #include "LinkToStateMap.h"
 #include "GenericMap.h"
 
-namespace RoutePrediction {
+namespace PredictivePowertrain {
 
 int LinkToStateMap::incrementTransition(Link* link1, Goal* goal, Link* link2) {
 	// TODO incrememntTransistion
@@ -27,6 +27,6 @@ LinkToStateMap::LinkToStateMap(LinkToStateMap& other) {
 LinkToStateMap::~LinkToStateMap() {
 }
 
-} /* namespace RoutePrediction */
+} /* namespace PredictivePowertrain */
 
 

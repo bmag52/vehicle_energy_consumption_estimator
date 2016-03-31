@@ -51,9 +51,9 @@ void Intersection::addRoad(Road* road, int roadDir) {
 	Road* newRoads = new Road[this->roadCount];
 	if(roadDir == 0)
 	{
-		road->setEndNumber(this->number);
+		road->setEndNode(this);
 	} else {
-		road->setStartNumber(this->number);
+		road->setStartNode(this);
 	}
 
 	newRoads[0] = *road;
@@ -68,42 +68,46 @@ void Intersection::addRoad(Road* road, int roadDir) {
 
 
 Link* Intersection::getOutgoingLinks() {
-	Link* outgoingLinks = new Link[this->roadCount];
+	Link* outGoingLinks = new Link[this->roadCount];
 	for(int i = 0; i < this->roadCount; i++)
 	{
-		outgoingLinks[i] = *(linkFromRoad(&this->roads[i], this));
+		outGoingLinks[i] = *(outGoingLinks->linkFromRoad(&this->roads[i], this));
 	}
-	return outgoingLinks;
+	return outGoingLinks;
 }
 
-int Intersection::getNextIntersectionNumber(Road* road) {
+int Intersection::getRoadCount() {
+	return this->roadCount;
+}
+
+Intersection* Intersection::getNextIntersection(Road* road) {
 	for(int i = 0; i < this->roadCount; i++)
 	{
 		if(road->getRoadID() == this->roads[i].getRoadID())
 		{
-			if(this->number == this->roads[i].getStartNumber())
+			if(this->number == this->roads[i].getStartNode()->getNumber())
 			{
-				return this->roads[i].getEndNumber();
+				return this->roads[i].getEndNode();
 			} else {
-				return this->roads[i].getStartNumber();
+				return this->roads[i].getStartNode();
 			}
 		}
 	}
-	return -1;
+	return NULL;
 }
 
-int* Intersection::getAdjacentIntersectionNumbers() {
-	int* adjIntNums;
-	int adjIntNumCount = 0;
+Intersection* Intersection::getAdjacentIntersection() {
+	Intersection* adjInts;
+	int adjIntCount = 0;
 
 	for(int i = 0; this->roadCount; i++)
 	{
-		int adjIntNum = getNextIntersectionNumber(&this->roads[i]);
+		Intersection* adjInt = getNextIntersection(&this->roads[i]);
 		bool alreadyCounted = false;
 
-		for(int j = 0; j < adjIntNumCount; j++)
+		for(int j = 0; j < adjIntCount; j++)
 		{
-			if(adjIntNums[i] == adjIntNum)
+			if(adjInts[i].getNumber() == adjInt->getNumber())
 			{
 				alreadyCounted = true;
 				break;
@@ -112,20 +116,20 @@ int* Intersection::getAdjacentIntersectionNumbers() {
 
 		if(!alreadyCounted)
 		{
-			adjIntNumCount++;
-			int* newAdjIntNums = new int[adjIntNumCount];
+			adjIntCount++;
+			Intersection* newAdjInts = new Intersection[adjIntCount];
 
-			newAdjIntNums[0] = adjIntNum;
-			for(int j = 1; j < adjIntNumCount; j++)
+			newAdjInts[0] = *adjInt;
+			for(int j = 1; j < adjIntCount; j++)
 			{
-				newAdjIntNums[j] = adjIntNums[i-1];
+				newAdjInts[j] = adjInts[i-1];
 			}
 
-			free(adjIntNums);
-			adjIntNums = newAdjIntNums;
+			free(adjInts);
+			adjInts = newAdjInts;
 		}
 	}
-	return adjIntNums;
+	return adjInts;
 }
 
 } /* namespace PredictivePowertrain */

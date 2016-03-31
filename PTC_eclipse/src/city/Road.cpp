@@ -17,24 +17,22 @@ Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID)
 	this->speedLimitData = speedData;
 //	this-> = new RoadTypes(roadType);
 	this->roadID = roadID;
-	this->startNumber = 0;
-	this->endNumber = 0;
 }
 
-void Road::setStartNumber(int intersectionNumber) {
-	this->startNumber = intersectionNumber;
+void Road::setStartNode(Intersection* startNode) {
+	this->startNode = startNode;
 }
 
-int Road::getStartNumber() {
-	return this->startNumber;
+void Road::setEndNode(Intersection* endNode) {
+	this->endNode = endNode;
 }
 
-void Road::setEndNumber(int intersectionNumber) {
-	this->endNumber = intersectionNumber;
+Intersection* Road::getStartNode() {
+	return this->startNode;
 }
 
-int Road::getEndNumber() {
-	return this->endNumber;
+Intersection* Road::getEndNode() {
+	return this->endNode;
 }
 
 int Road::getRoadID() {
@@ -44,6 +42,12 @@ int Road::getRoadID() {
 Road::~Road() {
 }
 
+int* Road::getSpeedData() {
+	return this->speedLimitData;
+}
+
+int* Road::getElevData() {
+	return this->elevationData;
+}
+
 } /* namespace PredictivePowertrain */
-
-

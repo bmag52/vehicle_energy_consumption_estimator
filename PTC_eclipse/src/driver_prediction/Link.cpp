@@ -59,4 +59,11 @@ Link* Link::finalLink() {
 	return &link;
 }
 
+Link* Link::linkFromRoad(Road* road, Intersection* intersection) {
+	int linkNum = road->getRoadID();
+	int linkDir = road->getEndNode()->getNumber();
+	Link newLink(linkDir, linkNum);
+	return &newLink;
+}
+
 } /* namespace PredictivePowertrain */

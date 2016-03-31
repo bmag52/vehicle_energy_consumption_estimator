@@ -140,7 +140,7 @@ Route* RoutePredictionObj::predict(Link* linkTaken) {
 	{
 		return this->predictedRoute;
 	} else if (this->predictedRoute->getLinkSize() == 1) {
-		return createRouteIntersection(this->city->getIntersectionFromLink(linkTaken), this->predictedGoal.getBins());
+		return createRouteIntersection(this->city->getIntersectionFromLink(linkTaken, true), this->predictedGoal.getBins());
 	} else {
 		return createRoute();
 	}
@@ -242,7 +242,7 @@ Route* RoutePredictionObj::createRoute() {
 
 Route* RoutePredictionObj::createRouteConditions(int* currentConditions) {
 	int lastLinkIndex = this->predictedRoute->getLinkSize() - 1;
-	return createRouteIntersection(this->city->getIntersectionFromLink(this->predictedRoute->getEntry(lastLinkIndex)), currentConditions);
+	return createRouteIntersection(this->city->getIntersectionFromLink(this->predictedRoute->getEntry(lastLinkIndex), true), currentConditions);
 }
 
 Route* RoutePredictionObj::createRouteIntersection(Intersection* intersection, int* currentConditions) {

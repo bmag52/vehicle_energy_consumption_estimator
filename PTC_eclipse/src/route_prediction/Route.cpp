@@ -50,7 +50,7 @@ bool Route::isequal(Route other) {
 }
 
 //returns copy of current route
-Route Route::copy() {
+Route* Route::copy() {
 	// TODO copy
 //	Goal goal = Goal(this->goal.destination, this->goal.bins, this->goal.size);	//is this the right? Goal variables are all private, but not sure if there's a better way
 //	int length = sizeof(this->links) / sizeof(Link);

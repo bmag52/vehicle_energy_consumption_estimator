@@ -15,14 +15,14 @@
 #include "Intersection.h"
 #include "Road.h"
 #include "../driver_prediction/Link.h"
-//#include "../route_prediction/Route.h"
+#include "../route_prediction/Route.h"
 
 #include <assert.h>
 
 namespace PredictivePowertrain {
 
 class CityObj {
-public:
+private:
 	Intersection* intersections;
 	std::string roadFileName;
 	std:: string intersectionFileName;
@@ -30,16 +30,21 @@ public:
 	int dateTimeCreated;
 	std::map<int,int> intersectionNumMap;
 	Road* roadList;
+	Link* link;
 
+	int* reverseTrace(int* trace);
+public:
 	CityObj();
 	CityObj(Intersection*, std::string, std::string, int, std::map<int, int>);
 	int getRoadListSize();
 	int getInstersectionListSize();
 	Link* getNextLinks(Link* link);
-	Intersection* getIntersectionFromLink(Link* link);
+	Intersection* getIntersectionFromLink(Link* link, bool isIntersection);
 	Intersection* getIntersection(int intersectionNum);
-//	Route* getPath(Intersection* start, Intersection* end, int* conditions, int fastest);
+	Route* getPath(Intersection* start, Intersection* end, int* conditions, int fastest);
 	virtual ~CityObj();
+	std::pair<int*, int*>* getRoadData(Link* link);
+	bool legalRoute(Route* route);
 };
 
 } /* namespace PredictivePowertrain */

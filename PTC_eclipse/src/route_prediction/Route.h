@@ -5,6 +5,9 @@
  *      Author: vagrant
  */
 
+#ifndef ROUTE_H_
+#define ROUTE_H_
+
 #include "Goal.h"
 #include "../driver_prediction/Link.h"
 #include "../city/Intersection.h"
@@ -34,9 +37,11 @@ public:
 	Link* getLinksPtr();
 	Intersection* getIntersectionPtr();
 	Link* getLastLinkPtr();;
-	Route copy();
+	Route* copy();
 	void removeFirstLink();
 	Link nextlink();
 };
 
 }
+
+#endif /* ROUTE_H_ */

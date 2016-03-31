@@ -8,9 +8,12 @@
 #ifndef LINK_H_
 #define LINK_H_
 
-//#include "../city/City.h"
+#include "../city/Road.h"
+#include "../city/Intersection.h"
 
 namespace PredictivePowertrain {
+
+class Intersection; // forward declaration
 
 class Link {
 public:
@@ -27,6 +30,7 @@ public:
 	int getDirection();
 	static Link* newLinkFromHash(int);
 	static Link* finalLink();
+	Link* linkFromRoad(Road* road, Intersection* intersection);
 };
 
 } /* namespace PredictivePowertrain */

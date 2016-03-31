@@ -5,15 +5,16 @@
  *      Author: Amanda
  */
 
-#ifndef CITY_INTERSECTION_H_
-#define CITY_INTERSECTION_H_
+#ifndef INTERSECTION_H_
+#define INTERSECTION_H_
 
 #include "IntersectionTypes.h"
 #include "Road.h"
-#include "Helper.h"
 #include "../driver_prediction/Link.h"
 
 namespace PredictivePowertrain {
+
+class Link; // forward declaration
 
 class Intersection {
 private:
@@ -24,6 +25,7 @@ private:
 	double elevation;
 	double lat;
 	double lon;
+	Link* link;
 
 public:
 	Intersection();
@@ -31,15 +33,16 @@ public:
 	virtual ~Intersection();
 	void addRoad(Road* road, int roadDir);
 	Link* getOutgoingLinks();
+	int getRoadCount();
 	int getNumber();
 	double getElevation();
 	double getLat();
 	double getLon();
 	Road* getRoads();
-	int* getAdjacentIntersectionNumbers();
-	int getNextIntersectionNumber(Road* road);
+	Intersection* getAdjacentIntersection();
+	Intersection* getNextIntersection(Road* road);
 };
 
 } /* namespace PredictivePowertrain */
 
-#endif /* CITY_INTERSECTION_H_ */
+#endif /* INTERSECTION_H_ */

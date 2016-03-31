@@ -12,12 +12,14 @@
 
 namespace PredictivePowertrain {
 
+class Intersection; // forward declaration
+
 class Road {
 private:
 	int* elevationData;
 	int* speedLimitData;
-	int startNumber;
-	int endNumber;
+	Intersection* startNode;
+	Intersection* endNode;
 //	RoadTypes roadType;
 	int roadID;
 
@@ -25,10 +27,12 @@ public:
 	Road();
 	Road(std::string roadType, int* elevationData, int* speedData, int roadID);
 	virtual ~Road();
-	void setStartNumber(int intersectionNumber);
-	int getStartNumber();
-	void setEndNumber(int intersectionNumber);
-	int getEndNumber();
+	void setStartNode(Intersection* startNode);
+	void setEndNode(Intersection* endNode);
+	Intersection* getStartNode();
+	Intersection* getEndNode();
+	int* getSpeedData();
+	int* getElevData();
 	int getRoadID();
 };
 

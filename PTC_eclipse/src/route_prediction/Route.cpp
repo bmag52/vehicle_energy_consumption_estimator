@@ -28,11 +28,12 @@ Route::Route(Link* links, Goal* goal) {
 // adds new link to end of route
 void Route::addlink(Link* link) {
 	this->counter++;
-	Link temp[] = new Link[counter];
+	Link temp[counter];
 	for(int i = 0; i < counter - 1; i++) {
 		temp[i] = this->links[i];
 	}
 	temp[counter - 1] = *link;
+	this->links = temp;
 }
 
 // checks if the route is equal to the route passed in
@@ -41,7 +42,7 @@ bool Route::isequal(Route other) {
 	int otherLength = other.getLinkSize();
 	if((*(this->goal)).isEqual(other.goal) && myLength == otherLength) {
 		for(int i = 0; i < myLength; i++) {
-			if(!(this->links[i].isEqual(other.links[i]))) {
+			if(!(this->links[i].isEqual(&(other.links[i])))) {
 				return false;
 			}
 		}
@@ -59,9 +60,11 @@ Route Route::copy() {
 	for(int i = 0; i < length; i++) {
 		int number = this->links[i].getNumber();
 		int direction = this->links[i].getDirection();
-		newLinks[i] = new Link(direction, number);
+		Link * newLink = new Link(direction, number);
+		newLinks[i] = *newLink;
 	}
-	return new Route(&newLinks, &goal);
+	Route * route = new Route(newLinks, &goal);
+	return *route;
 }
 
 int Route::getGoalHash() {

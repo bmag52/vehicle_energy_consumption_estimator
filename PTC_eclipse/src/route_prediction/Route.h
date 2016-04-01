@@ -39,7 +39,7 @@ public:
 	Link* getLastLinkPtr();;
 	Route* copy();
 	void removeFirstLink();
-	Link nextlink();
+	Link* nextlink();
 };
 
 }

@@ -119,14 +119,14 @@ void Route::removeFirstLink() {
 }
 
 //returns next link in the iterator, returns 0 if there are no more links left
-Link Route::nextlink() {
+Link* Route::nextlink() {
 	int length = sizeof(this->links) / sizeof(Link);
 	if(this->counter > length) {
-		return this->links[length-1]; // return last link
+		return &this->links[length-1]; // return last link
 	} else {
 		Link link = this->links[this->counter];
 		this->counter++;
-		return link;
+		return &link;
 	}
 }
 

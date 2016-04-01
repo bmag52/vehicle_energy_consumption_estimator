@@ -7,7 +7,7 @@
 
 #ifndef ROUTE_PREDICTION_LINKSTATEMAPENTRY_H_
 #define ROUTE_PREDICTION_LINKSTATEMAPENTRY_H_
-#include "GenericMap.h"
+#include "../map/GenericMap.h"
 #include "../driver_prediction/Link.h"
 
 

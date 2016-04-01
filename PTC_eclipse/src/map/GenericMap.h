@@ -78,17 +78,22 @@ GenericEntry<K,V>* GenericMap<K, V>::nextEntry() {
 template<class K, class V>
 GenericEntry<K, V>* GenericMap<K, V>::getMinEntry() {
 	typename std::map<K,V>::iterator iter = this->map.begin();
-	V min = NULL;
+	V minVal = NULL;
+	K key = NULL;
 	if (iter != this->map.end()) {
-		min = iter->second;
+		minVal = iter->second;
+		key = iter->first;
 		iter++;
 		while (iter != this->map.end()) {
-			if (min > iter->second) {
-				min = iter->second;
+			if (minVal > iter->second) {
+				minVal = iter->second;
+				key = iter->first;
 			}
+			iter++;
 		}
 	}
-	return &min;
+	GenericEntry<K,V> entry = GenericEntry<K,V>(key, minVal);
+	return &entry;
 }
 
 template<class K, class V>

@@ -7,7 +7,7 @@
 
 #ifndef ROUTE_PREDICTION_LINKTOSTATEMAP_H_
 #define ROUTE_PREDICTION_LINKTOSTATEMAP_H_
-#include "GenericMap.h"
+#include "../map/GenericMap.h"
 #include "LinkStateMapEntry.h"
 #include "Goal.h"
 

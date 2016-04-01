@@ -9,7 +9,7 @@
 #include <Eigen/Dense>
 
 #include "speed_prediction/SpeedPrediction.h"
-#include "route_prediction/GenericMap.h"
+#include "map/GenericMap.h"
 #include "unit_tests/UnitTests.h"
 
 using namespace std;

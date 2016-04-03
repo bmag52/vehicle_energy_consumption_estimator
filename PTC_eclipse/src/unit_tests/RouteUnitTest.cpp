@@ -17,55 +17,70 @@ using namespace DriverPrediction;
 using namespace RoutePrediction;
 
 void route_UT() {
-	Link * zeroLinks = {};
-	Link * firstLinks = {new Link(10, 20)};
+	Link * link1 = new Link(1, 0);
+	Link * link2 = new Link(2, 1);
+	Link * link3 = new Link(3, 0);
 
-	int zeroBins[0] = {};
-	int firstBins[3] = {4, 7, 3};
-	Goal goal1 = new Goal(2, zeroBins, 4);
-	Goal goal2 = new Goal(2, firstBins, 4);
+	Link links1[3];
+	links1[0] = *link1;
+	links1[1] = *link2;
+	links1[2] = *link3;
+	Link links2[3];
+	links2[0] = *link3;
+	links2[1] = *link1;
+	links2[2] = *link2;
+
+	int bins[] = {1};
+	Goal * goal1 = new Goal(1, bins);
+	Goal * goal2 = new Goal(2, bins);
+
+	Route * route1 = new Route(links1, goal1);
+	Route * route2 = new Route(links1, goal2);
+	Route * route3 = new Route(links1, goal1);
+	Route * route4 = new Route(links2, goal1);
+	Route * route5 = new Route(links2, goal2);
 
 
-	// Test add link
-	Route * addLinkTest1 = new Route(zeroLinks, &goal1);
-	Link * test = {new Link(15, 30)};
-	(*addLinkTest1).addlink(test);
-	assert(((*addLinkTest1).getEntry(1))->getHash() == (*test).getHash());
-	assert((*addLinkTest1).getLinkSize() == 0);
+	// Test 1: addlink
+	Link emptyLinks[0];
+	Route * route = new Route(emptyLinks, goal1);
+	(*route).addlink(link1);
+	assert((*(*route).getLastLinkPtr()).isEqual(link1) && (*route).getLinkSize() == 1);
+	(*route).addlink(link2);
+	assert((*(*route).getLastLinkPtr()).isEqual(link2) && (*route).getLinkSize() == 2);
+	(*route).addlink(link3);
+	assert((*(*route).getLastLinkPtr()).isEqual(link3) && (*route).getLinkSize() == 3);
 
-	// Test isequal
+	// Test 2: iterator
+	route = new Route(links1, goal1);
+	int linksLength = sizeof(*links1)/sizeof(Link);
+	for(int i = 0; i < linksLength; i++) {
+		Link tempLink = ((*route).nextlink());
+		assert(links1[i].isEqual(&tempLink));
+	}
+	Link lastLink = (*route).nextlink();
+	assert(links1[linksLength - 1].isEqual(&lastLink));
 
-	// Test copy
+	// Test 3: isequal to oneself
+	assert((*route1).isequal(route1));
 
-	// Test nextlink
+	// Test 4: isequal is reversible
+	assert((*route1).isequal(route3));
+	assert((*route3).isequal(route1));
+	assert(!(*route1).isequal(route2));
+	assert(!(*route2).isequal(route1));
 
+	// Test 5: isequal with same links / goals (but still unequal)
+	assert(!(*route1).isequal(route4));
+	assert(!(*route1).isequal(route5));
 
-
-	/*int firstBins[0] = {};
-	int secondBins[1] = {10};
-	Goal firstGoal(0, firstBins, 0);
-	Goal secondGoal(10, secondBins, 1);
-
-	//Testing route(x, x) constructor, isequal()
-	Route firstRoute(firstLinks, firstGoal);
-	Route secondRoute(secondLinks, secondGoal);
-	Route thirdRoute(secondLinks, secondGoal);
-	assert(secondRoute.isequal(thirdRoute));
-	//assert(secondRoute.isequal(firstRoute));
-
-	//Testing addlink(Link) function
-	Route fourthRoute(firstLinks, secondGoal);
-	fourthRoute.addlink(Link(10, 20));
-	assert(fourthRoute.isequal(secondRoute));
-
-	//Testing copy() function
-	//Route fifthRoute = secondRoute.copy();
-	//assert(fifthRoute.isequal(secondRoute));
-
-	//Testing nextLink() function
-	assert((secondRoute.nextlink()).isEqual(secondLinks[0]));
-	assert((secondRoute.nextlink()).isEqual(secondLinks[0].final_link()));*/
-
+	// Test 6: copy
+	Route tempRoute = (*route1).copy();
+	route2 = &tempRoute;
+	assert((*route1).isequal(route2));
+	Link * linksPtr = (*route2).getLinksPtr();
+	linksPtr[0] = *link2;
+	assert(!(*route1).isequal(route2));
 }
 
 

@@ -37,12 +37,12 @@ void Route::addlink(Link* link) {
 }
 
 // checks if the route is equal to the route passed in
-bool Route::isequal(Route other) {
+bool Route::isequal(Route * other) {
 	int myLength = getLinkSize();
-	int otherLength = other.getLinkSize();
-	if((*(this->goal)).isEqual(other.goal) && myLength == otherLength) {
+	int otherLength = other->getLinkSize();
+	if((*(this->goal)).isEqual(other->goal) && myLength == otherLength) {
 		for(int i = 0; i < myLength; i++) {
-			if(!(this->links[i].isEqual(&(other.links[i])))) {
+			if(!(this->links[i].isEqual(&(other->links[i])))) {
 				return false;
 			}
 		}
@@ -122,7 +122,7 @@ void Route::removeFirstLink() {
 	this->links = newLinks;
 }
 
-//returns next link in the iterator, returns 0 if there are no more links left
+//returns next link in the iterator, returns last link if no more links left
 Link Route::nextlink() {
 	int length = sizeof(this->links) / sizeof(Link);
 	if(this->counter > length) {

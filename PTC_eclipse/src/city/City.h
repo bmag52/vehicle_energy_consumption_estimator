@@ -26,7 +26,7 @@
 
 namespace PredictivePowertrain {
 
-class CityObj {
+class City {
 private:
 	Intersection* intersections;
 	std::string roadFileName;
@@ -45,15 +45,15 @@ private:
 	Intersection* addIntersection(Intersection* intersections, Intersection* intersection);
 	std::pair<double*, int>* elevationToSlope(int* elev, int oldElev);
 public:
-	CityObj();
-	CityObj(Intersection*, std::string, std::string, int, std::map<int, int>);
+	City();
+	City(Intersection*, std::string, std::string, int, std::map<int, int>);
 	int getRoadListSize();
 	int getInstersectionListSize();
 	Link* getNextLinks(Link* link);
 	Intersection* getIntersectionFromLink(Link* link, bool isIntersection);
 	Intersection* getIntersection(int intersectionNum);
 	Route* getPath(Intersection* start, Intersection* end, int* conditions, int fastest);
-	virtual ~CityObj();
+	virtual ~City();
 	std::pair<int*, int*>* getRoadData(Link* link);
 	bool legalRoute(Route* route);
 	std::pair<int*, double*>* routeToData(Route* route, int dist);

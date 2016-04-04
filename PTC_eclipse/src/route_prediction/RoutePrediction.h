@@ -23,7 +23,7 @@ using namespace std;
 
 namespace PredictivePowertrain {
 
-class RoutePredictionObj {
+class RoutePrediction {
 private:
 	LinkToStateMap linkToState;
 	GoalToLinkMap goalToLink;
@@ -33,7 +33,7 @@ private:
 	Route* predictedRoute;
 	Route* currentRoute;
 	double *probabilities;
-	CityObj *city;
+	City *city;
 	Goal predictedGoal;
 	double minInitialProbability;
 	int probabilitySize;
@@ -50,12 +50,12 @@ private:
 	Route* createRouteIntersection(Intersection* intersection, int* currentCondition);
 
 public:
-	RoutePredictionObj();
-	RoutePredictionObj(CityObj* city);
+	RoutePrediction();
+	RoutePrediction(City* city);
 	Route* startPrediction(Intersection* currentIntersection, int* currentCondition);
 	Route* predict(Link* linkTaken);
 	void parseRoute(Route* route);
-	~RoutePredictionObj();
+	~RoutePrediction();
 };
 
 

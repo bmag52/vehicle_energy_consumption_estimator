@@ -118,7 +118,6 @@ void Route::removeFirstLink() {
 	this->links = newLinks;
 }
 
-//returns next link in the iterator, returns 0 if there are no more links left
 Link* Route::nextlink() {
 	int length = sizeof(this->links) / sizeof(Link);
 	if(this->counter > length) {

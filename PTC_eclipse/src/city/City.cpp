@@ -9,19 +9,19 @@
 
 namespace PredictivePowertrain {
 
-CityObj::CityObj() {
+City::City() {
 	// TODO Auto-generated constructor stub
 }
 
-int CityObj::getRoadListSize() {
+int City::getRoadListSize() {
 	return sizeof(*this->roadList)/sizeof(Road);
 }
 
-int CityObj::getInstersectionListSize() {
+int City::getInstersectionListSize() {
 	return sizeof(*this->roadList)/sizeof(Road);
 }
 
-Link* CityObj::getNextLinks(Link* link) {
+Link* City::getNextLinks(Link* link) {
 	assert(link->isEqual(this->link->finalLink()));
 	Road* currentRoad = &this->roadList[link->getNumber()];
 	Intersection* nextIntersection = getIntersectionFromLink(link,true);
@@ -44,7 +44,7 @@ Link* CityObj::getNextLinks(Link* link) {
 	return links;
 }
 
-Intersection* CityObj::getIntersectionFromLink(Link* link, bool isIntersection) {
+Intersection* City::getIntersectionFromLink(Link* link, bool isIntersection) {
 	assert(!link->isEqual(this->link->finalLink()));
 	Road* road = &this->roadList[link->getNumber()];
 
@@ -56,12 +56,12 @@ Intersection* CityObj::getIntersectionFromLink(Link* link, bool isIntersection) 
 	}
 }
 
-Intersection* CityObj::getIntersection(int intersectionNum) {
+Intersection* City::getIntersection(int intersectionNum) {
 	assert(getInstersectionListSize() < intersectionNum || intersectionNum < 1); // || this->intersections[intersectionNum] == NULL
 	return &this->intersections[intersectionNum];
 }
 
-Route* CityObj::getPath(Intersection* start, Intersection* end, int* conditions, int fastest) {
+Route* City::getPath(Intersection* start, Intersection* end, int* conditions, int fastest) {
 	GenericMap<int, int> dist;
 	GenericMap<int, int> prev;
 	GenericMap<int, int> unvisitedNodes;
@@ -128,7 +128,7 @@ Route* CityObj::getPath(Intersection* start, Intersection* end, int* conditions,
 	return &route;
 }
 
-Link* CityObj::addLink(Link* links, Link* link) {
+Link* City::addLink(Link* links, Link* link) {
 	int linkCount = sizeof(*links)/sizeof(int);
 	Link* newLinks = new Link[linkCount+1];
 	for(int i = 0; i < linkCount; i++)
@@ -140,7 +140,7 @@ Link* CityObj::addLink(Link* links, Link* link) {
 	return newLinks;
 }
 
-Intersection* CityObj::addIntersection(Intersection* intersections, Intersection* intersection) {
+Intersection* City::addIntersection(Intersection* intersections, Intersection* intersection) {
 	int intCount = sizeof(*intersection)/sizeof(Intersection);
 	Intersection* newInts = new Intersection[intCount+1];
 	for(int i = 0; i < intCount; i++)
@@ -152,11 +152,11 @@ Intersection* CityObj::addIntersection(Intersection* intersections, Intersection
 	return newInts;
 }
 
-CityObj::~CityObj() {
+City::~City() {
 	// TODO Auto-generated destructor stub
 }
 
-int* CityObj::reverseTrace(int* trace)
+int* City::reverseTrace(int* trace)
 {
 	int traceSize = sizeof(*trace)/sizeof(int);
 	int* newTrace = new int[traceSize];
@@ -168,7 +168,7 @@ int* CityObj::reverseTrace(int* trace)
 	return newTrace;
 }
 
-std::pair<int*, int*>* CityObj::getRoadData(Link* link) {
+std::pair<int*, int*>* City::getRoadData(Link* link) {
 
 	std::pair<int*, int*>* roadData;
 
@@ -188,7 +188,7 @@ std::pair<int*, int*>* CityObj::getRoadData(Link* link) {
 	return roadData;
 }
 
-Road* CityObj::getConnectingRoad(Intersection* one, Intersection* two) {
+Road* City::getConnectingRoad(Intersection* one, Intersection* two) {
 	Road* roads = one->getRoads();
 	for(int i = 0; i < sizeof(*roads)/sizeof(Road); i++)
 	{
@@ -199,7 +199,7 @@ Road* CityObj::getConnectingRoad(Intersection* one, Intersection* two) {
 	}
 }
 
-Route* CityObj::randomPath(Intersection* startInt, Route* initialRoute, int totalLength, int* conditions) {
+Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLength, int* conditions) {
 	Link* links = startInt->getOutgoingLinks();
 	Link* path = {};
 	int linkCount = sizeof(*link)/sizeof(Link);
@@ -265,7 +265,7 @@ Route* CityObj::randomPath(Intersection* startInt, Route* initialRoute, int tota
 	return &route;
 }
 
-bool CityObj::legalRoute(Route* route) {
+bool City::legalRoute(Route* route) {
 	Route* routeCopy = route->copy();
 	while(routeCopy->getLinkSize() > 1)
 	{
@@ -288,13 +288,14 @@ bool CityObj::legalRoute(Route* route) {
 	return true;
 }
 
-std::pair<double*, int>* CityObj::elevationToSlope(int* elev, int oldElev) {
+std::pair<double*, int>* City::elevationToSlope(int* elev, int oldElev) {
 	int elevSize = sizeof(*elev)/sizeof(int);
 	double* slope = new double[elevSize];
+
 	slope[0] = (elev[0] - oldElev) / this->intervalDistance;
-	for(int i = 1; i < elevSize; i++)
+	for(int i = 1; i < elevSize; i++) { slope[i] = (elev[i] - elev[i-1]) / this->intervalDistance; }
+	for(int i = 0; i < elevSize; i++)
 	{
-		slope[i] = (elev[i] - elev[i-1]) / this->intervalDistance;
 		if(this->maxSlopePercent/100 < slope[i])
 		{
 			slope[i] = this->maxSlopePercent/100;
@@ -302,13 +303,14 @@ std::pair<double*, int>* CityObj::elevationToSlope(int* elev, int oldElev) {
 		slope[i] = atan(slope[i]);
 	}
 	int endElev = elev[elevSize-1];
+
 	std::pair<double*, int>* data;
 	data->first = slope;
 	data->second = endElev;
 	return data;
 }
 
-std::pair<int*, double*>* CityObj::routeToData(Route* route, int dist) {
+std::pair<int*, double*>* City::routeToData(Route* route, int dist) {
 	int* speedData;
 	double* slopeData;
 

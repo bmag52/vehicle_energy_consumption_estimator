@@ -1,5 +1,5 @@
 /*
- * RuteUnitTest.cpp
+ * RouteUnitTest.cpp
  *
  *  Created on: Mar 17, 2016
  *      Author: vagrant
@@ -16,7 +16,7 @@ using namespace std;
 using namespace DriverPrediction;
 using namespace RoutePrediction;
 
-void route_UT() {
+void route_ut() {
 	Link * link1 = new Link(1, 0);
 	Link * link2 = new Link(2, 1);
 	Link * link3 = new Link(3, 0);

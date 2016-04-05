@@ -10,7 +10,7 @@
 #include "GenericMap.h"
 #include "Goal.h"
 
-namespace InnovationModel {
+namespace PredictivePowertrain {
 
 
 class GoalMapEntry {
@@ -24,6 +24,6 @@ public:
 	virtual ~GoalMapEntry();
 };
 
-} /* namespace InnovationModel */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_GOALMAPENTRY_H_ */

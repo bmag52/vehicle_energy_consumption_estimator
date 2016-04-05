@@ -11,18 +11,18 @@
 #include "LinkStateMapEntry.h"
 #include "Goal.h"
 
-namespace InnovationModel {
+namespace PredictivePowertrain {
 
 class LinkToStateMap {
 public:
-	GenericMap<int, LinkStateMapEntry> maps;
-	int increment_transition(Link, Goal, Link);
-	GenericEntry<double, double> get_probability(Link, Link, Goal, bool);
+	GenericMap<int, LinkStateMapEntry*> maps;
+	int incrementTransition(Link* link1, Goal* goal, Link* link2);
+	double getProbability(Link* &link1, Link* &link2, Goal& goal, bool isSimilar);
 	LinkToStateMap();
-	LinkToStateMap(LinkToStateMap &other);
+	LinkToStateMap(LinkToStateMap& other);
 	virtual ~LinkToStateMap();
 };
 
-} /* namespace InnovationModel */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_LINKTOSTATEMAP_H_ */

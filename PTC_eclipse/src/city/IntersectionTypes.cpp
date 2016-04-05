@@ -8,7 +8,7 @@
 #include "IntersectionTypes.h"
 #include <cstdlib>
 
-namespace City {
+namespace PredictivePowertrain {
 
 IntersectionTypes::IntersectionTypes() {
 	// TODO Auto-generated constructor stub
@@ -73,4 +73,4 @@ IntersectionTypes::~IntersectionTypes() {
 	// TODO Auto-generated destructor stub
 }
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */

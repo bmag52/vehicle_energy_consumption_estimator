@@ -8,20 +8,34 @@
 #ifndef ROAD_H_
 #define ROAD_H_
 
-namespace City {
+#include <string>
+
+namespace PredictivePowertrain {
+
+class Intersection; // forward declaration
 
 class Road {
+private:
+	int* elevationData;
+	int* speedLimitData;
+	Intersection* startNode;
+	Intersection* endNode;
+//	RoadTypes roadType;
+	int roadID;
+
 public:
-	int* elevation_data;
-	int* speed_limit_data;
-	int start_node;
-	int end_node;
-//	RoadTypes road_type;
-	int road_id;
-//	Road(std::string, int*, int*, int);
+	Road();
+	Road(std::string roadType, int* elevationData, int* speedData, int roadID);
 	virtual ~Road();
+	void setStartNode(Intersection* startNode);
+	void setEndNode(Intersection* endNode);
+	Intersection* getStartNode();
+	Intersection* getEndNode();
+	int* getSpeedData();
+	int* getElevData();
+	int getRoadID();
 };
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROAD_H_ */

@@ -7,7 +7,14 @@
 
 #include "LinkStateMapEntry.h"
 
-namespace InnovationModel {
+namespace PredictivePowertrain {
+
+//LinkStateMapEntry::LinkStateMapEntry() {
+//	this->entries = GenericMap<int, int>();
+//}
+
+LinkStateMapEntry::~LinkStateMapEntry() {
+}
 
 
-} /* namespace InnovationModel */
+} /* namespace PredictivePowertrain */

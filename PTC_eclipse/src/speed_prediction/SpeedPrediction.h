@@ -8,9 +8,9 @@
 #ifndef SPEED_PREDICTION_SPEEDPREDICTION_H_
 #define SPEED_PREDICTION_SPEEDPREDICTION_H_
 
-namespace SpeedPrediction {
+namespace PredictivePowertrain {
 
-class SpeedPrediction {
+class SpeedPredictionObj {
 private:
 	int I;						// number of input units
 	int HL;						// number of hidden layers
@@ -28,8 +28,8 @@ private:
 	void initParams();
 	void printAll();
 public:
-	SpeedPrediction();
-	SpeedPrediction(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid);
+	SpeedPredictionObj();
+	SpeedPredictionObj(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid);
 	void predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_out);
 	void train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd * spd_act, Eigen::MatrixXd * spd_in);
 	void getVals(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid);

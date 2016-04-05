@@ -8,7 +8,7 @@
 #ifndef ROUTE_PREDICTION_GENERICENTRY_H_
 #define ROUTE_PREDICTION_GENERICENTRY_H_
 
-namespace InnovationModel {
+namespace PredictivePowertrain {
 
 template<class K, class V>
 class GenericEntry {
@@ -19,6 +19,20 @@ public:
 	virtual ~GenericEntry();
 };
 
-} /* namespace InnovationModel */
+
+template<class K, class V>
+GenericEntry<K,V>::GenericEntry(K key, V value) {
+	// TODO Auto-generated constructor stub
+	this->key = key;
+	this->value = value;
+
+}
+
+template<class K, class V>
+GenericEntry<K,V>::~GenericEntry() {
+	// TODO Auto-generated destructor stub
+}
+
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_GENERICENTRY_H_ */

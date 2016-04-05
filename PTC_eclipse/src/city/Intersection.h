@@ -5,22 +5,44 @@
  *      Author: Amanda
  */
 
-#ifndef CITY_INTERSECTION_H_
-#define CITY_INTERSECTION_H_
+#ifndef INTERSECTION_H_
+#define INTERSECTION_H_
 
-namespace City {
+#include "IntersectionTypes.h"
+#include "Road.h"
+#include "../driver_prediction/Link.h"
+
+namespace PredictivePowertrain {
+
+class Link; // forward declaration
 
 class Intersection {
-public:
-//	Road* roads; //%array of roads that connect to this intersection
+private:
+	Road* roads; //%array of roads that connect to this intersection
 //	IntersectionTypes interSectionType;
-//	std::pair<int, int>* coordinates;
-	int elevation;
+	int roadCount;
 	int number;
-//	Intersection(Road*, std::string intersectType, std::pair<int, int>*, int, int);
+	double elevation;
+	double lat;
+	double lon;
+	Link* link;
+
+public:
+	Intersection();
+	Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum);
 	virtual ~Intersection();
+	void addRoad(Road* road, int roadDir);
+	Link* getOutgoingLinks();
+	int getRoadCount();
+	int getNumber();
+	double getElevation();
+	double getLat();
+	double getLon();
+	Road* getRoads();
+	Intersection* getAdjacentIntersection();
+	Intersection* getNextIntersection(Road* road);
 };
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
-#endif /* CITY_INTERSECTION_H_ */
+#endif /* INTERSECTION_H_ */

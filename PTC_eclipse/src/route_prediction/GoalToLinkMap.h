@@ -9,22 +9,24 @@
 #define ROUTE_PREDICTION_GOALTOLINKMAP_H_
 #include "GenericMap.h"
 #include "GoalMapEntry.h"
-#include "Link.h"
+#include "../driver_prediction/Link.h"
 #include "Goal.h"
 
-namespace InnovationModel {
+
+
+namespace PredictivePowertrain {
 
 class GoalToLinkMap {
 public:
-	GenericMap<int,GoalMapEntry> maps;
+	GenericMap<int,GoalMapEntry*> maps;
 	int maps_size;
 	GoalToLinkMap();
 	GoalToLinkMap(GoalToLinkMap &other);
-	int link_traversed(Link, Goal);
-	double probability_of_goals_given_link(Link, Goal, bool);
+	int linkTraversed(Link* link, Goal* goal);
+	double probabilityOfGoalGivenLink(Link * link, Goal * goal, bool isSimilar);
 	virtual ~GoalToLinkMap();
 };
 
-} /* namespace InnovationModel */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_GOALTOLINKMAP_H_ */

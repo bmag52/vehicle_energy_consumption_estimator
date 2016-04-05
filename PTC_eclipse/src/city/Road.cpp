@@ -7,21 +7,47 @@
 
 #include "Road.h"
 
-namespace City {
+namespace PredictivePowertrain {
 
-
-//Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID) {
-//	elevation_data = elevationData;
-//	speed_limit_data = speedData;
-//	road_type = new RoadTypes(roadType);
-//	road_id = roadID;
-//	start_node = 0;
-//	end_node = 0;
-//
-//}
-
-Road::~Road() {
-
+Road::Road() {
 }
 
-} /* namespace City */
+Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID) {
+	this->elevationData = elevationData;
+	this->speedLimitData = speedData;
+//	this-> = new RoadTypes(roadType);
+	this->roadID = roadID;
+}
+
+void Road::setStartNode(Intersection* startNode) {
+	this->startNode = startNode;
+}
+
+void Road::setEndNode(Intersection* endNode) {
+	this->endNode = endNode;
+}
+
+Intersection* Road::getStartNode() {
+	return this->startNode;
+}
+
+Intersection* Road::getEndNode() {
+	return this->endNode;
+}
+
+int Road::getRoadID() {
+	return this->roadID;
+}
+
+Road::~Road() {
+}
+
+int* Road::getSpeedData() {
+	return this->speedLimitData;
+}
+
+int* Road::getElevData() {
+	return this->elevationData;
+}
+
+} /* namespace PredictivePowertrain */

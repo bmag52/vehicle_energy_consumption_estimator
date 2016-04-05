@@ -8,13 +8,15 @@
 #ifndef ROUTE_PREDICTION_LINKSTATEMAPENTRY_H_
 #define ROUTE_PREDICTION_LINKSTATEMAPENTRY_H_
 #include "GenericMap.h"
-#include "Link.h"
+#include "../driver_prediction/Link.h"
 
-namespace InnovationModel {
+
+
+namespace PredictivePowertrain {
 
 class LinkStateMapEntry {
 private:
-	GenericMap<int, int> entries;
+	GenericMap<int,int> entries;
 public:
 	LinkStateMapEntry();
 	LinkStateMapEntry(LinkStateMapEntry &other);
@@ -25,6 +27,6 @@ public:
 	static int total_m(LinkStateMapEntry);
 };
 
-} /* namespace InnovationModel */
+} /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_LINKSTATEMAPENTRY_H_ */

@@ -8,7 +8,7 @@
 #ifndef CITY_CITYSECTION_H_
 #define CITY_CITYSECTION_H_
 
-namespace City {
+namespace PredictivePowertrain {
 //city_section describes a square section of a city
 class CitySection {
 public:
@@ -25,6 +25,6 @@ public:
 	virtual ~CitySection();
 };
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
 #endif /* CITY_CITYSECTION_H_ */

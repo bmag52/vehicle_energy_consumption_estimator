@@ -10,22 +10,30 @@
 
 #include <functional>
 
-namespace InnovationModel {
+namespace PredictivePowertrain {
 
 class Goal {
 private:
 	int destination;
 	int *bins;
+	int numSeen;
 	int size;
 public:
+	Goal();
+	Goal(int destination);
+	Goal(int destination, int* bin);
 	Goal(int destination, int bin[], int size);
-	Goal(Goal& other);
-	bool issimilar(Goal &other);
-	bool isequal(Goal &other);
-	size_t get_hash() const;
+	Goal(Goal * other);
+	bool isSimilar(Goal * other);
+	bool isEqual(Goal * other);
+	size_t getHash() const;
+	int getNumSeen();
+	void setNumSeen(int numSeen);
+	void incrementNumSeen();
+	int* getBins();
 	virtual ~Goal();
 };
 
-} /* namespace InnovationModel */
+} /* namespace PredictivePowertrain */
 
 #endif /* DRIVER_PREDICTION_GOAL_H_ */

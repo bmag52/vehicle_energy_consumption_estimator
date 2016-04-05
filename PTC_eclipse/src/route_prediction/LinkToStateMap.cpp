@@ -6,14 +6,27 @@
  */
 
 #include "LinkToStateMap.h"
-#include "GenericMap.h"
-
-namespace InnovationModel {
-
-//	LinkToStateMap::LinkToStateMap()
-//	{
-//		this->maps = GenericMap<int, LinkStateMapEntry>::GenericMap;
-//	}
 
 
-} /* namespace InnovationModel */
+namespace PredictivePowertrain {
+
+int LinkToStateMap::incrementTransition(Link* link1, Goal* goal, Link* link2) {
+	// TODO incrememntTransistion
+}
+
+double LinkToStateMap::getProbability(Link* &link1, Link* &link2, Goal& goal, bool isSimilar) {
+	// TODO getProbability
+}
+
+LinkToStateMap::LinkToStateMap(){
+}
+
+LinkToStateMap::LinkToStateMap(LinkToStateMap& other) {
+}
+
+LinkToStateMap::~LinkToStateMap() {
+}
+
+} /* namespace PredictivePowertrain */
+
+

@@ -7,7 +7,7 @@
 
 #include "RoadTypes.h"
 
-namespace City {
+namespace PredictivePowertrain {
 
 //roadType can either be default, city, country, or interstate
 //assume user inputs string correctly for four options
@@ -52,4 +52,4 @@ namespace City {
 //	// TODO Auto-generated destructor stub
 //}
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */

@@ -6,12 +6,10 @@
  */
 
 #include "GoalMapEntry.h"
-#include "GenericMap.h"
-#include "Goal.h"
 
-namespace InnovationModel {
+namespace PredictivePowertrain {
 
 void GoalMapEntry::increment_count() {
 }
 
-} /* namespace InnovationModel */
+} /* namespace PredictivePowertrain */

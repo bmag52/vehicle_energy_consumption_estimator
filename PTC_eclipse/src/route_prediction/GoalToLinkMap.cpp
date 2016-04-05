@@ -7,7 +7,26 @@
 
 #include "GoalToLinkMap.h"
 
-namespace InnovationModel {
+namespace PredictivePowertrain {
 
+GoalToLinkMap::GoalToLinkMap() {
+	// todo GoalToLinkMap
+}
 
-} /* namespace InnovationModel */
+GoalToLinkMap::GoalToLinkMap(GoalToLinkMap& other) {
+	// todo GoalToLinkMap(GoalToLinkMap& other)
+}
+
+int GoalToLinkMap::linkTraversed(Link* link, Goal* goal) {
+	// todo linkTraversed(Link* link, Goal* goal)
+}
+
+double GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal *goal, bool isSimilar) {
+	// todo probabilityOfGoalGivenLink(Link * link, Goal *goal, bool isSimilar)
+}
+
+GoalToLinkMap::~GoalToLinkMap() {
+	// todo ~GoalToLinkMap()
+}
+
+} /* namespace PredictivePowertrain */

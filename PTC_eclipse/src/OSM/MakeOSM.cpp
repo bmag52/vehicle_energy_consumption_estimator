@@ -103,6 +103,11 @@ void MakeOSM::pullOSMData(double lat, double lon) {
 
 }
 
+Road* MakeOSM::getRoads() {
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_file("mapData.osm");
+}
+
 }
 
 

@@ -17,7 +17,7 @@ class LinkToStateMap {
 public:
 	GenericMap<int, LinkStateMapEntry*> maps;
 	int incrementTransition(Link* link1, Goal* goal, Link* link2);
-	double getProbability(Link* &link1, Link* &link2, Goal& goal, bool isSimilar);
+	double getProbability(Link* link1, Link* link2, Goal* goal, bool isSimilar);
 	LinkToStateMap();
 	LinkToStateMap(LinkToStateMap& other);
 	virtual ~LinkToStateMap();

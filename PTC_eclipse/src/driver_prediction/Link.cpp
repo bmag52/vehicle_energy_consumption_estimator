@@ -6,7 +6,11 @@
  */
 
 #include "Link.h"
-
+#include <math.h>
+#include <functional>
+#include <string>
+#include <sstream>
+using namespace std;
 
 namespace DriverPrediction {
 
@@ -52,30 +56,38 @@ int Link::getDirection() {
 }
 
 
-//Link Link::new_link_from_hash(int hash) {
-//	//std::string binaryStuff = convertToBinary(hash);
-//	///???
-//	//do we need this method?
-//	//MATLAB CODE
-//	/**
-//	 * hash_bin = dec2bin(hash);
-//            dir = bin2dec(hash_bin(end));
-//            link_num = bin2dec(hash_bin(1:(end-1)));
-//            new_link = Link(link_num, dir);
-//	 */
-//}
+Link Link::new_link_from_hash(int hash) {
+	/*
+	std::string binaryStuff = convertToBinary(hash);
+	 * hash_bin = dec2bin(hash); //make sure hash_bin should be an integer
+	dir = bin2dec(hash_bin(end));
+	link_num = bin2dec(hash_bin(1:(end-1)));
+	new_link = Link(link_num, dir);
+	 */
+	//string binaryStuff = convertToBinary(hash);
+	//int end = binaryStuff.length();
+	//std::cout << end;
+	//int dir = binaryStuff.at(end); // convert to dec
+	//int link_num = 0;
+	//std::string link_num_str = binaryStuff.substr(1,end-1); // convert to dec
+	//int powNum = 0;
+	//for(int i = link_num_str.length()-1; i >= 0; i--){
+	//	link_num += pow(2.0, powNum) * link_num_str.at(i);
+	//	powNum++;
 
-// %represents the link at the end of a route, when the vehicle stopes
-//
-Link Link::final_link() {
-	return Link(0, 0);
-}
+//	}
 
-//Link Link::link_from_road(City::Road road, City::Intersection intersection) {
-//	int link_num = road.road_id;
-//	road.end_node = intersection.number;
-//	int link_dir = road.end_node;
-//	return Link(link_dir, link_num);
-//}
+	// %represents the link at the end of a route, when the vehicle stopes
+	//
+	Link Link::final_link() {
+		return Link(0, 0);
+	}
+
+	//Link Link::link_from_road(City::Road road, City::Intersection intersection) {
+	//	int link_num = road.road_id;
+	//	road.end_node = intersection.number;
+	//	int link_dir = road.end_node;
+	//	return Link(link_dir, link_num);
+	//}
 
 } /* namespace DriverPrediction */

@@ -8,7 +8,7 @@
 #ifndef CITY_INTERSECTIONTYPES_H_
 #define CITY_INTERSECTIONTYPES_H_
 
-namespace City {
+namespace PredictivePowertrain {
 
 class IntersectionTypes {
 public:
@@ -21,6 +21,6 @@ public:
 	virtual ~IntersectionTypes();
 };
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
 #endif /* CITY_INTERSECTIONTYPES_H_ */

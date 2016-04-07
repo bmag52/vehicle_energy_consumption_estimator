@@ -8,7 +8,7 @@
 #ifndef CITY_ELEVATIONTYPES_H_
 #define CITY_ELEVATIONTYPES_H_
 
-namespace City {
+namespace PredictivePowertrain {
 
 class ElevationTypes {
 public:
@@ -21,6 +21,6 @@ public:
 	virtual ~ElevationTypes();
 };
 
-} /* namespace City */
+} /* namespace PredictivePowertrain */
 
 #endif /* CITY_ELEVATIONTYPES_H_ */

@@ -6,41 +6,31 @@
  */
 
 #include "Link.h"
-#include <math.h>
-#include <functional>
-#include <string>
-#include <sstream>
-using namespace std;
 
-namespace DriverPrediction {
+namespace PredictivePowertrain {
 
 Link::Link() {
-	link_number = 0;
-	link_direction = 0;
+	this->link_number = 0;
+	this->link_direction = 0;
 
 }
 
 Link::Link(int direction, int linkNumber) {
-	link_direction = direction;
-	link_number = linkNumber;
+	this->link_direction = direction;
+	this->link_number = linkNumber;
 }
 
 Link::~Link() {
 	// TODO Auto-generated destructor stub
 }
 
-Link Link::copy(int direction, int linkNumber) {
-	return Link(direction, linkNumber);
+Link* Link::copy(int direction, int linkNumber) {
+	Link link(direction, linkNumber);
+	return &link;
 }
 
-
-
-int Link::get_hash(Link link) {
-	return 2 * link_direction + link_number;
-}
-
-bool Link::isEqual(Link other) {
-	if (other.link_direction == link_direction && other.link_number == link_number) {
+bool Link::isEqual(Link* other) {
+	if ((*other).link_direction == this->link_direction && (*other).link_number == this->link_number) {
 		return true;
 	} else {
 		return false;
@@ -48,46 +38,32 @@ bool Link::isEqual(Link other) {
 }
 
 int Link::getNumber() {
-	return link_number;
+	return this->link_number;
 }
 
 int Link::getDirection() {
-	return link_direction;
+	return this->link_direction;
 }
 
+Link* Link::newLinkFromHash(int hash) {
+	Link link(hash % 2, hash / 2);
+	return &link;
+}
 
-Link Link::new_link_from_hash(int hash) {
-	/*
-	std::string binaryStuff = convertToBinary(hash);
-	 * hash_bin = dec2bin(hash); //make sure hash_bin should be an integer
-	dir = bin2dec(hash_bin(end));
-	link_num = bin2dec(hash_bin(1:(end-1)));
-	new_link = Link(link_num, dir);
-	 */
-	//string binaryStuff = convertToBinary(hash);
-	//int end = binaryStuff.length();
-	//std::cout << end;
-	//int dir = binaryStuff.at(end); // convert to dec
-	//int link_num = 0;
-	//std::string link_num_str = binaryStuff.substr(1,end-1); // convert to dec
-	//int powNum = 0;
-	//for(int i = link_num_str.length()-1; i >= 0; i--){
-	//	link_num += pow(2.0, powNum) * link_num_str.at(i);
-	//	powNum++;
+int Link::getHash() {
+	return 2 * this->link_direction + this->link_number;
+}
 
-//	}
+Link* Link::finalLink() {
+	Link link(0, 0);
+	return &link;
+}
 
-	// %represents the link at the end of a route, when the vehicle stopes
-	//
-	Link Link::final_link() {
-		return Link(0, 0);
-	}
+Link* Link::linkFromRoad(Road* road, Intersection* intersection) {
+	int linkNum = road->getRoadID();
+	int linkDir = road->getEndNode()->getNumber();
+	Link newLink(linkDir, linkNum);
+	return &newLink;
+}
 
-	//Link Link::link_from_road(City::Road road, City::Intersection intersection) {
-	//	int link_num = road.road_id;
-	//	road.end_node = intersection.number;
-	//	int link_dir = road.end_node;
-	//	return Link(link_dir, link_num);
-	//}
-
-} /* namespace DriverPrediction */
+} /* namespace PredictivePowertrain */

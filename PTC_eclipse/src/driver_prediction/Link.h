@@ -8,29 +8,31 @@
 #ifndef LINK_H_
 #define LINK_H_
 
-namespace DriverPrediction {
+#include "../city/Road.h"
+#include "../city/Intersection.h"
+
+namespace PredictivePowertrain {
+
+class Intersection; // forward declaration
 
 class Link {
 public:
 	int link_number;
 	int link_direction;
+
 	Link();
 	Link(int, int);
 	virtual ~Link();
-	Link copy(int, int);
-	int get_hash(Link);
-	bool isEqual(Link);
+	Link* copy(int, int);
+	int getHash();
+	bool isEqual(Link* other);
 	int getNumber();
 	int getDirection();
-//	static std::string convertToBinary(int);
-	static Link new_link_from_hash(int);
-	static Link final_link();
-//	static Link link_from_road(City::Road, City::Intersection);
-	//static Link link_from_road(road, current_intersection);
-
+	static Link* newLinkFromHash(int);
+	static Link* finalLink();
+	Link* linkFromRoad(Road* road, Intersection* intersection);
 };
 
-
-} /* namespace DriverPrediction */
+} /* namespace PredictivePowertrain */
 
 #endif /* LINK_H_ */

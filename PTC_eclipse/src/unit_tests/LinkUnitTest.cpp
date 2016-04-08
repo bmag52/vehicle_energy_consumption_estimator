@@ -38,6 +38,7 @@ void link_UT() {
     Link final = *(thirdLink.finalLink());
     assert(final.getNumber() == 0);
     assert(final.getDirection() == 0);
+    cout << "Testing";
 
 }
 

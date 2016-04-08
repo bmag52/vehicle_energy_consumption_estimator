@@ -11,12 +11,19 @@
 #include "../city/Road.h"
 #include "../city/Intersection.h"
 
-#include "pugixml-1.7/src/pugixml.hpp"
+// xml parse
+#include <boost/foreach.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+
+// query
 #include "boost/lexical_cast.hpp"
 #include "boost/asio.hpp"
 
 #include <fstream>
+#include <iostream>
 #include <string>
+#include <stdlib.h>
 
 namespace PredictivePowertrain {
 
@@ -24,6 +31,7 @@ class MakeOSM {
 private:
 	double latDelta;
 	double lonDelta;
+	std::string xmlFile = "./test.xml";
 
 public:
 	MakeOSM();
@@ -31,6 +39,7 @@ public:
 	void pullOSMData(double lat, double lon);
 	Road* getRoads();
 	Intersection* getIntersections(Road* roads);
+	const boost::property_tree::ptree& empty_ptree();
 };
 
 } /* namespace PredictivePowertrain */

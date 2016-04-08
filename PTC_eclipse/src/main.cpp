@@ -7,12 +7,13 @@
 
 #include <iostream>
 #include <Eigen/Dense>
+#include <assert.h>
 
 #include "speed_prediction/SpeedPrediction.h"
 #include "map/GenericMap.h"
 #include "unit_tests/UnitTests.h"
+#include "OSM/MakeOSM.h"
 
-using namespace std;
 using namespace PredictivePowertrain;
 
 using Eigen::MatrixXd;
@@ -47,6 +48,10 @@ int main() {
 
 	// route_prediction muck around
 	// GenericMap<int, int> test;
+
+	// xml parser muck around
+	MakeOSM test;
+	test.getRoads();
 
 	return 0;
 }

@@ -10,6 +10,9 @@
 
 void link_UT();
 void route_ut();
+void probability_ut();
+void intersection_ut();
+void road_ut();
 
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

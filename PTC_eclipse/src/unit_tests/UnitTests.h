@@ -10,7 +10,6 @@
 
 void link_UT();
 void route_ut();
-void intersection_ut();
 
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

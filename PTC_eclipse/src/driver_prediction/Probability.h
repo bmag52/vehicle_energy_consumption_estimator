@@ -2,9 +2,11 @@
 #define PROBABILITY_H_
 
 class Probability{
-public:
+private:
 	int numerator;
 	int denominator;
+
+public:
 	Probability();
 	void addNumerator(int);
 	void addDenominator(int);

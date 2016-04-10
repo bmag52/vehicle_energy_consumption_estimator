@@ -31,7 +31,7 @@ class MakeOSM {
 private:
 	double latDelta;
 	double lonDelta;
-	std::string xmlFile = "./test.xml";
+	std::string xmlFile = "./greenlake.osm";
 
 public:
 	MakeOSM();

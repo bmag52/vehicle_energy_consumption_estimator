@@ -21,13 +21,15 @@ using namespace PredictivePowertrain;
 void intersection_ut(){
 	//Road(std::string roadType, int* elevationData, int* speedData, int roadID, double* lat, double* lon)
 	Road road1;
+	Road road2;
 
 
 	//Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum)
-	Intersection intersection1;
+	Intersection intersection1(&road1, 0, 0, 0, 0);
 	Intersection intersection2(&road1, 1.0, 1.0, 1, 1);
-	Intersection intersection3(&road1, 10.0, 10.0, 4, 5);
+	Intersection intersection3(&road2, 10.0, 10.0, 4, 5);
 	Intersection intersection4;
+	Intersection intersection5;
 
 	//Testing getNumber(), getElevation(), getLat(), and getLon()
 	assert(intersection1.getNumber() == 0 && intersection1.getElevation() == 0);
@@ -39,18 +41,19 @@ void intersection_ut(){
 
 	//Testing getRoads()
 	assert(intersection2.getRoads() == &road1);
-	assert(intersection3.getRoads() == &road1);
+	assert(intersection3.getRoads() == &road2);
 
 	//Testing addRoad() and getRoadCount()
-	intersection1.addRoad(&road1, 0);
-	assert(intersection1.getRoadCount() == 1);
+	intersection5.addRoad(&road2, 0);
+	assert(intersection5.getRoadCount() == 1);
 
 	//Testing getOutgoingLinks()
 	Link link1;
 	assert(intersection4.getOutgoingLinks() == &link1);
 
-	//Testing getAdjacentIntersection()
 
+	//Testing getAdjacentIntersection()
+	//assert(intersection4.getAdjacentIntersection() == NULL);
 
 	//Testing getNextIntersection()
 	assert(intersection4.getNextIntersection(&road1) == NULL);

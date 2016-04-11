@@ -6,7 +6,6 @@
  */
 
 #include <iostream>
-#include <Eigen/Dense>
 #include <assert.h>
 
 #include "speed_prediction/SpeedPrediction.h"

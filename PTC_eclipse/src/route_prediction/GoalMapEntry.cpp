@@ -9,7 +9,28 @@
 
 namespace PredictivePowertrain {
 
-void GoalMapEntry::increment_count() {
+GoalMapEntry::GoalMapEntry() {
+}
+
+GoalMapEntry::GoalMapEntry(Goal* goal) {
+}
+
+void GoalMapEntry::incrementCount() {
+}
+
+GoalMapEntry::~GoalMapEntry() {
+}
+
+Goal* GoalMapEntry::getGoalPtr() {
+	return &this->goal;
+}
+
+LinkToStateMapEntry* GoalMapEntry::getMapEntry(int key) {
+	return this->maps.getEntry(key);
+}
+
+int GoalMapEntry::getM() {
+	return this->m;
 }
 
 } /* namespace PredictivePowertrain */

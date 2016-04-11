@@ -13,20 +13,20 @@
 #include "../map/GenericMap.h"
 #include "../map/GenericEntry.h"
 
-#include "LinkStateMapEntry.h"
 #include "GoalMapEntry.h"
 #include "Goal.h"
+#include "LinkToStateMapEntry.h"
 
 namespace PredictivePowertrain {
 
 class LinkToStateMap {
 private:
-	GenericMap<int, LinkStateMapEntry*> linkMap;
+	GenericMap<int, LinkToStateMapEntry*> linkMap;
 	GenericMap<int, GoalMapEntry*> goalMap;
 
 public:
-	int incrementTransition(Link* link1, Goal* goal, Link* link2);
-	double getProbability(Link* link1, Link* link2, Goal* goal, bool isSimilar);
+	int incrementTransition(Link* lj, Goal* gj, Link* li);
+	double getProbability(Link* li, Link* lj, Goal* gj, bool isSimilar);
 	LinkToStateMap();
 	LinkToStateMap(LinkToStateMap& other);
 	virtual ~LinkToStateMap();

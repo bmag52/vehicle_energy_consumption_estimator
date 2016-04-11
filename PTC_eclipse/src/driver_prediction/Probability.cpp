@@ -1,5 +1,8 @@
 //
 #include "Probability.h"
+
+namespace PredictivePowertrain {
+
 Probability::Probability() {
 	this->numerator = 0;
 	this->denominator = 0;
@@ -17,5 +20,7 @@ double Probability::getProbability(){
 	if(this->denominator == 0)
 		return 0.0;
 	return (double)this->numerator/this->denominator;
+}
+
 }
 

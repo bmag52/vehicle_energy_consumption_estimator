@@ -12,9 +12,9 @@
 #include "../city/Intersection.h"
 
 // xml parse
-#include <boost/foreach.hpp>
-#include <boost/property_tree/ptree.hpp>
-#include <boost/property_tree/xml_parser.hpp>
+#include "boost/foreach.hpp"
+#include "boost/property_tree/ptree.hpp"
+#include "boost/property_tree/xml_parser.hpp"
 
 // query
 #include "boost/lexical_cast.hpp"
@@ -31,7 +31,7 @@ class MakeOSM {
 private:
 	double latDelta;
 	double lonDelta;
-	std::string xmlFile = "./greenlake.osm";
+	std::string xmlFile = "./test.xml";
 
 public:
 	MakeOSM();

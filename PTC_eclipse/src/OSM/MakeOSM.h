@@ -24,8 +24,6 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
-//#include <unistd.h>
-//#include <sys/stat.h>
 
 namespace PredictivePowertrain {
 
@@ -39,9 +37,11 @@ private:
 
 	const boost::property_tree::ptree& empty_ptree();
 	void makeQuery(std::string serverName, std::string getCommand, std::string fileName);
+	std::string getBin(double hi, double lo, int bins, double latLon);
 public:
 	MakeOSM();
 	MakeOSM(double latDelta, double lonDelta);
+	void pullSRTMData(double lat, double lon);
 	void pullOSMData(double lat, double lon);
 	Road* getRoads();
 	Intersection* getIntersections(Road* roads);

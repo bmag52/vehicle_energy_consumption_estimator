@@ -1,10 +1,13 @@
-#include <Eigen/Dense>
-#include <iostream>
-
-using Eigen::MatrixXd;
+/*
+ * MakeOSM.cpp
+ *
+ *  Created on: Apr 4, 2016
+ *      Author: vagrant
+ */
 
 #include "SpeedPrediction.h"
-#include <assert.h>
+
+using Eigen::MatrixXd;
 
 namespace PredictivePowertrain {
 

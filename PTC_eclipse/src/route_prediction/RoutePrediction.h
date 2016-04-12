@@ -17,6 +17,9 @@
 #include "Goal.h"
 #include "../city/Intersection.h"
 #include "../map/GenericMap.h"
+
+#include <algorithm>
+#include <assert.h>
 #include "stdlib.h"
 
 using namespace std;

@@ -36,7 +36,8 @@ end
 		"eclipse-cdt"
 		"libboost-all-dev"
 		"git"
-		"gdb")
+		"gdb"
+		"libc6")
 
 	for i in "${program[@]}"
 	do

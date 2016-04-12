@@ -8,20 +8,25 @@
 #ifndef ROUTE_PREDICTION_GOALMAPENTRY_H_
 #define ROUTE_PREDICTION_GOALMAPENTRY_H_
 #include "../map/GenericMap.h"
+#include "LinkToStateMapEntry.h"
 #include "Goal.h"
 
 namespace PredictivePowertrain {
 
-
 class GoalMapEntry {
-public:
-	GenericMap<int,int> maps;
+private:
+	GenericMap<int, LinkToStateMapEntry*> maps;
 	Goal goal;
 	int m;
+
+public:
 	GoalMapEntry();
-	GoalMapEntry(GoalMapEntry& other);
-	void increment_count();
+	GoalMapEntry(Goal* goal);
+	void incrementCount();
 	virtual ~GoalMapEntry();
+	Goal* getGoalPtr();
+	LinkToStateMapEntry* getMapEntry(int key);
+	int getM();
 };
 
 } /* namespace PredictivePowertrain */

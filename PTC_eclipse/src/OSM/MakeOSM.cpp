@@ -16,8 +16,8 @@ using namespace boost::property_tree;
 namespace PredictivePowertrain {
 
 MakeOSM::MakeOSM() {
-	this->latDelta = .005;
-	this->lonDelta = .005;
+	this->latDelta = .05;
+	this->lonDelta = .05;
 }
 
 MakeOSM::MakeOSM(double latDelta, double lonDelta) {
@@ -26,7 +26,6 @@ MakeOSM::MakeOSM(double latDelta, double lonDelta) {
 }
 
 void MakeOSM::pullOSMData(double lat, double lon) {
-
 	double lowLat = lat - .5*this->latDelta;
 	double lowLon = lon - .5*this->lonDelta;
 	double hiLat = lat + .5*this->latDelta;
@@ -39,7 +38,12 @@ void MakeOSM::pullOSMData(double lat, double lon) {
 	getCommand += lexical_cast<std::string>(hiLon); getCommand += ",";
 	getCommand += lexical_cast<std::string>(hiLat);
 
-	std::ofstream outFile(this->xmlFile, std::ofstream::out | std::ofstream::binary);
+	makeQuery(serverName, getCommand, this->mapFile);
+}
+
+void MakeOSM::makeQuery(std::string serverName, std::string getCommand, std::string fileName) {
+
+	std::ofstream outFile(fileName, std::ofstream::out | std::ofstream::binary);
 
 	boost::asio::io_service io_service;
 
@@ -108,15 +112,15 @@ void MakeOSM::pullOSMData(double lat, double lon) {
 Road* MakeOSM::getRoads() {
 	// check if osm file exists
 	Road* roads;
-	std::ifstream f(this->xmlFile);
-	if(f.good())
-	{
-		f.close();
-		return roads;
-	}
+//	std::ifstream f(this->xmlFile);
+//	if(f.good())
+//	{
+//		f.close();
+//		return roads;
+//	}
 
 	ptree tree;
-    read_xml(this->xmlFile, tree);
+    read_xml(this->testXml, tree);
     const ptree & formats = tree.get_child("pets", empty_ptree());
 
     BOOST_FOREACH(const ptree::value_type & f, formats){

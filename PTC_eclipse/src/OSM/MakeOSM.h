@@ -24,6 +24,8 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+//#include <unistd.h>
+//#include <sys/stat.h>
 
 namespace PredictivePowertrain {
 
@@ -31,15 +33,19 @@ class MakeOSM {
 private:
 	double latDelta;
 	double lonDelta;
-	std::string xmlFile = "./test.xml";
+	std::string mapFile = "./map.xml";
+	std::string eleFile = "./eleFile.aci";
+	std::string testXml = "./test.xml";
 
+	const boost::property_tree::ptree& empty_ptree();
+	void makeQuery(std::string serverName, std::string getCommand, std::string fileName);
 public:
 	MakeOSM();
 	MakeOSM(double latDelta, double lonDelta);
 	void pullOSMData(double lat, double lon);
 	Road* getRoads();
 	Intersection* getIntersections(Road* roads);
-	const boost::property_tree::ptree& empty_ptree();
+
 };
 
 } /* namespace PredictivePowertrain */

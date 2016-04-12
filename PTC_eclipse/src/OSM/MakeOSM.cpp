@@ -106,7 +106,14 @@ void MakeOSM::pullOSMData(double lat, double lon) {
 }
 
 Road* MakeOSM::getRoads() {
-	system("echo $PWD");
+	// check if osm file exists
+	Road* roads;
+	std::ifstream f(this->xmlFile);
+	if(f.good())
+	{
+		f.close();
+		return roads;
+	}
 
 	ptree tree;
     read_xml(this->xmlFile, tree);

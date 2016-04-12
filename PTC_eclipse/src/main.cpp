@@ -51,6 +51,8 @@ int main() {
 	// xml parser muck around
 	MakeOSM test;
 	test.getRoads();
+	test.pullOSMData(47.681, -122.328);
+	std::cout << "finished" << std::endl;
 
 	return 0;
 }

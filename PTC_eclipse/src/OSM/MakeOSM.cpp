@@ -41,6 +41,38 @@ void MakeOSM::pullOSMData(double lat, double lon) {
 	makeQuery(serverName, getCommand, this->mapFile);
 }
 
+void MakeOSM::pullSRTMData(double lat, double lon) {
+
+	std::string latBin = getBin(60.0, -56.75, 24, lat);
+	std::string lonBin = getBin(176.56, -180.0, 72, lon);
+
+	std::string serverName = "srtm.csi.cgiar.org";
+	std::string getCommand = "/SRT-ZIP/SRTM_v41/SRTM_Data_ArcASCII/srtm_";
+	getCommand += lonBin; getCommand += "_";
+	getCommand += latBin; getCommand += ".zip";
+
+	makeQuery(serverName, getCommand, this->eleFile);
+}
+
+std::string MakeOSM::getBin(double hi, double lo, int bins, double latLon) {
+	double inc = (hi - lo) / bins;
+	int bin;
+	for(bin = 1; bin < bins; bin++)
+	{
+		if(latLon < (lo + bin*inc)) { break; }
+	}
+
+	std::string out;
+	if(bin < 10)
+	{
+		out = "0";
+		out += lexical_cast<std::string>(bin);
+	} else {
+		out = lexical_cast<std::string>(bin);
+	}
+	return out;
+}
+
 void MakeOSM::makeQuery(std::string serverName, std::string getCommand, std::string fileName) {
 
 	std::ofstream outFile(fileName, std::ofstream::out | std::ofstream::binary);
@@ -106,18 +138,13 @@ void MakeOSM::makeQuery(std::string serverName, std::string getCommand, std::str
 	{
 		outFile << &response;
 	}
-
 }
 
 Road* MakeOSM::getRoads() {
 	// check if osm file exists
 	Road* roads;
-//	std::ifstream f(this->xmlFile);
-//	if(f.good())
-//	{
-//		f.close();
-//		return roads;
-//	}
+	std::ifstream f(this->testXml);
+	if(!f) { return roads; }
 
 	ptree tree;
     read_xml(this->testXml, tree);

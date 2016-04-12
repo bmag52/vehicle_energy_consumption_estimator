@@ -18,7 +18,7 @@ Compiled Object files
 
 # Map Data
 PTC_eclipse/map.xml
-PTC_eclipse/ele.xml
+PTC_eclipse/eleFile.aci
 
 # Compiled Static libraries
 *.lai

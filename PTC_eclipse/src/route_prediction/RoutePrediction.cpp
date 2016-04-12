@@ -7,11 +7,6 @@
 
 #include "RoutePrediction.h"
 
-#include <algorithm>
-#include <assert.h>
-
-using namespace std;
-
 namespace PredictivePowertrain {
 
 RoutePrediction::RoutePrediction() {

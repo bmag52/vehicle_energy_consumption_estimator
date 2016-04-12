@@ -11,11 +11,13 @@ using namespace boost::asio;
 using boost::asio::ip::tcp;
 using boost::lexical_cast;
 
+using namespace boost::property_tree;
+
 namespace PredictivePowertrain {
 
 MakeOSM::MakeOSM() {
-	this->latDelta = .005;
-	this->lonDelta = .005;
+	this->latDelta = .05;
+	this->lonDelta = .05;
 }
 
 MakeOSM::MakeOSM(double latDelta, double lonDelta) {
@@ -24,7 +26,6 @@ MakeOSM::MakeOSM(double latDelta, double lonDelta) {
 }
 
 void MakeOSM::pullOSMData(double lat, double lon) {
-
 	double lowLat = lat - .5*this->latDelta;
 	double lowLon = lon - .5*this->lonDelta;
 	double hiLat = lat + .5*this->latDelta;
@@ -37,7 +38,12 @@ void MakeOSM::pullOSMData(double lat, double lon) {
 	getCommand += lexical_cast<std::string>(hiLon); getCommand += ",";
 	getCommand += lexical_cast<std::string>(hiLat);
 
-	std::ofstream outFile("mapData.osm", std::ofstream::out | std::ofstream::binary);
+	makeQuery(serverName, getCommand, this->mapFile);
+}
+
+void MakeOSM::makeQuery(std::string serverName, std::string getCommand, std::string fileName) {
+
+	std::ofstream outFile(fileName, std::ofstream::out | std::ofstream::binary);
 
 	boost::asio::io_service io_service;
 
@@ -104,8 +110,33 @@ void MakeOSM::pullOSMData(double lat, double lon) {
 }
 
 Road* MakeOSM::getRoads() {
-	pugi::xml_document doc;
-	pugi::xml_parse_result result = doc.load_file("mapData.osm");
+	// check if osm file exists
+	Road* roads;
+//	std::ifstream f(this->xmlFile);
+//	if(f.good())
+//	{
+//		f.close();
+//		return roads;
+//	}
+
+	ptree tree;
+    read_xml(this->testXml, tree);
+    const ptree & formats = tree.get_child("pets", empty_ptree());
+
+    BOOST_FOREACH(const ptree::value_type & f, formats){
+        std::string at = f.first + ".<xmlattr>";
+        const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
+        std::cout << "Extracting attributes from " << at << ":" << std::endl;
+
+        BOOST_FOREACH(const ptree::value_type &v, attributes){
+            std::cout << "First: " << v.first.data() << " Second: " << v.second.data() << std::endl;
+        }
+    }
+}
+
+const ptree& MakeOSM::empty_ptree() {
+    static ptree t;
+    return t;
 }
 
 }

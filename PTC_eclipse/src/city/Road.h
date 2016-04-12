@@ -9,6 +9,7 @@
 #define ROAD_H_
 
 #include "../map/GenericMap.h"
+#include "../OSM/Node.h"
 #include <string>
 
 namespace PredictivePowertrain {
@@ -19,9 +20,7 @@ class Road {
 private:
 	int* elevationData;
 	int* speedLimitData;
-	double* lat;
-	double* lon;
-	GenericMap<int, int> nodes;
+	GenericMap<int, Node*> nodes;
 	Intersection* startNode;
 	Intersection* endNode;
 //	RoadTypes roadType;
@@ -29,7 +28,7 @@ private:
 
 public:
 	Road();
-	Road(std::string roadType, int* elevationData, int* speedData, int roadID, double* lat, double* lon);
+	Road(std::string roadType, int* elevationData, int* speedData, int roadID);
 	virtual ~Road();
 	void setStartNode(Intersection* startNode);
 	void setEndNode(Intersection* endNode);

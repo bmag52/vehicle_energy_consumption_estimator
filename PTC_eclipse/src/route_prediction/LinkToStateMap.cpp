@@ -6,6 +6,10 @@
  */
 
 #include "LinkToStateMap.h"
+#include "../driver_prediction/Probability.h"
+#include "../map/GenericEntry.h"
+#include "Goal.h"
+#include "../drive_prediction/Link.h"
 
 namespace PredictivePowertrain {
 

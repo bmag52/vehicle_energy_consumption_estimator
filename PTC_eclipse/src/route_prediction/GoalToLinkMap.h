@@ -17,8 +17,10 @@
 namespace PredictivePowertrain {
 
 class GoalToLinkMap {
+private:
+	GenericMap<int,GoalMapEntry*> goalMap;
+	GenericMap<int, int> linkHashCounts;
 public:
-	GenericMap<int,GoalMapEntry*> maps;
 	int maps_size;
 	GoalToLinkMap();
 	GoalToLinkMap(GoalToLinkMap &other);

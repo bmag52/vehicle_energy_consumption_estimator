@@ -38,29 +38,98 @@ void MakeOSM::pullOSMData(double lat, double lon) {
 	getCommand += lexical_cast<std::string>(hiLon); getCommand += ",";
 	getCommand += lexical_cast<std::string>(hiLat);
 
-	makeQuery(serverName, getCommand, this->mapFile);
+	queryFile(serverName, getCommand, this->mapFile);
 }
 
 void MakeOSM::pullSRTMData(double lat, double lon) {
 
-	std::string latBin = getBin(60.0, -56.75, 24, lat);
-	std::string lonBin = getBin(176.56, -180.0, 72, lon);
+	// get bin for given lat and lon
+	std::string latBin = getBin(60.0, -56.75, 24, lat, true);
+	std::string lonBin = getBin(176.56, -180.0, 72, lon, false);
 
-	std::string serverName = "srtm.csi.cgiar.org";
-	std::string getCommand = "/SRT-ZIP/SRTM_v41/SRTM_Data_ArcASCII/srtm_";
-	getCommand += lonBin; getCommand += "_";
-	getCommand += latBin; getCommand += ".zip";
+	// create srtm file name from bins
+	std::string srtmName = "srtm_";
+	srtmName += lonBin; srtmName += "_";
+	srtmName += latBin;
 
-	makeQuery(serverName, getCommand, this->eleFile);
+	// check if srtm file already exists
+	// pull it if not
+	this->eleFile = srtmName + ".asc";
+	std::ifstream test(this->eleFile);
+	if(!test)
+	{
+		// queary srtm for ele data
+		std::string serverName = "srtm.csi.cgiar.org";
+		std::string getCommand = "/SRT-ZIP/SRTM_v41/SRTM_Data_ArcASCII/";
+
+		getCommand += srtmName;
+		getCommand += ".zip";
+
+		std::string wgetData = "wget http://";
+		wgetData += serverName;
+		wgetData += getCommand;
+		const char* wgetDataChar = wgetData.c_str();
+		system(wgetDataChar);
+
+		// unpack zip
+		std::string unzipData = "unzip ";
+		unzipData += srtmName;
+		unzipData += ".zip";
+		const char* unzipDataChar = unzipData.c_str();
+		system(unzipDataChar);
+	}
+	test.close();
+
+	// read file
+	std::ifstream ifs;
+	ifs.open(this->eleFile);
+	bool isopen = ifs.is_open();
+	if(ifs.is_open())
+	{
+		std::string line;
+		double eleFeatures[6];
+
+		std::string feature;
+		for(int i = 0; i < 6; i++)
+		{
+			getline(ifs, line);
+			std::stringstream ss(line);
+			ss >> feature;
+			ss >> eleFeatures[i];
+		}
+
+		this->numEleCols = eleFeatures[0];
+		this->numEleRows = eleFeatures[1];
+		this->eleLowerLeftLon = eleFeatures[2];
+		this->eleLowerLeftLat = eleFeatures[3];
+		this->eleCellSize = eleFeatures[4];
+		this->voidEle = eleFeatures[5];
+
+		int row = 0;
+		int col = 0;
+		int **eleRay = new int*[this->numEleRows];
+		while(getline(ifs, line))
+		{
+			col = 0;
+			std::stringstream ss(line);
+			eleRay[row] = new int[this->numEleCols];
+			while(ss >> eleRay[row][col]) { col++; }
+			row++;
+		}
+		ifs.close();
+		this->eleData = eleRay;
+	}
 }
 
-std::string MakeOSM::getBin(double hi, double lo, int bins, double latLon) {
+std::string MakeOSM::getBin(double hi, double lo, int bins, double latLon, bool isLat) {
 	double inc = (hi - lo) / bins;
 	int bin;
 	for(bin = 1; bin < bins; bin++)
 	{
 		if(latLon < (lo + bin*inc)) { break; }
 	}
+
+	if(isLat) { bin = bins - bin + 1; }
 
 	std::string out;
 	if(bin < 10)
@@ -73,7 +142,7 @@ std::string MakeOSM::getBin(double hi, double lo, int bins, double latLon) {
 	return out;
 }
 
-void MakeOSM::makeQuery(std::string serverName, std::string getCommand, std::string fileName) {
+void MakeOSM::queryFile(std::string serverName, std::string getCommand, std::string fileName) {
 
 	std::ofstream outFile(fileName, std::ofstream::out | std::ofstream::binary);
 

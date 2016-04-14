@@ -20,8 +20,10 @@
 #include "boost/lexical_cast.hpp"
 #include "boost/asio.hpp"
 
-#include <fstream>
 #include <iostream>
+#include <fstream>
+#include <stdlib.h>
+#include <stdio.h>
 #include <string>
 #include <stdlib.h>
 
@@ -34,10 +36,18 @@ private:
 	std::string mapFile = "./map.xml";
 	std::string eleFile = "./eleFile.aci";
 	std::string testXml = "./test.xml";
+	int** eleData;
+	int numEleCols;
+	int numEleRows;
+	int eleLowerLeftLat;
+	int eleLowerLeftLon;
+	double eleCellSize;
+	int voidEle;
+
 
 	const boost::property_tree::ptree& empty_ptree();
-	void makeQuery(std::string serverName, std::string getCommand, std::string fileName);
-	std::string getBin(double hi, double lo, int bins, double latLon);
+	void queryFile(std::string serverName, std::string getCommand, std::string fileName);
+	std::string getBin(double hi, double lo, int bins, double latLon, bool isLat);
 public:
 	MakeOSM();
 	MakeOSM(double latDelta, double lonDelta);

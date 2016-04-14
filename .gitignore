@@ -35,6 +35,8 @@ PTC_eclipse/eleFile.aci
 PTC_eclipse/linaro_EVB
 PTC_eclipse/linaro_linux
 PTC_eclipse/Debug
+PTC_eclipse/srtm*
+PTC_eclipse/readme*
 
 # Eclipse Ish
 .metadata

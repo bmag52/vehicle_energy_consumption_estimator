@@ -37,7 +37,7 @@ end
 		"libboost-all-dev"
 		"git"
 		"gdb"
-		"libc6")
+		"unzip")
 
 	for i in "${program[@]}"
 	do

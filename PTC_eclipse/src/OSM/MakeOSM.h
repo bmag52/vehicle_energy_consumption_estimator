@@ -39,8 +39,8 @@ private:
 	int** eleData;
 	int numEleCols;
 	int numEleRows;
-	int eleLowerLeftLat;
-	int eleLowerLeftLon;
+	double eleLowerLeftLat;
+	double eleLowerLeftLon;
 	double eleCellSize;
 	int voidEle;
 

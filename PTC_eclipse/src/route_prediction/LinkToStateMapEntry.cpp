@@ -6,16 +6,13 @@
  */
 
 #include "LinkToStateMapEntry.h"
-#include <iostream>
 
-using namespace std;
 namespace PredictivePowertrain {
 
 LinkToStateMapEntry::LinkToStateMapEntry() {
 }
 
-//adds the link to the object, if this is the first time this link
-//is added to m, m=1, otherwise, m++ for that link
+
 int LinkToStateMapEntry::addEntry(Link* li) {
 	int linkHash = li->getHash();
 	if (this->entries.hashInMap(linkHash)){

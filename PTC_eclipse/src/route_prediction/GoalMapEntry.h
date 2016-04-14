@@ -7,7 +7,7 @@
 
 #ifndef ROUTE_PREDICTION_GOALMAPENTRY_H_
 #define ROUTE_PREDICTION_GOALMAPENTRY_H_
-#include "GenericMap.h"
+#include "../map/GenericMap.h"
 #include "Goal.h"
 
 namespace PredictivePowertrain {

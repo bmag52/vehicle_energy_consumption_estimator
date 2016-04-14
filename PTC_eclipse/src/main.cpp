@@ -9,7 +9,7 @@
 #include <Eigen/Dense>
 
 #include "speed_prediction/SpeedPrediction.h"
-#include "route_prediction/GenericMap.h"
+#include "map/GenericMap.h"
 #include "unit_tests/UnitTests.h"
 
 using namespace std;
@@ -26,10 +26,14 @@ int main() {
 	route_UT();
 =======
 	// link_UT();
+<<<<<<< HEAD
 >>>>>>> master
+=======
+	// route_ut();
+>>>>>>> origin/master
 
 	// speed_prediction muck around
-	SpeedPredictionObj sp;
+	SpeedPrediction sp;
 
 	int I = sp.getI();
 	int O = sp.getO();

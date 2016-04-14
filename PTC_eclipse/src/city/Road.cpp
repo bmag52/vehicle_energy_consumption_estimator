@@ -12,11 +12,13 @@ namespace PredictivePowertrain {
 Road::Road() {
 }
 
-Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID) {
+Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID, double* lat, double* lon) {
 	this->elevationData = elevationData;
 	this->speedLimitData = speedData;
 //	this-> = new RoadTypes(roadType);
 	this->roadID = roadID;
+	this->lat = lat;
+	this->lon = lon;
 }
 
 void Road::setStartNode(Intersection* startNode) {

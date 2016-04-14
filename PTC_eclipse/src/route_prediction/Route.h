@@ -26,7 +26,7 @@ public:
 	Route();
 	Route(Link* links, Goal* goal);
 	void addlink(Link* link);
-	bool isequal(Route other);
+	bool isequal(Route* other);
 	int getGoalHash();
 	int getLinkSize();
 	Link* getEntry(int index);
@@ -39,7 +39,7 @@ public:
 	Link* getLastLinkPtr();;
 	Route* copy();
 	void removeFirstLink();
-	Link nextlink();
+	Link* nextlink();
 };
 
 }

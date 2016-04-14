@@ -7,7 +7,7 @@
 
 #ifndef ROUTE_PREDICTION_GOALTOLINKMAP_H_
 #define ROUTE_PREDICTION_GOALTOLINKMAP_H_
-#include "GenericMap.h"
+#include "../map/GenericMap.h"
 #include "GoalMapEntry.h"
 #include "../driver_prediction/Link.h"
 #include "Goal.h"

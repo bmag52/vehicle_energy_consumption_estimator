@@ -5,8 +5,8 @@
  *      Author: vagrant
  */
 
-#ifndef OSM_MAKEOSM_H_
-#define OSM_MAKEOSM_H_
+#ifndef DATACOLLECTION_MAKEOSM_H_
+#define DATACOLLECTION_MAKEOSM_H_
 
 #include "../city/Road.h"
 #include "../city/Intersection.h"
@@ -26,15 +26,17 @@
 #include <stdio.h>
 #include <string>
 #include <stdlib.h>
+#include <sys/stat.h>
 
 namespace PredictivePowertrain {
 
-class MakeOSM {
+class DataCollection {
 private:
 	double latDelta;
 	double lonDelta;
-	std::string mapFile = "./map.xml";
-	std::string eleFile = "./eleFile.aci";
+	std::string mapFile;
+	std::string eleFile;
+	std::string dataFolder = "data";
 	std::string testXml = "./test.xml";
 	int** eleData;
 	int numEleCols;
@@ -48,16 +50,16 @@ private:
 	const boost::property_tree::ptree& empty_ptree();
 	void queryFile(std::string serverName, std::string getCommand, std::string fileName);
 	std::string getBin(double hi, double lo, int bins, double latLon, bool isLat);
+	void checkDataFoler();
 public:
-	MakeOSM();
-	MakeOSM(double latDelta, double lonDelta);
+	DataCollection();
+	DataCollection(double latDelta, double lonDelta);
 	void pullSRTMData(double lat, double lon);
 	void pullOSMData(double lat, double lon);
-	Road* getRoads();
 	Intersection* getIntersections(Road* roads);
 
 };
 
 } /* namespace PredictivePowertrain */
 
-#endif /* OSM_MAKEOSM_H_ */
+#endif /* DATACOLLECTION_MAKEOSM_H_ */

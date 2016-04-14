@@ -9,8 +9,8 @@
 #define ROAD_H_
 
 #include "../map/GenericMap.h"
-#include "../OSM/Node.h"
 #include <string>
+#include "../data_collection/Node.h"
 
 namespace PredictivePowertrain {
 

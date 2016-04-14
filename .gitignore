@@ -16,6 +16,10 @@ Compiled Object files
 # Fortran module files
 *.mod
 
+# Map Data
+PTC_eclipse/map.xml
+PTC_eclipse/eleFile.aci
+
 # Compiled Static libraries
 *.lai
 *.la
@@ -31,6 +35,8 @@ Compiled Object files
 PTC_eclipse/linaro_EVB
 PTC_eclipse/linaro_linux
 PTC_eclipse/Debug
+PTC_eclipse/srtm*
+PTC_eclipse/readme*
 
 # Eclipse Ish
 .metadata

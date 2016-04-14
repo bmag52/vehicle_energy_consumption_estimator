@@ -36,7 +36,8 @@ end
 		"eclipse-cdt"
 		"libboost-all-dev"
 		"git"
-		"gdb")
+		"gdb"
+		"unzip")
 
 	for i in "${program[@]}"
 	do

@@ -8,6 +8,10 @@
 #ifndef SPEED_PREDICTION_SPEEDPREDICTION_H_
 #define SPEED_PREDICTION_SPEEDPREDICTION_H_
 
+#include <eigen3/Eigen/Dense>
+#include <iostream>
+#include <assert.h>
+
 namespace PredictivePowertrain {
 
 class SpeedPrediction {

@@ -7,11 +7,6 @@
 
 #include "RoutePrediction.h"
 
-#include <algorithm>
-#include <assert.h>
-
-using namespace std;
-
 namespace PredictivePowertrain {
 
 RoutePrediction::RoutePrediction() {
@@ -158,7 +153,8 @@ void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,
 	// generate reused fields
 	int* hash;
 	Link* li;
-	Goal* gi, gj;
+	Goal* gi;
+	Goal* gj;
 	double pSi, pGl, pLs, minProbability;
 	pair<Link*, Goal*>* sj;
 	int counter = 0;

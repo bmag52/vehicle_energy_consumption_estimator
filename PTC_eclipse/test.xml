@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pets>
+    <pet type="cat" name="Garfield" weight="4Kg">
+        <somestuff/>
+    </pet>
+    <pet type="dog" name="Milu" weight="7Kg">
+        <somestuff/>
+    </pet>
+    <pet type="bird" name="Tweety" weight="0.1Kg">
+        <somestuff/>
+    </pet>
+</pets>

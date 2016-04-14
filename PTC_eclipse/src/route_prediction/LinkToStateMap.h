@@ -16,6 +16,7 @@
 #include "GoalMapEntry.h"
 #include "Goal.h"
 #include "LinkToStateMapEntry.h"
+#include "../driver_prediction/Link.h"
 
 namespace PredictivePowertrain {
 
@@ -25,8 +26,6 @@ private:
 	GenericMap<int, GoalMapEntry*> goalMap;
 
 public:
-	int incrementTransition(Link* link1, Goal* goal, Link* link2);
-	double getProbability(Link* link1, Link* link2, Goal * goal, bool isSimilar);
 	int incrementTransition(Link* lj, Goal* gj, Link* li);
 	double getProbability(Link* li, Link* lj, Goal* gj, bool isSimilar);
 	LinkToStateMap();

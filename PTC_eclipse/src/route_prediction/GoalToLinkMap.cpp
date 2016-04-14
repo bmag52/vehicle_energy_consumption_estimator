@@ -20,50 +20,56 @@ GoalToLinkMap::GoalToLinkMap(GoalToLinkMap& other) {
 int GoalToLinkMap::linkTraversed(Link* link, Goal* goal) {
 	int goalHash = goal->getHash();
 	GoalMapEntry goalEntry;
-	if(!goalMap.hashInMap(goalHash)) {
+	if(!this->goalMap.hashInMap(goalHash)) {
 		goalEntry = GoalMapEntry(goal);
-		goalMap.addEntry(goalHash, &goalEntry);
+		this->goalMap.addEntry(goalHash, &goalEntry);
 	} else {
-		goalEntry = goalMap.getEntry(goalHash);
+		goalEntry = *this->goalMap.getEntry(goalHash);
 	}
 	goalEntry.incrementCount();
 	int linkHash = link->getHash();
-	int count = 1 + linkHashCounts.getEntry(linkHash);
-	linkMap.addEntry(linkHash, count);
+	int count = 1 + this->linkHashCounts.getEntry(linkHash);
+	this->linkHashCounts.addEntry(linkHash, count);
 	return count;
 }
 
-double GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal *goal, bool isSimilar) {
+double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link * link, Goal *goal, bool isSimilar) {
 	// todo probabilityOfGoalGivenLink(Link * link, Goal *goal, bool isSimilar)
-	goalMap.initializeCounter();
-	GenericEntry<int, GoalMapEntry*> * goalEntry = goalMap.nextEntry();
-	int prob[goalMap.getSize()][2];
+	this->goalMap.initializeCounter();
+	GenericEntry<int, GoalMapEntry*> * goalEntry = this->goalMap.nextEntry();
+	double** prob = new double*[this->goalMap.getSize()];
 	int probCount = 0;
 	int totalLinkCount = 0;
 	while(goalEntry->key != -1) {
+		prob[probCount] = new double[2];
 		int linkCount;
 		int linkHash = link->getHash();
-		if(goal->isSimilar((goalEntry->value)->goal)) {
-			linkCount = linkHashCounts.getEntry(linkHash);
+		if(goal->isSimilar((goalEntry->value)->getGoalPtr())) {
+			linkCount = this->linkHashCounts.getEntry(linkHash);
 		} else {
 			linkCount = 0;
 		}
-		int goalHash = (goalEntry->value)->goal.getHash();
-		totalLinkCount = totalLinkCount + linkCount;
+		int goalHash = (goalEntry->value)->getGoalPtr()->getHash();
+		totalLinkCount += linkCount;
 		prob[probCount][0]= goalHash;
 		prob[probCount][1] = linkCount;
 		probCount++;
-		goalEntry = goalMap.nextEntry();
+		goalEntry = this->goalMap.nextEntry();
 	}
 	/*
 	 * line 61 in matlab version -- I believe it is supposed to return the average of all the
 	 * probabilities, so that is what I am doing here.
+	 * CHECK OUT THE CHANGE BELOW
 	*/
-	double probSum = 0.0;
-	for (int i = 0; i < prob.length; i++) {
-		probSum += prob[i][1];
+	int probLength = sizeof(*prob)/sizeof(int);
+	for (int i = 0; i < probLength; i++) {
+		prob[i][1] /= (double)((int)(totalLinkCount>0)*totalLinkCount+(int)(totalLinkCount<=0));
 	}
-	return probSum / prob.length;
+	return prob;
+}
+
+double GoalToLinkMap::probabilityOfGoalGivenLink(Link* link, Goal* goal, bool isSimilar) {
+	// TODO probabilityOfGoalGivenLink
 }
 
 GoalToLinkMap::~GoalToLinkMap() {

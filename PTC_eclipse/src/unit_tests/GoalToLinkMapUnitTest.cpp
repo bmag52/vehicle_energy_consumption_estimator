@@ -60,12 +60,12 @@ void goalToLinkMap_UT() {
 
 	// Test 4: getting probabilities with similar goals
 	GoalToLinkMap map5;
-	assert(map5.linkTraversed(&(links[0]), &goal1) == 1); // count for link[0], goal1 is not 1 after first add
-	assert(map5.linkTraversed(&(links[0]), &goal3) == 1); // count for link[0], goal3 is not 1 after first add
-	assert(map5.linkTraversed(&(links[1]), &goal1) == 1); // count for link[1], goal1 is not 1 after first add
-	assert(map5.linkTraversed(&(links[1]), &goal3) == 1); // count for link[1], goal3 is not 1 after first add
-	assert(map5.probabilityOfGoalGivenLink(&(links[0]), &goal1, false) == (1/2)); //probability of goal 1 when all goals are considered is not 0.5 when at link[0]
-	assert(map5.probabilityOfGoalGivenLink(&(links[0]), &goal1, true) == (1/2)); //probability of goal 1 when similar goals are considered is not 0.5 when at link[0
+	assert(map5.linkTraversed(&(links[0]), &goal1) == 1);
+	assert(map5.linkTraversed(&(links[0]), &goal3) == 1);
+	assert(map5.linkTraversed(&(links[1]), &goal1) == 1);
+	assert(map5.linkTraversed(&(links[1]), &goal3) == 1);
+	assert(map5.probabilityOfGoalGivenLink(&(links[0]), &goal1, false) == (1/2));
+	assert(map5.probabilityOfGoalGivenLink(&(links[0]), &goal1, true) == (1/2));
 
 	// Test 5: getting probabilities with some similar and some not so similar goals
 	GoalToLinkMap map6;

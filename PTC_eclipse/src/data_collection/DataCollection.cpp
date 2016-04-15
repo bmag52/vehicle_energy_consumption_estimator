@@ -59,6 +59,7 @@ void DataCollection::pullOSMData(double lat, double lon) {
 	Road* roads;
 	ptree tree;
 	read_xml(mapFilePath, tree);
+	std::cout << tree.size() << std::endl;
 	const ptree& formats = tree.get_child("meta", empty_ptree());
 
 	BOOST_FOREACH(const ptree::value_type & f, formats){

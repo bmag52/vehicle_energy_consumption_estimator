@@ -33,7 +33,7 @@ int GoalToLinkMap::linkTraversed(Link* link, Goal* goal) {
 	return count;
 }
 
-double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link * link, Goal *goal, bool isSimilar) {
+double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link* link, Goal* goal, bool isSimilar) {
 	// todo probabilityOfGoalGivenLink(Link * link, Goal *goal, bool isSimilar)
 	this->goalMap.initializeCounter();
 	GenericEntry<int, GoalMapEntry*> * goalEntry = this->goalMap.nextEntry();

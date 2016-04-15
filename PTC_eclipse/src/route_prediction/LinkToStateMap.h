@@ -16,6 +16,7 @@
 #include "GoalMapEntry.h"
 #include "Goal.h"
 #include "LinkToStateMapEntry.h"
+#include "../driver_prediction/Link.h"
 
 namespace PredictivePowertrain {
 

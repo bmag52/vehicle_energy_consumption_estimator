@@ -8,10 +8,10 @@
 #include <iostream>
 #include <assert.h>
 
+#include "data_collection/DataCollection.h"
 #include "speed_prediction/SpeedPrediction.h"
 #include "map/GenericMap.h"
 #include "unit_tests/UnitTests.h"
-#include "OSM/MakeOSM.h"
 
 using namespace PredictivePowertrain;
 
@@ -57,9 +57,9 @@ int main() {
 	// GenericMap<int, int> test;
 
 	// xml parser muck around
-	MakeOSM test;
-	test.getRoads();
-//	test.pullOSMData(47.681, -122.328);
+	DataCollection test;
+//	test.getRoads();
+	test.pullOSMData(47.681, -122.328);
 	test.pullSRTMData(47.681, -122.328);
 	std::cout << "finished" << std::endl;
 

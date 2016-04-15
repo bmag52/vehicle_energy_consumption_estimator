@@ -10,15 +10,19 @@
 namespace PredictivePowertrain {
 
 GoalMapEntry::GoalMapEntry() {
+	this->m = 0;
 }
 
 GoalMapEntry::GoalMapEntry(Goal* goal) {
-}
-
-void GoalMapEntry::incrementCount() {
+	this->m = 0;
+	this->goal = goal;
 }
 
 GoalMapEntry::~GoalMapEntry() {
+}
+
+void GoalMapEntry::incrementCount() {
+	this->m++;
 }
 
 Goal* GoalMapEntry::getGoalPtr() {

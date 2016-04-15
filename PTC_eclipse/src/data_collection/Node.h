@@ -5,8 +5,8 @@
  *      Author: vagrant
  */
 
-#ifndef OSM_NODE_H_
-#define OSM_NODE_H_
+#ifndef DATACOLLECTION_NODE_H_
+#define DATACOLLECTION_NODE_H_
 
 namespace PredictivePowertrain {
 
@@ -28,4 +28,4 @@ public:
 
 }
 
-#endif /* OSM_NODE_H_ */
+#endif /* DATACOLLECTION_NODE_H_ */

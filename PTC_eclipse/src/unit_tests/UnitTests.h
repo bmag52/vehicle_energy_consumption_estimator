@@ -15,6 +15,10 @@ void route_UT();
 =======
 void route_ut();
 void intersection_ut();
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
+void linkToStateMapEntry_ut();
 >>>>>>> origin/master
 
 

@@ -5,7 +5,7 @@
  *      Author: vagrant
  */
 
-#include "MakeOSM.h"
+#include "DataCollection.h"
 
 using namespace boost::asio;
 using boost::asio::ip::tcp;
@@ -15,68 +15,91 @@ using namespace boost::property_tree;
 
 namespace PredictivePowertrain {
 
-MakeOSM::MakeOSM() {
-	this->latDelta = .05;
-	this->lonDelta = .05;
+DataCollection::DataCollection() {
+	this->latDelta = .009;
+	this->lonDelta = .009;
+	checkDataFoler();
 }
 
-MakeOSM::MakeOSM(double latDelta, double lonDelta) {
+DataCollection::DataCollection(double latDelta, double lonDelta) {
 	this->latDelta = latDelta;
 	this->lonDelta = lonDelta;
+	checkDataFoler();
 }
 
-void MakeOSM::pullOSMData(double lat, double lon) {
-	double lowLat = lat - .5*this->latDelta;
-	double lowLon = lon - .5*this->lonDelta;
-	double hiLat = lat + .5*this->latDelta;
-	double hiLon = lon + .5*this->lonDelta;
+void DataCollection::pullOSMData(double lat, double lon) {
+	std::cout << "pulling OSM data ..." << std::endl;
 
-	std::string serverName = "overpass-api.de";
-	std::string getCommand = "/api/map?bbox=";
-	getCommand += lexical_cast<std::string>(lowLon); getCommand += ",";
-	getCommand += lexical_cast<std::string>(lowLat); getCommand += ",";
-	getCommand += lexical_cast<std::string>(hiLon); getCommand += ",";
-	getCommand += lexical_cast<std::string>(hiLat);
+	this->mapFile = "mapFile_";
+	this->mapFile += lexical_cast<std::string>((int)lat) + "_";
+	this->mapFile += lexical_cast<std::string>((int)lon) + ".xml";
 
-	queryFile(serverName, getCommand, this->mapFile);
+	std::string mapFilePath = this->dataFolder + "/" + this->mapFile;
+
+	std::ifstream test(mapFilePath);
+	if(!test)
+	{
+		double lowLat = lat - .5*this->latDelta;
+		double lowLon = lon - .5*this->lonDelta;
+		double hiLat = lat + .5*this->latDelta;
+		double hiLon = lon + .5*this->lonDelta;
+
+		std::string serverName = "overpass-api.de";
+		std::string getCommand = "/api/map?bbox=";
+		getCommand += lexical_cast<std::string>(lowLon) + ",";
+		getCommand += lexical_cast<std::string>(lowLat) + ",";
+		getCommand += lexical_cast<std::string>(hiLon) + ",";
+		getCommand += lexical_cast<std::string>(hiLat);
+
+		queryFile(serverName, getCommand, this->mapFile);
+	}
+	test.close();
+
+	// check if osm file exists
+	Road* roads;
+	ptree tree;
+	read_xml(mapFilePath, tree);
+	const ptree& formats = tree.get_child("meta", empty_ptree());
+
+	BOOST_FOREACH(const ptree::value_type & f, formats){
+		std::string at = f.first + ".<xmlattr>";
+		std::cout << "First: " << at << std::endl;
+		const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
+
+		BOOST_FOREACH(const ptree::value_type &v, attributes){
+			std::cout << "First: " << v.first.data() << " Second: " << v.second.data() << std::endl;
+		}
+	}
 }
 
-void MakeOSM::pullSRTMData(double lat, double lon) {
+void DataCollection::pullSRTMData(double lat, double lon) {
+	std::cout << "pulling SRTM data ... " << std::endl;
 
 	// get bin for given lat and lon
 	std::string latBin = getBin(60.0, -56.75, 24, lat, true);
 	std::string lonBin = getBin(176.56, -180.0, 72, lon, false);
 
 	// create srtm file name from bins
-	std::string srtmName = "srtm_";
-	srtmName += lonBin; srtmName += "_";
-	srtmName += latBin;
+	std::string srtmName = "srtm_" + lonBin + "_" + latBin;
 
 	// check if srtm file already exists
 	// pull it if not
 	this->eleFile = srtmName + ".asc";
-	std::ifstream test(this->eleFile);
+	std::ifstream test(this->dataFolder + "/" + this->eleFile);
 	if(!test)
 	{
 		// queary srtm for ele data
+		std::string srtmZip = this->dataFolder + "/" + srtmName + ".zip";
 		std::string serverName = "srtm.csi.cgiar.org";
-		std::string getCommand = "/SRT-ZIP/SRTM_v41/SRTM_Data_ArcASCII/";
+		std::string getCommand = "/SRT-ZIP/SRTM_v41/SRTM_Data_ArcASCII/" + srtmName + ".zip";
 
-		getCommand += srtmName;
-		getCommand += ".zip";
-
-		std::string wgetData = "wget http://";
-		wgetData += serverName;
-		wgetData += getCommand;
-		const char* wgetDataChar = wgetData.c_str();
-		system(wgetDataChar);
+		// place download
+		std::string wget = "wget -O " + srtmZip + " http://" + serverName + getCommand;
+		system(wget.c_str());
 
 		// unpack zip
-		std::string unzipData = "unzip ";
-		unzipData += srtmName;
-		unzipData += ".zip";
-		const char* unzipDataChar = unzipData.c_str();
-		system(unzipDataChar);
+		std::string unzip = "sudo unzip " + srtmZip + " -d " + this->dataFolder;
+		system(unzip.c_str());
 	}
 	test.close();
 
@@ -121,7 +144,7 @@ void MakeOSM::pullSRTMData(double lat, double lon) {
 	}
 }
 
-std::string MakeOSM::getBin(double hi, double lo, int bins, double latLon, bool isLat) {
+std::string DataCollection::getBin(double hi, double lo, int bins, double latLon, bool isLat) {
 	double inc = (hi - lo) / bins;
 	int bin;
 	for(bin = 1; bin < bins; bin++)
@@ -142,9 +165,9 @@ std::string MakeOSM::getBin(double hi, double lo, int bins, double latLon, bool 
 	return out;
 }
 
-void MakeOSM::queryFile(std::string serverName, std::string getCommand, std::string fileName) {
+void DataCollection::queryFile(std::string serverName, std::string getCommand, std::string fileName) {
 
-	std::ofstream outFile(fileName, std::ofstream::out | std::ofstream::binary);
+	std::ofstream outFile(this->dataFolder + "/" + fileName, std::ofstream::out | std::ofstream::binary);
 
 	boost::asio::io_service io_service;
 
@@ -209,28 +232,16 @@ void MakeOSM::queryFile(std::string serverName, std::string getCommand, std::str
 	}
 }
 
-Road* MakeOSM::getRoads() {
-	// check if osm file exists
-	Road* roads;
-	std::ifstream f(this->testXml);
-	if(!f) { return roads; }
-
-	ptree tree;
-    read_xml(this->testXml, tree);
-    const ptree & formats = tree.get_child("pets", empty_ptree());
-
-    BOOST_FOREACH(const ptree::value_type & f, formats){
-        std::string at = f.first + ".<xmlattr>";
-        const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
-        std::cout << "Extracting attributes from " << at << ":" << std::endl;
-
-        BOOST_FOREACH(const ptree::value_type &v, attributes){
-            std::cout << "First: " << v.first.data() << " Second: " << v.second.data() << std::endl;
-        }
-    }
+void DataCollection::checkDataFoler() {
+	struct stat sb;
+	if(!(stat(this->dataFolder.c_str(), &sb) == 0 && S_ISDIR(sb.st_mode)))
+	{
+		std::string mkdir = "mkdir " + this->dataFolder;
+		system(mkdir.c_str());
+	}
 }
 
-const ptree& MakeOSM::empty_ptree() {
+const ptree& DataCollection::empty_ptree() {
     static ptree t;
     return t;
 }

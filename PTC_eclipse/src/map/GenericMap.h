@@ -35,6 +35,7 @@ public:
 	typename std::map<K,V>::iterator end();
 	int getSize();
 	int addEntry(K key, V value);
+	void updateEntry(K key, V value);
 	virtual ~GenericMap();
 };
 
@@ -138,6 +139,15 @@ int GenericMap<K, V>::addEntry(K key, V value) {
 	} else {
 		return 0;
 	}
+}
+
+template<class K, class V>
+void GenericMap<K, V>::updateEntry(K key, V value) {
+	typename std::map<K,V>::iterator iter = this->map.find(key);
+		if (iter != this->map.end()) {
+			this->map.erase(iter);
+		}
+		this->addEntry(key, value);
 }
 
 template<class K, class V>

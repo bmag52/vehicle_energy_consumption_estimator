@@ -17,13 +17,16 @@
 namespace PredictivePowertrain {
 
 class GoalToLinkMap {
+private:
+	GenericMap<int,GoalMapEntry*> goalMap;
+	GenericMap<int, int> linkHashCounts;
 public:
-	GenericMap<int,GoalMapEntry*> maps;
 	int maps_size;
 	GoalToLinkMap();
 	GoalToLinkMap(GoalToLinkMap &other);
 	int linkTraversed(Link* link, Goal* goal);
-	double probabilityOfGoalGivenLink(Link * link, Goal * goal, bool isSimilar);
+	double** probabilityOfGoalsGivenLink(Link * link, Goal * goal, bool isSimilar);
+	double probabilityOfGoalGivenLink(Link* link, Goal* goal, bool isSimilar);
 	virtual ~GoalToLinkMap();
 };
 

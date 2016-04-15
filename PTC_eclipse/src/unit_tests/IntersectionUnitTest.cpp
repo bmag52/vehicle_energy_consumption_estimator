@@ -5,20 +5,27 @@
  *      Author: vagrant
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "../city/Intersection.h"
 =======
+=======
+>>>>>>> master
 
 
 #include "../city/Intersection.h"
 #include "../city/Road.h"
 #include "../city/RoadTypes.h"
 #include "../driver_prediction/Link.h"
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master
 #include <iostream>
 #include <assert.h>
 #include "UnitTests.h"
 
 using namespace std;
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 
@@ -29,6 +36,8 @@ void intersection_ut() {
 
 
 =======
+=======
+>>>>>>> master
 using namespace PredictivePowertrain;
 
 
@@ -74,4 +83,7 @@ void intersection_ut(){
 
 
 }
+<<<<<<< HEAD
+>>>>>>> master
+=======
 >>>>>>> master

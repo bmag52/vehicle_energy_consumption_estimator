@@ -13,8 +13,7 @@
 #include "UnitTests.h"
 
 using namespace std;
-using namespace DriverPrediction;
-using namespace RoutePrediction;
+using namespace PredictivePowertrain;
 
 void route_ut() {
 
@@ -46,49 +45,6 @@ void route_ut() {
 	// Test 1: addlink
 	Link emptyLinks[0];
 	Route route(emptyLinks, &goal1);
-<<<<<<< HEAD
-	route.addlink(&link1);
-	assert((*route.getLastLinkPtr()).isEqual(&link1) && route.getLinkSize() == 1);
-	route.addlink(&link2);
-	assert((*route.getLastLinkPtr()).isEqual(&link2) && route.getLinkSize() == 2);
-	route.addlink(&link3);
-	assert((*route.getLastLinkPtr()).isEqual(&link3) && route.getLinkSize() == 3);
-
-
-	// Test 2: iterator
-	Route tempRoute(links1, &goal1);
-	int linksLength = sizeof(*links1)/sizeof(Link);
-	for(int i = 0; i < linksLength; i++) {
-		Link tempLink = tempRoute.nextlink();
-		assert(links1[i].isEqual(&tempLink));
-	}
-	Link lastLink = route.nextlink();
-	assert(links1[linksLength - 1].isEqual(&lastLink));
-
-
-	// Test 3: isequal to oneself
-	assert(route1.isequal(&route1));
-
-
-	// Test 4: isequal is reversible
-	assert(route1.isequal(&route3));
-	assert(route3.isequal(&route1));
-	assert(!route1.isequal(&route2));
-	assert(!route2.isequal(&route1));
-
-
-	// Test 5: isequal with same links / goals (but still unequal)
-	assert(!route1.isequal(&route4));
-	assert(!route1.isequal(&route5));
-
-
-	// Test 6: copy
-	route2 = route1.copy();
-	assert(route1.isequal(&route2));
-	Link * linksPtr = route2.getLinksPtr();
-	linksPtr[0] = link2;
-	assert(!route1.isequal(&route2));
-=======
 //	route.addlink(link1);
 //	assert((*route.getLastLinkPtr()).isEqual(&link1) && route.getLinkSize() == 1);
 //	route.addlink(link2);
@@ -130,5 +86,5 @@ void route_ut() {
 //	Link * linksPtr = route2.getLinksPtr();
 //	linksPtr[0] = link2;
 //	assert(!route1.isequal(*route1Copy));
->>>>>>> origin/master
 }
+

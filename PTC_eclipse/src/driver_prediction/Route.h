@@ -5,28 +5,43 @@
  *      Author: vagrant
  */
 
-//#ifndef DRIVER_PREDICTION_ROUTE_H_
-//#define DRIVER_PREDICTION_ROUTE_H_
+#ifndef ROUTE_H_
+#define ROUTE_H_
 
-#include "../route_prediction/Link.h"
-#include "../route_prediction/Goal.h"
+#include "Goal.h"
+#include "../driver_prediction/Link.h"
+#include "../city/Intersection.h"
 
-
-namespace InnovationModel {
+namespace PredictivePowertrain {
 
 class Route {
 private:
-	Link links[];
-	Goal goal;
+	Link* links;
+	Goal* goal;
+	Link* error;
+	Intersection* intersection;
+	bool goalIsIntersection;
 	int counter;
 public:
-	Route(Link links[], Goal& goal);
-	virtual ~Route();
-	void addlink(Link link);
-	bool isequal(Route& other);
-	Route copy();
-	Link nextlink();
+	Route();
+	Route(Link* links, Goal* goal);
+	void addlink(Link* link);
+	bool isequal(Route* other);
+	int getGoalHash();
+	int getLinkSize();
+	Link* getEntry(int index);
+	void setToIntersection(Intersection* other);
+	bool isIntersection();
+	bool isEmpty();
+	Goal* getGoalPtr();
+	Link* getLinksPtr();
+	Intersection* getIntersectionPtr();
+	Link* getLastLinkPtr();;
+	Route* copy();
+	void removeFirstLink();
+	Link* nextlink();
 };
 
 }
-//#endif
+
+#endif /* ROUTE_H_ */

@@ -21,16 +21,8 @@ int main() {
 
 	// unit test function calls here
 	// TODO make a function that calls unit tests
-<<<<<<< HEAD
-	link_UT();
-	route_UT();
-=======
 	// link_UT();
-<<<<<<< HEAD
->>>>>>> master
-=======
 	// route_ut();
->>>>>>> origin/master
 
 	// speed_prediction muck around
 	SpeedPrediction sp;

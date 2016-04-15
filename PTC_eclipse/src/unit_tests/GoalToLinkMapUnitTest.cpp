@@ -6,6 +6,7 @@
  */
 
 #include "../route_prediction/GoalToLinkMap.h"
+#include "UnitTests.h"
 #include <iostream>
 #include <assert.h>
 
@@ -21,7 +22,7 @@ Link* makeLinks(int numberOfLinks)
 	}
 }
 
-void goalToLinkMap_UT() {
+void goalToLinkMap_ut() {
 	Link* links = makeLinks(5);
 	int bins1[] = {1};
 	int bins2[]  = {1, 2};

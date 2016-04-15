@@ -9,17 +9,10 @@
 #define UNIT_TESTS_UNITTESTS_H_
 
 void link_UT();
-<<<<<<< HEAD
-void route_UT();
-
-=======
 void route_ut();
 void intersection_ut();
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
 void linkToStateMapEntry_ut();
->>>>>>> origin/master
+void goalToLinkMap_ut();
 
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

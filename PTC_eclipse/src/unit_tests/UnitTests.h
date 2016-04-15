@@ -12,6 +12,7 @@ void link_UT();
 void route_ut();
 void intersection_ut();
 void linkToStateMapEntry_ut();
+void node_ut();
 
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

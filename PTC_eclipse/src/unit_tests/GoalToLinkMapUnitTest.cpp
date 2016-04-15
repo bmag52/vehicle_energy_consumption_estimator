@@ -78,7 +78,7 @@ void goalToLinkMap_UT() {
 	assert(map6.linkTraversed(&(links[1]), &goal1) == 2);
 	assert(map6.linkTraversed(&(links[2]), &goal2) == 1);
 	assert(map6.probabilityOfGoalGivenLink(&(links[0]), &goal1, false) == (1/2));
-	assert(map.probabilityOfGoalGivenLink(&(links[0]), &goal1, false) == (2/3));
+	assert(map6.probabilityOfGoalGivenLink(&(links[0]), &goal1, false) == (2/3));
 
 	// Test 6: return value for unseen transition is zero, with nothing in the map
 	GoalToLinkMap map7;

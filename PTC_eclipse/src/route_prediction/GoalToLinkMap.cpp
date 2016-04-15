@@ -33,8 +33,7 @@ int GoalToLinkMap::linkTraversed(Link* link, Goal* goal) {
 	return count;
 }
 
-double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link * link, Goal *goal, bool isSimilar) {
-	// todo probabilityOfGoalGivenLink(Link * link, Goal *goal, bool isSimilar)
+double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link * link, Goal * goal, bool isSimilar) {
 	this->goalMap.initializeCounter();
 	GenericEntry<int, GoalMapEntry*> * goalEntry = this->goalMap.nextEntry();
 	double** prob = new double*[this->goalMap.getSize()];
@@ -56,11 +55,6 @@ double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link * link, Goal *goal, boo
 		probCount++;
 		goalEntry = this->goalMap.nextEntry();
 	}
-	/*
-	 * line 61 in matlab version -- I believe it is supposed to return the average of all the
-	 * probabilities, so that is what I am doing here.
-	 * CHECK OUT THE CHANGE BELOW
-	*/
 	int probLength = sizeof(*prob)/sizeof(int);
 	for (int i = 0; i < probLength; i++) {
 		prob[i][1] /= (double)((int)(totalLinkCount>0)*totalLinkCount+(int)(totalLinkCount<=0));
@@ -68,8 +62,28 @@ double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link * link, Goal *goal, boo
 	return prob;
 }
 
-double GoalToLinkMap::probabilityOfGoalGivenLink(Link* link, Goal* goal, bool isSimilar) {
+double GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal * goal, bool isSimilar) {
 	// TODO probabilityOfGoalGivenLink
+	double** matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
+	int matrixLength = sizeof(*matrix)/sizeof(int);
+	double goalHash = (double) goal->getHash();
+	for(int i = 0; i < matrixLength; i++) {
+		if(matrix[i][0] == goalHash) {
+			return matrix[i][1];
+		}
+	}
+	return 0;
+
+}
+
+GenericMap<int, int> * GoalToLinkMap::probabilityOfGoalsGivenLinkMap(Link * link, Goal * goal, bool isSimilar) {
+	double** matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
+	GenericMap<int, int> result;
+	int matrixLength = sizeof(*matrix) / sizeof(int);
+	for(int i = 0; i < matrixLength; i++) {
+		result.addEntry(matrix[i][0], matrix[i][1]);
+	}
+	return &result;
 }
 
 GoalToLinkMap::~GoalToLinkMap() {

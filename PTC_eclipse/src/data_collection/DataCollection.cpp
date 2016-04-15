@@ -34,7 +34,9 @@ void DataCollection::pullOSMData(double lat, double lon) {
 	this->mapFile += lexical_cast<std::string>(lat) + "_";
 	this->mapFile += lexical_cast<std::string>(lon) + ".xml";
 
-	std::ifstream test(this->dataFolder + "/" + this->mapFile);
+	std::string mapFilePath = this->dataFolder + "/" + this->mapFile;
+
+	std::ifstream test(mapFilePath);
 	if(!test)
 	{
 		double lowLat = lat - .5*this->latDelta;
@@ -55,20 +57,16 @@ void DataCollection::pullOSMData(double lat, double lon) {
 
 	// check if osm file exists
 	Road* roads;
-	std::ifstream f(this->dataFolder + "/" + this->testXml);
-	if(f)
-	{
-		ptree tree;
-		read_xml(this->testXml, tree);
-		const ptree & formats = tree.get_child("pets", empty_ptree());
+	ptree tree;
+	read_xml(this->dataFolder + "", tree);
+	const ptree & formats = tree.get_child("pets", empty_ptree());
 
-		BOOST_FOREACH(const ptree::value_type & f, formats){
-			std::string at = f.first + ".<xmlattr>";
-			const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
+	BOOST_FOREACH(const ptree::value_type & f, formats){
+		std::string at = f.first + ".<xmlattr>";
+		const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
 
-			BOOST_FOREACH(const ptree::value_type &v, attributes){
-				std::cout << "First: " << v.first.data() << " Second: " << v.second.data() << std::endl;
-			}
+		BOOST_FOREACH(const ptree::value_type &v, attributes){
+			std::cout << "First: " << v.first.data() << " Second: " << v.second.data() << std::endl;
 		}
 	}
 }

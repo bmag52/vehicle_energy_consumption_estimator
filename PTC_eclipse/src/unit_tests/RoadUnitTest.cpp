@@ -16,26 +16,28 @@
 #include <assert.h>
 #include "UnitTests.h"
 
-using namespace std;
-
+using namespace PredictivePowertrain;
 
 void road_ut() {
 
 	// testing constructors
 	Road test;
-	Road test2(default, 1, 1, 1);
+	int eleData = 1;
+	int speedData = 1;
+	std::string roadType = "angry";
+	Road test2(roadType, &eleData, &speedData, 1);
 	// test setStartNode(Intersection) ==
-	test.setStartNode(null);
-	assert(test.getStartNode() == null);
+	test.setStartNode(NULL);
+	assert(test.getStartNode() == NULL);
 	//test setEndNode
-	test.setEndNode(null);
-	assert(test.setEndNode() == null);
+	test.setEndNode(NULL);
+	assert(test.getEndNode() == NULL);
 	//test getRoadID
 	assert(test.getRoadID() == 1);
 	//test getSpeedData
-	assert(test.getSpeedData() == 1);
+	assert(*test.getSpeedData() == speedData);
 	//test getElevData
-	assert(test.getElevData() == 1);
+	assert(*test.getElevData() == eleData);
 
 }
 

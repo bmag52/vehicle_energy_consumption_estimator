@@ -9,18 +9,19 @@
 #include <assert.h>
 #include "UnitTests.h"
 
-using namespace std;
+//using namespace std;
+using namespace PredictivePowertrain;
 
 void goalmapentry_ut(){
-	GoalMapEntry testGoal();
+	GoalMapEntry testGoal;
 	// test increment method
 	testGoal.incrementCount();
 	assert(testGoal.getM() == 1);
 
 	//test goal constructor
 	Goal test(1);
-	GoalMapEntry testGoal2(test);
-	assert(testGoal.goal == test);
+	GoalMapEntry testGoal2(&test);
+	assert(testGoal.getGoalPtr() == &test);
 }
 
 

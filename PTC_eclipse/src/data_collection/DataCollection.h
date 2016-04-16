@@ -48,23 +48,23 @@ private:
 	double eleLowerLeftLon;
 	double eleCellSize;
 	int voidEle;
-	GenericMap<long int, Node*> nodeMap;
-	GenericMap<long int, Way*> wayMap;
-
+	GenericMap<int, Node*> nodeMap;
+	GenericMap<int, Way*> wayMap;
 
 	const boost::property_tree::ptree& empty_ptree();
 	void queryFile(std::string serverName, std::string getCommand, std::string fileName);
 	std::string getBin(double hi, double lo, int bins, double latLon, bool isLat);
 	void checkDataFoler();
+	void pullSRTMData(double lat, double lon);
+	void pullOSMData(double lat, double lon);
+	void assignElevation();
+
 public:
 	DataCollection();
 	DataCollection(double latDelta, double lonDelta);
-	void pullSRTMData(double lat, double lon);
-	void pullOSMData(double lat, double lon);
-	GenericMap<long int, Node*>* getNodeMap();
-	GenericMap<long int, Way*>* getWayMap();
+	GenericMap<int, Node*>* getNodeMap();
+	GenericMap<int, Way*>* getWayMap();
 	int** getEleData();
-
 };
 
 } /* namespace PredictivePowertrain */

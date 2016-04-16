@@ -59,6 +59,8 @@ void DataCollection::pullOSMData(double lat, double lon) {
 	read_xml(mapFilePath, tree);
 
 	const ptree& formats = tree.get_child("osm", empty_ptree());
+	int nodeCount = 0;
+	int wayCount = 0;
 	std::cout << "OSM Data Size: " <<  formats.size() << std::endl;
 
 	BOOST_FOREACH(const ptree::value_type & f, formats)
@@ -92,8 +94,9 @@ void DataCollection::pullOSMData(double lat, double lon) {
 				std::cout << attr << " = " << v.second.data() << std::endl;
 			}
 
-			Node node(lat, lon, id);
-			this->nodeMap.addEntry(id, &node);
+			nodeCount++;
+			Node* node = new Node(lat, lon, id);
+			this->nodeMap.addEntry(nodeCount, node);
 
 		} else if (!tagName.compare("way")) {
 
@@ -114,7 +117,7 @@ void DataCollection::pullOSMData(double lat, double lon) {
 
 			// get children of way specifically looking for node IDs
 			int count = 0;
-			GenericMap<int, long int> nodeIDs;
+			GenericMap<int, long int>* nodeIDs = new GenericMap<int, long int>();
 			BOOST_FOREACH(const ptree::value_type &v, f.second)
 			{
 				std::string childTagName = lexical_cast<std::string>(v.first);
@@ -138,11 +141,13 @@ void DataCollection::pullOSMData(double lat, double lon) {
 						}
 					}
 					count++;
-					nodeIDs.addEntry(count, ref);
+					nodeIDs->addEntry(count, ref);
 				}
 			}
-			Way way(&nodeIDs, id);
-			this->wayMap.addEntry(id, &way);
+
+			wayCount++;
+			Way* way = new Way(nodeIDs, id);
+			this->wayMap.addEntry(wayCount, way);
 		}
 	}
 }
@@ -208,10 +213,10 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 		int **eleRay = new int*[this->numEleRows];
 		while(getline(ifs, line))
 		{
-			col = 0;
 			std::stringstream ss(line);
 			eleRay[row] = new int[this->numEleCols];
 			while(ss >> eleRay[row][col]) { col++; }
+			col = 0;
 			row++;
 		}
 		ifs.close();
@@ -321,11 +326,11 @@ const ptree& DataCollection::empty_ptree() {
     return t;
 }
 
-GenericMap<long int, Node*>* DataCollection::getNodeMap() {
+GenericMap<int, Node*>* DataCollection::getNodeMap() {
 	return &this->nodeMap;
 }
 
-GenericMap<long int, Way*>* DataCollection::getWayMap() {
+GenericMap<int, Way*>* DataCollection::getWayMap() {
 	return &this->wayMap;
 }
 

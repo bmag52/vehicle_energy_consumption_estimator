@@ -50,13 +50,14 @@ int main() {
 
 	// xml parser muck around
 	DataCollection test;
-//	test.getRoads();
 	test.pullOSMData(47.681, -122.328);
 	test.pullSRTMData(47.681, -122.328);
 
-	GenericMap<long int, Node*>* nodeMap = test.getNodeMap();
-	GenericMap<long int, Way*>* wayMap = test.getWayMap();
+	GenericMap<int, Node*>* nodeMap = test.getNodeMap();
+	GenericMap<int, Way*>* wayMap = test.getWayMap();
 	int** eleData = test.getEleData();
+
+	std::cout << wayMap->getEntry(7)->getID() << std::endl;
 
 	std::cout << "finished" << std::endl;
 

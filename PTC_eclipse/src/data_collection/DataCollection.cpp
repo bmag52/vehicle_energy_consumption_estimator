@@ -335,7 +335,7 @@ const ptree& DataCollection::empty_ptree() {
 // lat lon increase L->R and B->T
 int DataCollection::getElevation(double lat, double lon) {
 
-	double nextLat, nextLon, latEleDiff, lonEleDiff;
+	double nextLat, nextLon, latEleDiff, lonEleDiff, latScalar, lonScalar;
 
 	for(int k = this->numEleLats; k >= 0; k--)
 	{
@@ -353,13 +353,18 @@ int DataCollection::getElevation(double lat, double lon) {
 					{
 						std::cout << "------- void elevation -------" << std::endl;
 						return elevation;
-					} else if((k > 0) && (l > 0))
+					} else if((k < this->numEleLons-1) && (l < this->numEleLats-1))
 					{
-						latEleDiff = this->eleData[l-1][k] - this->eleData[l][k];
-						lonEleDiff = this->eleData[l][k-1] - this->eleData[l][k];
+						latEleDiff = this->eleData[l][k] - this->eleData[l+1][k];
+						lonEleDiff = this->eleData[l][k] - this->eleData[l][k+1];
 
-						latEleDiff *= this->eleCellSize - (nextLat - lat);
-						lonEleDiff *= this->eleCellSize - (nextLon - lon);
+						latScalar = (nextLat - lat) / this->eleCellSize;
+						lonScalar = (nextLon - lon) / this->eleCellSize;
+						assert(latScalar >= 0 && lonScalar >= 0);
+						assert(latScalar <= 1 && lonScalar <= 1);
+
+						latEleDiff *= latScalar;
+						lonEleDiff *= lonScalar;
 
 						elevation += (latEleDiff + lonEleDiff);
 					}

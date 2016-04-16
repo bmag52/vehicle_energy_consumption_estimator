@@ -16,8 +16,8 @@ using namespace boost::property_tree;
 namespace PredictivePowertrain {
 
 DataCollection::DataCollection() {
-	this->latDelta = .009;
-	this->lonDelta = .009;
+	this->latDelta = .02;
+	this->lonDelta = .02;
 	checkDataFoler();
 }
 
@@ -27,12 +27,18 @@ DataCollection::DataCollection(double latDelta, double lonDelta) {
 	checkDataFoler();
 }
 
+// must call functions in specific order
+void DataCollection::pullData(double lat, double lon) {
+	pullSRTMData(lat, lon);
+	pullOSMData(lat, lon);
+}
+
 void DataCollection::pullOSMData(double lat, double lon) {
 	std::cout << "pulling OSM data ..." << std::endl;
 
 	this->mapFile = "mapFile_";
-	this->mapFile += lexical_cast<std::string>((int)lat) + "_";
-	this->mapFile += lexical_cast<std::string>((int)lon) + ".xml";
+	this->mapFile += lexical_cast<std::string>(lat) + "_";
+	this->mapFile += lexical_cast<std::string>(lon) + ".xml";
 
 	std::string mapFilePath = this->dataFolder + "/" + this->mapFile;
 
@@ -95,7 +101,8 @@ void DataCollection::pullOSMData(double lat, double lon) {
 			}
 
 			nodeCount++;
-			Node* node = new Node(lat, lon, id);
+			int ele = getElevation(lat, lon);
+			Node* node = new Node(lat, lon, ele, id);
 			this->nodeMap.addEntry(nodeCount, node);
 
 		} else if (!tagName.compare("way")) {
@@ -162,8 +169,7 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 	// create srtm file name from bins
 	std::string srtmName = "srtm_" + lonBin + "_" + latBin;
 
-	// check if srtm file already exists
-	// pull it if not
+	// check if srtm file already exists and pull it if not
 	this->eleFile = srtmName + ".asc";
 	std::ifstream test(this->dataFolder + "/" + this->eleFile);
 	if(!test)
@@ -185,7 +191,7 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 
 	// read file
 	std::ifstream ifs;
-	ifs.open(this->eleFile);
+	ifs.open(this->dataFolder + "/" + this->eleFile);
 	bool isopen = ifs.is_open();
 	if(ifs.is_open())
 	{
@@ -201,8 +207,8 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 			ss >> eleFeatures[i];
 		}
 
-		this->numEleCols = eleFeatures[0];
-		this->numEleRows = eleFeatures[1];
+		this->numEleLats = eleFeatures[0];
+		this->numEleLons = eleFeatures[1];
 		this->eleLowerLeftLon = eleFeatures[2];
 		this->eleLowerLeftLat = eleFeatures[3];
 		this->eleCellSize = eleFeatures[4];
@@ -210,14 +216,14 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 
 		int row = 0;
 		int col = 0;
-		int **eleRay = new int*[this->numEleRows];
+		int **eleRay = new int*[this->numEleLons];
 		while(getline(ifs, line))
 		{
 			std::stringstream ss(line);
-			eleRay[row] = new int[this->numEleCols];
+			eleRay[row] = new int[this->numEleLats];
 			while(ss >> eleRay[row][col]) { col++; }
 			col = 0;
-			row++;
+			std::cout << row++ << std::endl;
 		}
 		ifs.close();
 		this->eleData = eleRay;
@@ -326,6 +332,45 @@ const ptree& DataCollection::empty_ptree() {
     return t;
 }
 
+// lat lon increase L->R and B->T
+int DataCollection::getElevation(double lat, double lon) {
+
+	double nextLat, nextLon, latEleDiff, lonEleDiff;
+
+	for(int k = this->numEleLats; k >= 0; k--)
+	{
+		nextLat = this->eleLowerLeftLat + (this->numEleLats-k+1)*this->eleCellSize;
+		if(lat < nextLat)
+		{
+			for(int l = 0; l < this->numEleLons; l++)
+			{
+				nextLon = this->eleLowerLeftLon + (l+1)*this->eleCellSize;
+				if(lon < nextLon)
+				{
+					int elevation = this->eleData[l][k];
+
+					if(elevation == this->voidEle)
+					{
+						std::cout << "------- void elevation -------" << std::endl;
+						return elevation;
+					} else if((k > 0) && (l > 0))
+					{
+						latEleDiff = this->eleData[l-1][k] - this->eleData[l][k];
+						lonEleDiff = this->eleData[l][k-1] - this->eleData[l][k];
+
+						latEleDiff *= this->eleCellSize - (nextLat - lat);
+						lonEleDiff *= this->eleCellSize - (nextLon - lon);
+
+						elevation += (latEleDiff + lonEleDiff);
+					}
+					return elevation;
+				}
+			}
+		}
+	}
+	return -1;
+}
+
 GenericMap<int, Node*>* DataCollection::getNodeMap() {
 	return &this->nodeMap;
 }
@@ -334,10 +379,8 @@ GenericMap<int, Way*>* DataCollection::getWayMap() {
 	return &this->wayMap;
 }
 
-int** DataCollection::getEleData() {
-	return this->eleData;
+int DataCollection::getVoidEle() {
+	return this->voidEle;
 }
 
 }
-
-

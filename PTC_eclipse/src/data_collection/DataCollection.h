@@ -42,8 +42,8 @@ private:
 	std::string dataFolder = "data";
 	std::string testXml = "./test.xml";
 	int** eleData;
-	int numEleCols;
-	int numEleRows;
+	int numEleLats;
+	int numEleLons;
 	double eleLowerLeftLat;
 	double eleLowerLeftLon;
 	double eleCellSize;
@@ -57,14 +57,15 @@ private:
 	void checkDataFoler();
 	void pullSRTMData(double lat, double lon);
 	void pullOSMData(double lat, double lon);
-	void assignElevation();
+	int getElevation(double lat, double lon);
 
 public:
 	DataCollection();
 	DataCollection(double latDelta, double lonDelta);
+	void pullData(double lat, double lon);
 	GenericMap<int, Node*>* getNodeMap();
 	GenericMap<int, Way*>* getWayMap();
-	int** getEleData();
+	int getVoidEle();
 };
 
 } /* namespace PredictivePowertrain */

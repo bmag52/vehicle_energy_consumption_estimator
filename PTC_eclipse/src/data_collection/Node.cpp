@@ -26,7 +26,7 @@ double Node::getLon() {
 	return this->lon;
 }
 
-int Node::getID() {
+long int Node::getID() {
 	return this->id;
 }
 

@@ -10,6 +10,9 @@
 
 #include "../city/Road.h"
 #include "../city/Intersection.h"
+#include "../map/GenericMap.h"
+#include "Node.h"
+#include "Way.h"
 
 // xml parse
 #include "boost/foreach.hpp"
@@ -45,6 +48,8 @@ private:
 	double eleLowerLeftLon;
 	double eleCellSize;
 	int voidEle;
+	GenericMap<long int, Node*> nodeMap;
+	GenericMap<long int, Way*> wayMap;
 
 
 	const boost::property_tree::ptree& empty_ptree();
@@ -56,7 +61,9 @@ public:
 	DataCollection(double latDelta, double lonDelta);
 	void pullSRTMData(double lat, double lon);
 	void pullOSMData(double lat, double lon);
-	Intersection* getIntersections(Road* roads);
+	GenericMap<long int, Node*>* getNodeMap();
+	GenericMap<long int, Way*>* getWayMap();
+	int** getEleData();
 
 };
 

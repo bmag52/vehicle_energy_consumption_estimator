@@ -51,24 +51,98 @@ void DataCollection::pullOSMData(double lat, double lon) {
 		getCommand += lexical_cast<std::string>(hiLon) + ",";
 		getCommand += lexical_cast<std::string>(hiLat);
 
-		queryFile(serverName, getCommand, this->mapFile);
+		queryFile(serverName, getCommand, this->dataFolder + "/" + this->mapFile);
 	}
 	test.close();
 
-	// check if osm file exists
-	Road* roads;
 	ptree tree;
 	read_xml(mapFilePath, tree);
-	std::cout << tree.size() << std::endl;
-	const ptree& formats = tree.get_child("meta", empty_ptree());
 
-	BOOST_FOREACH(const ptree::value_type & f, formats){
-		std::string at = f.first + ".<xmlattr>";
-		std::cout << "First: " << at << std::endl;
-		const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
+	const ptree& formats = tree.get_child("osm", empty_ptree());
+	std::cout << "OSM Data Size: " <<  formats.size() << std::endl;
 
-		BOOST_FOREACH(const ptree::value_type &v, attributes){
-			std::cout << "First: " << v.first.data() << " Second: " << v.second.data() << std::endl;
+	BOOST_FOREACH(const ptree::value_type & f, formats)
+	{
+
+		std::string tagName = lexical_cast<std::string>(f.first);
+		std::cout << "============= " << tagName << " =============" << std::endl;
+
+		if(!tagName.compare("node"))
+		{
+			const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
+
+			long int id;
+			double lat, lon;
+
+			BOOST_FOREACH(const ptree::value_type &v, attributes)
+			{
+				std::string attr = lexical_cast<std::string>(v.first.data());
+
+				if(!attr.compare("id"))
+				{
+					id = lexical_cast<long int>(v.second.data());
+				} else if(!attr.compare("lat")) {
+					lat = lexical_cast<double>(v.second.data());
+				} else if(!attr.compare("lon")) {
+					lon = lexical_cast<double>(v.second.data());
+				} else {
+					break;
+				}
+
+				std::cout << attr << " = " << v.second.data() << std::endl;
+			}
+
+			Node node(lat, lon, id);
+			this->nodeMap.addEntry(id, &node);
+
+		} else if (!tagName.compare("way")) {
+
+			// look at way attributes to get id
+			long int id;
+			const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
+			BOOST_FOREACH(const ptree::value_type &v, attributes)
+			{
+				std::string attr = lexical_cast<std::string>(v.first.data());
+				std::cout << attr << " = " << v.second.data() << std::endl;
+
+				if(!attr.compare("id"))
+				{
+					id = lexical_cast<long int>(v.second.data());
+					break;
+				}
+			}
+
+			// get children of way specifically looking for node IDs
+			int count = 0;
+			GenericMap<int, long int> nodeIDs;
+			BOOST_FOREACH(const ptree::value_type &v, f.second)
+			{
+				std::string childTagName = lexical_cast<std::string>(v.first);
+
+				// look at child attributes to get node IDs
+				if(!childTagName.compare("nd"))
+				{
+					std::cout << "- " << childTagName << " -" << std::endl;
+
+					long int ref;
+					const ptree & attributes = v.second.get_child("<xmlattr>", empty_ptree());
+					BOOST_FOREACH(const ptree::value_type &z, attributes)
+					{
+						std::string attr = lexical_cast<std::string>(z.first.data());
+
+						if(!attr.compare("ref"))
+						{
+							ref = lexical_cast<long int>(z.second.data());
+							std::cout << attr << " = " << z.second.data() << std::endl;
+							break;
+						}
+					}
+					count++;
+					nodeIDs.addEntry(count, ref);
+				}
+			}
+			Way way(&nodeIDs, id);
+			this->wayMap.addEntry(id, &way);
 		}
 	}
 }
@@ -168,7 +242,7 @@ std::string DataCollection::getBin(double hi, double lo, int bins, double latLon
 
 void DataCollection::queryFile(std::string serverName, std::string getCommand, std::string fileName) {
 
-	std::ofstream outFile(this->dataFolder + "/" + fileName, std::ofstream::out | std::ofstream::binary);
+	std::ofstream outFile(fileName, std::ofstream::out | std::ofstream::binary);
 
 	boost::asio::io_service io_service;
 
@@ -245,6 +319,18 @@ void DataCollection::checkDataFoler() {
 const ptree& DataCollection::empty_ptree() {
     static ptree t;
     return t;
+}
+
+GenericMap<long int, Node*>* DataCollection::getNodeMap() {
+	return &this->nodeMap;
+}
+
+GenericMap<long int, Way*>* DataCollection::getWayMap() {
+	return &this->wayMap;
+}
+
+int** DataCollection::getEleData() {
+	return this->eleData;
 }
 
 }

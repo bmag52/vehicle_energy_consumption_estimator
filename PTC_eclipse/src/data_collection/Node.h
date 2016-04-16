@@ -15,14 +15,14 @@ private:
 	double lat;
 	double lon;
 	double ele;
-	int id;
+	int long id;
 
 public:
 	Node();
 	Node(double lat, double lon, int id);
 	double getLat();
 	double getLon();
-	int getID();
+	long int getID();
 	double getEle();
 };
 

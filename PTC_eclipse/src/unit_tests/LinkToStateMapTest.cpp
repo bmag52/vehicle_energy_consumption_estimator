@@ -35,7 +35,7 @@ void linkToStateMap_ut() {
 	for(int i = 0; i < 2; i++) {
 		count += map2.incrementTransition(links[1], &goal2, links[3]);
 	}
-	assert(count == 2);
+	assert(count == 1);
 
 	// Test 3: increment two different transitions
 	LinkToStateMap map3;

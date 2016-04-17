@@ -43,7 +43,7 @@ void route_ut() {
 
 
 	// Test 1: addlink
-	Link emptyLinks[0];
+	Link * emptyLinks;
 	Route route(emptyLinks, &goal1);
 	route.addlink(&link1);
 	assert((route.getLastLinkPtr())->isEqual(&link1) && route.getLinkSize() == 1);

@@ -18,12 +18,14 @@ namespace PredictivePowertrain {
 DataCollection::DataCollection() {
 	this->latDelta = .02;
 	this->lonDelta = .02;
+	this->wayCount = 0;
 	checkDataFoler();
 }
 
 DataCollection::DataCollection(double latDelta, double lonDelta) {
 	this->latDelta = latDelta;
 	this->lonDelta = lonDelta;
+	this->wayCount = 0;
 	checkDataFoler();
 }
 
@@ -65,8 +67,6 @@ void DataCollection::pullOSMData(double lat, double lon) {
 	read_xml(mapFilePath, tree);
 
 	const ptree& formats = tree.get_child("osm", empty_ptree());
-	int nodeCount = 0;
-	int wayCount = 0;
 	std::cout << "OSM Data Size: " <<  formats.size() << std::endl;
 
 	BOOST_FOREACH(const ptree::value_type & f, formats)
@@ -77,10 +77,9 @@ void DataCollection::pullOSMData(double lat, double lon) {
 
 		if(!tagName.compare("node"))
 		{
-			const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
-
-			long int id;
+			long int nodeID;
 			double lat, lon;
+			const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
 
 			BOOST_FOREACH(const ptree::value_type &v, attributes)
 			{
@@ -88,7 +87,7 @@ void DataCollection::pullOSMData(double lat, double lon) {
 
 				if(!attr.compare("id"))
 				{
-					id = lexical_cast<long int>(v.second.data());
+					nodeID = lexical_cast<long int>(v.second.data());
 				} else if(!attr.compare("lat")) {
 					lat = lexical_cast<double>(v.second.data());
 				} else if(!attr.compare("lon")) {
@@ -100,61 +99,73 @@ void DataCollection::pullOSMData(double lat, double lon) {
 				std::cout << attr << " = " << v.second.data() << std::endl;
 			}
 
-			nodeCount++;
 			int ele = getElevation(lat, lon);
-			Node* node = new Node(lat, lon, ele, id);
-			this->nodeMap.addEntry(nodeCount, node);
+			Node* node = new Node(lat, lon, ele, nodeID);
+			this->nodeMap.addEntry(nodeID, node);
 
 		} else if (!tagName.compare("way")) {
 
-			// look at way attributes to get id
-			long int id;
-			const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
-			BOOST_FOREACH(const ptree::value_type &v, attributes)
-			{
-				std::string attr = lexical_cast<std::string>(v.first.data());
-				std::cout << attr << " = " << v.second.data() << std::endl;
-
-				if(!attr.compare("id"))
-				{
-					id = lexical_cast<long int>(v.second.data());
-					break;
-				}
-			}
-
-			// get children of way specifically looking for node IDs
-			int count = 0;
+			// get children of way specifically looking for node IDs and way types to see if way is desireable
+			int refCount = 0;
+			bool isDesiredWay = false;
 			GenericMap<int, long int>* nodeIDs = new GenericMap<int, long int>();
 			BOOST_FOREACH(const ptree::value_type &v, f.second)
 			{
 				std::string childTagName = lexical_cast<std::string>(v.first);
 
 				// look at child attributes to get node IDs
-				if(!childTagName.compare("nd"))
+				if(!childTagName.compare("nd") || !childTagName.compare("tag"))
 				{
 					std::cout << "- " << childTagName << " -" << std::endl;
 
-					long int ref;
 					const ptree & attributes = v.second.get_child("<xmlattr>", empty_ptree());
 					BOOST_FOREACH(const ptree::value_type &z, attributes)
 					{
 						std::string attr = lexical_cast<std::string>(z.first.data());
 
-						if(!attr.compare("ref"))
+						if(!childTagName.compare("nd") && !attr.compare("ref"))
 						{
-							ref = lexical_cast<long int>(z.second.data());
+							long int ref = lexical_cast<long int>(z.second.data());
 							std::cout << attr << " = " << z.second.data() << std::endl;
-							break;
+							refCount++;
+							nodeIDs->addEntry(refCount, ref);
+
+						} else if(!childTagName.compare("tag") && !attr.compare("v")) {
+
+							std::string val = lexical_cast<std::string>(z.second.data());
+							if(!val.compare("motorway") || !val.compare("primary") || !val.compare("secondary") || !val.compare("tertiary")
+									|| !val.compare("motorway link") || !val.compare("primary link") /*|| !val.compare("unclassified")*/
+									|| !val.compare("road") || !val.compare("residential") /*|| !val.compare("service")*/)
+							{
+								std::cout << attr << " = " << val << std::endl;
+								isDesiredWay = true;
+							}
 						}
 					}
-					count++;
-					nodeIDs->addEntry(count, ref);
 				}
 			}
 
-			wayCount++;
-			Way* way = new Way(nodeIDs, id);
-			this->wayMap.addEntry(wayCount, way);
+			if(isDesiredWay)
+			{
+				// grab the way ID and bounce
+				long int wayID;
+				const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
+				BOOST_FOREACH(const ptree::value_type &v, attributes)
+				{
+					std::string attr = lexical_cast<std::string>(v.first.data());
+					std::cout << attr << " = " << v.second.data() << std::endl;
+
+					if(!attr.compare("id"))
+					{
+						wayID = lexical_cast<long int>(v.second.data());
+						break;
+					}
+				}
+
+				this->wayCount++;
+				Way* way = new Way(nodeIDs, wayID);
+				this->wayMap.addEntry(this->wayCount, way);
+			}
 		}
 	}
 }
@@ -192,7 +203,6 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 	// read file
 	std::ifstream ifs;
 	ifs.open(this->dataFolder + "/" + this->eleFile);
-	bool isopen = ifs.is_open();
 	if(ifs.is_open())
 	{
 		std::string line;
@@ -376,12 +386,43 @@ int DataCollection::getElevation(double lat, double lon) {
 	return -1;
 }
 
-GenericMap<int, Node*>* DataCollection::getNodeMap() {
+GenericMap<long int, Node*>* DataCollection::getNodeMap() {
 	return &this->nodeMap;
 }
 
 GenericMap<int, Way*>* DataCollection::getWayMap() {
 	return &this->wayMap;
+}
+
+// for loading into http://www.gpsvisualizer.com/
+void DataCollection::visualizeData() {
+
+	std::string csvName = this->dataFolder + "/" + "mapData.csv";
+
+	// delete existing csv if found
+	std::string rm = "rm " + csvName;
+	system(rm.c_str());
+
+	// create new csv
+	std::ofstream csv;
+	csv.open(csvName);
+
+	csv << "name, description, color, latitude, longitude\n";
+	for(int i = 1; i < this->wayMap.getSize(); i++)
+	{
+		Way* way = this->wayMap.getEntry(i);
+		for(int j = 1; j <= way->getNodeIDs()->getSize(); j++)
+		{
+			Node* node = this->nodeMap.getEntry(way->getNodeIDs()->getEntry(j));
+			csv << i << ",";								//name
+			csv << "\"ID: " << node->getID() << " ";		//desc ID
+			csv << "Ele: " << node->getEle() << "\",";		//desc ele
+			csv << "red" << ",";							//color
+			csv << node->getLat() << ",";					//lat
+			csv << node->getLon() << "\n";					//lon
+		}
+	}
+	csv.close();
 }
 
 int DataCollection::getVoidEle() {

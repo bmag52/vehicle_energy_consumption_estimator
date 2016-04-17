@@ -44,11 +44,13 @@ private:
 	int** eleData;
 	int numEleLats;
 	int numEleLons;
+	int wayCount;
 	double eleLowerLeftLat;
 	double eleLowerLeftLon;
 	double eleCellSize;
 	int voidEle;
-	GenericMap<int, Node*> nodeMap;
+	int maxVisEntries = 5000;
+	GenericMap<long int, Node*> nodeMap;
 	GenericMap<int, Way*> wayMap;
 
 	const boost::property_tree::ptree& empty_ptree();
@@ -63,9 +65,10 @@ public:
 	DataCollection();
 	DataCollection(double latDelta, double lonDelta);
 	void pullData(double lat, double lon);
-	GenericMap<int, Node*>* getNodeMap();
+	GenericMap<long int, Node*>* getNodeMap();
 	GenericMap<int, Way*>* getWayMap();
 	int getVoidEle();
+	void visualizeData();
 };
 
 } /* namespace PredictivePowertrain */

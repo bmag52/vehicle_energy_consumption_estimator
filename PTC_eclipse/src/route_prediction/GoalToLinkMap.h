@@ -27,6 +27,7 @@ public:
 	int linkTraversed(Link* link, Goal* goal);
 	double** probabilityOfGoalsGivenLink(Link * link, Goal * goal, bool isSimilar);
 	double probabilityOfGoalGivenLink(Link* link, Goal* goal, bool isSimilar);
+	GenericMap<int, int> * probabilityOfGoalsGivenLinkMap(Link * link, Goal * goal, bool isSimilar);
 	virtual ~GoalToLinkMap();
 };
 

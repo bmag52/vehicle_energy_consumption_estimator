@@ -16,7 +16,8 @@ Route::Route() {
 Route::Route(Link* links, Goal* goal) {
 	this->links = links;
 	this->goal = goal;
-	this->counter = 0;
+	//this->counter = 0;
+	this->counter = sizeof(this->links) / sizeof(int);
 	Link error(-1, -1);
 	this->error = &error;
 }

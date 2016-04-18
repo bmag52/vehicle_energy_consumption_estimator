@@ -88,15 +88,15 @@ void DataCollection::pullOSMData(double lat, double lon) {
 				if(!attr.compare("id"))
 				{
 					nodeID = lexical_cast<long int>(v.second.data());
+					std::cout << attr << " = " << nodeID << std::endl;
 				} else if(!attr.compare("lat")) {
 					lat = lexical_cast<double>(v.second.data());
+					std::cout << attr << " = " << lat << std::endl;
 				} else if(!attr.compare("lon")) {
 					lon = lexical_cast<double>(v.second.data());
-				} else {
-					break;
+					std::cout << attr << " = " << lon << std::endl;
 				}
 
-				std::cout << attr << " = " << v.second.data() << std::endl;
 			}
 
 			int ele = getElevation(lat, lon);
@@ -106,7 +106,9 @@ void DataCollection::pullOSMData(double lat, double lon) {
 		} else if (!tagName.compare("way")) {
 
 			// get children of way specifically looking for node IDs and way types to see if way is desireable
+			int waySpeed = -1;
 			int refCount = 0;
+			std::string wayType;
 			bool isDesiredWay = false;
 			GenericMap<int, long int>* nodeIDs = new GenericMap<int, long int>();
 			BOOST_FOREACH(const ptree::value_type &v, f.second)
@@ -133,12 +135,18 @@ void DataCollection::pullOSMData(double lat, double lon) {
 						} else if(!childTagName.compare("tag") && !attr.compare("v")) {
 
 							std::string val = lexical_cast<std::string>(z.second.data());
+							std::size_t found = val.find("mph");
 							if(!val.compare("motorway") || !val.compare("primary") || !val.compare("secondary") || !val.compare("tertiary")
 									|| !val.compare("motorway link") || !val.compare("primary link") /*|| !val.compare("unclassified")*/
-									|| !val.compare("road") || !val.compare("residential") /*|| !val.compare("service")*/)
+									|| !val.compare("road") /*|| !val.compare("residential") || !val.compare("service")*/)
 							{
-								std::cout << attr << " = " << val << std::endl;
+								wayType = val;
 								isDesiredWay = true;
+								std::cout << attr << " = " << val << std::endl;
+							} else if(found!=std::string::npos) {
+								std::stringstream ss(val);
+								ss >> waySpeed;
+								std::cout << attr << " = " << val << std::endl;
 							}
 						}
 					}
@@ -153,17 +161,17 @@ void DataCollection::pullOSMData(double lat, double lon) {
 				BOOST_FOREACH(const ptree::value_type &v, attributes)
 				{
 					std::string attr = lexical_cast<std::string>(v.first.data());
-					std::cout << attr << " = " << v.second.data() << std::endl;
 
 					if(!attr.compare("id"))
 					{
 						wayID = lexical_cast<long int>(v.second.data());
+						std::cout << attr << " = " << wayID << std::endl;
 						break;
 					}
 				}
 
 				this->wayCount++;
-				Way* way = new Way(nodeIDs, wayID);
+				Way* way = new Way(nodeIDs, wayID, wayType, waySpeed);
 				this->wayMap.addEntry(this->wayCount, way);
 			}
 		}
@@ -202,7 +210,8 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 
 	// read file
 	std::ifstream ifs;
-	ifs.open(this->dataFolder + "/" + this->eleFile);
+	std::string eleFilePath = this->dataFolder + "/" + this->eleFile;
+	ifs.open(eleFilePath.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 	if(ifs.is_open())
 	{
 		std::string line;
@@ -405,21 +414,30 @@ void DataCollection::visualizeData() {
 
 	// create new csv
 	std::ofstream csv;
-	csv.open(csvName);
+	csv.open(csvName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 
 	csv << "name, description, color, latitude, longitude\n";
 	for(int i = 1; i < this->wayMap.getSize(); i++)
 	{
 		Way* way = this->wayMap.getEntry(i);
-		for(int j = 1; j <= way->getNodeIDs()->getSize(); j++)
+		if(way != NULL)
 		{
-			Node* node = this->nodeMap.getEntry(way->getNodeIDs()->getEntry(j));
-			csv << i << ",";								//name
-			csv << "\"ID: " << node->getID() << " ";		//desc ID
-			csv << "Ele: " << node->getEle() << "\",";		//desc ele
-			csv << "red" << ",";							//color
-			csv << node->getLat() << ",";					//lat
-			csv << node->getLon() << "\n";					//lon
+			for(int j = 1; j <= way->getNodeIDs()->getSize(); j++)
+			{
+				Node* node = this->nodeMap.getEntry(way->getNodeIDs()->getEntry(j));
+				if(node != NULL)
+				{
+					csv << i << ",";										//name
+					csv << "\"Node ID: " << node->getID() << " | ";			//Node ID
+					csv << "Ele: " << node->getEle() << " | ";				//Ele
+					csv << "Way ID: " << way->getID() << " | ";				//Way ID
+					csv << "Way Type: " << way->getWayType() << " | ";		//Way Type
+					csv << "Way Speed: " << way->getWaySpeed() << "\",";	//Way Speed
+					csv << "red" << ",";									//color
+					csv << node->getLat() << ",";							//lat
+					csv << node->getLon() << "\n";							//lon
+				}
+			}
 		}
 	}
 	csv.close();

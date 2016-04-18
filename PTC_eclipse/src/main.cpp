@@ -55,6 +55,7 @@ int main() {
 	test.pullData(47.618174, -122.330838); // downtown
 	std::cout << "node size " << test.getNodeMap()->getSize() << std::endl;
 	test.visualizeData();
+	GenericMap<int, Way*>* ways = test.getWayMap();
 
 	std::cout << "finished" << std::endl;
 

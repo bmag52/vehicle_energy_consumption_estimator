@@ -18,25 +18,23 @@ class Intersection; // forward declaration
 
 class Road {
 private:
-	int* elevationData;
-	int* speedLimitData;
-	GenericMap<int, Node*> nodes;
+	GenericMap<int, Node*>* nodes;
+	std::string roadType;
 	Intersection* startNode;
 	Intersection* endNode;
-//	RoadTypes roadType;
 	int roadID;
 
 public:
 	Road();
-	Road(std::string roadType, int* elevationData, int* speedData, int roadID);
+	Road(std::string roadType, int roadID);
 	virtual ~Road();
 	void setStartNode(Intersection* startNode);
 	void setEndNode(Intersection* endNode);
 	Intersection* getStartNode();
 	Intersection* getEndNode();
-	int* getSpeedData();
-	int* getElevData();
 	int getRoadID();
+	int* getElevData();
+	int* getSpeedData();
 };
 
 } /* namespace PredictivePowertrain */

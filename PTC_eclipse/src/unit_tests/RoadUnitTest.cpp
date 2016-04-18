@@ -14,16 +14,9 @@ using namespace PredictivePowertrain;
 
 void road_ut() {
 
-	int elevationData = 10, speedData = 15;
-	int* test;
-	int* test2;
-
-	test = &elevationData;
-	test2 = &speedData;
-
 	//Testing constructor Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID)
 	std::string x = "default";
-	Road road2(x, test, test2, 1);
+	Road road2(x, 1);
 
 	//Intersection::Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum) {
 	Intersection sect(&road2, 2.0, 2.0, 1, 1);
@@ -31,7 +24,6 @@ void road_ut() {
 	//Testing default constructor
 	Road road1;
 	assert(road1.getRoadID() == 0);
-	assert(road1.getSpeedData() == 0 && road1.getElevData() == 0);
 
 	//Testing setStartNode
 	road2.setStartNode(&sect);

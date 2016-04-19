@@ -5,12 +5,12 @@
  *      Author: vagrant
  */
 
-#ifndef DATA_COLLECTION_WAY_H_
-#define DATA_COLLECTION_WAY_H_
+#ifndef DATA_MANAGEMENT_WAY_H_
+#define DATA_MANAGEMENT_WAY_H_
 
 #include "../map/GenericMap.h"
-#include "Node.h"
 #include <string>
+#include "../data_management/Node.h"
 
 namespace PredictivePowertrain {
 
@@ -32,4 +32,4 @@ public:
 
 }
 
-#endif /* DATA_COLLECTION_WAY_H_ */
+#endif /* DATA_MANAGEMENT_WAY_H_ */

@@ -5,7 +5,7 @@
  *      Author: vagrant
  */
 
-#include "Node.h"
+#include "../data_management/Node.h"
 
 namespace PredictivePowertrain {
 

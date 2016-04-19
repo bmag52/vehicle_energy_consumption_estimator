@@ -63,7 +63,6 @@ double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link* link, Goal* goal, bool
 }
 
 double GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal * goal, bool isSimilar) {
-	// TODO probabilityOfGoalGivenLink
 	double** matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
 	int matrixLength = sizeof(*matrix)/sizeof(int);
 	double goalHash = (double) goal->getHash();

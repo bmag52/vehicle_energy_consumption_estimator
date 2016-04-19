@@ -5,7 +5,7 @@
  *      Author: vagrant
  */
 
-#include "DataCollection.h"
+#include "../data_management/DataCollection.h"
 
 using namespace boost::asio;
 using boost::asio::ip::tcp;
@@ -19,6 +19,7 @@ DataCollection::DataCollection() {
 	this->latDelta = .02;
 	this->lonDelta = .02;
 	this->wayCount = 0;
+	this->boundsCount = 0;
 	checkDataFoler();
 }
 
@@ -26,6 +27,7 @@ DataCollection::DataCollection(double latDelta, double lonDelta) {
 	this->latDelta = latDelta;
 	this->lonDelta = lonDelta;
 	this->wayCount = 0;
+	this->boundsCount = 0;
 	checkDataFoler();
 }
 
@@ -80,7 +82,6 @@ void DataCollection::pullOSMData(double lat, double lon) {
 			long int nodeID;
 			double lat, lon;
 			const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
-
 			BOOST_FOREACH(const ptree::value_type &v, attributes)
 			{
 				std::string attr = lexical_cast<std::string>(v.first.data());
@@ -98,7 +99,6 @@ void DataCollection::pullOSMData(double lat, double lon) {
 				}
 
 			}
-
 			int ele = getElevation(lat, lon);
 			Node* node = new Node(lat, lon, ele, nodeID);
 			this->nodeMap.addEntry(nodeID, node);
@@ -119,26 +119,22 @@ void DataCollection::pullOSMData(double lat, double lon) {
 				if(!childTagName.compare("nd") || !childTagName.compare("tag"))
 				{
 					std::cout << "- " << childTagName << " -" << std::endl;
-
 					const ptree & attributes = v.second.get_child("<xmlattr>", empty_ptree());
 					BOOST_FOREACH(const ptree::value_type &z, attributes)
 					{
 						std::string attr = lexical_cast<std::string>(z.first.data());
-
 						if(!childTagName.compare("nd") && !attr.compare("ref"))
 						{
 							long int ref = lexical_cast<long int>(z.second.data());
 							std::cout << attr << " = " << z.second.data() << std::endl;
 							refCount++;
 							nodeIDs->addEntry(refCount, ref);
-
 						} else if(!childTagName.compare("tag") && !attr.compare("v")) {
-
 							std::string val = lexical_cast<std::string>(z.second.data());
 							std::size_t found = val.find("mph");
 							if(!val.compare("motorway") || !val.compare("primary") || !val.compare("secondary") || !val.compare("tertiary")
 									|| !val.compare("motorway link") || !val.compare("primary link") /*|| !val.compare("unclassified")*/
-									|| !val.compare("road") /*|| !val.compare("residential") || !val.compare("service")*/)
+									|| !val.compare("road") || !val.compare("residential") /*|| !val.compare("service")*/)
 							{
 								wayType = val;
 								isDesiredWay = true;
@@ -161,7 +157,6 @@ void DataCollection::pullOSMData(double lat, double lon) {
 				BOOST_FOREACH(const ptree::value_type &v, attributes)
 				{
 					std::string attr = lexical_cast<std::string>(v.first.data());
-
 					if(!attr.compare("id"))
 					{
 						wayID = lexical_cast<long int>(v.second.data());
@@ -174,6 +169,31 @@ void DataCollection::pullOSMData(double lat, double lon) {
 				Way* way = new Way(nodeIDs, wayID, wayType, waySpeed);
 				this->wayMap.addEntry(this->wayCount, way);
 			}
+		} else if(!tagName.compare("bounds")) {
+
+			double maxLat, maxLon, minLat, minLon;
+			const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
+			BOOST_FOREACH(const ptree::value_type &v, attributes)
+			{
+				std::string attr = lexical_cast<std::string>(v.first.data());
+				if(!attr.compare("minlat"))
+				{
+					minLat = lexical_cast<double>(v.second.data());
+					std::cout << attr << " = " << minLat << std::endl;
+				} else if(!attr.compare("minlon")) {
+					minLon = lexical_cast<double>(v.second.data());
+					std::cout << attr << " = " << minLon << std::endl;
+				} else if(!attr.compare("maxlat")) {
+					maxLat = lexical_cast<double>(v.second.data());
+					std::cout << attr << " = " << maxLat << std::endl;
+				} else if(!attr.compare("maxlon")) {
+					maxLon = lexical_cast<double>(v.second.data());
+					std::cout << attr << " = " << maxLon << std::endl;
+				}
+			}
+			this->boundsCount++;
+			Bounds* bounds = new Bounds(maxLat, maxLon, minLat, minLon);
+			boundsMap.addEntry(this->boundsCount, bounds);
 		}
 	}
 }
@@ -404,9 +424,10 @@ GenericMap<int, Way*>* DataCollection::getWayMap() {
 }
 
 // for loading into http://www.gpsvisualizer.com/
-void DataCollection::visualizeData() {
+GenericMap<int, Road*>* DataCollection::makeRawRoads() {
 
 	std::string csvName = this->dataFolder + "/" + "mapData.csv";
+	GenericMap<int, Road*>* rawRoads = new GenericMap<int, Road*>();
 
 	// delete existing csv if found
 	std::string rm = "rm " + csvName;
@@ -422,11 +443,13 @@ void DataCollection::visualizeData() {
 		Way* way = this->wayMap.getEntry(i);
 		if(way != NULL)
 		{
+			GenericMap<int, Node*>* nodes = new GenericMap<int, Node*>();
 			for(int j = 1; j <= way->getNodeIDs()->getSize(); j++)
 			{
 				Node* node = this->nodeMap.getEntry(way->getNodeIDs()->getEntry(j));
 				if(node != NULL)
 				{
+					nodes->addEntry(j, node);
 					csv << i << ",";										//name
 					csv << "\"Node ID: " << node->getID() << " | ";			//Node ID
 					csv << "Ele: " << node->getEle() << " | ";				//Ele
@@ -438,13 +461,25 @@ void DataCollection::visualizeData() {
 					csv << node->getLon() << "\n";							//lon
 				}
 			}
+			if(nodes->getSize() > 0)
+			{
+				Road* newRoad = new Road(way->getWayType(), way->getID(), nodes);
+				rawRoads->addEntry(i, newRoad);
+			}
 		}
 	}
 	csv.close();
+	return rawRoads;
 }
 
 int DataCollection::getVoidEle() {
 	return this->voidEle;
 }
 
+GenericMap<int, Bounds*>* DataCollection::getBoundsMap() {
+	return &this->boundsMap;
 }
+
+}
+
+

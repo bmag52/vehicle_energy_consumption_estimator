@@ -19,6 +19,7 @@ class GenericMap {
 private:
 	std::map<K,V> map;
 	typename std::map<K,V>::iterator iter;
+	bool hasNextEntry;
 	int hashCounter; // might not be needed, use iterator
 	int arrayCounter; // might not be needed, use iterator
 public:
@@ -45,6 +46,7 @@ GenericMap<K, V>::GenericMap() {
 	this->iter = map.end();
 	this->hashCounter = 0;
 	this->arrayCounter = 0;
+	this->hasNextEntry = false;
 }
 
 template<class K, class V>
@@ -53,6 +55,7 @@ GenericMap<K, V>::GenericMap(GenericMap& other) {
 	this->iter = map.end();
 	this->hashCounter = 0;
 	this->arrayCounter = 0;
+	this->hasNextEntry = false;
 }
 
 template<class K, class V>
@@ -64,16 +67,25 @@ template<class K, class V>
 void GenericMap<K, V>::initializeCounter() {
 	this->hashCounter = 0;
 	this->arrayCounter = 0;
+	if(this->getSize() > 0)
+	{
+		this->iter = this->map.begin();
+		this->hasNextEntry = true;
+	}
 }
 
 template<class K, class V>
 GenericEntry<K,V>* GenericMap<K, V>::nextEntry() {
-	if (this->iter == this->map.end()) {
-		this->iter = this->map.begin();
+	if (this->iter == this->map.end() && this->hasNextEntry) {
+		this->hasNextEntry = false;
+	} else if(!this->hasNextEntry) {
+		return NULL;
 	}
-	GenericEntry<K,V> entry = GenericEntry<K,V>(this->iter->first,this->iter->second);
-	this->iter++;
-	return &entry;
+	GenericEntry<K,V>* entry = new GenericEntry<K,V>(this->iter->first,this->iter->second);
+	if(this->hasNextEntry) {
+		this->iter++;
+	}
+	return entry;
 }
 
 template<class K, class V>
@@ -134,7 +146,9 @@ int PredictivePowertrain::GenericMap<K, V>::getSize() {
 
 template<class K, class V>
 int GenericMap<K, V>::addEntry(K key, V value) {
-	if (this->map.insert (std::pair<K,V>(key, value)).second == true) {
+	if(this->getEntry(key) != NULL) {
+		return 0;
+	} else if(this->map.insert (std::pair<K,V>(key, value)).second == true) {
 		return 1;
 	} else {
 		return 0;

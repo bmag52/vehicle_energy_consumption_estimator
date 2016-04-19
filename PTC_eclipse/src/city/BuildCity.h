@@ -15,10 +15,10 @@ namespace PredictivePowertrain {
 class BuildCity {
 private:
 	City city;
-	GenericMap<int, Road*> rawRoads;
 	GenericMap<int, Intersection*> intersections;
-	void makeRoadPolys();
-	void makeGridData();
+	GenericMap<int, Road*> roads;
+	void updateGridData(); // post-processing on shutdown
+	void readCityFile(); // pre-processing on startup
 
 public:
 	BuildCity();

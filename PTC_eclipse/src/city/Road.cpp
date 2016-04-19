@@ -14,9 +14,10 @@ Road::Road() {
 	this->roadID = 0;
 }
 
-Road::Road(std::string roadType, int roadID) {
+Road::Road(std::string roadType, long int roadID, GenericMap<int, Node*>* nodes) {
 	this->roadType = roadType;
 	this->roadID = roadID;
+	this->nodes = nodes;
 }
 
 void Road::setStartNode(Intersection* startNode) {

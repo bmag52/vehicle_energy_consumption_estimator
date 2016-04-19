@@ -11,10 +11,6 @@
 #include "../city/Road.h"
 #include "../city/Intersection.h"
 #include "../map/GenericMap.h"
-#include "Node.h"
-#include "Way.h"
-
-// xml parse
 #include "boost/foreach.hpp"
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/xml_parser.hpp"
@@ -30,6 +26,9 @@
 #include <string>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include "../data_management/Bounds.h"
+#include "../data_management/Node.h"
+#include "../data_management/Way.h"
 
 namespace PredictivePowertrain {
 
@@ -40,11 +39,11 @@ private:
 	std::string mapFile;
 	std::string eleFile;
 	std::string dataFolder = "data";
-	std::string testXml = "./test.xml";
 	int** eleData;
 	int numEleLats;
 	int numEleLons;
 	int wayCount;
+	int boundsCount;
 	double eleLowerLeftLat;
 	double eleLowerLeftLon;
 	double eleCellSize;
@@ -52,6 +51,7 @@ private:
 	int maxVisEntries = 5000;
 	GenericMap<long int, Node*> nodeMap;
 	GenericMap<int, Way*> wayMap;
+	GenericMap<int, Bounds*> boundsMap;
 
 	const boost::property_tree::ptree& empty_ptree();
 	void queryFile(std::string serverName, std::string getCommand, std::string fileName);
@@ -67,8 +67,9 @@ public:
 	void pullData(double lat, double lon);
 	GenericMap<long int, Node*>* getNodeMap();
 	GenericMap<int, Way*>* getWayMap();
+	GenericMap<int, Bounds*>* getBoundsMap();
 	int getVoidEle();
-	void visualizeData();
+	GenericMap<int, Road*>* makeRawRoads();
 };
 
 } /* namespace PredictivePowertrain */

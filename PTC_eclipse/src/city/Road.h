@@ -10,7 +10,8 @@
 
 #include "../map/GenericMap.h"
 #include <string>
-#include "../data_collection/Node.h"
+
+#include "../data_management/Node.h"
 
 namespace PredictivePowertrain {
 
@@ -22,11 +23,11 @@ private:
 	std::string roadType;
 	Intersection* startNode;
 	Intersection* endNode;
-	int roadID;
+	long int roadID;
 
 public:
 	Road();
-	Road(std::string roadType, int roadID);
+	Road(std::string roadType, long int roadID, GenericMap<int, Node*>* nodes);
 	virtual ~Road();
 	void setStartNode(Intersection* startNode);
 	void setEndNode(Intersection* endNode);

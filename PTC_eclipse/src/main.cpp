@@ -23,7 +23,7 @@ int main() {
 	// TODO make a function that calls unit tests
 	// link_UT();
 	// route_ut();
-	// linkToStateMap_ut();
+	linkToStateMap_ut();
 
 	// speed_prediction muck around
 	SpeedPrediction sp;

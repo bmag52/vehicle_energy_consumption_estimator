@@ -36,7 +36,8 @@ double LinkToStateMap::getProbability(Link* li, Link* lj, Goal* gj, bool isSimil
 	Probability p_l_lg;
 	this->goalMap.initializeCounter();
 	GenericEntry<int, GoalMapEntry*>* next = this->goalMap.nextEntry(); //is this ok syntax? (yes)
-	while(next->key != -1) {
+	while(next != NULL) {
+	//while(next->key != -1) {
 		Goal* g = next->value->getGoalPtr();
 		if(gj->isEqual(g) || isSimilar) { // matlab lets you pass shit around without worrying too much about var-type. only be getting goals so far
 			LinkToStateMapEntry* l2Entry = next->value->getMapEntry(lj->getHash());

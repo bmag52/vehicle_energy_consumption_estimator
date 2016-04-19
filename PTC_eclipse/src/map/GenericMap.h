@@ -9,6 +9,7 @@
 #define ROUTE_PREDICTION_GENERICMAP_H_
 #include "stddef.h"
 #include <functional>
+#include <iostream>
 #include <map>
 #include "GenericEntry.h"
 
@@ -76,14 +77,16 @@ void GenericMap<K, V>::initializeCounter() {
 
 template<class K, class V>
 GenericEntry<K,V>* GenericMap<K, V>::nextEntry() {
-	if (this->iter == this->map.end() && this->hasNextEntry) {
-		this->hasNextEntry = false;
-	} else if(!this->hasNextEntry) {
-		return NULL;
-	}
-	GenericEntry<K,V>* entry = new GenericEntry<K,V>(this->iter->first,this->iter->second);
+
+	GenericEntry<K,V>* entry;
 	if(this->hasNextEntry) {
+		entry = new GenericEntry<K,V>(this->iter->first,this->iter->second);
 		this->iter++;
+	}
+
+	if(this->iter == this->map.end()) {
+		this->hasNextEntry = false;
+		entry = NULL;
 	}
 	return entry;
 }

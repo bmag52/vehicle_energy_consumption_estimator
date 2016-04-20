@@ -1,18 +1,12 @@
 /*
  * RoadUnitTest.cpp
  *
- *  Created on: Apr 5, 2016
+ *  Created on: Apr 12, 2016
  *      Author: vagrant
  */
 
-/*
- * IntersectionUnitTest.cpp
- *
- *  Created on: Apr 5, 2016
- *      Author: vagrant
- */
 #include "../city/Road.h"
-#include <iostream>
+#include "../city/Intersection.h"
 #include <assert.h>
 #include "UnitTests.h"
 
@@ -20,24 +14,38 @@ using namespace PredictivePowertrain;
 
 void road_ut() {
 
-	// testing constructors
-	Road test;
-	int eleData = 1;
-	int speedData = 1;
-	std::string roadType = "angry";
-	Road test2(roadType, &eleData, &speedData, 1);
-	// test setStartNode(Intersection) ==
-	test.setStartNode(NULL);
-	assert(test.getStartNode() == NULL);
-	//test setEndNode
-	test.setEndNode(NULL);
-	assert(test.getEndNode() == NULL);
-	//test getRoadID
-	assert(test.getRoadID() == 1);
-	//test getSpeedData
-	assert(*test.getSpeedData() == speedData);
-	//test getElevData
-	assert(*test.getElevData() == eleData);
+	int elevationData = 10, speedData = 15;
+	int* test;
+	int* test2;
+
+	test = &elevationData;
+	test2 = &speedData;
+
+	//Testing constructor Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID)
+	std::string x = "default";
+	Road road2(x, test, test2, 1);
+
+	//Intersection::Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum) {
+	Intersection sect(&road2, 2.0, 2.0, 1, 1);
+
+	//Testing default constructor
+	Road road1;
+	assert(road1.getRoadID() == 0);
+	assert(road1.getSpeedData() == 0 && road1.getElevData() == 0);
+
+	//Testing setStartNode
+	road2.setStartNode(&sect);
+
+	//Testing setEndNode
+	road2.setEndNode(&sect);
+
+	//Testing getStartNode and getEndNode
+//	assert(road2.getStartNode() == sect.startNode && road2.getEndNode() == sect.endNode);
+
+	//Testing getRoadID
+	assert(road2.getRoadID() == 1);
+	//Testing getSpeedData & get ElevData
+//	assert(road2.getSpeedData() == 15 && road2.getElevData() == 10);
 
 }
 

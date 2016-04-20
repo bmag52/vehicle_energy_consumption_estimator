@@ -9,7 +9,6 @@
 #include <assert.h>
 #include "UnitTests.h"
 
-//using namespace std;
 using namespace PredictivePowertrain;
 
 void probability_ut() {

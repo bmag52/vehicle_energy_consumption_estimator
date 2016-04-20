@@ -15,13 +15,14 @@ namespace PredictivePowertrain {
 
 class GPS {
 private:
-	double lat;
-	double lon;
+	GenericMap<double, double> tripLog;
 
 public:
 	GPS();
-	std::pair<double, double>* getLatLon();
-	bool isOnRoad(Road* road);
+	static std::pair<double, double>* getLatLon();
+	static bool isOnRoad(Road* road);
+	void updateTripLog();
+	GenericMap<double, double>* getTripLog();
 };
 
 }

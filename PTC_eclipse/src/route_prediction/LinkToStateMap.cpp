@@ -14,16 +14,16 @@ int LinkToStateMap::incrementTransition(Link* lj, Goal* gj, Link* li) {
 	GoalMapEntry* entry;
 	if(!(this->goalMap.hashInMap(goalHash))) {
 		entry = new GoalMapEntry(gj);
+		entry->incrementCount();
 		this->goalMap.addEntry(goalHash, entry);
 	} else {
-		entry = this->goalMap.getEntry(goalHash);
+		this->goalMap.getEntry(goalHash)->incrementCount();
 	}
-	entry->incrementCount();
 
 	int linkHash = lj->getHash();
 	if(!this->linkMap.hashInMap(linkHash)) {
-		LinkToStateMapEntry linkEntry;
-		this->linkMap.addEntry(linkHash, &linkEntry);
+		LinkToStateMapEntry* linkEntry = new LinkToStateMapEntry();
+		this->linkMap.addEntry(linkHash, linkEntry);
 	}
 	int m = this->linkMap.getEntry(linkHash)->addEntry(li);
 	return m;

@@ -10,17 +10,14 @@
 namespace PredictivePowertrain {
 
 Road::Road() {
-	this->elevationData = 0;
-	this->speedLimitData = 0;
 //	this-> = new RoadTypes("default");
 	this->roadID = 0;
 }
 
-Road::Road(std::string roadType, int* elevationData, int* speedData, int roadID) {
-	this->elevationData = elevationData;
-	this->speedLimitData = speedData;
-//	this-> = new RoadTypes(roadType);
+Road::Road(std::string roadType, long int roadID, GenericMap<int, Node*>* nodes) {
+	this->roadType = roadType;
 	this->roadID = roadID;
+	this->nodes = nodes;
 }
 
 void Road::setStartNode(Intersection* startNode) {
@@ -47,11 +44,9 @@ Road::~Road() {
 }
 
 int* Road::getSpeedData() {
-	return this->speedLimitData;
 }
 
 int* Road::getElevData() {
-	return this->elevationData;
 }
 
 } /* namespace PredictivePowertrain */

@@ -10,7 +10,8 @@
 
 #include "../map/GenericMap.h"
 #include <string>
-#include "../data_collection/Node.h"
+
+#include "../data_management/Node.h"
 
 namespace PredictivePowertrain {
 
@@ -18,25 +19,23 @@ class Intersection; // forward declaration
 
 class Road {
 private:
-	int* elevationData;
-	int* speedLimitData;
-	GenericMap<int, Node*> nodes;
+	GenericMap<int, Node*>* nodes;
+	std::string roadType;
 	Intersection* startNode;
 	Intersection* endNode;
-//	RoadTypes roadType;
-	int roadID;
+	long int roadID;
 
 public:
 	Road();
-	Road(std::string roadType, int* elevationData, int* speedData, int roadID);
+	Road(std::string roadType, long int roadID, GenericMap<int, Node*>* nodes);
 	virtual ~Road();
 	void setStartNode(Intersection* startNode);
 	void setEndNode(Intersection* endNode);
 	Intersection* getStartNode();
 	Intersection* getEndNode();
-	int* getSpeedData();
-	int* getElevData();
 	int getRoadID();
+	int* getElevData();
+	int* getSpeedData();
 };
 
 } /* namespace PredictivePowertrain */

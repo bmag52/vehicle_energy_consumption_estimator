@@ -14,16 +14,16 @@ class Node {
 private:
 	double lat;
 	double lon;
-	double ele;
-	int id;
+	int ele;
+	int long id;
 
 public:
 	Node();
-	Node(double lat, double lon, int id);
+	Node(double lat, double lon, int ele, int id);
 	double getLat();
 	double getLon();
-	int getID();
-	double getEle();
+	long int getID();
+	int getEle();
 };
 
 }

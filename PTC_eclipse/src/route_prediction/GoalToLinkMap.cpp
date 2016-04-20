@@ -33,7 +33,7 @@ int GoalToLinkMap::linkTraversed(Link* link, Goal* goal) {
 	return count;
 }
 
-double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link * link, Goal * goal, bool isSimilar) {
+double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link* link, Goal* goal, bool isSimilar) {
 	this->goalMap.initializeCounter();
 	GenericEntry<int, GoalMapEntry*> * goalEntry = this->goalMap.nextEntry();
 	double** prob = new double*[this->goalMap.getSize()];
@@ -63,7 +63,6 @@ double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link * link, Goal * goal, bo
 }
 
 double GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal * goal, bool isSimilar) {
-	// TODO probabilityOfGoalGivenLink
 	double** matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
 	int matrixLength = sizeof(*matrix)/sizeof(int);
 	double goalHash = (double) goal->getHash();

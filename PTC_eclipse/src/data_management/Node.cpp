@@ -5,16 +5,17 @@
  *      Author: vagrant
  */
 
-#include "Node.h"
+#include "../data_management/Node.h"
 
 namespace PredictivePowertrain {
 
 Node::Node() {
 }
 
-Node::Node(double lat, double lon, int id) {
+Node::Node(double lat, double lon, int ele, int id) {
 	this->lat = lat;
 	this->lon = lon;
+	this->ele = ele;
 	this->id = id;
 }
 
@@ -26,11 +27,11 @@ double Node::getLon() {
 	return this->lon;
 }
 
-int Node::getID() {
+long int Node::getID() {
 	return this->id;
 }
 
-double Node::getEle() {
+int Node::getEle() {
 	return this->ele;
 }
 

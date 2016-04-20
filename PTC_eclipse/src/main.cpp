@@ -8,7 +8,7 @@
 #include <iostream>
 #include <assert.h>
 
-#include "data_collection/DataCollection.h"
+#include "data_management/DataCollection.h"
 #include "speed_prediction/SpeedPrediction.h"
 #include "map/GenericMap.h"
 #include "unit_tests/UnitTests.h"
@@ -21,6 +21,7 @@ int main() {
 
 	// unit test function calls here
 	// TODO make a function that calls unit tests
+
 	// link_UT();
 	// route_ut();
 	linkToStateMap_ut();
@@ -51,9 +52,14 @@ int main() {
 
 	// xml parser muck around
 	DataCollection test;
-//	test.getRoads();
-	test.pullOSMData(47.681, -122.328);
-	test.pullSRTMData(47.681, -122.328);
+	test.pullData(47.681, -122.328); // greenlake
+	std::cout << "node size " << test.getNodeMap()->getSize() << std::endl;
+	std::cout << "boundCount " << test.getBoundsMap()->getSize() << std::endl;
+	test.pullData(47.618174, -122.330838); // downtown
+	std::cout << "node size " << test.getNodeMap()->getSize() << std::endl;
+	std::cout << "boundCount " << test.getBoundsMap()->getSize() << std::endl;
+	std::cout << "road Count " << test.makeRawRoads()->getSize() << std::endl;
+
 	std::cout << "finished" << std::endl;
 
 	return 0;

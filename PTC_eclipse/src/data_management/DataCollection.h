@@ -10,8 +10,7 @@
 
 #include "../city/Road.h"
 #include "../city/Intersection.h"
-
-// xml parse
+#include "../map/GenericMap.h"
 #include "boost/foreach.hpp"
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/xml_parser.hpp"
@@ -27,6 +26,9 @@
 #include <string>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include "../data_management/Bounds.h"
+#include "../data_management/Node.h"
+#include "../data_management/Way.h"
 
 namespace PredictivePowertrain {
 
@@ -37,27 +39,37 @@ private:
 	std::string mapFile;
 	std::string eleFile;
 	std::string dataFolder = "data";
-	std::string testXml = "./test.xml";
 	int** eleData;
-	int numEleCols;
-	int numEleRows;
+	int numEleLats;
+	int numEleLons;
+	int wayCount;
+	int boundsCount;
 	double eleLowerLeftLat;
 	double eleLowerLeftLon;
 	double eleCellSize;
 	int voidEle;
-
+	int maxVisEntries = 5000;
+	GenericMap<long int, Node*> nodeMap;
+	GenericMap<int, Way*> wayMap;
+	GenericMap<int, Bounds*> boundsMap;
 
 	const boost::property_tree::ptree& empty_ptree();
 	void queryFile(std::string serverName, std::string getCommand, std::string fileName);
 	std::string getBin(double hi, double lo, int bins, double latLon, bool isLat);
 	void checkDataFoler();
+	void pullSRTMData(double lat, double lon);
+	void pullOSMData(double lat, double lon);
+	int getElevation(double lat, double lon);
+
 public:
 	DataCollection();
 	DataCollection(double latDelta, double lonDelta);
-	void pullSRTMData(double lat, double lon);
-	void pullOSMData(double lat, double lon);
-	Intersection* getIntersections(Road* roads);
-
+	void pullData(double lat, double lon);
+	GenericMap<long int, Node*>* getNodeMap();
+	GenericMap<int, Way*>* getWayMap();
+	GenericMap<int, Bounds*>* getBoundsMap();
+	int getVoidEle();
+	GenericMap<int, Road*>* makeRawRoads();
 };
 
 } /* namespace PredictivePowertrain */

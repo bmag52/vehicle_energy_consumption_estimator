@@ -8,6 +8,23 @@
 #ifndef CITY_BUILDCITY_H_
 #define CITY_BUILDCITY_H_
 
+#include "City.h"
 
+namespace PredictivePowertrain {
+
+class BuildCity {
+private:
+	City city;
+	GenericMap<int, Intersection*> intersections;
+	GenericMap<int, Road*> roads;
+	void updateGridData(); // post-processing on shutdown
+	void readCityFile(); // pre-processing on startup
+
+public:
+	BuildCity();
+
+};
+
+}
 
 #endif /* CITY_BUILDCITY_H_ */

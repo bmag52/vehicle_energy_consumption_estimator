@@ -341,6 +341,11 @@ std::pair<int*, double*>* City::routeToData(Route* route, int dist) {
 
 			firstLink = false;
 		} else {
+			std::pair<double*, int>* data = elevationToSlope(elevData, lastElev);
+			double* slope = data->first;
+			lastElev = data->second;
+
+			// concatenate speed
 			int speedDataSize = sizeof(*speedData)/sizeof(int);
 			int speedSize = sizeof(*speed)/sizeof(int);
 			int* newSpeedData = new int[speedDataSize + speedSize];
@@ -348,10 +353,7 @@ std::pair<int*, double*>* City::routeToData(Route* route, int dist) {
 			for(int i = speedDataSize - 1; i < speedDataSize + speedSize; i++) { newSpeedData[i] = speed[i - speedSize - 1]; }
 			speedData = newSpeedData;
 
-			std::pair<double*, int>* data = elevationToSlope(elevData, lastElev);
-			double* slope = data->first;
-			lastElev = data->second;
-
+			// concatenate slopes
 			int slopeDataSize = sizeof(*slopeData)/sizeof(double);
 			int slopeSize = sizeof(*slope)/sizeof(double);
 			double* newSlopeData = new double[slopeDataSize + slopeSize];
@@ -366,5 +368,7 @@ std::pair<int*, double*>* City::routeToData(Route* route, int dist) {
 	data->second = slopeData;
 	return data;
 }
+
+
 
 } /* namespace PredictivePowertrain */

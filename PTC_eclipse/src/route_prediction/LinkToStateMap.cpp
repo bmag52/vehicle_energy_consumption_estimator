@@ -43,12 +43,13 @@ double LinkToStateMap::getProbability(Link* li, Link* lj, Goal* gj, bool isSimil
 				p_l_lg.addDenominator(l2Entry->getTotalM());
 				p_l_lg.addNumerator(l2Entry->getM(li));
 			}
-			p_g.addDenominator(next->value->getM());
-			if(g->isEqual(gj)) {
-				p_g.addNumerator(next->value->getM());
-			}
-			next = this->goalMap.nextEntry();
+
 		}
+		p_g.addDenominator(next->value->getM());
+		if(g->isEqual(gj)) {
+			p_g.addNumerator(next->value->getM());
+		}
+		next = this->goalMap.nextEntry();
 	}
 	double pl = p_l_lg.getProbability();
 	//double plg = pl * p_g.getProbability();

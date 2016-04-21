@@ -78,7 +78,7 @@ void GenericMap<K, V>::initializeCounter() {
 template<class K, class V>
 GenericEntry<K,V>* GenericMap<K, V>::nextEntry() {
 
-	GenericEntry<K,V>* entry;
+	GenericEntry<K,V>* entry = NULL;
 	if(this->hasNextEntry) {
 		entry = new GenericEntry<K,V>(this->iter->first,this->iter->second);
 		this->iter++;
@@ -86,7 +86,6 @@ GenericEntry<K,V>* GenericMap<K, V>::nextEntry() {
 
 	if(this->iter == this->map.end()) {
 		this->hasNextEntry = false;
-		entry = NULL;
 	}
 	return entry;
 }

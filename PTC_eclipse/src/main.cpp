@@ -9,6 +9,7 @@
 #include <assert.h>
 
 #include "data_management/DataCollection.h"
+#include "data_management/DataManagement.h"
 #include "speed_prediction/SpeedPrediction.h"
 #include "map/GenericMap.h"
 #include "unit_tests/UnitTests.h"
@@ -49,15 +50,25 @@ int main() {
 	// route_prediction muck around
 	// GenericMap<int, int> test;
 
-	// xml parser muck around
-	DataCollection test;
-	test.pullData(47.681, -122.328); // greenlake
-	std::cout << "node size " << test.getNodeMap()->getSize() << std::endl;
-	std::cout << "boundCount " << test.getBoundsMap()->getSize() << std::endl;
-	test.pullData(47.618174, -122.330838); // downtown
-	std::cout << "node size " << test.getNodeMap()->getSize() << std::endl;
-	std::cout << "boundCount " << test.getBoundsMap()->getSize() << std::endl;
-	std::cout << "road Count " << test.makeRawRoads()->getSize() << std::endl;
+	// data collection muck around
+//	DataCollection testDC;
+//	testDC.pullData(47.681, -122.328); // greenlake
+//	std::cout << "node size " << testDC.getNodeMap()->getSize() << std::endl;
+//	std::cout << "boundCount " << testDC.getBoundsMap()->getSize() << std::endl;
+//	testDC.pullData(47.618174, -122.330838); // downtown
+//	std::cout << "node size " << testDC.getNodeMap()->getSize() << std::endl;
+//	std::cout << "boundCount " << testDC.getBoundsMap()->getSize() << std::endl;
+//	std::cout << "road Count " << testDC.makeRawRoads()->getSize() << std::endl;
+
+	// data management muck around
+	DataManagement testDM;
+	GenericMap<double, double>* latLon = new GenericMap<double, double>();
+	latLon->addEntry(47.654, -122.345);
+	latLon->addEntry(47.653, -122.346);
+	latLon->addEntry(47.652, -122.347);
+	testDM.addTripData(latLon, false);
+	testDM.addTripData(latLon, true);
+	GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>* data = testDM.getMostRecentTripData();
 
 	std::cout << "finished" << std::endl;
 

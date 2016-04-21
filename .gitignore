@@ -45,3 +45,5 @@ PTC_eclipse/readme*
 VM/S32V_BSP
 VM/package.box
 
+# data storage
+*.json

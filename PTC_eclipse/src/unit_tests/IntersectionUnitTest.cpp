@@ -15,8 +15,6 @@
 #include "UnitTests.h"
 
 using namespace std;
-using namespace PredictivePowertrain;
-
 
 void intersection_ut(){
 	//Road(std::string roadType, int* elevationData, int* speedData, int roadID, double* lat, double* lon)

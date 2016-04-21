@@ -13,17 +13,23 @@ City::City() {
 	// TODO Auto-generated constructor stub
 }
 
+City::City(Intersection* intersections, Road* roads, GenericMap<int, Bounds*>* boundsMap) {
+	this->roads = roads;
+	this->intersections = intersections;
+	this->boundsMap = boundsMap;
+}
+
 int City::getRoadListSize() {
-	return sizeof(*this->roadList)/sizeof(Road);
+	return sizeof(*this->roads)/sizeof(Road);
 }
 
 int City::getInstersectionListSize() {
-	return sizeof(*this->roadList)/sizeof(Road);
+	return sizeof(*this->roads)/sizeof(Road);
 }
 
 Link* City::getNextLinks(Link* link) {
 	assert(link->isEqual(this->link->finalLink()));
-	Road* currentRoad = &this->roadList[link->getNumber()];
+	Road* currentRoad = &this->roads[link->getNumber()];
 	Intersection* nextIntersection = getIntersectionFromLink(link,true);
 
 	Link* links;
@@ -46,7 +52,7 @@ Link* City::getNextLinks(Link* link) {
 
 Intersection* City::getIntersectionFromLink(Link* link, bool isIntersection) {
 	assert(!link->isEqual(this->link->finalLink()));
-	Road* road = &this->roadList[link->getNumber()];
+	Road* road = &this->roads[link->getNumber()];
 
 	if(((link->getDirection() == 0) + isIntersection) % 2)
 	{
@@ -177,8 +183,8 @@ std::pair<int*, int*>* City::getRoadData(Link* link) {
 		return roadData;
 	}
 
-	roadData->first = this->roadList[link->getNumber()].getSpeedData();
-	roadData->second = this->roadList[link->getNumber()].getElevData();
+	roadData->first = this->roads[link->getNumber()].getSpeedData();
+	roadData->second = this->roads[link->getNumber()].getElevData();
 
 	if(link->getDirection())
 	{
@@ -369,6 +375,16 @@ std::pair<int*, double*>* City::routeToData(Route* route, int dist) {
 	return data;
 }
 
+GenericMap<int, Bounds*>* City::getBoundsMap() {
+	return this->boundsMap;
+}
 
+Road* City::getRoads() {
+	return this->roads;
+}
+
+Intersection* City::getIntersection() {
+	return this->intersections;
+}
 
 } /* namespace PredictivePowertrain */

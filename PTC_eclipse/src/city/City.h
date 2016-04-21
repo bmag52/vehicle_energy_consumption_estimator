@@ -17,6 +17,7 @@
 #include "../map/GenericMap.h"
 #include "../driver_prediction/Link.h"
 #include "../route_prediction/Route.h"
+#include "../data_management/Bounds.h"
 
 #include <assert.h>
 #include <algorithm>
@@ -30,13 +31,14 @@ class City {
 private:
 	Intersection* intersections;
 	std::string roadFileName;
-	std:: string intersectionFileName;
+	std::string intersectionFileName;
 	int intervalDistance = 1;
 	int dateTimeCreated;
 	int maxSlopePercent = 6;
 	std::map<int,int> intersectionNumMap;
-	Road* roadList;
+	Road* roads;
 	Link* link;
+	GenericMap<int, Bounds*>* boundsMap;
 
 	int* reverseTrace(int* trace);
 	Road* getConnectingRoad(Intersection* one, Intersection* two);
@@ -46,7 +48,7 @@ private:
 	std::pair<double*, int>* elevationToSlope(int* elev, int oldElev);
 public:
 	City();
-	City(Intersection*, std::string, std::string, int, std::map<int, int>);
+	City(Intersection* intersections, Road* roads, GenericMap<int ,Bounds*>* boundsMap);
 	int getRoadListSize();
 	int getInstersectionListSize();
 	Link* getNextLinks(Link* link);
@@ -57,6 +59,9 @@ public:
 	std::pair<int*, int*>* getRoadData(Link* link);
 	bool legalRoute(Route* route);
 	std::pair<int*, double*>* routeToData(Route* route, int dist);
+	GenericMap<int, Bounds*>* getBoundsMap();
+	Road* getRoads();
+	Intersection* getIntersection();
 
 };
 

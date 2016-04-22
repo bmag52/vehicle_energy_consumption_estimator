@@ -8,20 +8,18 @@
 #ifndef CITY_CITYSECTION_H_
 #define CITY_CITYSECTION_H_
 
+#include <string>
+#include "RoadTypes.h"
+
 namespace PredictivePowertrain {
-//city_section describes a square section of a city
+
 class CitySection {
 public:
-//	RoadTypes roadType;
+	std::string roadType;
 	int x_dim;
 	int y_dim;
-	int* elevation;
-	int* pairing; //what are pairings?
-//	std::pair<int, int>* coordinates;
-//	IntersectionTypes* intersections;
-//	CitySection(std::string, int, int);
-
 	CitySection();
+	CitySection(std::string, int, int);
 	virtual ~CitySection();
 };
 

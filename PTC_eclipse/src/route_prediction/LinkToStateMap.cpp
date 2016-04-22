@@ -11,21 +11,20 @@ namespace PredictivePowertrain {
 
 int LinkToStateMap::incrementTransition(Link* lj, Goal* gj, Link* li) {
 	int goalHash = gj->getHash();
-	GoalMapEntry* entry;
-	if(!(this->goalMap.hashInMap(goalHash))) {
-		entry = new GoalMapEntry(gj);
-		entry->incrementCount();
-		this->goalMap.addEntry(goalHash, entry);
-	} else {
-		this->goalMap.getEntry(goalHash)->incrementCount();
-	}
-
 	int linkHash = lj->getHash();
-	if(!this->linkMap.hashInMap(linkHash)) {
-		LinkToStateMapEntry* linkEntry = new LinkToStateMapEntry();
-		this->linkMap.addEntry(linkHash, linkEntry);
+	GenericMap<int, LinkToStateMapEntry*> * thisMap;
+	if(!(this->goalMap.hashInMap(goalHash))) {
+		thisMap = new GenericMap<int, LinkToStateMapEntry*>();
+		this->goalMap.addEntry(goalHash, thisMap);
+	} else {
+		thisMap = this->goalMap.getEntry(goalHash);
 	}
-	int m = this->linkMap.getEntry(linkHash)->addEntry(li);
+	if(!(thisMap->hashInMap(linkHash))) {
+		LinkToStateMapEntry entry;
+		thisMap->addEntry(linkHash, &entry);
+	}
+	LinkToStateMapEntry * thisEntry = thisMap->getEntry(linkHash);
+	int m = thisEntry->addEntry(li);
 	return m;
 }
 
@@ -33,25 +32,21 @@ double LinkToStateMap::getProbability(Link* li, Link* lj, Goal* gj, bool isSimil
 	Probability p_g;
 	Probability p_l_lg;
 	this->goalMap.initializeCounter();
-	GenericEntry<int, GoalMapEntry*>* next = this->goalMap.nextEntry();
-	while(next != NULL) { // next->key != 1
-		Goal* g = next->value->getGoalPtr();
-		if(gj->isEqual(g) || isSimilar) {
-			LinkToStateMapEntry* l2Entry = next->value->getMapEntry(lj->getHash());
-			if(l2Entry != NULL)
-			{
-				p_l_lg.addDenominator(l2Entry->getTotalM());
-				p_l_lg.addNumerator(l2Entry->getM(li));
-			}
-			p_g.addDenominator(next->value->getM());
-			if(g->isEqual(gj)) {
-				p_g.addNumerator(next->value->getM());
+	GenericEntry<int, GenericMap<int, LinkToStateMapEntry*> * >* next = this->goalMap.nextEntry();
+	while(next != NULL) {
+		int goalHash = gj->getHash();
+		int g = next->key;
+		if(goalHash == g || isSimilar) {
+			GenericMap<int, LinkToStateMapEntry*> * links = next->value;
+			LinkToStateMapEntry * nextLink = links->getEntry(lj->getHash());
+			if(nextLink != NULL) {
+				p_l_lg.addDenominator(nextLink->getTotalM());
+				p_l_lg.addNumerator(nextLink->getM(li));
 			}
 			next = this->goalMap.nextEntry();
 		}
 	}
 	double pl = p_l_lg.getProbability();
-	//double plg = pl * p_g.getProbability();
 	return pl;
 }
 

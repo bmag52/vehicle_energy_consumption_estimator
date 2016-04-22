@@ -22,8 +22,7 @@ namespace PredictivePowertrain {
 
 class LinkToStateMap {
 private:
-	GenericMap<int, LinkToStateMapEntry*> linkMap;
-	GenericMap<int, GoalMapEntry*> goalMap;
+	GenericMap<int, GenericMap<int, LinkToStateMapEntry*> *> goalMap;
 
 public:
 	int incrementTransition(Link* lj, Goal* gj, Link* li);

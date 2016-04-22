@@ -12,7 +12,7 @@ namespace PredictivePowertrain {
 int LinkToStateMap::incrementTransition(Link* lj, Goal* gj, Link* li) {
 	int goalHash = gj->getHash();
 	GoalMapEntry* entry;
-	if(!(this->goalMap.hashInMap(goalHash))) {
+	if(!(this->goalMap.hasEntry(goalHash))) {
 		entry = new GoalMapEntry(gj);
 		entry->incrementCount();
 		this->goalMap.addEntry(goalHash, entry);
@@ -21,7 +21,7 @@ int LinkToStateMap::incrementTransition(Link* lj, Goal* gj, Link* li) {
 	}
 
 	int linkHash = lj->getHash();
-	if(!this->linkMap.hashInMap(linkHash)) {
+	if(!this->linkMap.hasEntry(linkHash)) {
 		LinkToStateMapEntry* linkEntry = new LinkToStateMapEntry();
 		this->linkMap.addEntry(linkHash, linkEntry);
 	}

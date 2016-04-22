@@ -20,7 +20,7 @@ GoalToLinkMap::GoalToLinkMap(GoalToLinkMap& other) {
 int GoalToLinkMap::linkTraversed(Link* link, Goal* goal) {
 	int goalHash = goal->getHash();
 	GoalMapEntry goalEntry;
-	if(!this->goalMap.hashInMap(goalHash)) {
+	if(!this->goalMap.hasEntry(goalHash)) {
 		goalEntry = GoalMapEntry(goal);
 		this->goalMap.addEntry(goalHash, &goalEntry);
 	} else {

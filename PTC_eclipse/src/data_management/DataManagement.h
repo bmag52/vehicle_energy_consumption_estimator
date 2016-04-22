@@ -11,6 +11,7 @@
 #include "../route_prediction/Route.h"
 #include "../city/Intersection.h"
 #include "../city/Road.h"
+#include "../city/City.h"
 #include "../map/GenericMap.h"
 
 #include <boost/property_tree/ptree.hpp>
@@ -35,7 +36,7 @@ private:
 public:
 	DataManagement();
 	void addRouteData(Route* route);
-	void addCityData(Road* roads, Intersection* intersections);
+	void addCityData(City* city);
 	void addTripData(GenericMap<double, double>* latLon, bool logSameDay);
 	GenericMap<int, Route*>* getRoutes(int cityClusterNUm);
 	std::pair<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*>* getCityData(int cityClusterNum);

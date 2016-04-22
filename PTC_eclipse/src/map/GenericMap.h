@@ -30,7 +30,7 @@ public:
 	void initializeCounter();
 	GenericEntry<K,V>* nextEntry();
 	GenericEntry<K,V>* getMinEntry();
-	bool hashInMap(K key);
+	bool hasEntry(K key);
 	V getEntry(K key);
 	typename std::map<K,V>::iterator iterator();
 	typename std::map<K,V>::iterator begin();
@@ -112,7 +112,7 @@ GenericEntry<K, V>* GenericMap<K, V>::getMinEntry() {
 }
 
 template<class K, class V>
-bool GenericMap<K, V>::hashInMap(K key) {
+bool GenericMap<K, V>::hasEntry(K key) {
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
 		return true;

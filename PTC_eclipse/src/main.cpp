@@ -11,6 +11,9 @@
 #include "data_management/DataCollection.h"
 #include "data_management/DataManagement.h"
 #include "speed_prediction/SpeedPrediction.h"
+#include "city/City.h"
+#include "city/Road.h"
+#include "city/Intersection.h"
 #include "map/GenericMap.h"
 #include "unit_tests/UnitTests.h"
 
@@ -20,13 +23,13 @@ using Eigen::MatrixXd;
 
 int main() {
 
-	// unit test function calls here
+	// -------------------------- unit test function calls here --------------------------
 	// TODO make a function that calls unit tests
 //	link_UT();
 //	route_ut();
 //	linkToStateMap_ut();
 
-	// speed_prediction muck around
+	// -------------------------- speed_prediction muck around --------------------------
 	SpeedPrediction sp;
 
 	int I = sp.getI();
@@ -50,7 +53,7 @@ int main() {
 	// route_prediction muck around
 	// GenericMap<int, int> test;
 
-	// data collection muck around
+	// -------------------- data collection muck around --------------------------
 //	DataCollection testDC;
 //	testDC.pullData(47.681, -122.328); // greenlake
 //	std::cout << "node size " << testDC.getNodeMap()->getSize() << std::endl;
@@ -60,8 +63,10 @@ int main() {
 //	std::cout << "boundCount " << testDC.getBoundsMap()->getSize() << std::endl;
 //	std::cout << "road Count " << testDC.makeRawRoads()->getSize() << std::endl;
 
-	// data management muck around
+	// -------------------------- data management muck around --------------------------
 	DataManagement testDM;
+
+	// test trip log add and get
 	GenericMap<double, double>* latLon = new GenericMap<double, double>();
 	latLon->addEntry(47.654, -122.345);
 	latLon->addEntry(47.653, -122.346);
@@ -69,6 +74,43 @@ int main() {
 	testDM.addTripData(latLon, false);
 	testDM.addTripData(latLon, true);
 	GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>* data = testDM.getMostRecentTripData();
+
+	// test city logging add
+	GenericMap<int, Node*>* nodes = new GenericMap<int, Node*>();
+	nodes->addEntry(1, new Node(42.3, -122.4, 44, 1234566));
+	nodes->addEntry(2, new Node(42.3, -122.4, 44, 1234566));
+
+	Road* blankRoads;
+	GenericMap<int, Bounds*>* boundsMap = new GenericMap<int, Bounds*>();
+	boundsMap->addEntry(1, new Bounds(2, 3, 4, 5));
+
+	Intersection* startInt = new Intersection(blankRoads, 42.3, -122.4, 44, 345);
+	Intersection* endInt = new Intersection(blankRoads, 42.3, -122.4, 44, 456);
+
+	Road* road1 = new Road("hilly", 987654, nodes);
+	road1->setStartIntersection(startInt);
+	road1->setEndIntersection(endInt);
+	road1->setBoundsID(2);
+
+	Road* road2 = new Road("flat", 8765, nodes);
+	road2->setStartIntersection(startInt);
+	road2->setEndIntersection(endInt);
+	road2->setBoundsID(2);
+
+	Road* roads = new Road[2];
+	roads[0] = *road1;
+	roads[1] = *road2;
+
+	Intersection* intersection1 = new Intersection(roads, 42.3, -122.4, 44, 345);
+	intersection1->setBoundsID(2);
+	Intersection* intersection2 = new Intersection(roads, 42.3, -122.4, 44, 345);
+	intersection2->setBoundsID(2);
+
+	Intersection* intersections = new Intersection[2];
+	intersections[0] = *intersection1;
+	intersections[1] = *intersection2;
+	City* city = new City(intersections, roads, boundsMap);
+	testDM.addCityData(city);
 
 	std::cout << "finished" << std::endl;
 

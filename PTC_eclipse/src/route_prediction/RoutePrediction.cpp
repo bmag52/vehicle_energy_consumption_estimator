@@ -243,7 +243,7 @@ Route* RoutePrediction::createRouteConditions(int* currentConditions) {
 
 Route* RoutePrediction::createRouteIntersection(Intersection* intersection, int* currentConditions) {
 	free(&this->predictedGoal);
-	this->predictedGoal = Goal(intersection->getNumber(), currentConditions);
+	this->predictedGoal = Goal(intersection->getIntersectionID(), currentConditions);
 	Route route(this->predictedRoute->getLinksPtr(), &this->predictedGoal);
 	return &route;
 }
@@ -251,7 +251,7 @@ Route* RoutePrediction::createRouteIntersection(Intersection* intersection, int*
 void RoutePrediction::parseRoute(Route* route) {
 	// get hash of route goal and add it to goals if nonexistent
 	int goalHash = route->getGoalHash();
-	if(this->goals.hashInMap(goalHash))
+	if(this->goals.hasEntry(goalHash))
 	{
 		this->goals.getEntry(goalHash)->incrementNumSeen();
 	} else {

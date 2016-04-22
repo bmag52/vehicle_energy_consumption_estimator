@@ -19,7 +19,7 @@ private:
 
 public:
 	Node();
-	Node(double lat, double lon, int ele, int id);
+	Node(double lat, double lon, int ele, long int id);
 	double getLat();
 	double getLon();
 	long int getID();

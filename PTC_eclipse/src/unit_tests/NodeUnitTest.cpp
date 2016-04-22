@@ -16,7 +16,7 @@ using namespace PredictivePowertrain;
 
 void node_ut(){
 
-	Node node1(0,0,0,0);
+	Node node1(0.0, 0.0 , 0, 0);
 	Node node2(1.0, 1.0, 1, 1);
 	Node node3(15.5, 16.5, 20, 22);
 

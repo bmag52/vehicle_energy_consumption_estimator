@@ -32,10 +32,10 @@ void intersection_ut(){
 	Intersection intersection5;
 
 	//Testing getNumber(), getElevation(), getLat(), and getLon()
-	assert(intersection1.getNumber() == 0 && intersection1.getElevation() == 0);
+	assert(intersection1.getIntersectionID() == 0 && intersection1.getElevation() == 0);
 	assert(intersection1.getLat() == 0 && intersection1.getLon() == 0);
 
-	assert(intersection2.getNumber() == 1 && intersection2.getElevation() == 1);
+	assert(intersection2.getIntersectionID() == 1 && intersection2.getElevation() == 1);
 	assert(intersection2.getLat() == 1.0 && intersection2.getLon() == 1.0);
 
 

@@ -17,7 +17,7 @@ Intersection::Intersection(Road * roadInput, double lat, double lon, int elev, i
 	this->lat = lat;
 	this->lon = lon;
 	this->elevation = elev;
-	this->number = intersectNum;
+	this->id = intersectNum;
 }
 
 Intersection::~Intersection() {
@@ -26,8 +26,8 @@ Intersection::~Intersection() {
 Intersection::Intersection() {
 }
 
-int Intersection::getNumber() {
-	return this->number;
+int Intersection::getIntersectionID() {
+	return this->id;
 }
 
 double Intersection::getElevation() {
@@ -51,9 +51,9 @@ void Intersection::addRoad(Road* road, int roadDir) {
 	Road* newRoads = new Road[this->roadCount];
 	if(roadDir == 0)
 	{
-		road->setEndNode(this);
+		road->setEndIntersection(this);
 	} else {
-		road->setStartNode(this);
+		road->setStartIntersection(this);
 	}
 
 	newRoads[0] = *road;
@@ -85,11 +85,11 @@ Intersection* Intersection::getNextIntersection(Road* road) {
 	{
 		if(road->getRoadID() == this->roads[i].getRoadID())
 		{
-			if(this->number == this->roads[i].getStartNode()->getNumber())
+			if(this->id == this->roads[i].getStartIntersection()->getIntersectionID())
 			{
-				return this->roads[i].getEndNode();
+				return this->roads[i].getEndIntersection();
 			} else {
-				return this->roads[i].getStartNode();
+				return this->roads[i].getStartIntersection();
 			}
 		}
 	}
@@ -107,7 +107,7 @@ Intersection* Intersection::getAdjacentIntersection() {
 
 		for(int j = 0; j < adjIntCount; j++)
 		{
-			if(adjInts[i].getNumber() == adjInt->getNumber())
+			if(adjInts[i].getIntersectionID() == adjInt->getIntersectionID())
 			{
 				alreadyCounted = true;
 				break;
@@ -132,5 +132,14 @@ Intersection* Intersection::getAdjacentIntersection() {
 	return adjInts;
 }
 
+void Intersection::setBoundsID(int id) {
+	this->boundsID = id;
+}
+
+int Intersection::getBoudsID() {
+	return this->boundsID;
+}
+
 } /* namespace PredictivePowertrain */
+
 

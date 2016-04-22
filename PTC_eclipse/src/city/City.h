@@ -61,7 +61,7 @@ public:
 	std::pair<int*, double*>* routeToData(Route* route, int dist);
 	GenericMap<int, Bounds*>* getBoundsMap();
 	Road* getRoads();
-	Intersection* getIntersection();
+	Intersection* getIntersections();
 
 };
 

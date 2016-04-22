@@ -56,9 +56,9 @@ Intersection* City::getIntersectionFromLink(Link* link, bool isIntersection) {
 
 	if(((link->getDirection() == 0) + isIntersection) % 2)
 	{
-		return road->getStartNode();
+		return road->getStartIntersection();
 	} else {
-		return road->getEndNode();
+		return road->getEndIntersection();
 	}
 }
 
@@ -72,20 +72,20 @@ Route* City::getPath(Intersection* start, Intersection* end, int* conditions, in
 	GenericMap<int, int> prev;
 	GenericMap<int, int> unvisitedNodes;
 
-	Intersection* startInt = getIntersection(start->getNumber());
-	Intersection* endInt = getIntersection(end->getNumber());
+	Intersection* startInt = getIntersection(start->getIntersectionID());
+	Intersection* endInt = getIntersection(end->getIntersectionID());
 	Intersection* adjInts = start->getAdjacentIntersection();
 
-	dist.addEntry(start->getNumber(), 0);
-	prev.addEntry(start->getNumber(), 0);
+	dist.addEntry(start->getIntersectionID(), 0);
+	prev.addEntry(start->getIntersectionID(), 0);
 	for(int i = 0; i < sizeof(*adjInts)/sizeof(Intersection); i++)
 	{
-		int intNum = adjInts[i].getNumber();
+		int intNum = adjInts[i].getIntersectionID();
 		dist.addEntry(intNum, INT_MAX);
 		prev.addEntry(intNum, -1);
 	}
 
-	int closestIntNum = start->getNumber();
+	int closestIntNum = start->getIntersectionID();
 	int distance = 0;
 	while(distance != INT_MAX)
 	{
@@ -93,7 +93,7 @@ Route* City::getPath(Intersection* start, Intersection* end, int* conditions, in
 		Intersection* neighbors = getIntersection(closestIntNum)->getAdjacentIntersection();
 		for(int i = 0; i < sizeof(*neighbors)/sizeof(Intersection); i++)
 		{
-			int neighborNum = neighbors[i].getNumber();
+			int neighborNum = neighbors[i].getIntersectionID();
 			int* speedData = getConnectingRoad(getIntersection(closestIntNum), getIntersection(neighborNum))->getSpeedData();
 			int spdAvg;
 			int spdCount = sizeof(*speedData)/sizeof(int);
@@ -113,12 +113,12 @@ Route* City::getPath(Intersection* start, Intersection* end, int* conditions, in
 	}
 
 	Link* links;
-	int currentIntNum = end->getNumber();
-	while(currentIntNum != start->getNumber())
+	int currentIntNum = end->getIntersectionID();
+	while(currentIntNum != start->getIntersectionID())
 	{
 		Intersection* previousInt = getIntersection(prev.getEntry(currentIntNum));
 		links = addLink(links, this->link->linkFromRoad(getConnectingRoad(previousInt, getIntersection(currentIntNum)), previousInt));
-		currentIntNum = previousInt->getNumber();
+		currentIntNum = previousInt->getIntersectionID();
 	}
 
 	int linkCount = sizeof(*links)/sizeof(Link);
@@ -129,7 +129,7 @@ Route* City::getPath(Intersection* start, Intersection* end, int* conditions, in
 	}
 	newLinks[linkCount+1] = *this->link->finalLink();
 	free(links);
-	Goal goal(end->getNumber(), conditions);
+	Goal goal(end->getIntersectionID(), conditions);
 	Route route(newLinks, &goal);
 	return &route;
 }
@@ -198,7 +198,7 @@ Road* City::getConnectingRoad(Intersection* one, Intersection* two) {
 	Road* roads = one->getRoads();
 	for(int i = 0; i < sizeof(*roads)/sizeof(Road); i++)
 	{
-		if(one->getNextIntersection(&roads[i])->getNumber() == two->getNumber())
+		if(one->getNextIntersection(&roads[i])->getIntersectionID() == two->getIntersectionID())
 		{
 			return &roads[i];
 		}
@@ -233,7 +233,7 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
 					Intersection* intersection = getIntersectionFromLink(&links[j], true);
 					for(int k = 0; k < sizeof(*passedInts)/sizeof(Intersection); k++)
 					{
-						if(intersection->getNumber() == passedInts[k].getNumber())
+						if(intersection->getIntersectionID() == passedInts[k].getIntersectionID())
 						{
 							linkCount--;
 							Link* newLinks = new Link[linkCount];
@@ -266,7 +266,7 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
 	}
 	path = addLink(path, this->link->finalLink());
 	int pathSize = sizeof(*path)/sizeof(Link);
-	Goal goal(getIntersectionFromLink(&path[pathSize-2],true)->getNumber(), conditions);
+	Goal goal(getIntersectionFromLink(&path[pathSize-2],true)->getIntersectionID(), conditions);
 	Route route(path, &goal);
 	return &route;
 }
@@ -383,7 +383,7 @@ Road* City::getRoads() {
 	return this->roads;
 }
 
-Intersection* City::getIntersection() {
+Intersection* City::getIntersections() {
 	return this->intersections;
 }
 

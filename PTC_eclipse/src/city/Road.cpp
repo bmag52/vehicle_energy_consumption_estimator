@@ -20,19 +20,19 @@ Road::Road(std::string roadType, long int roadID, GenericMap<int, Node*>* nodes)
 	this->nodes = nodes;
 }
 
-void Road::setStartNode(Intersection* startNode) {
+void Road::setStartIntersection(Intersection* startNode) {
 	this->startNode = startNode;
 }
 
-void Road::setEndNode(Intersection* endNode) {
+void Road::setEndIntersection(Intersection* endNode) {
 	this->endNode = endNode;
 }
 
-Intersection* Road::getStartNode() {
+Intersection* Road::getStartIntersection() {
 	return this->startNode;
 }
 
-Intersection* Road::getEndNode() {
+Intersection* Road::getEndIntersection() {
 	return this->endNode;
 }
 
@@ -49,4 +49,22 @@ int* Road::getSpeedData() {
 int* Road::getElevData() {
 }
 
+int Road::getBoundsID() {
+	return this->boundsID;
+}
+
+void Road::setBoundsID(int id) {
+	this->boundsID = id;
+}
+
+std::string Road::getRoadType() {
+	return this->roadType;
+}
+
+GenericMap<int, Node*>* Road::getNodes() {
+	return this->nodes;
+}
+
 } /* namespace PredictivePowertrain */
+
+

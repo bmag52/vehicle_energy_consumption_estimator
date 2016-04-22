@@ -33,40 +33,28 @@ void road_ut() {
 	RoadTypes interstateType("interstate");
 
 	//Testing set roadTypes color
-	assert(defaultType.color == "yellow");
-	assert(cityType.color == "red");
-	assert(countryType.color == "blue");
-	assert(interstateType.color == "black");
+	assert(defaultType.color == "yellow" && cityType.color == "red");
+	assert(countryType.color == "blue" && interstateType.color == "black");
 
 	//Testing set roadTypes min speed
-	assert(defaultType.min_speed == 25);
-	assert(cityType.min_speed == 25);
-	assert(countryType.min_speed == 40);
-	assert(interstateType.min_speed == 95);
+	assert(defaultType.min_speed == 25 && cityType.min_speed == 25);
+	assert(countryType.min_speed == 40 && interstateType.min_speed == 95);
 
 	//Testing set roadTypes max speed
-	assert(defaultType.max_speed == 130);
-	assert(cityType.max_speed == 55);
-	assert(countryType.max_speed == 90);
-	assert(interstateType.max_speed == 130);
+	assert(defaultType.max_speed == 130 && cityType.max_speed == 55);
+	assert(countryType.max_speed == 90 && interstateType.max_speed == 130);
 
 	//Testing set roadTypes min distance
-	assert(defaultType.min_distance == 0);
-	assert(cityType.min_distance == 500);
-	assert(countryType.min_distance == 1000);
-	assert(interstateType.min_distance == 1000);
+	assert(defaultType.min_distance == 0 && cityType.min_distance == 500);
+	assert(countryType.min_distance == 1000 && interstateType.min_distance == 1000);
 
 	//Testing set roadTypes max distance
-	assert(defaultType.max_distance == numeric_limits<int>::max());
-	assert(cityType.max_distance == 1000);
-	assert(countryType.max_distance == 2000);
-	assert(interstateType.max_distance == numeric_limits<int>::max());
+	assert(defaultType.max_distance == numeric_limits<int>::max() && cityType.max_distance == 1000);
+	assert(countryType.max_distance == 2000 && interstateType.max_distance == numeric_limits<int>::max());
 
 	//Testing set roadTypes toString
-	assert(defaultType.toString == "default");
-	assert(cityType.toString == "city");
-	assert(countryType.toString == "country");
-	assert(interstateType.toString == "interstate");
+	assert(defaultType.toString == "default" && cityType.toString == "city");
+	assert(countryType.toString == "country" && interstateType.toString == "interstate");
 
 
 }

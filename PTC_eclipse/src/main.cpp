@@ -80,7 +80,7 @@ int main() {
 	nodes->addEntry(1, new Node(42.3, -122.4, 44, 1234566));
 	nodes->addEntry(2, new Node(42.3, -122.4, 44, 1234566));
 
-	Road* blankRoads;
+	GenericMap<int, Road*>* blankRoads;
 	GenericMap<int, Bounds*>* boundsMap = new GenericMap<int, Bounds*>();
 	boundsMap->addEntry(1, new Bounds(2, 3, 4, 5));
 
@@ -97,18 +97,18 @@ int main() {
 	road2->setEndIntersection(endInt);
 	road2->setBoundsID(2);
 
-	Road* roads = new Road[2];
-	roads[0] = *road1;
-	roads[1] = *road2;
+	GenericMap<int, Road*>* roads = new GenericMap<int, Road*>();
+	roads->addEntry(1, road1);
+	roads->addEntry(2, road2);
 
 	Intersection* intersection1 = new Intersection(roads, 42.3, -122.4, 44, 345);
 	intersection1->setBoundsID(2);
 	Intersection* intersection2 = new Intersection(roads, 42.3, -122.4, 44, 345);
 	intersection2->setBoundsID(2);
 
-	Intersection* intersections = new Intersection[2];
-	intersections[0] = *intersection1;
-	intersections[1] = *intersection2;
+	GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
+	intersections->addEntry(1, intersection1);
+	intersections->addEntry(2, intersection2);
 	City* city = new City(intersections, roads, boundsMap);
 	testDM.addCityData(city);
 

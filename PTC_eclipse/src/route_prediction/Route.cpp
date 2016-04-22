@@ -10,38 +10,38 @@
 namespace PredictivePowertrain {
 
 Route::Route() {
-	this->counter = 0;
+	this->linkCount = 0;
 }
 
-Route::Route(Link* links, Goal* goal) {
+Route::Route(GenericMap<int, Link*>* links, Goal* goal) {
 	this->links = links;
 	this->goal = goal;
 	//this->counter = 0;
-	this->counter = sizeof(this->links) / sizeof(int);
-	Link error(-1, -1);
+	this->linkCount = links->getSize();
+	Link error(NULL, -1);
 	this->error = &error;
 }
 
 // adds new link to end of route
 void Route::addlink(Link* link) {
-	this->counter++;
-	Link temp[counter];
-	for(int i = 0; i < counter - 1; i++) {
-		temp[i] = this->links[i];
-	}
-	temp[counter - 1] = *link;
-	this->links = temp;
+	this->linkCount++;
+	this->links->addEntry(this->linkCount, link);
 }
 
 // checks if the route is equal to the route passed in
 bool Route::isequal(Route * other) {
-	int myLength = getLinkSize();
-	int otherLength = other->getLinkSize();
-	if((*(this->goal)).isEqual(other->goal) && myLength == otherLength) {
-		for(int i = 0; i < myLength; i++) {
-			if(!(this->links[i].isEqual(&(other->links[i])))) {
+	if(this->getLinkSize() == other->getLinkSize()) {
+
+		GenericMap<int, Link*>* otherLinks = other->getLinksPtr();
+		this->links->initializeCounter();
+		GenericEntry<int, Link*>* nextLink = this->links->nextEntry();
+
+		while(nextLink != NULL)
+		{
+			if(!otherLinks->hasEntry(nextLink->key)) {
 				return false;
 			}
+			nextLink = this->links->nextEntry();
 		}
 		return true;
 	} else {
@@ -50,21 +50,14 @@ bool Route::isequal(Route * other) {
 }
 
 Route* Route::copy() {
-	Goal goal = new Goal(this->goal);
-	Link newLinks[this->counter];
-	int length = sizeof(newLinks);
-	for(int i = 0; i < length; i++) {
-		int number = this->links[i].getNumber();
-		int direction = this->links[i].getDirection();
-		Link * newLink = new Link(direction, number);
-		newLinks[i] = *newLink;
-	}
-	Route* route = new Route(newLinks, &goal);
+	Goal* newGoal = new Goal(this->goal);
+	GenericMap<int, Link*>* newLinks = this->links->copy();
+	Route* route = new Route(newLinks, newGoal);
 	return route;
 }
 
 int Route::getGoalHash() {
-	return (*this->goal).getHash();
+	return this->goal->getHash();
 }
 
 Goal* Route::getGoalPtr() {
@@ -72,10 +65,10 @@ Goal* Route::getGoalPtr() {
 }
 
 int Route::getLinkSize() {
-	return this->counter;
+	return this->links->getSize();
 }
 
-Link* Route::getLinksPtr() {
+GenericMap<int, Link*>* Route::getLinksPtr() {
 	return this->links;
 }
 
@@ -93,39 +86,36 @@ Intersection* Route::getIntersectionPtr() {
 }
 
 Link* Route::getLastLinkPtr() {
-	return &this->links[counter];
+	return this->links->getEntry(this->linkCount);
 }
 
 bool Route::isEmpty() {
-	return this->counter == 0;
+	return this->links->getSize() == 0;
 }
 
 Link* Route::getEntry(int index) {
-	if(index > this->counter)
+	if(index > this->linkCount)
 	{
 		return this->error;
 	}
-	return &this->links[index];
+	return this->links->getEntry(index);
 }
 
 void Route::removeFirstLink() {
-	Link * newLinks = new Link[this->counter - 1];
-	for(int i = 0; i < this->counter - 1; i++)
+	if(this->links->getSize() > 0)
 	{
-		newLinks[i] = this->links[i+1];
-	}
-	free(this->links);
-	this->links = newLinks;
-}
+		this->links->erase(1);
+		GenericMap<int, Link*>* newLinks = new GenericMap<int, Link*>();
 
-Link* Route::nextlink() {
-	int length = sizeof(this->links) / sizeof(Link);
-	if(this->counter > length) {
-		return &this->links[length-1]; // return last link
-	} else {
-		Link link = this->links[this->counter];
-		this->counter++;
-		return &link;
+		this->links->initializeCounter();
+		GenericEntry<int, Link*>* nextLink = this->links->nextEntry();
+		while(nextLink != NULL)
+		{
+			newLinks->addEntry(nextLink->key-1, nextLink->value);
+			nextLink = this->links->nextEntry();
+		}
+		free(this->links);
+		this->links = newLinks;
 	}
 }
 

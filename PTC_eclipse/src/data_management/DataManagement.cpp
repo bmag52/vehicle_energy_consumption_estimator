@@ -30,8 +30,8 @@ void DataManagement::addRouteData(Route* route) {
 }
 
 void DataManagement::addCityData(City* city) {
-	Road* roads = city->getRoads();
-	Intersection* intersections = city->getIntersections();
+	GenericMap<int, Road*>* roadMap = city->getRoads();
+	GenericMap<int, Intersection*>* intersectionMap = city->getIntersections();
 	GenericMap<int, Bounds*>* boundsMap = city->getBoundsMap();
 
 	int boundsID = -1;
@@ -55,22 +55,23 @@ void DataManagement::addCityData(City* city) {
 	if(newBounds)
 	{
 		ptree boundsData, roads_ptree, intersections_ptree;
-		int roadListSize = city->getRoadListSize();
-		for(int i = 0; i < roadListSize; i++)
+		roadMap->initializeCounter();
+		GenericEntry<int, Road*>* nextRoad = roadMap->nextEntry();
+		while(nextRoad != NULL)
 		{
-			if(roads[i].getBoundsID() != boundsID)
+			if(nextRoad->value->getBoundsID() != boundsID)
 			{
 				ptree road, startNode, endNode, roadType, nodes;
-				startNode.put("", roads[i].getStartIntersection()->getIntersectionID());
-				endNode.put("", roads[i].getEndIntersection()->getIntersectionID());
-				roadType.put("", roads[i].getRoadType());
+				startNode.put("", nextRoad->value->getStartIntersection()->getIntersectionID());
+				endNode.put("", nextRoad->value->getEndIntersection()->getIntersectionID());
+				roadType.put("", nextRoad->value->getRoadType());
 
 				ptree lats, lons;
-				roads[i].getNodes()->initializeCounter();
-				GenericEntry<int, Node*>* next = roads[i].getNodes()->nextEntry();
-				while(next != NULL)
+				nextRoad->value->getNodes()->initializeCounter();
+				GenericEntry<int, Node*>* nextNode = nextRoad->value->getNodes()->nextEntry();
+				while(nextNode != NULL)
 				{
-					Node* node = next->value;
+					Node* node = nextNode->value;
 					ptree lat, lon;
 					lat.put("", node->getLat());
 					lon.put("", node->getLon());
@@ -78,7 +79,7 @@ void DataManagement::addCityData(City* city) {
 					lats.push_back(std::make_pair("", lat));
 					lons.push_back(std::make_pair("", lon));
 
-					next = roads[i].getNodes()->nextEntry();
+					nextNode = nextRoad->value->getNodes()->nextEntry();
 				}
 				nodes.push_back(std::make_pair("latitude", lats));
 				nodes.push_back(std::make_pair("longitude", lons));
@@ -88,27 +89,33 @@ void DataManagement::addCityData(City* city) {
 				road.push_back(std::make_pair("roadType", roadType));
 				road.push_back(std::make_pair("nodes", nodes));
 
-				roads_ptree.add_child(lexical_cast<std::string>(roads[i].getRoadID()), road);
+				roads_ptree.add_child(lexical_cast<std::string>(nextRoad->value->getRoadID()), road);
 			}
+			nextRoad = roadMap->nextEntry();
 		}
 
-		int intersectionListSize = city->getInstersectionListSize();
-		for(int i = 0; i < intersectionListSize; i++)
+		intersectionMap->initializeCounter();
+		GenericEntry<int, Intersection*>* nextIntersection = intersectionMap->nextEntry();
+		while(nextIntersection != NULL)
 		{
-			if(intersections[i].getBoudsID() != boundsID)
+			if(nextIntersection->value->getBoudsID() != boundsID)
 			{
 				ptree intersection, roadCount, elevation, lat, lon;
-				roadCount.put("", intersections[i].getRoadCount());
-				elevation.put("", intersections[i].getElevation());
-				lat.put("", intersections[i].getLat());
-				lon.put("", intersections[i].getLon());
+				roadCount.put("", nextIntersection->value->getRoadCount());
+				elevation.put("", nextIntersection->value->getElevation());
+				lat.put("", nextIntersection->value->getLat());
+				lon.put("", nextIntersection->value->getLon());
 
 				ptree roadIDs;
-				for(int j = 0; j < intersections[i].getRoadCount(); j++)
+				GenericMap<int, Road*>* connectingRoads = nextIntersection->value->getRoads();
+				connectingRoads->initializeCounter();
+				GenericEntry<int, Road*>* nextRoad = connectingRoads->nextEntry();
+				while(nextRoad != NULL)
 				{
 					ptree roadID;
-					roadID.put("", intersections[i].getRoads()[j].getRoadID());
+					roadID.put("", nextRoad->value->getRoadID());
 					roadIDs.push_back(std::make_pair("", roadID));
+					nextRoad = connectingRoads->nextEntry();
 				}
 
 				intersection.push_back(std::make_pair("roadCount", roadCount));
@@ -117,8 +124,9 @@ void DataManagement::addCityData(City* city) {
 				intersection.push_back(std::make_pair("longitude", lon));
 				intersection.push_back(std::make_pair("roadIDs", roadIDs));
 
-				intersections_ptree.add_child(lexical_cast<std::string>(intersections[i].getIntersectionID()), intersection);
+				intersections_ptree.add_child(lexical_cast<std::string>(nextIntersection->value->getIntersectionID()), intersection);
 			}
+			nextIntersection = intersectionMap->nextEntry();
 		}
 
 		boundsData.push_back(std::make_pair("roads", roads_ptree));

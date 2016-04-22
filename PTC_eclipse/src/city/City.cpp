@@ -13,46 +13,47 @@ City::City() {
 	// TODO Auto-generated constructor stub
 }
 
-City::City(Intersection* intersections, Road* roads, GenericMap<int, Bounds*>* boundsMap) {
+City::City(GenericMap<int, Intersection*>* intersections, GenericMap<int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) {
 	this->roads = roads;
 	this->intersections = intersections;
 	this->boundsMap = boundsMap;
 }
 
 int City::getRoadListSize() {
-	return sizeof(*this->roads)/sizeof(Road);
+	return this->roads->getSize();
 }
 
 int City::getInstersectionListSize() {
-	return sizeof(*this->roads)/sizeof(Road);
+	return this->intersections->getSize();
 }
 
-Link* City::getNextLinks(Link* link) {
+GenericMap<int, Link*>* City::getNextLinks(Link* link) {
 	assert(link->isEqual(this->link->finalLink()));
-	Road* currentRoad = &this->roads[link->getNumber()];
-	Intersection* nextIntersection = getIntersectionFromLink(link,true);
+	Road* currentRoad = this->roads->getEntry(link->getNumber());
+	Intersection* nextIntersection = getIntersectionFromLink(link, true);
 
-	Link* links;
-	int linkSize = 0;
-	for(int i = 0; i < nextIntersection->getRoadCount(); i++)
+	GenericMap<int, Link*>* nexLinks = new GenericMap<int, Link*>();
+	GenericMap<int, Road*>* connectingRoads = nextIntersection->getRoads();
+
+	int count = 0;
+	connectingRoads->initializeCounter();
+	GenericEntry<int, Road*>* nextRoad = connectingRoads->nextEntry();
+	while(nextRoad != NULL)
 	{
-		if(nextIntersection->getRoads()[i].getRoadID() != currentRoad->getRoadID())
+		if(nextRoad->value->getRoadID() != currentRoad->getRoadID())
 		{
-			linkSize++;
-			Link* newLinks = new Link[linkSize+1];
-			newLinks[0] = *link->linkFromRoad(&nextIntersection->getRoads()[i], nextIntersection);
-			for(int j = 1; j < linkSize; j++) { newLinks[i] = links[i-1]; }
-			free(links);
-			links = newLinks;
+			Link* newLink = link->linkFromRoad(nextRoad->value, nextIntersection);
+			nexLinks->addEntry(count++, newLink);
 		}
+		nextRoad = connectingRoads->nextEntry();
 	}
-	links[linkSize+1] = *this->link->finalLink();
-	return links;
+	nexLinks->addEntry(count, this->link->finalLink());
+	return nexLinks;
 }
 
 Intersection* City::getIntersectionFromLink(Link* link, bool isIntersection) {
 	assert(!link->isEqual(this->link->finalLink()));
-	Road* road = &this->roads[link->getNumber()];
+	Road* road = this->roads->getEntry(link->getNumber());
 
 	if(((link->getDirection() == 0) + isIntersection) % 2)
 	{
@@ -64,7 +65,7 @@ Intersection* City::getIntersectionFromLink(Link* link, bool isIntersection) {
 
 Intersection* City::getIntersection(int intersectionNum) {
 	assert(getInstersectionListSize() < intersectionNum || intersectionNum < 1); // || this->intersections[intersectionNum] == NULL
-	return &this->intersections[intersectionNum];
+	return this->intersections->getEntry(intersectionNum);
 }
 
 Route* City::getPath(Intersection* start, Intersection* end, int* conditions, int fastest) {
@@ -74,15 +75,19 @@ Route* City::getPath(Intersection* start, Intersection* end, int* conditions, in
 
 	Intersection* startInt = getIntersection(start->getIntersectionID());
 	Intersection* endInt = getIntersection(end->getIntersectionID());
-	Intersection* adjInts = start->getAdjacentIntersection();
+	GenericMap<int, Intersection*>* adjInts = start->getAdjacentIntersection();
 
 	dist.addEntry(start->getIntersectionID(), 0);
 	prev.addEntry(start->getIntersectionID(), 0);
-	for(int i = 0; i < sizeof(*adjInts)/sizeof(Intersection); i++)
+
+	adjInts->initializeCounter();
+	GenericEntry<int, Intersection*>* nextIntersection = adjInts->nextEntry();
+	while(nextIntersection != NULL)
 	{
-		int intNum = adjInts[i].getIntersectionID();
+		int intNum = nextIntersection->value->getIntersectionID();
 		dist.addEntry(intNum, INT_MAX);
 		prev.addEntry(intNum, -1);
+		nextIntersection = adjInts->nextEntry();
 	}
 
 	int closestIntNum = start->getIntersectionID();
@@ -90,14 +95,16 @@ Route* City::getPath(Intersection* start, Intersection* end, int* conditions, in
 	while(distance != INT_MAX)
 	{
 		unvisitedNodes.addEntry(closestIntNum, INT_MAX);
-		Intersection* neighbors = getIntersection(closestIntNum)->getAdjacentIntersection();
-		for(int i = 0; i < sizeof(*neighbors)/sizeof(Intersection); i++)
+		GenericMap<int, Intersection*>* neighbors = getIntersection(closestIntNum)->getAdjacentIntersection();
+		neighbors->initializeCounter();
+		GenericEntry<int, Intersection*>* nextNeighbor = neighbors->nextEntry();
+		while(nextNeighbor != NULL)
 		{
-			int neighborNum = neighbors[i].getIntersectionID();
+			int neighborNum = nextNeighbor->value->getIntersectionID();
 			int* speedData = getConnectingRoad(getIntersection(closestIntNum), getIntersection(neighborNum))->getSpeedData();
 			int spdAvg;
 			int spdCount = sizeof(*speedData)/sizeof(int);
-			for(int j = 0; j < spdCount; j++) { spdAvg+=speedData[i]; } spdAvg /= spdCount;
+			for(int j = 0; j < spdCount; j++) { spdAvg+=speedData[j]; } spdAvg /= spdCount;
 			int alt = dist.getEntry(closestIntNum) + spdCount/(fastest*spdAvg);
 			if(dist.getEntry(neighborNum) > alt || unvisitedNodes.getEntry(neighborNum) == 0)
 			{
@@ -105,6 +112,7 @@ Route* City::getPath(Intersection* start, Intersection* end, int* conditions, in
 				prev.addEntry(neighborNum, closestIntNum);
 				unvisitedNodes.addEntry(neighborNum, alt);
 			}
+			nextNeighbor = neighbors->nextEntry();
 		}
 
 		GenericEntry<int, int>* closestIntPair = unvisitedNodes.getMinEntry();
@@ -112,38 +120,20 @@ Route* City::getPath(Intersection* start, Intersection* end, int* conditions, in
 		closestIntNum = closestIntPair->value;
 	}
 
-	Link* links;
+	int linkCount = 0;
+	GenericMap<int, Link*>* links = new GenericMap<int, Link*>();
 	int currentIntNum = end->getIntersectionID();
 	while(currentIntNum != start->getIntersectionID())
 	{
 		Intersection* previousInt = getIntersection(prev.getEntry(currentIntNum));
-		links = addLink(links, this->link->linkFromRoad(getConnectingRoad(previousInt, getIntersection(currentIntNum)), previousInt));
+		links->addEntry(linkCount++, this->link->linkFromRoad(getConnectingRoad(previousInt, getIntersection(currentIntNum)), previousInt));
 		currentIntNum = previousInt->getIntersectionID();
 	}
 
-	int linkCount = sizeof(*links)/sizeof(Link);
-	Link* newLinks = new Link[linkCount+1];
-	for(int i = 0; i < linkCount; i++)
-	{
-		newLinks[i] = links[linkCount-i];
-	}
-	newLinks[linkCount+1] = *this->link->finalLink();
-	free(links);
-	Goal goal(end->getIntersectionID(), conditions);
-	Route route(newLinks, &goal);
-	return &route;
-}
-
-Link* City::addLink(Link* links, Link* link) {
-	int linkCount = sizeof(*links)/sizeof(int);
-	Link* newLinks = new Link[linkCount+1];
-	for(int i = 0; i < linkCount; i++)
-	{
-		newLinks[i] = links[i];
-	}
-	newLinks[linkCount+1] = *link;
-	free(links);
-	return newLinks;
+	links->addEntry(linkCount++, this->link->finalLink());
+	Goal* goal = new Goal(end->getIntersectionID(), conditions);
+	Route* route = new Route(links, goal);
+	return route;
 }
 
 Intersection* City::addIntersection(Intersection* intersections, Intersection* intersection) {
@@ -183,8 +173,8 @@ std::pair<int*, int*>* City::getRoadData(Link* link) {
 		return roadData;
 	}
 
-	roadData->first = this->roads[link->getNumber()].getSpeedData();
-	roadData->second = this->roads[link->getNumber()].getElevData();
+	roadData->first = this->roads->getEntry(link->getNumber())->getSpeedData();
+	roadData->second = this->roads->getEntry(link->getNumber())->getElevData();
 
 	if(link->getDirection())
 	{
@@ -195,91 +185,99 @@ std::pair<int*, int*>* City::getRoadData(Link* link) {
 }
 
 Road* City::getConnectingRoad(Intersection* one, Intersection* two) {
-	Road* roads = one->getRoads();
-	for(int i = 0; i < sizeof(*roads)/sizeof(Road); i++)
+	GenericMap<int, Road*>* roads = one->getRoads();
+	roads->initializeCounter();
+	GenericEntry<int, Road*>* nextRoad = roads->nextEntry();
+	while(nextRoad != NULL)
 	{
-		if(one->getNextIntersection(&roads[i])->getIntersectionID() == two->getIntersectionID())
+		if(one->getNextIntersection(nextRoad->value)->getIntersectionID() == two->getIntersectionID())
 		{
-			return &roads[i];
+			return nextRoad->value;
 		}
+		nextRoad = roads->nextEntry();
 	}
+	return NULL;
 }
 
 Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLength, int* conditions) {
-	Link* links = startInt->getOutgoingLinks();
-	Link* path = {};
-	int linkCount = sizeof(*link)/sizeof(Link);
-	Intersection* passedInts = {startInt};
+	GenericMap<int, Link*>* links = startInt->getOutgoingLinks();
+	GenericMap<int, Link*>* path;
+	GenericMap<int, Intersection*>* passedInts;
+
+	passedInts->addEntry(startInt->getIntersectionID(), startInt);
 	for(int i = 0; i < totalLength; i++)
 	{
 		Link* nextLink = NULL;
 		if(initialRoute->getLinkSize() >= i)
 		{
-			for(int j = 0; j < linkCount; j++)
+			links->initializeCounter();
+			GenericEntry<int, Link*>* nextLinkEntry = links->nextEntry();
+			while(nextLinkEntry != NULL)
 			{
-				if(links[j].isEqual(&initialRoute->getLinksPtr()[i]))
+				if(nextLinkEntry->value->isEqual(initialRoute->getLinksPtr()->getEntry(i)))
 				{
-					nextLink = &initialRoute->getLinksPtr()[i];
+					nextLink = initialRoute->getLinksPtr()->getEntry(i);
 					break;
 				}
+				nextLinkEntry = links->nextEntry();
 			}
 		}
 		if(nextLink != NULL)
 		{
-			for(int j = sizeof(*links)/sizeof(Link)-1; j >= 0; j--)
+			links->initializeCounter();
+			GenericEntry<int, Link*>* nextLinkEntry = links->nextEntry();
+			while(nextLinkEntry != NULL)
 			{
-				if(!links[j].isEqual(this->link->finalLink()))
+				if(!nextLinkEntry->value->isEqual(this->link->finalLink()))
 				{
-					Intersection* intersection = getIntersectionFromLink(&links[j], true);
-					for(int k = 0; k < sizeof(*passedInts)/sizeof(Intersection); k++)
+					Intersection* intersection = getIntersectionFromLink(nextLinkEntry->value, true);
+
+					int linkCount = 1;
+					passedInts->initializeCounter();
+					GenericEntry<int, Intersection*>* nextPassedInt = passedInts->nextEntry();
+					while(nextPassedInt != NULL)
 					{
-						if(intersection->getIntersectionID() == passedInts[k].getIntersectionID())
+						if(intersection->getIntersectionID() == nextPassedInt->value->getIntersectionID())
 						{
-							linkCount--;
-							Link* newLinks = new Link[linkCount];
-							int itr = 0;
-							for(int l = 0; l < linkCount; l++)
-							{
-								if(itr == k) { itr++; }
-								newLinks[l] = links[itr];
-								itr++;
-							}
-							free(links);
-							links = newLinks;
-							break;
+							links->erase(linkCount);
 						}
+						linkCount++;
+						nextPassedInt = passedInts->nextEntry();
 					}
 				}
-				if(linkCount == 1) { break; }
-				int randIdx = static_cast<int>(rand()*(linkCount-1));
-				nextLink = &links[randIdx];
+				nextLinkEntry = links->nextEntry();
+				if(links->getSize() == 1) { break; }
+				int randIdx = static_cast<int>(rand()*(links->getSize()-1));
+				nextLink = links->getEntry(randIdx);
 			}
 		}
-		while(nextLink->isEqual(this->link->finalLink()) && linkCount > 1)
+		while(nextLink->isEqual(this->link->finalLink()) && links->getSize() > 1)
 		{
-			int randIdx = static_cast<int>(rand()*linkCount);
-			nextLink = &links[randIdx];
+			int randIdx = static_cast<int>(rand()*links->getSize());
+			nextLink = links->getEntry(randIdx);
 		}
-		passedInts = addIntersection(passedInts, getIntersectionFromLink(nextLink, true));
-		path = addLink(path, nextLink);
+		Intersection* newPassedInt = getIntersectionFromLink(nextLink, true);
+		passedInts->addEntry(newPassedInt->getIntersectionID(), newPassedInt);
+		path->addEntry(i+1, nextLink);
 		links = getNextLinks(nextLink);
 	}
-	path = addLink(path, this->link->finalLink());
-	int pathSize = sizeof(*path)/sizeof(Link);
-	Goal goal(getIntersectionFromLink(&path[pathSize-2],true)->getIntersectionID(), conditions);
-	Route route(path, &goal);
-	return &route;
+	path->addEntry(totalLength+1, this->link->finalLink());
+	Goal* goal = new Goal(getIntersectionFromLink(path->getEntry(path->getSize()-2),true)->getIntersectionID(), conditions);
+	Route *route = new Route(path, goal);
+	return route;
 }
 
 bool City::legalRoute(Route* route) {
 	Route* routeCopy = route->copy();
 	while(routeCopy->getLinkSize() > 1)
 	{
-		Link* legalLinks = getNextLinks(&(routeCopy->getLinksPtr()[0]));
+		GenericMap<int, Link*>* legalLinks = getNextLinks(routeCopy->getLinksPtr()->getEntry(1));
+		legalLinks->initializeCounter();
+		GenericEntry<int, Link*>* nextLink = legalLinks->nextEntry();
 		bool error = true;
-		for(int i = 0; i < routeCopy->getLinkSize(); i++)
+		while(nextLink != NULL)
 		{
-			if(legalLinks[i].isEqual(&(routeCopy->getLinksPtr()[1])))
+			if(nextLink->value->isEqual(routeCopy->getLinksPtr()->getEntry(1)))
 			{
 				error = false;
 				break;
@@ -324,13 +322,14 @@ std::pair<int*, double*>* City::routeToData(Route* route, int dist) {
 	int* speed;
 	int* elevData;
 
-	Link* link = route->nextlink();
 	dist = dist / this->intervalDistance;
 	bool firstLink = true;
 
-	while(link->isEqual(this->link->finalLink()))
+	route->getLinksPtr()->initializeCounter();
+	GenericEntry<int, Link*>* nextLink = route->getLinksPtr()->nextEntry();
+	while(nextLink->value->isEqual(this->link->finalLink()))
 	{
-		std::pair<int*, int*>* roadData = getRoadData(link);
+		std::pair<int*, int*>* roadData = getRoadData(nextLink->value);
 		speed = roadData->first;
 		elevData = roadData->second;
 
@@ -367,7 +366,7 @@ std::pair<int*, double*>* City::routeToData(Route* route, int dist) {
 			for(int i = slopeDataSize - 1; i < slopeDataSize + slopeSize; i++) { newSlopeData[i] = slope[i - slopeSize - 1]; }
 			slopeData = newSlopeData;
 		}
-		link = route->nextlink();
+		nextLink = route->getLinksPtr()->nextEntry();
 	}
 	std::pair<int*, double*>* data;
 	data->first = speedData;
@@ -379,11 +378,11 @@ GenericMap<int, Bounds*>* City::getBoundsMap() {
 	return this->boundsMap;
 }
 
-Road* City::getRoads() {
+GenericMap<int, Road*>* City::getRoads() {
 	return this->roads;
 }
 
-Intersection* City::getIntersections() {
+GenericMap<int, Intersection*>* City::getIntersections() {
 	return this->intersections;
 }
 

@@ -19,6 +19,7 @@
 #include <boost/foreach.hpp>
 #include "boost/lexical_cast.hpp"
 
+#include <tuple>
 #include <string>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -39,7 +40,7 @@ public:
 	void addCityData(City* city);
 	void addTripData(GenericMap<double, double>* latLon, bool logSameDay);
 	GenericMap<int, Route*>* getRoutes(int cityClusterNUm);
-	std::pair<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*>* getCityData(int cityClusterNum);
+	std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<int, Bounds*>*>* getCityData(int cityClusterNum);
 	GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>* getMostRecentTripData();
 };
 

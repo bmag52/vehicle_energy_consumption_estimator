@@ -82,7 +82,9 @@ int main() {
 
 	GenericMap<int, Road*>* blankRoads;
 	GenericMap<int, Bounds*>* boundsMap = new GenericMap<int, Bounds*>();
+	boundsMap->addEntry(0, new Bounds(2, 3, 4, 5));
 	boundsMap->addEntry(1, new Bounds(2, 3, 4, 5));
+	boundsMap->addEntry(2, new Bounds(2, 3, 4, 5));
 
 	Intersection* startInt = new Intersection(blankRoads, 42.3, -122.4, 44, 345);
 	Intersection* endInt = new Intersection(blankRoads, 42.3, -122.4, 44, 456);
@@ -90,25 +92,35 @@ int main() {
 	Road* road1 = new Road("hilly", 987654, nodes);
 	road1->setStartIntersection(startInt);
 	road1->setEndIntersection(endInt);
-	road1->setBoundsID(2);
+	road1->setBoundsID(0);
 
 	Road* road2 = new Road("flat", 8765, nodes);
 	road2->setStartIntersection(startInt);
 	road2->setEndIntersection(endInt);
-	road2->setBoundsID(2);
+	road2->setBoundsID(1);
+
+	Road* road3 = new Road("medium", 9854, nodes);
+	road3->setStartIntersection(startInt);
+	road3->setEndIntersection(endInt);
+	road3->setBoundsID(2);
 
 	GenericMap<int, Road*>* roads = new GenericMap<int, Road*>();
 	roads->addEntry(1, road1);
 	roads->addEntry(2, road2);
+	roads->addEntry(3, road3);
 
 	Intersection* intersection1 = new Intersection(roads, 42.3, -122.4, 44, 345);
-	intersection1->setBoundsID(2);
+	intersection1->setBoundsID(0);
 	Intersection* intersection2 = new Intersection(roads, 42.3, -122.4, 44, 345);
-	intersection2->setBoundsID(2);
+	intersection2->setBoundsID(1);
+	Intersection* intersection3 = new Intersection(roads, 42.3, -122.4, 44, 345);
+	intersection3->setBoundsID(2);
 
 	GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
 	intersections->addEntry(1, intersection1);
 	intersections->addEntry(2, intersection2);
+	intersections->addEntry(3, intersection3);
+
 	City* city = new City(intersections, roads, boundsMap);
 	testDM.addCityData(city);
 

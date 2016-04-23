@@ -14,12 +14,12 @@
 using namespace PredictivePowertrain;
 using namespace std;
 
-void road_ut() {
+void roadTypes_ut() {
 	//Testing constructor w/ adjusted variable values
-	RoadTypes city("red", 25, 55, 500, 1000, "city"); //city street, 22 - 55 kph
+	RoadTypes city("red", 25, 55, 500, 1000, "city");
 
 	//Testing adjusted roadTypes objects
-	assert(city.color == "yellow");
+	assert(city.color == "red");
 	assert(city.min_speed == 25);
 	assert(city.max_speed == 55);
 	assert(city.min_distance == 500);
@@ -53,9 +53,9 @@ void road_ut() {
 	assert(countryType.max_distance == 2000 && interstateType.max_distance == numeric_limits<int>::max());
 
 	//Testing set roadTypes toString
-	assert(defaultType.toString == "default" && cityType.toString == "city");
-	assert(countryType.toString == "country" && interstateType.toString == "interstate");
-
+	//No to_String test for default and interstate b/c of numeric_limits<int>::max()
+	assert(cityType.toString == "Road Type: city Color: red Min Speed: 25 Max Speed: 55 Min Distance: 500 Max Distance: 1000");
+	assert(countryType.toString == "Road Type: country Color: blue Min Speed: 40 Max Speed: 90 Min Distance: 1000 Max Distance: 2000");
 
 }
 

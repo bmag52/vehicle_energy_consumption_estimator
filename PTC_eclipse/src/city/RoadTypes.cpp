@@ -34,7 +34,7 @@ RoadTypes::RoadTypes(string roadType) {
 		min_distance = 0;
 		max_distance = numeric_limits<int>::max();
 		toString = "Road Type: " + roadType + " Color: " + color + " Min Speed: " + to_string(min_speed) + " Max Speed: "
-				+ to_string(max_speed) + " Min Distance " + to_string(min_distance) + " Max Distance" + to_string(max_distance);
+				+ to_string(max_speed) + " Min Distance: " + to_string(min_distance) + " Max Distance: " + to_string(max_distance);
 	} else if (roadType == "city") {
 		color = "red";
 		min_speed = 25;
@@ -42,7 +42,7 @@ RoadTypes::RoadTypes(string roadType) {
 		min_distance = 500;
 		max_distance = 1000;
 		toString = "Road Type: " + roadType + " Color: " + color + " Min Speed: " + to_string(min_speed) + " Max Speed: "
-				+ to_string(max_speed) + " Min Distance " + to_string(min_distance) + " Max Distance" + to_string(max_distance);
+				+ to_string(max_speed) + " Min Distance: " + to_string(min_distance) + " Max Distance: " + to_string(max_distance);
 	} else if (roadType == "country") {
 		color = "blue";
 		min_speed = 40;
@@ -50,7 +50,7 @@ RoadTypes::RoadTypes(string roadType) {
 		min_distance = 1000;
 		max_distance = 2000;
 		toString = "Road Type: " + roadType + " Color: " + color + " Min Speed: " + to_string(min_speed) + " Max Speed: "
-				+ to_string(max_speed) + " Min Distance " + to_string(min_distance) + " Max Distance" + to_string(max_distance);
+				+ to_string(max_speed) + " Min Distance: " + to_string(min_distance) + " Max Distance: " + to_string(max_distance);
 	} else if (roadType == "interstate") {
 		color = "black";
 		min_speed = 95;
@@ -58,7 +58,7 @@ RoadTypes::RoadTypes(string roadType) {
 		min_distance = 1000;
 		max_distance = numeric_limits<int>::max();
 		toString = "Road Type: " + roadType + " Color: " + color + " Min Speed: " + to_string(min_speed) + " Max Speed: "
-				+ to_string(max_speed) + " Min Distance " + to_string(min_distance) + " Max Distance" + to_string(max_distance);
+				+ to_string(max_speed) + " Min Distance: " + to_string(min_distance) + " Max Distance: " + to_string(max_distance);
 	}
 }
 

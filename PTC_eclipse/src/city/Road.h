@@ -24,18 +24,24 @@ private:
 	Intersection* startNode;
 	Intersection* endNode;
 	long int roadID;
+	int boundsID;
 
 public:
 	Road();
 	Road(std::string roadType, long int roadID, GenericMap<int, Node*>* nodes);
+	void copy(Road* other);
 	virtual ~Road();
-	void setStartNode(Intersection* startNode);
-	void setEndNode(Intersection* endNode);
-	Intersection* getStartNode();
-	Intersection* getEndNode();
+	void setStartIntersection(Intersection* startNode);
+	void setEndIntersection(Intersection* endNode);
+	Intersection* getStartIntersection();
+	Intersection* getEndIntersection();
 	int getRoadID();
 	int* getElevData();
 	int* getSpeedData();
+	int getBoundsID();
+	void setBoundsID(int id);
+	std::string getRoadType();
+	GenericMap<int, Node*>* getNodes();
 };
 
 } /* namespace PredictivePowertrain */

@@ -17,6 +17,7 @@
 #include "../map/GenericMap.h"
 #include "../driver_prediction/Link.h"
 #include "../route_prediction/Route.h"
+#include "../data_management/Bounds.h"
 
 #include <assert.h>
 #include <algorithm>
@@ -28,28 +29,28 @@ namespace PredictivePowertrain {
 
 class City {
 private:
-	Intersection* intersections;
+	Link* link;
 	std::string roadFileName;
-	std:: string intersectionFileName;
+	std::string intersectionFileName;
 	int intervalDistance = 1;
 	int dateTimeCreated;
 	int maxSlopePercent = 6;
 	std::map<int,int> intersectionNumMap;
-	Road* roadList;
-	Link* link;
+	GenericMap<int, Road*>* roads;
+	GenericMap<int, Intersection*>* intersections;
+	GenericMap<int, Bounds*>* boundsMap;
 
 	int* reverseTrace(int* trace);
 	Road* getConnectingRoad(Intersection* one, Intersection* two);
 	Route* randomPath(Intersection* startInt, Route* initialRoute, int totalLength, int* conditions);
-	Link* addLink(Link* links, Link* link);
 	Intersection* addIntersection(Intersection* intersections, Intersection* intersection);
 	std::pair<double*, int>* elevationToSlope(int* elev, int oldElev);
 public:
 	City();
-	City(Intersection*, std::string, std::string, int, std::map<int, int>);
+	City(GenericMap<int, Intersection*>* intersections, GenericMap<int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
 	int getRoadListSize();
 	int getInstersectionListSize();
-	Link* getNextLinks(Link* link);
+	GenericMap<int, Link*>* getNextLinks(Link* link);
 	Intersection* getIntersectionFromLink(Link* link, bool isIntersection);
 	Intersection* getIntersection(int intersectionNum);
 	Route* getPath(Intersection* start, Intersection* end, int* conditions, int fastest);
@@ -57,6 +58,9 @@ public:
 	std::pair<int*, int*>* getRoadData(Link* link);
 	bool legalRoute(Route* route);
 	std::pair<int*, double*>* routeToData(Route* route, int dist);
+	GenericMap<int, Bounds*>* getBoundsMap();
+	GenericMap<int, Road*>* getRoads();
+	GenericMap<int, Intersection*>* getIntersections();
 
 };
 

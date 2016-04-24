@@ -19,55 +19,53 @@ RoutePrediction::RoutePrediction(City* city) {
 	Link overLink(1,1);
 	Goal unknownGoal(-1);
 	Goal overGoal(1);
-	Route unknownRoute(&unknownLink, &unknownGoal);
-	Route overRoute(&overLink, &overGoal);
+	Route unknownRoute(NULL, &unknownGoal);
+	Route overRoute(NULL, &overGoal);
 	this->unknownRoute = &unknownRoute;
 	this->overRoute = &overRoute;
 }
 
-void RoutePrediction::getNextState(int * hash, Goal * goal) {
-	GenericEntry<int, Goal*>* nextEntry = this->goals.nextEntry();
-	hash = &nextEntry->key;
-	goal = nextEntry->value;
-}
 
 Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* currentCondition) {
 	this->predictedGoal = Goal(1, currentCondition);
 
-	Link* nextLinks = currentIntersection->getOutgoingLinks();
+	GenericMap<int, Link*>* nextLinks = currentIntersection->getOutgoingLinks();
 
-	this->probabilitySize = sizeof(*nextLinks)/sizeof(Link)*this->goals.getSize();
+	this->probabilitySize = nextLinks->getSize()*this->goals.getSize();
 	this->probabilities = new double[this->probabilitySize];
-
-	int* hash;
-	Goal* goal;
-	this->goals.initializeCounter();
-	getNextState(hash, goal);
 
 	// creating the probability of each goal based on its relation to the conditions
 	int counter = 1;
-	while((*hash) != -1)
+	this->goals.initializeCounter();
+	GenericEntry<int, Goal*>* nextGoal = this->goals.nextEntry();
+	while(nextGoal != NULL)
 	{
-		for(int i = 0; i < sizeof(*nextLinks)/sizeof(Link); i++)
+		nextLinks->initializeCounter();
+		GenericEntry<int, Link*>* nextLink = nextLinks->nextEntry();
+		while(nextLink != NULL)
 		{
-			double goalProbability = this->goalToLink.probabilityOfGoalGivenLink(&nextLinks[i],goal,false);
-			if(this->predictedGoal.isSimilar(goal))
+			double goalProbability = this->goalToLink.probabilityOfGoalGivenLink(nextLink->value, nextGoal->value, false);
+			if(this->predictedGoal.isSimilar(nextGoal->value))
 			{
 				// high probability since condition is right
-				goalProbability *= (*goal).getNumSeen();
+				goalProbability *= nextGoal->value->getNumSeen();
 			} else {
 				// lower probability since condition is wrong
-				goalProbability *= .1*(*goal).getNumSeen();
+				goalProbability *= .1*nextGoal->value->getNumSeen();
 			}
 
-			pair<Link*, Goal*> thisPair (&nextLinks[i], goal);
-			this->states.addEntry(counter, &thisPair);
+			std::pair<Link*, Goal*>* thisPair = new std::pair<Link*, Goal*>(nextLink->value, nextGoal->value);
+			this->states.addEntry(counter, thisPair);
+			this->probabilities[counter] = max(this->minInitialProbability*1/this->goals.getSize(), goalProbability);
 
-			this->probabilities[counter] = max(this->minInitialProbability*1/this->goals.getSize(),goalProbability);
 			counter++;
+			nextLink = nextLinks->nextEntry();
 		}
-		getNextState(hash, goal);
+		free(nextLink);
+		nextGoal = this->goals.nextEntry();
 	}
+	free(nextGoal);
+	free(nextLinks);
 
 	// normalize probabilities
 	int sum = 0;
@@ -89,7 +87,7 @@ double* RoutePrediction::copyProbs() {
 }
 
 Route* RoutePrediction::predict(Link* linkTaken) {
-	Link* legalLinks;
+	GenericMap<int, Link*>* legalLinks;
 	if(this->currentRoute->isIntersection())
 	{
 		legalLinks = this->currentRoute->getIntersectionPtr()->getOutgoingLinks();
@@ -101,9 +99,11 @@ Route* RoutePrediction::predict(Link* linkTaken) {
 
 	// make sure that the link given is legal
 	bool error = true;
-	for(int i = 0; i < sizeof(*legalLinks)/sizeof(Link); i++)
+	legalLinks->initializeCounter();
+	GenericEntry<int, Link*>* nextLegalLink = legalLinks->nextEntry();
+	while(nextLegalLink != NULL)
 	{
-		if(legalLinks[i].isEqual(linkTaken))
+		if(nextLegalLink->value->isEqual(linkTaken))
 		{
 			error = false;
 			break;
@@ -143,7 +143,7 @@ Route* RoutePrediction::predict(Link* linkTaken) {
 
 void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities) {
 	// get next links
-	Link* nextLinks = this->city->getNextLinks(chosenLink);
+	GenericMap<int, Link*>* nextLinks = this->city->getNextLinks(chosenLink);
 
 	// generate new data structures
 	GenericMap<int, pair<Link*,Goal*>*> newStates;
@@ -160,15 +160,17 @@ void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,
 	int counter = 0;
 
 	// calculate new states and probabilities
-	for(int i = 0; i < sizeof(*nextLinks)/sizeof(Link); i++)
+	nextLinks->initializeCounter();
+	GenericEntry<int, Link*>* nextLink = nextLinks->nextEntry();
+	while(nextLink != NULL)
 	{
 		this->goals.initializeCounter();
-		getNextState(hash, gi);
-		li = &nextLinks[i];
-
-		while((*hash) != -1)
+		GenericEntry<int, Goal*>* nextGoal = this->goals.nextEntry();
+		li = nextLink->value;
+		while(nextGoal != NULL)
 		{
 			pSi = 0;
+			gi = nextGoal->value;
 			for(int j = 0; j < currentStates->getSize(); j++)
 			{
 				sj = currentStates->getEntry(j);
@@ -181,11 +183,12 @@ void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,
 					pSi += max(minProbability,currentProbabilities[j])*max(minProbability,pLs)*max(minProbability,pGl);
 				}
 			}
-			pair<Link*, Goal*> si (&nextLinks[i], gi);
+			pair<Link*, Goal*> si (nextLink->value, gi);
 			newStates.addEntry(counter, &si);
 			newProbabilities[counter] = pSi;
-			getNextState(hash, gi);
+			nextGoal = this->goals.nextEntry();
 		}
+		nextLink = nextLinks->nextEntry();
 	}
 
 	// normalize probabilities
@@ -243,7 +246,7 @@ Route* RoutePrediction::createRouteConditions(int* currentConditions) {
 
 Route* RoutePrediction::createRouteIntersection(Intersection* intersection, int* currentConditions) {
 	free(&this->predictedGoal);
-	this->predictedGoal = Goal(intersection->getNumber(), currentConditions);
+	this->predictedGoal = Goal(intersection->getIntersectionID(), currentConditions);
 	Route route(this->predictedRoute->getLinksPtr(), &this->predictedGoal);
 	return &route;
 }
@@ -251,7 +254,7 @@ Route* RoutePrediction::createRouteIntersection(Intersection* intersection, int*
 void RoutePrediction::parseRoute(Route* route) {
 	// get hash of route goal and add it to goals if nonexistent
 	int goalHash = route->getGoalHash();
-	if(this->goals.hashInMap(goalHash))
+	if(this->goals.hasEntry(goalHash))
 	{
 		this->goals.getEntry(goalHash)->incrementNumSeen();
 	} else {
@@ -263,13 +266,13 @@ void RoutePrediction::parseRoute(Route* route) {
 	for(int i = 0; i < route->getLinkSize(); i++)
 	{
 		Link* li; Link* lj;
-		lj = &route->getLinksPtr()[i];
+		lj = route->getLinksPtr()->getEntry(i);
 
 		if(i == route->getLinkSize())
 		{
 			li = this->link.finalLink();
 		} else {
-			li = &route->getLinksPtr()[i+1];
+			li = route->getLinksPtr()->getEntry(i+1);
 		}
 
 		this->linkToState.incrementTransition(lj, route->getGoalPtr(), li);

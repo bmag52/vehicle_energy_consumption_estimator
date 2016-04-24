@@ -11,13 +11,13 @@
 
 namespace PredictivePowertrain {
 
-Intersection::Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum) {
-	this->roads = roadInput;
+Intersection::Intersection(GenericMap<int, Road*>* roads, double lat, double lon, int elev, int intersectNum) {
+	this->roads = roads;
 //	this->interSectionType = IntersectionTypes(intersectType);
 	this->lat = lat;
 	this->lon = lon;
 	this->elevation = elev;
-	this->number = intersectNum;
+	this->id = intersectNum;
 }
 
 Intersection::~Intersection() {
@@ -26,8 +26,8 @@ Intersection::~Intersection() {
 Intersection::Intersection() {
 }
 
-int Intersection::getNumber() {
-	return this->number;
+int Intersection::getIntersectionID() {
+	return this->id;
 }
 
 double Intersection::getElevation() {
@@ -42,95 +42,105 @@ double Intersection::getLon() {
 	return this->lon;
 }
 
-Road* Intersection::getRoads() {
+GenericMap<int, Road*>* Intersection::getRoads() {
 	return this->roads;
 }
 
 void Intersection::addRoad(Road* road, int roadDir) {
-	this->roadCount++;
-	Road* newRoads = new Road[this->roadCount];
 	if(roadDir == 0)
 	{
-		road->setEndNode(this);
+		road->setEndIntersection(this);
 	} else {
-		road->setStartNode(this);
+		road->setStartIntersection(this);
 	}
 
-	newRoads[0] = *road;
-	for(int i = 1; i < this->roadCount; i++)
-	{
-		newRoads[i] = this->roads[i-1];
-	}
-
-	free(this->roads);
-	this->roads = newRoads;
+	this->roads->addEntry(road->getRoadID(), road);
 }
 
 
-Link* Intersection::getOutgoingLinks() {
-	Link* outGoingLinks = new Link[this->roadCount];
-	for(int i = 0; i < this->roadCount; i++)
+GenericMap<int, Link*>* Intersection::getOutgoingLinks() {
+	GenericMap<int, Link*>* outGoingLinks = new GenericMap<int, Link*>();
+
+	int linkCount = 0;
+	this->roads->initializeCounter();
+	GenericEntry<int, Road*>* nextRoad = this->roads->nextEntry();
+	while(nextRoad != NULL)
 	{
-		outGoingLinks[i] = *(outGoingLinks->linkFromRoad(&this->roads[i], this));
+		Link* newLink = this->link->linkFromRoad(nextRoad->value, this);
+		outGoingLinks->addEntry(linkCount++, newLink);
+		nextRoad = this->roads->nextEntry();
+
 	}
+	free(nextRoad);
 	return outGoingLinks;
 }
 
 int Intersection::getRoadCount() {
-	return this->roadCount;
+	return this->roads->getSize();
 }
 
 Intersection* Intersection::getNextIntersection(Road* road) {
-	for(int i = 0; i < this->roadCount; i++)
+	this->roads->initializeCounter();
+	GenericEntry<int, Road*>* nextRoad = this->roads->nextEntry();
+	while(nextRoad != NULL)
 	{
-		if(road->getRoadID() == this->roads[i].getRoadID())
+		if(road->getRoadID() == nextRoad->value->getRoadID())
 		{
-			if(this->number == this->roads[i].getStartNode()->getNumber())
+			if(this->id == nextRoad->value->getStartIntersection()->getIntersectionID())
 			{
-				return this->roads[i].getEndNode();
+				free(nextRoad);
+				return nextRoad->value->getEndIntersection();
 			} else {
-				return this->roads[i].getStartNode();
+				free(nextRoad);
+				return nextRoad->value->getStartIntersection();
 			}
 		}
+		nextRoad = this->roads->nextEntry();
 	}
+	free(nextRoad);
 	return NULL;
 }
 
-Intersection* Intersection::getAdjacentIntersection() {
-	Intersection* adjInts;
+GenericMap<int, Intersection*>* Intersection::getAdjacentIntersection() {
+	GenericMap<int, Intersection*>* adjInts = new GenericMap<int, Intersection*>();
 	int adjIntCount = 0;
 
-	for(int i = 0; this->roadCount; i++)
+	this->roads->initializeCounter();
+	GenericEntry<int, Road*>* nextRoad = this->roads->nextEntry();
+	while(nextRoad != NULL)
 	{
-		Intersection* adjInt = getNextIntersection(&this->roads[i]);
+		Intersection* adjInt = getNextIntersection(nextRoad->value);
 		bool alreadyCounted = false;
 
-		for(int j = 0; j < adjIntCount; j++)
+		adjInts->initializeCounter();
+		GenericEntry<int, Intersection*>* nextInt = adjInts->nextEntry();
+		while(nextInt != NULL)
 		{
-			if(adjInts[i].getNumber() == adjInt->getNumber())
+			if(nextInt->value->getIntersectionID() == adjInt->getIntersectionID())
 			{
 				alreadyCounted = true;
 				break;
 			}
+			nextInt = adjInts->nextEntry();
 		}
 
 		if(!alreadyCounted)
 		{
-			adjIntCount++;
-			Intersection* newAdjInts = new Intersection[adjIntCount];
-
-			newAdjInts[0] = *adjInt;
-			for(int j = 1; j < adjIntCount; j++)
-			{
-				newAdjInts[j] = adjInts[i-1];
-			}
-
-			free(adjInts);
-			adjInts = newAdjInts;
+			adjInts->addEntry(adjInt->getIntersectionID(), adjInt);
 		}
+		nextRoad = this->roads->nextEntry();
 	}
 	return adjInts;
 }
 
+void Intersection::setBoundsID(int id) {
+	this->boundsID = id;
+}
+
+int Intersection::getBoudsID() {
+	return this->boundsID;
+}
+
 } /* namespace PredictivePowertrain */
+
 

@@ -9,6 +9,7 @@
 #define ROUTE_PREDICTION_GENERICMAP_H_
 #include "stddef.h"
 #include <functional>
+#include <iostream>
 #include <map>
 #include "GenericEntry.h"
 
@@ -29,7 +30,7 @@ public:
 	void initializeCounter();
 	GenericEntry<K,V>* nextEntry();
 	GenericEntry<K,V>* getMinEntry();
-	bool hashInMap(K key);
+	bool hasEntry(K key);
 	V getEntry(K key);
 	typename std::map<K,V>::iterator iterator();
 	typename std::map<K,V>::iterator begin();
@@ -38,6 +39,7 @@ public:
 	int addEntry(K key, V value);
 	void updateEntry(K key, V value);
 	virtual ~GenericMap();
+	bool erase(K key);
 };
 
 template<class K, class V>
@@ -76,14 +78,15 @@ void GenericMap<K, V>::initializeCounter() {
 
 template<class K, class V>
 GenericEntry<K,V>* GenericMap<K, V>::nextEntry() {
-	if (this->iter == this->map.end() && this->hasNextEntry) {
-		this->hasNextEntry = false;
-	} else if(!this->hasNextEntry) {
-		return NULL;
-	}
-	GenericEntry<K,V>* entry = new GenericEntry<K,V>(this->iter->first,this->iter->second);
+
+	GenericEntry<K,V>* entry = NULL;
 	if(this->hasNextEntry) {
+		entry = new GenericEntry<K,V>(this->iter->first,this->iter->second);
 		this->iter++;
+	}
+
+	if(this->iter == this->map.end()) {
+		this->hasNextEntry = false;
 	}
 	return entry;
 }
@@ -110,9 +113,20 @@ GenericEntry<K, V>* GenericMap<K, V>::getMinEntry() {
 }
 
 template<class K, class V>
-bool GenericMap<K, V>::hashInMap(K key) {
+bool GenericMap<K, V>::hasEntry(K key) {
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+template<class K, class V>
+bool GenericMap<K, V>::erase(K key) {
+	typename std::map<K,V>::iterator iter = this->map.find(key);
+	if (iter != this->map.end()) {
+		this->map.erase(iter);
 		return true;
 	} else {
 		return false;

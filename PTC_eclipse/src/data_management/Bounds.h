@@ -16,6 +16,7 @@ private:
 	double maxLon;
 	double minLat;
 	double minLon;
+	int id;
 
 public:
 	Bounds();
@@ -24,6 +25,7 @@ public:
 	double getMaxLon();
 	double getMinLat();
 	double getMinLon();
+	void assignID(int id);
 };
 
 } /* namespace PredictivePowertrain */

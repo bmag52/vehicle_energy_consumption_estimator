@@ -45,7 +45,6 @@ private:
 	Link link;
 
 	void updateStates(Link* chosenLink, GenericMap<int, pair<Link*,Goal*>*>* oldStates, double* oldProbabilities);
-	void getNextState(int* hash, Goal* goal);
 	double* copyProbs();
 	Route* predictPrivate(Route* currentRoute, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities);
 	Route* createRoute();

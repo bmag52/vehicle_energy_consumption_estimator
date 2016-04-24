@@ -16,15 +16,15 @@ namespace PredictivePowertrain {
 
 class Route {
 private:
-	Link* links;
+	GenericMap<int, Link*>* links;
 	Goal* goal;
 	Link* error;
 	Intersection* intersection;
 	bool goalIsIntersection;
-	int counter;
+	int linkCount;
 public:
 	Route();
-	Route(Link* links, Goal* goal);
+	Route(GenericMap<int, Link*>* links, Goal* goal);
 	void addlink(Link* link);
 	bool isequal(Route* other);
 	int getGoalHash();
@@ -34,12 +34,11 @@ public:
 	bool isIntersection();
 	bool isEmpty();
 	Goal* getGoalPtr();
-	Link* getLinksPtr();
+	GenericMap<int, Link*>* getLinksPtr();
 	Intersection* getIntersectionPtr();
 	Link* getLastLinkPtr();;
 	Route* copy();
 	void removeFirstLink();
-	Link* nextlink();
 };
 
 }

@@ -35,9 +35,10 @@ double Bounds::getMinLon() {
 	return this->minLon;
 }
 
+void Bounds::assignID(int id) {
+	this->id = id;
 }
 
-
-
+}
 
 

@@ -61,7 +61,7 @@ Link* Link::finalLink() {
 
 Link* Link::linkFromRoad(Road* road, Intersection* intersection) {
 	int linkNum = road->getRoadID();
-	int linkDir = road->getEndNode()->getNumber();
+	int linkDir = road->getEndIntersection()->getIntersectionID();
 	Link newLink(linkDir, linkNum);
 	return &newLink;
 }

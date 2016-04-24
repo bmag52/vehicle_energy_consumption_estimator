@@ -18,29 +18,32 @@ class Link; // forward declaration
 
 class Intersection {
 private:
-	Road* roads; //%array of roads that connect to this intersection
+//	Road* roads;
+	GenericMap<int, Road*>* roads;
 //	IntersectionTypes interSectionType;
-	int roadCount;
-	int number;
+	int id;
 	double elevation;
 	double lat;
 	double lon;
+	int boundsID;
 	Link* link;
 
 public:
 	Intersection();
-	Intersection(Road * roadInput, double lat, double lon, int elev, int intersectNum);
+	Intersection(GenericMap<int, Road*>* roads, double lat, double lon, int elev, int intersectNum);
+	void setBoundsID(int id);
 	virtual ~Intersection();
 	void addRoad(Road* road, int roadDir);
-	Link* getOutgoingLinks();
+	GenericMap<int, Link*>* getOutgoingLinks();
 	int getRoadCount();
-	int getNumber();
+	int getIntersectionID();
 	double getElevation();
 	double getLat();
 	double getLon();
-	Road* getRoads();
-	Intersection* getAdjacentIntersection();
+	GenericMap<int, Road*>* getRoads();
+	GenericMap<int, Intersection*>* getAdjacentIntersection();
 	Intersection* getNextIntersection(Road* road);
+	int getBoudsID();
 };
 
 } /* namespace PredictivePowertrain */

@@ -37,7 +37,9 @@ end
 		"libboost-all-dev"
 		"git"
 		"gdb"
-		"unzip")
+		"unzip
+		"sl"
+		"cmatrix")
 
 	for i in "${program[@]}"
 	do

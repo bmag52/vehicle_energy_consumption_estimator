@@ -84,23 +84,29 @@ void DataManagement::addCityData(City* city) {
 					endNode.put("", nextRoad->value->getEndIntersection()->getIntersectionID());
 					roadType.put("", nextRoad->value->getRoadType());
 
-					ptree lats, lons;
+					ptree lats, lons, nodeElevations, nodeIDs;
 					nextRoad->value->getNodes()->initializeCounter();
 					GenericEntry<int, Node*>* nextNode = nextRoad->value->getNodes()->nextEntry();
 					while(nextNode != NULL)
 					{
 						Node* node = nextNode->value;
-						ptree lat, lon;
+						ptree lat, lon, ele, id;
 						lat.put("", node->getLat());
 						lon.put("", node->getLon());
+						ele.put("", node->getEle());
+						id.put("", node->getID());
 
 						lats.push_back(std::make_pair("", lat));
 						lons.push_back(std::make_pair("", lon));
+						nodeElevations.push_back(std::make_pair("", ele));
+						nodeIDs.push_back(std::make_pair("", id));
 
 						nextNode = nextRoad->value->getNodes()->nextEntry();
 					}
 					nodes.push_back(std::make_pair("latitude", lats));
 					nodes.push_back(std::make_pair("longitude", lons));
+					nodes.push_back(std::make_pair("elevation", nodeElevations));
+					nodes.push_back(std::make_pair("nodeIDs", nodeIDs));
 
 					road.push_back(std::make_pair("startNodeID", startNode));
 					road.push_back(std::make_pair("endNodeID", endNode));
@@ -221,7 +227,9 @@ std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<
 		GenericMap<int, Road*>* roads = new GenericMap<int, Road*>();
 		GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
 		GenericMap<int, Bounds*>* bounds = new GenericMap<int, Bounds*>();
+		GenericMap<int, std::pair<int, int>*>* roadIntersections = new GenericMap<int, std::pair<int, int>*>(); // <roadID, <startID, endID>>
 
+		// get roads first
 		BOOST_FOREACH(ptree::value_type& u, cityLogs)
 		{
 			int boundsID = lexical_cast<int>(u.first.data());
@@ -233,33 +241,72 @@ std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<
 					BOOST_FOREACH(ptree::value_type& z, v.second)
 					{
 						int roadID = lexical_cast<int>(z.first.data());
+						int startNodeID, endNodeID;
+						GenericMap<int, double>* nodeLats = new GenericMap<int, double>();
+						GenericMap<int, double>* nodeLons = new GenericMap<int, double>();
+						GenericMap<int, int>* nodeEles = new GenericMap<int, int>();
+						GenericMap<int, long int>* nodeIDs = new GenericMap<int, long int>();
+						std::string roadType;
 						BOOST_FOREACH(ptree::value_type& a, z.second)
 						{
 							std::string roadFeature = a.first.data();
 							if(!roadFeature.compare("startNodeID")) {
-
+								startNodeID = lexical_cast<int>(a.second.data());
 							} else if(!roadFeature.compare("endNodeID")) {
-
+								endNodeID = lexical_cast<int>(a.second.data());
 							} else if(!roadFeature.compare("roadType")) {
-
+								roadType = a.second.data();
 							} else if(!roadFeature.compare("nodes")) {
-
+								int latCount = 0;
+								int lonCount = 0;
+								int eleCount = 0;
+								int idCount = 0;
 								BOOST_FOREACH(ptree::value_type& b, a.second)
 								{
-									std::string latLon = b.first.data();
+									std::string nodeFeature = b.first.data();
 									BOOST_FOREACH(ptree::value_type& c, b.second)
 									{
-										if(!latLon.compare("latitude")) {
-
-										} else if(!latLon.compare("longitude")) {
-
+										if(!nodeFeature.compare("latitude")) {
+											nodeLats->addEntry(latCount++, lexical_cast<double>(b.second.data()));
+										} else if(!nodeFeature.compare("longitude")) {
+											nodeLons->addEntry(lonCount++, lexical_cast<double>(b.second.data()));
+										} else if(!nodeFeature.compare("elevation")) {
+											nodeEles->addEntry(eleCount++, lexical_cast<int>(b.second.data()));
+										} else if(!nodeFeature.compare("nodeIDs")) {
+											nodeIDs->addEntry(idCount++, lexical_cast<long int>(b.second.data()));
 										}
 									}
 								}
 							}
 						}
+
+						GenericMap<int, Node*>* nodes = new GenericMap<int, Node*>();
+						for(int i = 1; i <= nodeLats->getSize(); i++)
+						{
+							double lat = nodeLats->getEntry(i);
+							double lon = nodeLons->getEntry(i);
+							int ele = nodeEles->getEntry(i);
+							int id = nodeIDs->getEntry(i);
+
+							nodes->addEntry(i, new Node(lat, lon, ele, id));
+						}
+
+						roadIntersections->addEntry(roadID, new std::pair<int, int>(startNodeID, endNodeID));
+						roads->addEntry(roadID, new Road(roadType, roadID, nodes));
+
 					}
-				} else if(!child.compare("intersections")) {
+				}
+			}
+		}
+
+		// get intersections and bounds next adding roads to the intersections
+		BOOST_FOREACH(ptree::value_type& u, cityLogs)
+		{
+			int boundsID = lexical_cast<int>(u.first.data());
+			BOOST_FOREACH(ptree::value_type& v, u.second)
+			{
+				std::string child = v.first.data();
+				if(!child.compare("intersections")) {
 					BOOST_FOREACH(ptree::value_type& z, v.second)
 					{
 						int intersectionID = lexical_cast<int>(z.first.data());
@@ -299,7 +346,7 @@ std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<
 				}
 			}
 		}
-
+		free(roadIntersections);
 	} catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
 	}

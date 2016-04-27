@@ -112,14 +112,17 @@ int main() {
 	Intersection* intersection1 = new Intersection(roads, 42.3, -122.4, 44, 345);
 	intersection1->setBoundsID(0);
 	Intersection* intersection2 = new Intersection(roads, 42.3, -122.4, 44, 345);
-	intersection2->setBoundsID(1);
+	intersection2->setBoundsID(0);
 	Intersection* intersection3 = new Intersection(roads, 42.3, -122.4, 44, 345);
-	intersection3->setBoundsID(2);
+	intersection3->setBoundsID(1);
+	Intersection* intersection4 = new Intersection(roads, 42.3, -122.4, 44, 345);
+	intersection4->setBoundsID(2);
 
 	GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
 	intersections->addEntry(1, intersection1);
 	intersections->addEntry(2, intersection2);
 	intersections->addEntry(3, intersection3);
+	intersections->addEntry(4, intersection4);
 
 	City* city = new City(intersections, roads, boundsMap);
 	testDM.addCityData(city);

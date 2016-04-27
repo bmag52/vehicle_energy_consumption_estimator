@@ -19,7 +19,7 @@ class Link; // forward declaration
 class Intersection {
 private:
 //	Road* roads;
-	GenericMap<int, Road*>* roads;
+	GenericMap<long int, Road*>* roads;
 //	IntersectionTypes interSectionType;
 	int id;
 	double elevation;
@@ -30,7 +30,7 @@ private:
 
 public:
 	Intersection();
-	Intersection(GenericMap<int, Road*>* roads, double lat, double lon, int elev, int intersectNum);
+	Intersection(GenericMap<long int, Road*>* roads, double lat, double lon, int elev, int intersectNum);
 	void setBoundsID(int id);
 	virtual ~Intersection();
 	void addRoad(Road* road, int roadDir);
@@ -40,7 +40,7 @@ public:
 	double getElevation();
 	double getLat();
 	double getLon();
-	GenericMap<int, Road*>* getRoads();
+	GenericMap<long int, Road*>* getRoads();
 	GenericMap<int, Intersection*>* getAdjacentIntersection();
 	Intersection* getNextIntersection(Road* road);
 	int getBoudsID();

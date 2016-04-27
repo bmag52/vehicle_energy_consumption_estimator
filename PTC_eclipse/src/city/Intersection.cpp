@@ -11,7 +11,7 @@
 
 namespace PredictivePowertrain {
 
-Intersection::Intersection(GenericMap<int, Road*>* roads, double lat, double lon, int elev, int intersectNum) {
+Intersection::Intersection(GenericMap<long int, Road*>* roads, double lat, double lon, int elev, int intersectNum) {
 	this->roads = roads;
 //	this->interSectionType = IntersectionTypes(intersectType);
 	this->lat = lat;
@@ -42,7 +42,7 @@ double Intersection::getLon() {
 	return this->lon;
 }
 
-GenericMap<int, Road*>* Intersection::getRoads() {
+GenericMap<long int, Road*>* Intersection::getRoads() {
 	return this->roads;
 }
 
@@ -63,7 +63,7 @@ GenericMap<int, Link*>* Intersection::getOutgoingLinks() {
 
 	int linkCount = 0;
 	this->roads->initializeCounter();
-	GenericEntry<int, Road*>* nextRoad = this->roads->nextEntry();
+	GenericEntry<long int, Road*>* nextRoad = this->roads->nextEntry();
 	while(nextRoad != NULL)
 	{
 		Link* newLink = this->link->linkFromRoad(nextRoad->value, this);
@@ -81,7 +81,7 @@ int Intersection::getRoadCount() {
 
 Intersection* Intersection::getNextIntersection(Road* road) {
 	this->roads->initializeCounter();
-	GenericEntry<int, Road*>* nextRoad = this->roads->nextEntry();
+	GenericEntry<long int, Road*>* nextRoad = this->roads->nextEntry();
 	while(nextRoad != NULL)
 	{
 		if(road->getRoadID() == nextRoad->value->getRoadID())
@@ -106,7 +106,7 @@ GenericMap<int, Intersection*>* Intersection::getAdjacentIntersection() {
 	int adjIntCount = 0;
 
 	this->roads->initializeCounter();
-	GenericEntry<int, Road*>* nextRoad = this->roads->nextEntry();
+	GenericEntry<long int, Road*>* nextRoad = this->roads->nextEntry();
 	while(nextRoad != NULL)
 	{
 		Intersection* adjInt = getNextIntersection(nextRoad->value);

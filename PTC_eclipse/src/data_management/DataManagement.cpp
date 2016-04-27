@@ -30,7 +30,7 @@ void DataManagement::addRouteData(Route* route) {
 }
 
 void DataManagement::addCityData(City* city) {
-	GenericMap<int, Road*>* roadMap = city->getRoads();
+	GenericMap<long int, Road*>* roadMap = city->getRoads();
 	GenericMap<int, Intersection*>* intersectionMap = city->getIntersections();
 	GenericMap<int, Bounds*>* boundsMap = city->getBoundsMap();
 	GenericMap<int, Bounds*>* newBoundsMap = new GenericMap<int, Bounds*>();
@@ -74,7 +74,7 @@ void DataManagement::addCityData(City* city) {
 		{
 			ptree boundsData, roads_ptree, intersections_ptree;
 			roadMap->initializeCounter();
-			GenericEntry<int, Road*>* nextRoad = roadMap->nextEntry();
+			GenericEntry<long int, Road*>* nextRoad = roadMap->nextEntry();
 			while(nextRoad != NULL)
 			{
 				if(nextRoad->value->getBoundsID() == nextBounds->key)
@@ -131,9 +131,9 @@ void DataManagement::addCityData(City* city) {
 					lon.put("", nextIntersection->value->getLon());
 
 					ptree roadIDs;
-					GenericMap<int, Road*>* connectingRoads = nextIntersection->value->getRoads();
+					GenericMap<long int, Road*>* connectingRoads = nextIntersection->value->getRoads();
 					connectingRoads->initializeCounter();
-					GenericEntry<int, Road*>* nextRoad = connectingRoads->nextEntry();
+					GenericEntry<long int, Road*>* nextRoad = connectingRoads->nextEntry();
 					while(nextRoad != NULL)
 					{
 						ptree roadID;
@@ -216,18 +216,18 @@ void DataManagement::addTripData(GenericMap<double, double>* latLon, bool logSam
 	write_json(this->tripData, tripLogs);
 }
 
-GenericMap<int, Route*>* DataManagement::getRoutes(int cityClusterNUm) {
+GenericMap<int, Route*>* DataManagement::getRoutes() {
 }
 
-std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<int, Bounds*>*>* DataManagement::getCityData(int cityClusterNum) {
+City* DataManagement::getCityData() {
 
 	ptree cityLogs;
 	try {
 		read_json(this->cityData, cityLogs);
-		GenericMap<int, Road*>* roads = new GenericMap<int, Road*>();
+		GenericMap<long int, Road*>* roads = new GenericMap<long int, Road*>();
 		GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
 		GenericMap<int, Bounds*>* bounds = new GenericMap<int, Bounds*>();
-		GenericMap<int, std::pair<int, int>*>* roadIntersections = new GenericMap<int, std::pair<int, int>*>(); // <roadID, <startID, endID>>
+		GenericMap<long int, std::pair<int, int>*>* roadIntersections = new GenericMap<long int, std::pair<int, int>*>(); // <roadID, <startID, endID>>
 
 		// get roads first
 		BOOST_FOREACH(ptree::value_type& u, cityLogs)
@@ -240,13 +240,15 @@ std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<
 
 					BOOST_FOREACH(ptree::value_type& z, v.second)
 					{
-						int roadID = lexical_cast<int>(z.first.data());
-						int startNodeID, endNodeID;
 						GenericMap<int, double>* nodeLats = new GenericMap<int, double>();
 						GenericMap<int, double>* nodeLons = new GenericMap<int, double>();
 						GenericMap<int, int>* nodeEles = new GenericMap<int, int>();
 						GenericMap<int, long int>* nodeIDs = new GenericMap<int, long int>();
+
+						long int roadID = lexical_cast<long int>(z.first.data());
+						int startNodeID, endNodeID;
 						std::string roadType;
+
 						BOOST_FOREACH(ptree::value_type& a, z.second)
 						{
 							std::string roadFeature = a.first.data();
@@ -257,23 +259,20 @@ std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<
 							} else if(!roadFeature.compare("roadType")) {
 								roadType = a.second.data();
 							} else if(!roadFeature.compare("nodes")) {
-								int latCount = 0;
-								int lonCount = 0;
-								int eleCount = 0;
-								int idCount = 0;
+								int latCount = 0; int lonCount = 0; int eleCount = 0; int idCount = 0;
 								BOOST_FOREACH(ptree::value_type& b, a.second)
 								{
 									std::string nodeFeature = b.first.data();
 									BOOST_FOREACH(ptree::value_type& c, b.second)
 									{
 										if(!nodeFeature.compare("latitude")) {
-											nodeLats->addEntry(latCount++, lexical_cast<double>(b.second.data()));
+											nodeLats->addEntry(latCount++, lexical_cast<double>(c.second.data()));
 										} else if(!nodeFeature.compare("longitude")) {
-											nodeLons->addEntry(lonCount++, lexical_cast<double>(b.second.data()));
+											nodeLons->addEntry(lonCount++, lexical_cast<double>(c.second.data()));
 										} else if(!nodeFeature.compare("elevation")) {
-											nodeEles->addEntry(eleCount++, lexical_cast<int>(b.second.data()));
+											nodeEles->addEntry(eleCount++, lexical_cast<int>(c.second.data()));
 										} else if(!nodeFeature.compare("nodeIDs")) {
-											nodeIDs->addEntry(idCount++, lexical_cast<long int>(b.second.data()));
+											nodeIDs->addEntry(idCount++, lexical_cast<long int>(c.second.data()));
 										}
 									}
 								}
@@ -283,17 +282,13 @@ std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<
 						GenericMap<int, Node*>* nodes = new GenericMap<int, Node*>();
 						for(int i = 1; i <= nodeLats->getSize(); i++)
 						{
-							double lat = nodeLats->getEntry(i);
-							double lon = nodeLons->getEntry(i);
-							int ele = nodeEles->getEntry(i);
-							int id = nodeIDs->getEntry(i);
 
-							nodes->addEntry(i, new Node(lat, lon, ele, id));
+							nodes->addEntry(i, new Node(nodeLats->getEntry(i), nodeLons->getEntry(i), nodeEles->getEntry(i), nodeIDs->getEntry(i)));
 						}
+						free(nodeLats); free(nodeLons); free(nodeEles); free(nodeIDs);
 
 						roadIntersections->addEntry(roadID, new std::pair<int, int>(startNodeID, endNodeID));
 						roads->addEntry(roadID, new Road(roadType, roadID, nodes));
-
 					}
 				}
 			}
@@ -309,50 +304,71 @@ std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<
 				if(!child.compare("intersections")) {
 					BOOST_FOREACH(ptree::value_type& z, v.second)
 					{
-						int intersectionID = lexical_cast<int>(z.first.data());
+						int intID = lexical_cast<int>(z.first.data());
+						GenericMap<long int, Road*>* intRoads = new GenericMap<long int, Road*>();
+						int ele; double lat, lon;
 						BOOST_FOREACH(ptree::value_type& a, z.second)
 						{
 							std::string intFeature = a.first.data();
-							if(!intFeature.compare("roadCount")) {
-
-							} else if(!intFeature.compare("elevation")) {
-
+							if(!intFeature.compare("elevation")) {
+								ele = lexical_cast<int>(a.second.data());
 							} else if(!intFeature.compare("latitude")) {
-
+								lat = lexical_cast<double>(a.second.data());
 							} else if(!intFeature.compare("longitude")) {
-
+								lon = lexical_cast<double>(a.second.data());
 							} else if(!intFeature.compare("roadIDs")) {
+
 								BOOST_FOREACH(ptree::value_type& b, a.second)
 								{
-
+									long int roadID = lexical_cast<long int>(b.second.data());
+									intRoads->addEntry(roadID, roads->getEntry(roadID));
 								}
 							}
 						}
+						Intersection* newInt = new Intersection(intRoads, lat, lon, ele, intID);
+						newInt->setBoundsID(boundsID);
+						intersections->addEntry(intID, newInt);
 					}
 				} else if(!child.compare("bounds")) {
+					double maxLat, maxLon, minLat, minLon;
 					BOOST_FOREACH(ptree::value_type& z, v.second)
 					{
-						std::string type = z.first.data();
-						if(!type.compare("maxLat")) {
-
-						} else if(!type.compare("maxLon")) {
-
-						} else if(!type.compare("minLat")) {
-
-						} else if(!type.compare("minLon")) {
-
+						std::string boundsFeature = z.first.data();
+						if(!boundsFeature.compare("maxLat")) {
+							maxLat = lexical_cast<double>(z.second.data());
+						} else if(!boundsFeature.compare("maxLon")) {
+							maxLon = lexical_cast<double>(z.second.data());
+						} else if(!boundsFeature.compare("minLat")) {
+							minLat = lexical_cast<double>(z.second.data());
+						} else if(!boundsFeature.compare("minLon")) {
+							minLon = lexical_cast<double>(z.second.data());
 						}
 					}
+					Bounds* newBounds = new Bounds(maxLat, maxLon, minLat, minLon);
+					newBounds->assignID(boundsID);
+					bounds->addEntry(boundsID, newBounds);
 				}
 			}
 		}
+
+		roadIntersections->initializeCounter();
+		GenericEntry<long int, std::pair<int, int>*>* nextRoadInts = roadIntersections->nextEntry();
+		while(nextRoadInts != NULL)
+		{
+			roads->getEntry(nextRoadInts->key)->setStartIntersection(intersections->getEntry(nextRoadInts->value->first));
+			roads->getEntry(nextRoadInts->key)->setEndIntersection(intersections->getEntry(nextRoadInts->value->second));
+			nextRoadInts = roadIntersections->nextEntry();
+		}
+
 		free(roadIntersections);
+		return new City(intersections, roads, bounds);
 	} catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
+		return NULL;
 	}
 }
 
-GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>* DataManagement::getMostRecentTripData() {
+GenericMap<double, double>* DataManagement::getMostRecentTripData() {
 
 	ptree tripLog;
 	int dayID = 0;
@@ -363,7 +379,7 @@ GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>* DataManagement::
 			dayID = lexical_cast<int>(v.first.data());
 		}
 
-		GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>* recentTripData = new GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>();
+		GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>* rawRecentTripData = new GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>();
 		int latCount = 0, lonCount = 0;
 		BOOST_FOREACH(ptree::value_type& v, tripLog)
 		{
@@ -390,9 +406,34 @@ GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>* DataManagement::
 					}
 
 				}
-				recentTripData->addEntry(lats, lons);
+				assert(lats->getSize() == lons->getSize());
+				rawRecentTripData->addEntry(lats, lons);
 			}
 		}
+
+		GenericMap<double, double>* recentTripData = new GenericMap<double, double>();
+
+		rawRecentTripData->initializeCounter();
+		GenericEntry<GenericMap<int, double>*, GenericMap<int, double>*>* nextLatLonSet = rawRecentTripData->nextEntry();
+		while(nextLatLonSet != NULL)
+		{
+			nextLatLonSet->key->initializeCounter();
+			nextLatLonSet->value->initializeCounter();
+			GenericEntry<int, double>* nextLat = nextLatLonSet->key->nextEntry();
+			GenericEntry<int, double>* nextLon = nextLatLonSet->value->nextEntry();
+			while(nextLat != NULL && nextLon != NULL)
+			{
+				recentTripData->addEntry(nextLat->value, nextLon->value);
+				nextLat = nextLatLonSet->key->nextEntry();
+				nextLon = nextLatLonSet->value->nextEntry();
+			}
+			free(nextLat);
+			free(nextLon);
+			nextLatLonSet = rawRecentTripData->nextEntry();
+		}
+		free(nextLatLonSet);
+		free(rawRecentTripData);
+
 		return recentTripData;
 	} catch(const std::exception& e) {
 		std::cout << e.what() << std::endl;

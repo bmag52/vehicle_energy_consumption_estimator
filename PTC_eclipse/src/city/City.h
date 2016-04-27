@@ -36,7 +36,7 @@ private:
 	int dateTimeCreated;
 	int maxSlopePercent = 6;
 	std::map<int,int> intersectionNumMap;
-	GenericMap<int, Road*>* roads;
+	GenericMap<long int, Road*>* roads;
 	GenericMap<int, Intersection*>* intersections;
 	GenericMap<int, Bounds*>* boundsMap;
 
@@ -47,9 +47,10 @@ private:
 	std::pair<double*, int>* elevationToSlope(int* elev, int oldElev);
 public:
 	City();
-	City(GenericMap<int, Intersection*>* intersections, GenericMap<int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
-	int getRoadListSize();
-	int getInstersectionListSize();
+	City(GenericMap<int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
+	int getRoadMapSize();
+	int getInstersectionMapSize();
+	int getBoundsMapSize();
 	GenericMap<int, Link*>* getNextLinks(Link* link);
 	Intersection* getIntersectionFromLink(Link* link, bool isIntersection);
 	Intersection* getIntersection(int intersectionNum);
@@ -59,7 +60,7 @@ public:
 	bool legalRoute(Route* route);
 	std::pair<int*, double*>* routeToData(Route* route, int dist);
 	GenericMap<int, Bounds*>* getBoundsMap();
-	GenericMap<int, Road*>* getRoads();
+	GenericMap<long int, Road*>* getRoads();
 	GenericMap<int, Intersection*>* getIntersections();
 
 };

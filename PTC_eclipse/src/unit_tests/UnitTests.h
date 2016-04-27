@@ -8,13 +8,13 @@
 #ifndef UNIT_TESTS_UNITTESTS_H_
 #define UNIT_TESTS_UNITTESTS_H_
 
-void link_UT();
+void link_ut();
 void route_ut();
 void intersection_ut();
 void linkToStateMapEntry_ut();
 void linkToStateMap_ut();
 void node_ut();
-
-
+void dataCollection_ut();
+void dataManagement_ut();
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

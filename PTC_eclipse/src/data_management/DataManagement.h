@@ -39,9 +39,9 @@ public:
 	void addRouteData(Route* route);
 	void addCityData(City* city);
 	void addTripData(GenericMap<double, double>* latLon, bool logSameDay);
-	GenericMap<int, Route*>* getRoutes(int cityClusterNUm);
-	std::tuple<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*, GenericMap<int, Bounds*>*>* getCityData(int cityClusterNum);
-	GenericMap<GenericMap<int, double>*, GenericMap<int, double>*>* getMostRecentTripData();
+	GenericMap<int, Route*>* getRoutes();
+	City* getCityData();
+	GenericMap<double, double>* getMostRecentTripData();
 };
 
 } /* namespace PredictivePowertrain */

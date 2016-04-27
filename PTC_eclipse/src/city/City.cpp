@@ -13,17 +13,17 @@ City::City() {
 	// TODO Auto-generated constructor stub
 }
 
-City::City(GenericMap<int, Intersection*>* intersections, GenericMap<int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) {
+City::City(GenericMap<int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) {
 	this->roads = roads;
 	this->intersections = intersections;
 	this->boundsMap = boundsMap;
 }
 
-int City::getRoadListSize() {
+int City::getRoadMapSize() {
 	return this->roads->getSize();
 }
 
-int City::getInstersectionListSize() {
+int City::getInstersectionMapSize() {
 	return this->intersections->getSize();
 }
 
@@ -33,11 +33,11 @@ GenericMap<int, Link*>* City::getNextLinks(Link* link) {
 	Intersection* nextIntersection = getIntersectionFromLink(link, true);
 
 	GenericMap<int, Link*>* nexLinks = new GenericMap<int, Link*>();
-	GenericMap<int, Road*>* connectingRoads = nextIntersection->getRoads();
+	GenericMap<long int, Road*>* connectingRoads = nextIntersection->getRoads();
 
 	int count = 0;
 	connectingRoads->initializeCounter();
-	GenericEntry<int, Road*>* nextRoad = connectingRoads->nextEntry();
+	GenericEntry<long int, Road*>* nextRoad = connectingRoads->nextEntry();
 	while(nextRoad != NULL)
 	{
 		if(nextRoad->value->getRoadID() != currentRoad->getRoadID())
@@ -64,7 +64,7 @@ Intersection* City::getIntersectionFromLink(Link* link, bool isIntersection) {
 }
 
 Intersection* City::getIntersection(int intersectionNum) {
-	assert(getInstersectionListSize() < intersectionNum || intersectionNum < 1); // || this->intersections[intersectionNum] == NULL
+	assert(getInstersectionMapSize() < intersectionNum || intersectionNum < 1); // || this->intersections[intersectionNum] == NULL
 	return this->intersections->getEntry(intersectionNum);
 }
 
@@ -168,7 +168,7 @@ std::pair<int*, int*>* City::getRoadData(Link* link) {
 
 	std::pair<int*, int*>* roadData;
 
-	if(link->getNumber() > getRoadListSize() || link->isEqual(this->link->finalLink()))
+	if(link->getNumber() > getRoadMapSize() || link->isEqual(this->link->finalLink()))
 	{
 		return roadData;
 	}
@@ -185,9 +185,9 @@ std::pair<int*, int*>* City::getRoadData(Link* link) {
 }
 
 Road* City::getConnectingRoad(Intersection* one, Intersection* two) {
-	GenericMap<int, Road*>* roads = one->getRoads();
+	GenericMap<long int, Road*>* roads = one->getRoads();
 	roads->initializeCounter();
-	GenericEntry<int, Road*>* nextRoad = roads->nextEntry();
+	GenericEntry<long int, Road*>* nextRoad = roads->nextEntry();
 	while(nextRoad != NULL)
 	{
 		if(one->getNextIntersection(nextRoad->value)->getIntersectionID() == two->getIntersectionID())
@@ -378,8 +378,12 @@ GenericMap<int, Bounds*>* City::getBoundsMap() {
 	return this->boundsMap;
 }
 
-GenericMap<int, Road*>* City::getRoads() {
+GenericMap<long int, Road*>* City::getRoads() {
 	return this->roads;
+}
+
+int City::getBoundsMapSize() {
+	return this->boundsMap->getSize();
 }
 
 GenericMap<int, Intersection*>* City::getIntersections() {

@@ -14,7 +14,7 @@ using namespace std;
 using namespace PredictivePowertrain;
 
 
-void link_UT() {
+void link_ut() {
     
     //Testing link() constructor, getDirection(), getNumber()
     Link firstLink;

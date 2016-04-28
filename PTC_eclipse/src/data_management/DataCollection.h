@@ -69,7 +69,7 @@ public:
 	GenericMap<int, Way*>* getWayMap();
 	GenericMap<int, Bounds*>* getBoundsMap();
 	int getVoidEle();
-	GenericMap<int, Road*>* makeRawRoads();
+	GenericMap<long int, Road*>* makeRawRoads();
 };
 
 } /* namespace PredictivePowertrain */

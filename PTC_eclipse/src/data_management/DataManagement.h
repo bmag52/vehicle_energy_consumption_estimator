@@ -38,7 +38,7 @@ public:
 	DataManagement();
 	void addRouteData(Route* route);
 	void addCityData(City* city);
-	void addTripData(GenericMap<double, double>* latLon, bool logSameDay);
+	void addTripData(GenericMap<double, double>* latLon);
 	GenericMap<int, Route*>* getRoutes();
 	City* getCityData();
 	GenericMap<double, double>* getMostRecentTripData();

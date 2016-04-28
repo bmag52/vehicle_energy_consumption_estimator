@@ -424,10 +424,10 @@ GenericMap<int, Way*>* DataCollection::getWayMap() {
 }
 
 // for loading into http://www.gpsvisualizer.com/
-GenericMap<int, Road*>* DataCollection::makeRawRoads() {
+GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 
 	std::string csvName = this->dataFolder + "/" + "mapData.csv";
-	GenericMap<int, Road*>* rawRoads = new GenericMap<int, Road*>();
+	GenericMap<long int, Road*>* rawRoads = new GenericMap<int, Road*>();
 
 	// delete existing csv if found
 	std::string rm = "rm " + csvName;
@@ -464,7 +464,7 @@ GenericMap<int, Road*>* DataCollection::makeRawRoads() {
 			if(nodes->getSize() > 0)
 			{
 				Road* newRoad = new Road(way->getWayType(), way->getID(), nodes);
-				rawRoads->addEntry(i, newRoad);
+				rawRoads->addEntry(way->getID(), newRoad);
 			}
 		}
 	}

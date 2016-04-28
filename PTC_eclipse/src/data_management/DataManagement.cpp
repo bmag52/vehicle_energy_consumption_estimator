@@ -175,9 +175,9 @@ void DataManagement::addCityData(City* city) {
 	}
 }
 
-void DataManagement::addTripData(GenericMap<double, double>* latLon, bool logSameDay) {
+void DataManagement::addTripData(GenericMap<double, double>* latLon) {
 
-	int dayID = 0;
+	int dayID = 1;
 	ptree tripLogs;
 
 	// check for existing trips
@@ -208,8 +208,6 @@ void DataManagement::addTripData(GenericMap<double, double>* latLon, bool logSam
 
 	trip.push_back(std::make_pair("latitude", allLat));
 	trip.push_back(std::make_pair("longitude", allLon));
-
-	if(!logSameDay) { dayID++; }
 
 	tripLogs.add_child(lexical_cast<std::string>(dayID), trip);
 

@@ -20,8 +20,8 @@ void dataManagement_ut() {
 	latLon->addEntry(47.654, -122.345);
 	latLon->addEntry(47.653, -122.346);
 	latLon->addEntry(47.652, -122.347);
-	testDM.addTripData(latLon, false);
-	testDM.addTripData(latLon, true);
+	testDM.addTripData(latLon);
+	testDM.addTripData(latLon);
 	GenericMap<double, double>* storedLatLon = testDM.getMostRecentTripData();
 	assert(storedLatLon->getSize() == latLon->getSize());
 

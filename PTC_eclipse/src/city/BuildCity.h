@@ -9,6 +9,11 @@
 #define CITY_BUILDCITY_H_
 
 #include "City.h"
+#include "../data_management/DataManagement.h"
+#include "../data_management/DataCollection.h"
+#include "../map/GenericMap.h"
+
+#include "limits.h"
 
 namespace PredictivePowertrain {
 

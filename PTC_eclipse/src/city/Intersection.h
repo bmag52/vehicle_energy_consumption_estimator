@@ -11,6 +11,7 @@
 #include "IntersectionTypes.h"
 #include "Road.h"
 #include "../driver_prediction/Link.h"
+#include <string>
 
 namespace PredictivePowertrain {
 

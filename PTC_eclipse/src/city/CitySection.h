@@ -19,7 +19,7 @@ public:
 	int x_dim;
 	int y_dim;
 	CitySection();
-	CitySection(std::string, int, int);
+	CitySection(std::string roadType, int x, int y);
 	virtual ~CitySection();
 };
 

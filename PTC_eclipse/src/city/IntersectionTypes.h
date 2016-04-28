@@ -8,16 +8,20 @@
 #ifndef CITY_INTERSECTIONTYPES_H_
 #define CITY_INTERSECTIONTYPES_H_
 
+#include <cstdlib>
+#include <string>
+
 namespace PredictivePowertrain {
 
 class IntersectionTypes {
 public:
-//	std::string toString;
+	std::string toString;
 	double min_stop_time; //time in seconds
 	double max_stop_time; //time in seconds
-//	IntersectionTypes(std::string);
-//	double stop_time(std::string, IntersectionTypes, IntersectionTypes);
+	double stop_time(std::string type, IntersectionTypes* prev, IntersectionTypes* next);
 	IntersectionTypes();
+	IntersectionTypes(std::string toString, double min_stop_time, double max_stop_time);
+	IntersectionTypes(std::string intersectionType);
 	virtual ~IntersectionTypes();
 };
 

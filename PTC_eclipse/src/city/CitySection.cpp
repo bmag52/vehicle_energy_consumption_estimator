@@ -1,3 +1,9 @@
+/*
+ * CitySection.cpp
+ *
+ *  Created on: Mar 8, 2016
+ *      Author: vagrant
+ */
 
 #include "CitySection.h"
 #include <string>

@@ -18,5 +18,8 @@ void node_ut();
 void dataCollection_ut();
 void dataManagement_ut();
 void citySection_ut();
+void elevationtypes_ut();
+void goalmapentry_ut();
+//void intersectiontypes_ut()
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

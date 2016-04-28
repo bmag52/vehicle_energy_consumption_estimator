@@ -67,7 +67,7 @@ void BuildCity::updateGridData() {
 		}
 		dc->pullData(latDelta, lonDelta);
 
-		GenericMap<long int, Road>* rawRoads = dc->makeRawRoads();
+		GenericMap<long int, Road*>* rawRoads = dc->makeRawRoads();
 
 		// make splines for roads
 		// find intersections

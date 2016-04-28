@@ -427,7 +427,7 @@ GenericMap<int, Way*>* DataCollection::getWayMap() {
 GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 
 	std::string csvName = this->dataFolder + "/" + "mapData.csv";
-	GenericMap<long int, Road*>* rawRoads = new GenericMap<int, Road*>();
+	GenericMap<long int, Road*>* rawRoads = new GenericMap<long int, Road*>();
 
 	// delete existing csv if found
 	std::string rm = "rm " + csvName;

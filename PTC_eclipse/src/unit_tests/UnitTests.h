@@ -13,10 +13,10 @@ void route_ut();
 void intersection_ut();
 void linkToStateMapEntry_ut();
 void linkToStateMap_ut();
+void roadTypes_ut();
 void node_ut();
 void dataCollection_ut();
 void dataManagement_ut();
 void citySection_ut();
-
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

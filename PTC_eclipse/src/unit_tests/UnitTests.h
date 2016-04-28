@@ -16,5 +16,7 @@ void linkToStateMap_ut();
 void node_ut();
 void dataCollection_ut();
 void dataManagement_ut();
+void citySection_ut();
+
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

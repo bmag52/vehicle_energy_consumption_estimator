@@ -66,5 +66,3 @@ LinkToStateMap::~LinkToStateMap() {
 }
 
 } /* namespace PredictivePowertrain */
-
-

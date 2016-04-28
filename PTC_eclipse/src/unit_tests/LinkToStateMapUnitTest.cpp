@@ -4,8 +4,10 @@
 #include <assert.h>
 #include "../route_prediction/LinkToStateMap.h"
 #include "UnitTests.h"
+#include <iostream>
 
 using namespace PredictivePowertrain;
+using namespace std;
 
 void linkToStateMap_ut() {
 	int linksSize = 5;
@@ -41,11 +43,11 @@ void linkToStateMap_ut() {
 	LinkToStateMap map3;
 	int count1 = map3.incrementTransition(links[3], &goal1, links[0]);
 	int count2 = map3.incrementTransition(links[4], &goal2, links[1]);
-//	assert(count1 == 1 && count1 == count2);
+	assert(count1 == 1 && count1 == count2);
 
 	// Test 4: get probability with nothing in map
 	LinkToStateMap map4;
-	assert(map4.getProbability(links[0], links[1], &goal1, true) == 0); //not sure what to pass in for bool value
+	assert(map4.getProbability(links[0], links[1], &goal1, true) == 0);
 	map4.incrementTransition(links[2], &goal1, links[1]);
 
 	assert(map4.getProbability(links[0], links[1], &goal1, true) == 0);
@@ -63,7 +65,7 @@ void linkToStateMap_ut() {
 	map6.incrementTransition(links[0], &goal1, links[1]);
 	map6.incrementTransition(links[0], &goal1, links[2]);
 	map6.incrementTransition(links[0], &goal2, links[1]);
-	assert(map6.getProbability(links[1], links[0], &goal1, false) == 0);
+	assert(map6.getProbability(links[1], links[0], &goal1, false) == 0.5);
 
 	// Test 7: test issimilar for getprobability
 	LinkToStateMap map7;
@@ -73,7 +75,7 @@ void linkToStateMap_ut() {
 
 	assert(map7.getProbability(links[1], links[0], &goal1, false) == 0.5);
 	double pl = map7.getProbability(links[1], links[0], &goal1, true);
-	assert(pl == (2.0/3.0));
+	assert(pl == (2.0/3.0));  // says it is == 1
 
 	// Test 8: test issimilar for getprobability with non similar goals
 	LinkToStateMap map8;

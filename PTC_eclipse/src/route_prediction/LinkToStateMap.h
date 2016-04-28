@@ -36,3 +36,4 @@ public:
 } /* namespace PredictivePowertrain */
 
 #endif /* ROUTE_PREDICTION_LINKTOSTATEMAP_H_ */
+

@@ -231,11 +231,12 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 
 // send address of weights
 // TODO have a copy function
-void SpeedPrediction::getVals(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
+std::tuple<Eigen::MatrixXd*, Eigen::MatrixXd*, Eigen::MatrixXd*> SpeedPrediction::getVals(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
 {
 	Wts = this->Wts;
 	yHid = this->yHid;
 	yInHid = this->yInHid;
+	return std::make_tuple(Wts, yHid, yInHid);
 }
 
 int SpeedPrediction::getI()

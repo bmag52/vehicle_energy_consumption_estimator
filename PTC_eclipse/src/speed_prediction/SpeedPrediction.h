@@ -11,8 +11,7 @@
 #include <eigen3/Eigen/Dense>
 #include <iostream>
 #include <assert.h>
-#include <tuple>
-#include <stdexcept>
+#include <list>
 
 namespace PredictivePowertrain {
 
@@ -38,7 +37,7 @@ public:
 	SpeedPrediction(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid);
 	void predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_out);
 	void train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd * spd_act, Eigen::MatrixXd * spd_in);
-	std::tuple<Eigen::MatrixXd*, Eigen::MatrixXd*, Eigen::MatrixXd*> getVals(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid);
+	std::list<Eigen::MatrixXd*> getVals(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid);
 	int getI();
 	int getO();
 	void formatInData(Eigen::MatrixXd * input);

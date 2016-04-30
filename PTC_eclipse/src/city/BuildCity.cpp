@@ -74,28 +74,31 @@ void BuildCity::updateGridData() {
 		while(nextRawRoad != NULL)
 		{
 			GenericMap<long int, Node*>* nodes = nextRawRoad->value->getNodes();
-			std::vector<double> lats(nodes->getSize()), lons(nodes->getSize());
+			Eigen::MatrixXd points(2, nodes->getSize());
 			int latLonCount = 0;
 
 			nodes->initializeCounter();
 			GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
 			while(nextNode != NULL)
 			{
-				lats[latLonCount] = nextNode->value->getLat();
-				lons[latLonCount] = nextNode->value->getLon();
+				points(0, latLonCount) = nextNode->value->getLat();
+				points(1, latLonCount) = nextNode->value->getLon();
+
 				nextNode = nodes->nextEntry();
+				latLonCount++;
 			}
 			free(nextNode);
 
-			tk::spline* spline = new tk::spline();
-			spline->set_points(lats, lons);
-//			rawRoads->getEntry(nextRawRoad->key)->assignSpline(spline);
+			typedef Eigen::Spline<double, 2> spline2d;
+			spline2d newSpline = Eigen::SplineFitting<spline2d>::Interpolate(points, 2);
+			rawRoads->getEntry(nextRawRoad->key)->assignSpline(newSpline);
 
 			nextRawRoad = rawRoads->nextEntry();
 		}
 		free(nextRawRoad);
+
 		// find intersections
-		// trip new roads
+		// trim new roads
 		// add roads, intersections, and bounds to city
 		// record data
 	}

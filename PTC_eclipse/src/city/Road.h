@@ -9,10 +9,11 @@
 #define ROAD_H_
 
 #include "../map/GenericMap.h"
-#include <string>
-
 #include "../data_management/Node.h"
-#include "spline.h"
+
+#include <string>
+#include <eigen3/Eigen/Core>
+#include <eigen3/unsupported/Eigen/Splines>
 
 namespace PredictivePowertrain {
 
@@ -20,11 +21,11 @@ class Intersection; // forward declaration
 
 class Road {
 private:
+	Eigen::Spline<double, 2> spline;
 	GenericMap<long int, Node*>* nodes;
 	std::string roadType;
 	Intersection* startNode;
 	Intersection* endNode;
-	tk::spline* spline;
 	long int roadID;
 	int boundsID;
 
@@ -44,8 +45,8 @@ public:
 	void setBoundsID(int id);
 	std::string getRoadType();
 	GenericMap<long int, Node*>* getNodes();
-	tk::spline* getSpline();
-	void assignSpline(tk::spline* spline);
+	Eigen::Spline<double, 2> getSpline();
+	void assignSpline(Eigen::Spline<double, 2> spline);
 };
 
 } /* namespace PredictivePowertrain */

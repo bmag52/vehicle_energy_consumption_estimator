@@ -14,8 +14,8 @@
 #include "../map/GenericMap.h"
 
 #include "limits.h"
-#include "spline.h"
-#include <vector>
+#include <eigen3/Eigen/Core>
+#include <eigen3/unsupported/Eigen/Splines>
 
 namespace PredictivePowertrain {
 

@@ -65,11 +65,11 @@ GenericMap<long int, Node*>* Road::getNodes() {
 	return this->nodes;
 }
 
-tk::spline* Road::getSpline() {
+Eigen::Spline<double, 2> Road::getSpline() {
 	return this->spline;
 }
 
-void Road::assignSpline(tk::spline* spline) {
+void Road::assignSpline(Eigen::Spline<double, 2> spline) {
 	this->spline = spline;
 }
 

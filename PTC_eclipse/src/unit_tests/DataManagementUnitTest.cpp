@@ -39,7 +39,7 @@ void dataManagement_ut() {
 	assert(latLonsMatch);
 
 	// test city logging add
-	GenericMap<int, Node*>* nodes = new GenericMap<int, Node*>();
+	GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
 	nodes->addEntry(1, new Node(42.3, -122.4, 44, 1234566));
 	nodes->addEntry(2, new Node(42.3, -122.4, 44, 1234566));
 

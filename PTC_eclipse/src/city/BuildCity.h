@@ -14,6 +14,8 @@
 #include "../map/GenericMap.h"
 
 #include "limits.h"
+#include "spline.h"
+#include <vector>
 
 namespace PredictivePowertrain {
 

@@ -63,13 +63,37 @@ void BuildCity::updateGridData() {
 		{
 			dc = new DataCollection();
 		} else {
-			dc = new DataCollection(latDelta, lonDelta);
+			dc = new DataCollection(latCenter, lonCenter);
 		}
-		dc->pullData(latDelta, lonDelta);
-
+		dc->pullData(latCenter, lonCenter);
 		GenericMap<long int, Road*>* rawRoads = dc->makeRawRoads();
 
 		// make splines for roads
+		rawRoads->initializeCounter();
+		GenericEntry<long int, Road*>* nextRawRoad = rawRoads->nextEntry();
+		while(nextRawRoad != NULL)
+		{
+			GenericMap<long int, Node*>* nodes = nextRawRoad->value->getNodes();
+			std::vector<double> lats(nodes->getSize()), lons(nodes->getSize());
+			int latLonCount = 0;
+
+			nodes->initializeCounter();
+			GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
+			while(nextNode != NULL)
+			{
+				lats[latLonCount] = nextNode->value->getLat();
+				lons[latLonCount] = nextNode->value->getLon();
+				nextNode = nodes->nextEntry();
+			}
+			free(nextNode);
+
+			tk::spline* spline = new tk::spline();
+			spline->set_points(lats, lons);
+//			rawRoads->getEntry(nextRawRoad->key)->assignSpline(spline);
+
+			nextRawRoad = rawRoads->nextEntry();
+		}
+		free(nextRawRoad);
 		// find intersections
 		// trip new roads
 		// add roads, intersections, and bounds to city

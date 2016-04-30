@@ -86,7 +86,7 @@ void DataManagement::addCityData(City* city) {
 
 					ptree lats, lons, nodeElevations, nodeIDs;
 					nextRoad->value->getNodes()->initializeCounter();
-					GenericEntry<int, Node*>* nextNode = nextRoad->value->getNodes()->nextEntry();
+					GenericEntry<long int, Node*>* nextNode = nextRoad->value->getNodes()->nextEntry();
 					while(nextNode != NULL)
 					{
 						Node* node = nextNode->value;
@@ -277,7 +277,7 @@ City* DataManagement::getCityData() {
 							}
 						}
 
-						GenericMap<int, Node*>* nodes = new GenericMap<int, Node*>();
+						GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
 						for(int i = 1; i <= nodeLats->getSize(); i++)
 						{
 

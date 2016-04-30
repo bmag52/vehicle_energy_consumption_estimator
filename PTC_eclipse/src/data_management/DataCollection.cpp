@@ -443,13 +443,13 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 		Way* way = this->wayMap.getEntry(i);
 		if(way != NULL)
 		{
-			GenericMap<int, Node*>* nodes = new GenericMap<int, Node*>();
+			GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
 			for(int j = 1; j <= way->getNodeIDs()->getSize(); j++)
 			{
 				Node* node = this->nodeMap.getEntry(way->getNodeIDs()->getEntry(j));
 				if(node != NULL)
 				{
-					nodes->addEntry(j, node);
+					nodes->addEntry(node->getID(), node);
 					csv << i << ",";										//name
 					csv << "\"Node ID: " << node->getID() << " | ";			//Node ID
 					csv << "Ele: " << node->getEle() << " | ";				//Ele

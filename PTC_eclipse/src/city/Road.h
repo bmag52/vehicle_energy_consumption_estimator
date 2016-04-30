@@ -12,6 +12,7 @@
 #include <string>
 
 #include "../data_management/Node.h"
+#include "spline.h"
 
 namespace PredictivePowertrain {
 
@@ -19,16 +20,17 @@ class Intersection; // forward declaration
 
 class Road {
 private:
-	GenericMap<int, Node*>* nodes;
+	GenericMap<long int, Node*>* nodes;
 	std::string roadType;
 	Intersection* startNode;
 	Intersection* endNode;
+	tk::spline* spline;
 	long int roadID;
 	int boundsID;
 
 public:
 	Road();
-	Road(std::string roadType, long int roadID, GenericMap<int, Node*>* nodes);
+	Road(std::string roadType, long int roadID, GenericMap<long int, Node*>* nodes);
 	void copy(Road* other);
 	virtual ~Road();
 	void setStartIntersection(Intersection* startNode);
@@ -41,7 +43,9 @@ public:
 	int getBoundsID();
 	void setBoundsID(int id);
 	std::string getRoadType();
-	GenericMap<int, Node*>* getNodes();
+	GenericMap<long int, Node*>* getNodes();
+	tk::spline* getSpline();
+	void assignSpline(tk::spline* spline);
 };
 
 } /* namespace PredictivePowertrain */

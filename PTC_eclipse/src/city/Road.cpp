@@ -14,7 +14,7 @@ Road::Road() {
 	this->roadID = 0;
 }
 
-Road::Road(std::string roadType, long int roadID, GenericMap<int, Node*>* nodes) {
+Road::Road(std::string roadType, long int roadID, GenericMap<long int, Node*>* nodes) {
 	this->roadType = roadType;
 	this->roadID = roadID;
 	this->nodes = nodes;
@@ -61,8 +61,16 @@ std::string Road::getRoadType() {
 	return this->roadType;
 }
 
-GenericMap<int, Node*>* Road::getNodes() {
+GenericMap<long int, Node*>* Road::getNodes() {
 	return this->nodes;
+}
+
+tk::spline* Road::getSpline() {
+	return this->spline;
+}
+
+void Road::assignSpline(tk::spline* spline) {
+	this->spline = spline;
 }
 
 } /* namespace PredictivePowertrain */

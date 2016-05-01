@@ -42,10 +42,8 @@ void BuildCity::updateGridData() {
 				if(lat > bound->getMaxLat() || lat < bound->getMinLat() || lon > bound->getMaxLon() || lon < bound->getMinLon())
 				{
 					newBounds = true;
-					if(lat > maxLat) { maxLat = lat; }
-					if(lat < minLat) { minLat = lat; }
-					if(lon > maxLon) { maxLon = lon; }
-					if(lon < minLon) { minLon = lon; }
+					if(lat > maxLat) { maxLat = lat; } if(lat < minLat) { minLat = lat; }
+					if(lon > maxLon) { maxLon = lon; } if(lon < minLon) { minLon = lon; }
 
 				}
 				nextBounds = bounds->nextEntry();
@@ -61,10 +59,8 @@ void BuildCity::updateGridData() {
 			double lat = nextTripLatLon->value->first;
 			double lon = nextTripLatLon->value->second;
 
-			if(lat > maxLat) { maxLat = lat; }
-			if(lat < minLat) { minLat = lat; }
-			if(lon > maxLon) { maxLon = lon; }
-			if(lon < minLon) { minLon = lon; }
+			if(lat > maxLat) { maxLat = lat; } if(lat < minLat) { minLat = lat; }
+			if(lon > maxLon) { maxLon = lon; } if(lon < minLon) { minLon = lon; }
 			nextTripLatLon = tripLatLon->nextEntry();
 		}
 	}
@@ -74,8 +70,8 @@ void BuildCity::updateGridData() {
 	{
 		double latCenter = (maxLat + minLat) / 2.0;
 		double lonCenter = (maxLon + minLon) / 2.0;
-		double latDelta = (maxLat - minLat) / 2.0;
-		double lonDelta = (maxLon - minLon) / 2.0;
+		double latDelta = maxLat - minLat;
+		double lonDelta = maxLon - minLon;
 
 		DataCollection* dc;
 		if(latDelta == 0 && lonDelta == 0)

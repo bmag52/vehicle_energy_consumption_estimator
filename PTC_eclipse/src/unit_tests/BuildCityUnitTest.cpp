@@ -16,9 +16,9 @@ void buildCity_ut() {
 
 	// make trip log
 	GenericMap<long int, std::pair<double, double>*>* latLon = new GenericMap<long int, std::pair<double, double>*>();
-	latLon->addEntry(1, new std::pair<double, double>(0,0));
-	latLon->addEntry(2, new std::pair<double, double>(1,1));
-	latLon->addEntry(3, new std::pair<double, double>(2,2));
+	latLon->addEntry(1, new std::pair<double, double>(47.681, -122.328));
+	latLon->addEntry(2, new std::pair<double, double>(47.682, -122.327));
+	latLon->addEntry(3, new std::pair<double, double>(47.683, -122.326));
 
 	// jsonify trip log -> delete existing jsons
 	DataManagement dm;

@@ -16,6 +16,7 @@ void dataCollection_ut() {
 	testDC.pullData(47.681, -122.328); // greenlake
 	std::cout << "node size " << testDC.getNodeMap()->getSize() << std::endl;
 	std::cout << "boundCount " << testDC.getBoundsMap()->getSize() << std::endl;
+
 	testDC.pullData(47.618174, -122.330838); // downtown
 	std::cout << "node size " << testDC.getNodeMap()->getSize() << std::endl;
 	std::cout << "boundCount " << testDC.getBoundsMap()->getSize() << std::endl;

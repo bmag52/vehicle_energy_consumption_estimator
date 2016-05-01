@@ -202,8 +202,15 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 	std::cout << "pulling SRTM data ... " << std::endl;
 
 	// get bin for given lat and lon
-	std::string latBin = getBin(60.0, -56.75, 24, lat, true);
-	std::string lonBin = getBin(176.56, -180.0, 72, lon, false);
+	double latMax = 60.0;
+	double latMin = -56.75;
+	double lonMax = 176.56;
+	double lonMin = -180.0;
+
+	assert(lat < latMax && lat > latMin && lon < lonMax && lon > lonMin);
+
+	std::string latBin = getBin(latMax, latMin, 24, lat, true);
+	std::string lonBin = getBin(lonMax, lonMin, 72, lon, false);
 
 	// create srtm file name from bins
 	std::string srtmName = "srtm_" + lonBin + "_" + latBin;

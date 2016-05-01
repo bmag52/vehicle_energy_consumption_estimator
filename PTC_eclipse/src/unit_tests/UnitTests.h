@@ -22,5 +22,6 @@ void elevationtypes_ut();
 void goalmapentry_ut();
 void intersectiontypes_ut();
 void goalToLinkMap_ut();
+void buildCity_ut();
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

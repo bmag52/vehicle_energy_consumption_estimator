@@ -15,8 +15,8 @@ BuildCity::BuildCity() {
 void BuildCity::updateGridData() {
 
 	DataManagement dm;
-	GenericMap<double, double>* latLons = dm.getMostRecentTripData();
-	GenericMap<int, Bounds*>* bounds = dm.getCityData()->getBoundsMap();
+	GenericMap<long int, std::pair<double, double>*>* tripLatLon = dm.getMostRecentTripData();
+	City* city = dm.getCityData();
 
 	bool newBounds = false;
 	double maxLat = -DBL_MAX;
@@ -24,32 +24,51 @@ void BuildCity::updateGridData() {
 	double minLat = DBL_MAX;
 	double minLon = DBL_MAX;
 
-	latLons->initializeCounter();
-	GenericEntry<double, double>* nextLatLon = latLons->nextEntry();
-	while(nextLatLon != NULL)
+	tripLatLon->initializeCounter();
+	GenericEntry<long int, std::pair<double, double>*>* nextTripLatLon = tripLatLon->nextEntry();
+	if(city != NULL)
 	{
-		bounds->initializeCounter();
-		GenericEntry<int, Bounds*>* nextBounds = bounds->nextEntry();
-		while(nextBounds != NULL)
+		// bounds data already exists
+		GenericMap<int, Bounds*>* bounds = city->getBoundsMap();
+		while(nextTripLatLon != NULL)
 		{
-			double lat = nextLatLon->key;
-			double lon = nextLatLon->value;
-			Bounds* bound = nextBounds->value;
-			if(lat > bound->getMaxLat() || lat < bound->getMinLat() || lon > bound->getMaxLon() || lon < bound->getMinLon())
+			bounds->initializeCounter();
+			GenericEntry<int, Bounds*>* nextBounds = bounds->nextEntry();
+			while(nextBounds != NULL)
 			{
-				newBounds = true;
-				if(lat > maxLat) { maxLat = lat; }
-				if(lat < minLat) { minLat = lat; }
-				if(lon > maxLon) { maxLon = lon; }
-				if(lon < minLon) { minLon = lon; }
+				double lat = nextTripLatLon->value->first;
+				double lon = nextTripLatLon->value->second;
+				Bounds* bound = nextBounds->value;
+				if(lat > bound->getMaxLat() || lat < bound->getMinLat() || lon > bound->getMaxLon() || lon < bound->getMinLon())
+				{
+					newBounds = true;
+					if(lat > maxLat) { maxLat = lat; }
+					if(lat < minLat) { minLat = lat; }
+					if(lon > maxLon) { maxLon = lon; }
+					if(lon < minLon) { minLon = lon; }
 
+				}
+				nextBounds = bounds->nextEntry();
 			}
-			nextBounds = bounds->nextEntry();
+			nextTripLatLon = tripLatLon->nextEntry();
+			free(nextBounds);
 		}
-		nextLatLon = latLons->nextEntry();
-		free(nextBounds);
+	} else {
+		// no bounds data
+		newBounds = true;
+		while(nextTripLatLon != NULL)
+		{
+			double lat = nextTripLatLon->value->first;
+			double lon = nextTripLatLon->value->second;
+
+			if(lat > maxLat) { maxLat = lat; }
+			if(lat < minLat) { minLat = lat; }
+			if(lon > maxLon) { maxLon = lon; }
+			if(lon < minLon) { minLon = lon; }
+			nextTripLatLon = tripLatLon->nextEntry();
+		}
 	}
-	free(nextLatLon);
+	free(nextTripLatLon);
 
 	if(newBounds)
 	{
@@ -63,7 +82,7 @@ void BuildCity::updateGridData() {
 		{
 			dc = new DataCollection();
 		} else {
-			dc = new DataCollection(latCenter, lonCenter);
+			dc = new DataCollection(latDelta, lonDelta);
 		}
 		dc->pullData(latCenter, lonCenter);
 		GenericMap<long int, Road*>* rawRoads = dc->makeRawRoads();
@@ -98,6 +117,7 @@ void BuildCity::updateGridData() {
 		free(nextRawRoad);
 
 		// find intersections
+
 		// trim new roads
 		// add roads, intersections, and bounds to city
 		// record data

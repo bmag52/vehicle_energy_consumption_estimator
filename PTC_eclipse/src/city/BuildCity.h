@@ -24,11 +24,11 @@ private:
 	City city;
 	GenericMap<int, Intersection*> intersections;
 	GenericMap<int, Road*> roads;
-	void updateGridData(); // post-processing on shutdown
-	void readCityFile(); // pre-processing on startup
 
 public:
 	BuildCity();
+	void updateGridData(); // post-processing on shutdown
+	void readCityFile(); // pre-processing on startup
 
 };
 

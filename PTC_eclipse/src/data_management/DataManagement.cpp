@@ -175,9 +175,9 @@ void DataManagement::addCityData(City* city) {
 	}
 }
 
-void DataManagement::addTripData(GenericMap<double, double>* latLon) {
+void DataManagement::addTripData(GenericMap<long int, std::pair<double, double>*>* latLon) {
 
-	int dayID = 1;
+	int tripID = 0;
 	ptree tripLogs;
 
 	// check for existing trips
@@ -185,7 +185,7 @@ void DataManagement::addTripData(GenericMap<double, double>* latLon) {
 		read_json(this->tripData, tripLogs);
 		BOOST_FOREACH(ptree::value_type &v, tripLogs)
 		{
-			dayID = lexical_cast<int>(v.first.data());
+			tripID = lexical_cast<int>(v.first.data());
 		}
 	} catch(const std::exception& e) {
 		std::cout << e.what() << std::endl;
@@ -194,22 +194,22 @@ void DataManagement::addTripData(GenericMap<double, double>* latLon) {
 	// add trip
 	ptree trip, allLat, allLon;
 	latLon->initializeCounter();
-	GenericEntry<double, double>* next = latLon->nextEntry();
-	while(next != NULL)
+	GenericEntry<long int, std::pair<double, double>*>* nextLatLon = latLon->nextEntry();
+	while(nextLatLon != NULL)
 	{
 		ptree lat, lon;
-		lat.put("", next->key);
-		lon.put("", next->value);
+		lat.put("", nextLatLon->value->first);
+		lon.put("", nextLatLon->value->second);
 
 		allLat.push_back(std::make_pair("", lat));
 		allLon.push_back(std::make_pair("", lon));
-		next = latLon->nextEntry();
+		nextLatLon = latLon->nextEntry();
 	}
 
 	trip.push_back(std::make_pair("latitude", allLat));
 	trip.push_back(std::make_pair("longitude", allLon));
 
-	tripLogs.add_child(lexical_cast<std::string>(dayID), trip);
+	tripLogs.add_child(lexical_cast<std::string>(tripID+1), trip);
 
 	write_json(this->tripData, tripLogs);
 }
@@ -366,7 +366,7 @@ City* DataManagement::getCityData() {
 	}
 }
 
-GenericMap<double, double>* DataManagement::getMostRecentTripData() {
+GenericMap<long int, std::pair<double, double>*>* DataManagement::getMostRecentTripData() {
 
 	ptree tripLog;
 	int dayID = 0;
@@ -409,7 +409,8 @@ GenericMap<double, double>* DataManagement::getMostRecentTripData() {
 			}
 		}
 
-		GenericMap<double, double>* recentTripData = new GenericMap<double, double>();
+		GenericMap<long int, std::pair<double, double>*>* recentTripData = new GenericMap<long int, std::pair<double, double>*>();
+		long int tripCount = 1;
 
 		rawRecentTripData->initializeCounter();
 		GenericEntry<GenericMap<int, double>*, GenericMap<int, double>*>* nextLatLonSet = rawRecentTripData->nextEntry();
@@ -421,7 +422,7 @@ GenericMap<double, double>* DataManagement::getMostRecentTripData() {
 			GenericEntry<int, double>* nextLon = nextLatLonSet->value->nextEntry();
 			while(nextLat != NULL && nextLon != NULL)
 			{
-				recentTripData->addEntry(nextLat->value, nextLon->value);
+				recentTripData->addEntry(tripCount++, new std::pair<double, double>(nextLat->value, nextLon->value));
 				nextLat = nextLatLonSet->key->nextEntry();
 				nextLon = nextLatLonSet->value->nextEntry();
 			}

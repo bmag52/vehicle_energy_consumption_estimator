@@ -38,10 +38,10 @@ public:
 	DataManagement();
 	void addRouteData(Route* route);
 	void addCityData(City* city);
-	void addTripData(GenericMap<double, double>* latLon);
+	void addTripData(GenericMap<long int, std::pair<double, double>*>* latLon);
 	GenericMap<int, Route*>* getRoutes();
 	City* getCityData();
-	GenericMap<double, double>* getMostRecentTripData();
+	GenericMap<long int, std::pair<double, double>*>* getMostRecentTripData();
 };
 
 } /* namespace PredictivePowertrain */

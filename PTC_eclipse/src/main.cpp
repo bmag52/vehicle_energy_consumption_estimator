@@ -12,7 +12,9 @@
 
 int main() {
 
-	dataManagement_ut();
+//	dataManagement_ut();
+//	dataCollection_ut();
+	buildCity_ut();
 
 	std::cout << "finished" << std::endl;
 

@@ -10,9 +10,14 @@
 namespace PredictivePowertrain {
 
 GPS::GPS() {
+	this->tripCount = 0;
 }
 
 std::pair<double, double>* GPS::getLatLon() {
+	double lat, lon;
+
+
+	return new std::pair<double, double>(lat, lon);
 }
 
 bool GPS::isOnRoad(Road* road) {
@@ -20,10 +25,10 @@ bool GPS::isOnRoad(Road* road) {
 
 void GPS::updateTripLog() {
 	std::pair<double, double>* latLon = this->getLatLon();
-	this->tripLog.addEntry(latLon->first, latLon->second);
+	this->tripLog.addEntry(this->tripCount++, latLon);
 }
 
-GenericMap<double, double>* GPS::getTripLog() {
+GenericMap<long int, std::pair<double, double>*>* GPS::getTripLog() {
 	return &this->tripLog;
 }
 

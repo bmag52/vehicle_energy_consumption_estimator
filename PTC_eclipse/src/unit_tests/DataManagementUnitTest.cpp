@@ -16,21 +16,22 @@ void dataManagement_ut() {
 	DataManagement testDM;
 
 	// test trip log add and get
-	GenericMap<double, double>* latLon = new GenericMap<double, double>();
-	latLon->addEntry(47.654, -122.345);
-	latLon->addEntry(47.653, -122.346);
-	latLon->addEntry(47.652, -122.347);
+	GenericMap<long int, std::pair<double, double>*>* latLon = new GenericMap<long int, std::pair<double, double>*>();
+	latLon->addEntry(1, new std::pair<double, double>(47.654, -122.345));
+	latLon->addEntry(2, new std::pair<double, double>(47.654, -122.345));
+	latLon->addEntry(3, new std::pair<double, double>(47.654, -122.345));
 	testDM.addTripData(latLon);
 	testDM.addTripData(latLon);
-	GenericMap<double, double>* storedLatLon = testDM.getMostRecentTripData();
+	GenericMap<long int, std::pair<double, double>*>* storedLatLon = testDM.getMostRecentTripData();
 	assert(storedLatLon->getSize() == latLon->getSize());
 
 	storedLatLon->initializeCounter();
 	bool latLonsMatch = true;
-	GenericEntry<double, double>* nextStoredLatLon = storedLatLon->nextEntry();
+	GenericEntry<long int, std::pair<double, double>*>* nextStoredLatLon = storedLatLon->nextEntry();
 	while(nextStoredLatLon != NULL)
 	{
-		if(!latLon->hasEntry(nextStoredLatLon->key) || nextStoredLatLon->value != latLon->getEntry(nextStoredLatLon->key))
+		if(!latLon->hasEntry(nextStoredLatLon->key) || nextStoredLatLon->value->first != latLon->getEntry(nextStoredLatLon->key)->first
+				|| nextStoredLatLon->value->second != latLon->getEntry(nextStoredLatLon->key)->second)
 		{
 			latLonsMatch = false;
 		}

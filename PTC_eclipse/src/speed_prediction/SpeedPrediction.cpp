@@ -231,11 +231,16 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 
 // send address of weights
 // TODO have a copy function
-void SpeedPrediction::getVals(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
+std::list<Eigen::MatrixXd*> SpeedPrediction::getVals(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
 {
 	Wts = this->Wts;
 	yHid = this->yHid;
 	yInHid = this->yInHid;
+	std::list<Eigen::MatrixXd*> returnList;
+	returnList.pushfront(Wts);
+	returnList.pushfront(yHid);
+	returnList.pushfront(yInHid);
+	return returnList;
 }
 
 int SpeedPrediction::getI()

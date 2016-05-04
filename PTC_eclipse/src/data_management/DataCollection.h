@@ -8,6 +8,8 @@
 #ifndef DATACOLLECTION_MAKEOSM_H_
 #define DATACOLLECTION_MAKEOSM_H_
 
+#define EIGEN_NO_DEBUG
+
 #include "../city/Road.h"
 #include "../city/Intersection.h"
 #include "../map/GenericMap.h"
@@ -18,6 +20,9 @@
 // query
 #include "boost/lexical_cast.hpp"
 #include "boost/asio.hpp"
+
+#include <eigen3/Eigen/Core>
+#include <eigen3/unsupported/Eigen/Splines>
 
 #include <iostream>
 #include <fstream>

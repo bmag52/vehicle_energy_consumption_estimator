@@ -82,37 +82,11 @@ void BuildCity::updateGridData() {
 		}
 		dc->pullData(latCenter, lonCenter);
 		GenericMap<long int, Road*>* rawRoads = dc->makeRawRoads();
-
-		// make splines for roads
-		rawRoads->initializeCounter();
-		GenericEntry<long int, Road*>* nextRawRoad = rawRoads->nextEntry();
-		while(nextRawRoad != NULL)
-		{
-			GenericMap<long int, Node*>* nodes = nextRawRoad->value->getNodes();
-			Eigen::MatrixXd points(2, nodes->getSize());
-			int latLonCount = 0;
-
-			nodes->initializeCounter();
-			GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
-			while(nextNode != NULL)
-			{
-				points(0, latLonCount) = nextNode->value->getLat();
-				points(1, latLonCount) = nextNode->value->getLon();
-
-				nextNode = nodes->nextEntry();
-				latLonCount++;
-			}
-			free(nextNode);
-
-			typedef Eigen::Spline<double, 2> spline2d;
-			spline2d newSpline = Eigen::SplineFitting<spline2d>::Interpolate(points, 2);
-			rawRoads->getEntry(nextRawRoad->key)->assignSpline(newSpline);
-
-			nextRawRoad = rawRoads->nextEntry();
-		}
-		free(nextRawRoad);
+		GenericMap<long int, Road*>* rawRoads2 = dc->makeRawRoads();
 
 		// find intersections
+		GenericMap<long int, Road*>* roads = new GenericMap<long int, Road*>();
+		GenericMap<int, Intersection*>* ints = new GenericMap<int, Intersection*>();
 
 		// trim new roads
 		// add roads, intersections, and bounds to city

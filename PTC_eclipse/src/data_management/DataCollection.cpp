@@ -433,6 +433,8 @@ GenericMap<int, Way*>* DataCollection::getWayMap() {
 // for loading into http://www.gpsvisualizer.com/
 GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 
+	std::cout << "making raw roads" << std::endl;
+
 	std::string csvName = this->dataFolder + "/" + "mapData.csv";
 	GenericMap<long int, Road*>* rawRoads = new GenericMap<long int, Road*>();
 
@@ -444,37 +446,83 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 	std::ofstream csv;
 	csv.open(csvName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
 
+	// add header to csv
 	csv << "name, description, color, latitude, longitude\n";
-	for(int i = 1; i < this->wayMap.getSize(); i++)
+	int wayCount = 0;
+
+	// begin iterating through ways
+	this->wayMap.initializeCounter();
+	GenericEntry<int, Way*>* nextWay = this->wayMap.nextEntry();
+	while(nextWay != NULL)
 	{
-		Way* way = this->wayMap.getEntry(i);
-		if(way != NULL)
+		Way* way = nextWay->value;
+		wayCount++;
+
+		// grab nodes from way
+		GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
+
+		// iterate through node IDs of way
+		way->getNodeIDs()->initializeCounter();
+		GenericEntry<int, long int>* nextWayNodeID = way->getNodeIDs()->nextEntry();
+		while(nextWayNodeID != NULL)
 		{
-			GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
-			for(int j = 1; j <= way->getNodeIDs()->getSize(); j++)
+			Node* node = this->nodeMap.getEntry(nextWayNodeID->value);
+			if(node != NULL)
 			{
-				Node* node = this->nodeMap.getEntry(way->getNodeIDs()->getEntry(j));
-				if(node != NULL)
-				{
-					nodes->addEntry(node->getID(), node);
-					csv << i << ",";										//name
-					csv << "\"Node ID: " << node->getID() << " | ";			//Node ID
-					csv << "Ele: " << node->getEle() << " | ";				//Ele
-					csv << "Way ID: " << way->getID() << " | ";				//Way ID
-					csv << "Way Type: " << way->getWayType() << " | ";		//Way Type
-					csv << "Way Speed: " << way->getWaySpeed() << "\",";	//Way Speed
-					csv << "red" << ",";									//color
-					csv << node->getLat() << ",";							//lat
-					csv << node->getLon() << "\n";							//lon
-				}
+				nodes->addEntry(node->getID(), node);
+				csv << wayCount << ",";									//name
+				csv << "\"Node ID: " << node->getID() << " | ";			//Node ID
+				csv << "Ele: " << node->getEle() << " | ";				//Ele
+				csv << "Way ID: " << way->getID() << " | ";				//Way ID
+				csv << "Way Type: " << way->getWayType() << " | ";		//Way Type
+				csv << "Way Speed: " << way->getWaySpeed() << "\",";	//Way Speed
+				csv << "red" << ",";									//color
+				csv << node->getLat() << ",";							//lat
+				csv << node->getLon() << "\n";							//lon
 			}
-			if(nodes->getSize() > 0)
-			{
-				Road* newRoad = new Road(way->getWayType(), way->getID(), nodes);
-				rawRoads->addEntry(way->getID(), newRoad);
-			}
+			nextWayNodeID = way->getNodeIDs()->nextEntry();
 		}
+		free(nextWayNodeID);
+
+		// make a raw road if enough nodes exist
+		if(nodes->getSize() > 2)
+		{
+			Road* newRoad = new Road(way->getWayType(), way->getID(), nodes);
+
+			// add cubic spline
+			int missCount = 1;
+			int latLonCount = 0;
+
+			try {
+				Eigen::MatrixXd points(2, nodes->getSize());
+
+				nodes->initializeCounter();
+				GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
+				while(nextNode != NULL)
+				{
+					points(0, latLonCount) = nextNode->value->getLat();
+					points(1, latLonCount) = nextNode->value->getLon();
+
+					nextNode = nodes->nextEntry();
+					latLonCount++;
+				}
+				free(nextNode);
+
+
+				typedef Eigen::Spline<double, 2> spline2d;
+				spline2d newSpline = Eigen::SplineFitting<spline2d>::Interpolate(points, 3);
+				newRoad->assignSpline(newSpline);
+			} catch(const std::exception& e) {
+				std::cout << missCount << std::endl;
+				missCount++;
+			}
+
+			rawRoads->addEntry(way->getID(), newRoad);
+		}
+		nextWay = this->wayMap.nextEntry();
 	}
+	free(nextWay);
+
 	csv.close();
 	return rawRoads;
 }

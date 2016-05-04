@@ -45,10 +45,6 @@ end
 		sudo apt-get -y install "$i" --upgrade
 	done	
 
-	# for wine
-	echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-	sudo apt-get install ttf-mscorefonts-installer/
-
 	echo "------------- house keeping ------------- "
 	# upgrade and clean up
 	sudo apt-get upgrade -y

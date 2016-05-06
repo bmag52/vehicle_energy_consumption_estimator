@@ -23,6 +23,7 @@ class Road {
 private:
 	Eigen::Spline<double, 2> spline;
 	GenericMap<long int, Node*>* nodes;
+	GenericMap<int, int>* adjMatIndices;
 	std::string roadType;
 	Intersection* startNode;
 	Intersection* endNode;
@@ -47,6 +48,8 @@ public:
 	GenericMap<long int, Node*>* getNodes();
 	Eigen::Spline<double, 2> getSpline();
 	void assignSpline(Eigen::Spline<double, 2> spline);
+	void assignAdjMatIndicies(GenericMap<int, int>* adjMatIndicies);
+	GenericMap<int, int>* getAdjMatIndicies();
 };
 
 } /* namespace PredictivePowertrain */

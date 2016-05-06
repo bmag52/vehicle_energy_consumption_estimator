@@ -268,8 +268,9 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 			std::stringstream ss(line);
 			eleRay[row] = new int[this->numEleLats];
 			while(ss >> eleRay[row][col]) { col++; }
+			if(row % 1000 == 0) { std::cout << row << std::endl; }
 			col = 0;
-			std::cout << row++ << std::endl;
+			row++;
 		}
 		ifs.close();
 		this->eleData = eleRay;
@@ -487,8 +488,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 		{
 			Road* newRoad = new Road(way->getWayType(), way->getID(), nodes);
 
-			// add cubic spline
-			int missCount = 1;
+			// add spline
 			int latLonCount = 0;
 
 			try { // potential source of really weird run-time errors
@@ -537,8 +537,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 				}
 				newRoad->assignSpline(splineRay[bestSplineIdx]);
 			} catch(const std::exception& e) {
-				std::cout << missCount << std::endl;
-				missCount++;
+				std::cout << e.what() << std::endl;
 			}
 
 			rawRoads->addEntry(way->getID(), newRoad);

@@ -91,20 +91,21 @@ void BuildCity::updateGridData() {
 			dc = new DataCollection(latDelta, lonDelta);
 		}
 		dc->pullData(latCenter, lonCenter);
-		GenericMap<long int, Road*>* rawRoads = dc->makeRawRoads();
+		this->rawRoads = dc->makeRawRoads();
 
 		int latRowsSpline = latDelta/this->adjMatPrecFromSplines;
 		int lonColsSpline = lonDelta/this->adjMatPrecFromSplines;
 		this->adjMatFromSplines = Eigen::MatrixXd::Zero(latRowsSpline, lonColsSpline);
 
-		rawRoads->initializeCounter();
-		GenericEntry<long int, Road*>* nextRawRoad = rawRoads->nextEntry();
+		this->rawRoads->initializeCounter();
+		GenericEntry<long int, Road*>* nextRawRoad = this->rawRoads->nextEntry();
 		while(nextRawRoad != NULL)
 		{
 			// adjacent matrix of splines
 			std::cout << "---- new road: " << nextRawRoad->key << " ----" << std::endl;
 
 			GenericMap<long int, Node*>* nodes = nextRawRoad->value->getNodes()->copy();
+			GenericMap<int, int>* adjMatIndicies = new GenericMap<int, int>();
 			bool splineWithinNodes = false;
 
 			Eigen::Spline<double,2> spline = nextRawRoad->value->getSpline();
@@ -145,22 +146,19 @@ void BuildCity::updateGridData() {
 					if(latRow >= 0 && latRow < this->adjMatFromSplines.rows() && lonCol >= 0 && lonCol < this->adjMatFromSplines.cols())
 					{
 						std::cout << u << "\tlat: " << (double)point(0,0) << "\tlon: " << (double)point(1,0) << std::endl;
-						double val = nextRawRoad->key / this->idScalar;
-						this->adjMatFromSplines(latRow, lonCol) = val;
+						this->adjMatFromSplines(latRow, lonCol) = this->scaleID(nextRawRoad->key);
+						adjMatIndicies->addEntry(latRow, lonCol);
 					}
 				}
 			}
-			nextRawRoad = rawRoads->nextEntry();
+			nextRawRoad->value->assignAdjMatIndicies(adjMatIndicies);
+			nextRawRoad = this->rawRoads->nextEntry();
 		}
 
 		// fill in holes in the adjMat
-//		for(int row = 0; row < this->adjMatFromSplines.rows(); row++)
-//		{
-//			for(int col = 0; col < this->adjMatFromSplines.cols(); col++)
-//			{
-//
-//			}
-//		}
+		this->connectifyAjdMat();
+
+		// parse out nodes
 		std::pair<GenericMap<int, Intersection*>*, GenericMap<long int, Road*>*>* parsedData = this->parseAdjMat();
 	}
 }
@@ -182,8 +180,7 @@ void BuildCity::printAdjMats() {
 		{
 			for(int col = 0; col < this->adjMatFromSplines.cols(); col++)
 			{
-				long int val = this->adjMatFromSplines(row, col) * this->idScalar;
-				csv << val << ",";
+				csv << this->unScaleID((double)this->adjMatFromSplines(row, col)) << ",";
 			}
 			csv << "\n";
 		}
@@ -191,6 +188,74 @@ void BuildCity::printAdjMats() {
 	} else {
 		std::cout << "no new bounds" << std::endl;
 	}
+}
+
+void BuildCity::connectifyAjdMat() {
+	this->rawRoads->initializeCounter();
+	GenericEntry<long int, Road*>* nextRawRoad = this->rawRoads->nextEntry();
+	while(nextRawRoad != NULL)
+	{
+		GenericMap<int, int>* currIndicies = nextRawRoad->value->getAdjMatIndicies()->copy();
+		GenericMap<int, int>* nextIndicies = nextRawRoad->value->getAdjMatIndicies()->copy();
+		currIndicies->initializeCounter();
+		nextIndicies->initializeCounter();
+
+		nextIndicies->nextEntry(); // burn and idx to have curr and next indicies
+
+		GenericEntry<int, int>* currIdx = currIndicies->nextEntry();
+		GenericEntry<int, int>* nextIdx = nextIndicies->nextEntry();
+
+		while(nextIdx != NULL)
+		{
+			if(!this->isAdj(currIdx, nextIdx))
+			{
+				GenericEntry<int, int>* idxFill = new GenericEntry<int, int>(currIdx->key, currIdx->value);
+				while(!this->isAdj(idxFill, nextIdx))
+				{
+					// adjust x
+					if(idxFill->key < nextIdx->key)
+					{
+						idxFill->key += 1;
+					} else if(idxFill->key < nextIdx->key) {
+						idxFill->key -= 1;
+					}
+
+					// adjust y
+					if(idxFill->value < nextIdx->value)
+					{
+						idxFill->value += 1;
+					} else if(idxFill->value > nextIdx->value) {
+						idxFill->value -= 1;
+					}
+					this->adjMatFromSplines(idxFill->key, idxFill->value) = this->scaleID(nextRawRoad->key);
+				}
+			}
+			currIdx = currIndicies->nextEntry();
+			nextIdx = nextIndicies->nextEntry();
+		}
+		free(currIdx);
+		free(nextIdx);
+
+		nextRawRoad = this->rawRoads->nextEntry();
+	}
+	free(nextRawRoad);
+}
+
+bool BuildCity::isAdj(GenericEntry<int, int>* idx1, GenericEntry<int, int>* idx2) {
+	int x1 = idx1->key;
+	int y1 = idx1->value;
+	int x2 = idx2->key;
+	int y2 = idx2->value;
+
+	return abs(x1-x2) <= 1 && abs(y1-y2) <= 1;
+}
+
+double BuildCity::scaleID(long int id) {
+	return id / this->idScalar;
+}
+
+long int BuildCity::unScaleID(double id) {
+	return id * this->idScalar;
 }
 
 bool BuildCity::hasNewBounds() {

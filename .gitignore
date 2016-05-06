@@ -47,3 +47,4 @@ VM/package.box
 
 # data storage
 *.json
+*.csv

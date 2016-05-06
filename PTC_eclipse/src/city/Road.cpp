@@ -73,6 +73,14 @@ void Road::assignSpline(Eigen::Spline<double, 2> spline) {
 	this->spline = spline;
 }
 
+void Road::assignAdjMatIndicies(GenericMap<int, int>* adjMatIndicies) {
+	this->adjMatIndices = adjMatIndicies;
+}
+
+GenericMap<int, int>* Road::getAdjMatIndicies() {
+	return this->adjMatIndices;
+}
+
 } /* namespace PredictivePowertrain */
 
 

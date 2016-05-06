@@ -18,14 +18,14 @@
 #include "limits.h"
 #include <eigen3/Eigen/Core>
 #include <eigen3/unsupported/Eigen/Splines>
+#include <math.h>
 
 namespace PredictivePowertrain {
 
 class BuildCity {
 private:
 	City city;
-	GenericMap<int, Intersection*> intersections;
-	GenericMap<int, Road*> roads;
+	GenericMap<long int, Road*>* rawRoads;
 	Eigen::MatrixXd adjMatFromSplines;
 
 	double splineStep = 0.025;
@@ -35,7 +35,10 @@ private:
 	bool newBounds = false;
 
 	std::pair<GenericMap<int, Intersection*>*, GenericMap<long int, Road*>*>* parseAdjMat();
-
+	double scaleID(long int id);
+	long int unScaleID(double id);
+	void connectifyAjdMat();
+	bool isAdj(GenericEntry<int, int>* idx1, GenericEntry<int, int>* idx2);
 public:
 	BuildCity();
 	void updateGridData(); // post-processing on shutdown

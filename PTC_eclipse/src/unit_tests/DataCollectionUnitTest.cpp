@@ -18,6 +18,7 @@ void dataCollection_ut() {
 	std::cout << "boundCount " << testDC.getBoundsMap()->getSize() << std::endl;
 
 	std::cout << "road Count " << testDC.makeRawRoads()->getSize() << std::endl;
+	GenericMap<long int, Road*>* roads = testDC.makeRawRoads();
 
 	testDC.pullData(47.618174, -122.330838); // downtown
 	std::cout << "node size " << testDC.getNodeMap()->getSize() << std::endl;

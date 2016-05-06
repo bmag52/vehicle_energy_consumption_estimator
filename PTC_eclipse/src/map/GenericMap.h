@@ -62,7 +62,17 @@ GenericMap<K, V>::GenericMap(GenericMap& other) {
 
 template<class K, class V>
 GenericMap<K, V>* GenericMap<K, V>::copy() {
-	// TODO copy();
+	GenericMap<K, V>* newMap = new GenericMap<K, V>();
+
+	this->initializeCounter();
+	GenericEntry<K,V>* nextEntry = this->nextEntry();
+	while(nextEntry != NULL)
+	{
+		newMap->addEntry(nextEntry->key, nextEntry->value);
+		nextEntry = this->nextEntry();
+	}
+	free(nextEntry);
+	return newMap;
 }
 
 template<class K, class V>
@@ -162,7 +172,7 @@ template<class K, class V>
 int GenericMap<K, V>::addEntry(K key, V value) {
 	if(this->getEntry(key) != NULL) {
 		return 0;
-	} else if(this->map.insert (std::pair<K,V>(key, value)).second == true) {
+	} else if(this->map.insert(std::pair<K,V>(key, value)).second == true) {
 		return 1;
 	} else {
 		return 0;

@@ -26,6 +26,7 @@ public:
 	double getMinLat();
 	double getMinLon();
 	void assignID(int id);
+	int getID();
 };
 
 } /* namespace PredictivePowertrain */

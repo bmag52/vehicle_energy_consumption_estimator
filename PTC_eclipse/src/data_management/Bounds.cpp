@@ -17,6 +17,7 @@ Bounds::Bounds(double maxLat, double maxLon, double minLat, double minLon) {
 	this->maxLon = maxLon;
 	this->minLat = minLat;
 	this->minLon = minLon;
+	this->id = -1;
 }
 
 double Bounds::getMaxLat() {
@@ -38,6 +39,11 @@ double Bounds::getMinLon() {
 void Bounds::assignID(int id) {
 	this->id = id;
 }
+
+int Bounds::getID() {
+	return this->id;
+}
+
 
 }
 

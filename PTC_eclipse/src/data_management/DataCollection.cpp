@@ -448,7 +448,6 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 
 	// add header to csv
 	csv << "name, description, color, latitude, longitude\n";
-	int wayCount = 0;
 
 	// begin iterating through ways
 	this->wayMap.initializeCounter();
@@ -456,7 +455,6 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 	while(nextWay != NULL)
 	{
 		Way* way = nextWay->value;
-		wayCount++;
 
 		// grab nodes from way
 		GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
@@ -470,7 +468,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 			if(node != NULL)
 			{
 				nodes->addEntry(node->getID(), node);
-				csv << wayCount << ",";									//name
+				csv << way->getID() << ",";									//name
 				csv << "\"Node ID: " << node->getID() << " | ";			//Node ID
 				csv << "Ele: " << node->getEle() << " | ";				//Ele
 				csv << "Way ID: " << way->getID() << " | ";				//Way ID
@@ -493,7 +491,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 			int missCount = 1;
 			int latLonCount = 0;
 
-			try {
+			try { // potential source of really weird run-time errors
 				Eigen::MatrixXd points(2, nodes->getSize());
 
 				nodes->initializeCounter();
@@ -508,10 +506,36 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 				}
 				free(nextNode);
 
-
+				// fit the best spline
 				typedef Eigen::Spline<double, 2> spline2d;
-				spline2d newSpline = Eigen::SplineFitting<spline2d>::Interpolate(points, 3);
-				newRoad->assignSpline(newSpline);
+				spline2d splineRay[3]; // array of different splines, 3rd - 1st degree
+				int missCounts[3]; // number of times a spline cannot return a val due to overfit
+				for(int i = 2; i >= 0; i--)
+				{
+					splineRay[i] = Eigen::SplineFitting<spline2d>::Interpolate(points, i+1);
+					for(double u = 0; u <= 1; u += 0.025)
+					{
+						Eigen::Spline<double,2>::PointType point = splineRay[i](u);
+						double lat = point(0,0);
+						double lon = point(1,0);
+						if(lat > 90 || lat < -90 || lon > 180 || lon < -180)
+						{
+							missCounts[i]++;
+						}
+					}
+				}
+
+				int bestSplineIdx = -1;
+				int lowestMisses = 10000;
+				for(int i = 0; i < 3; i++)
+				{
+					if(missCounts[i] < lowestMisses)
+					{
+						lowestMisses = missCounts[i];
+						bestSplineIdx = i;
+					}
+				}
+				newRoad->assignSpline(splineRay[bestSplineIdx]);
 			} catch(const std::exception& e) {
 				std::cout << missCount << std::endl;
 				missCount++;

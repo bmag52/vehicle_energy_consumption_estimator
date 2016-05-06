@@ -12,13 +12,17 @@ namespace PredictivePowertrain {
 BuildCity::BuildCity() {
 }
 
+std::pair<GenericMap<int, Intersection*> *, GenericMap<long int, Road*>*>* BuildCity::parseAdjMat() {
+
+}
+
 void BuildCity::updateGridData() {
 
 	DataManagement dm;
 	GenericMap<long int, std::pair<double, double>*>* tripLatLon = dm.getMostRecentTripData();
 	City* city = dm.getCityData();
+	int boundsID = 0;
 
-	bool newBounds = false;
 	double maxLat = -DBL_MAX;
 	double maxLon = -DBL_MAX;
 	double minLat = DBL_MAX;
@@ -38,10 +42,12 @@ void BuildCity::updateGridData() {
 			{
 				double lat = nextTripLatLon->value->first;
 				double lon = nextTripLatLon->value->second;
+
 				Bounds* bound = nextBounds->value;
+				boundsID = bound->getID();
 				if(lat > bound->getMaxLat() || lat < bound->getMinLat() || lon > bound->getMaxLon() || lon < bound->getMinLon())
 				{
-					newBounds = true;
+					this->newBounds = true;
 					if(lat > maxLat) { maxLat = lat; } if(lat < minLat) { minLat = lat; }
 					if(lon > maxLon) { maxLon = lon; } if(lon < minLon) { minLon = lon; }
 
@@ -53,7 +59,7 @@ void BuildCity::updateGridData() {
 		}
 	} else {
 		// no bounds data
-		newBounds = true;
+		this->newBounds = true;
 		while(nextTripLatLon != NULL)
 		{
 			double lat = nextTripLatLon->value->first;
@@ -66,8 +72,12 @@ void BuildCity::updateGridData() {
 	}
 	free(nextTripLatLon);
 
-	if(newBounds)
+	if(this->newBounds)
 	{
+		std::cout << "identifying intersections" << std::endl;
+		Bounds* newBoundsFromTrip = new Bounds(maxLat, minLat, maxLon, minLon);
+		newBoundsFromTrip->assignID(boundsID+1);
+
 		double latCenter = (maxLat + minLat) / 2.0;
 		double lonCenter = (maxLon + minLon) / 2.0;
 		double latDelta = maxLat - minLat;
@@ -81,17 +91,110 @@ void BuildCity::updateGridData() {
 			dc = new DataCollection(latDelta, lonDelta);
 		}
 		dc->pullData(latCenter, lonCenter);
-		GenericMap<long int, Road*>* rawRoads1 = dc->makeRawRoads();
-		GenericMap<long int, Road*>* rawRoads2 = dc->makeRawRoads();
+		GenericMap<long int, Road*>* rawRoads = dc->makeRawRoads();
 
-		// find intersections
-		GenericMap<long int, Road*>* roads = new GenericMap<long int, Road*>();
-		GenericMap<int, Intersection*>* ints = new GenericMap<int, Intersection*>();
+		int latRowsSpline = latDelta/this->adjMatPrecFromSplines;
+		int lonColsSpline = lonDelta/this->adjMatPrecFromSplines;
+		this->adjMatFromSplines = Eigen::MatrixXd::Zero(latRowsSpline, lonColsSpline);
 
-		// trim new roads
-		// add roads, intersections, and bounds to city
-		// record data
+		rawRoads->initializeCounter();
+		GenericEntry<long int, Road*>* nextRawRoad = rawRoads->nextEntry();
+		while(nextRawRoad != NULL)
+		{
+			// adjacent matrix of splines
+			std::cout << "---- new road: " << nextRawRoad->key << " ----" << std::endl;
+
+			GenericMap<long int, Node*>* nodes = nextRawRoad->value->getNodes()->copy();
+			bool splineWithinNodes = false;
+
+			Eigen::Spline<double,2> spline = nextRawRoad->value->getSpline();
+			for(double u = 0; u <= 1; u += this->splineStep)
+			{
+				Eigen::Spline<double,2>::PointType point = spline(u);
+
+				double newLat = point(0,0);
+				double newLon = point(1,0);
+
+				nodes->initializeCounter();
+				GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
+				while(nextNode != NULL)
+				{
+					// make sure spline is within node bounds
+					if(	newLat + this->gpsTolerance > nextNode->value->getLat() &&
+						newLat - this->gpsTolerance < nextNode->value->getLat() &&
+						newLon + this->gpsTolerance > nextNode->value->getLon() &&
+						newLon - this->gpsTolerance < nextNode->value->getLon() )
+					{
+						splineWithinNodes = true;
+						nodes->erase(nextNode->key);
+						break;
+					}
+					nextNode = nodes->nextEntry();
+				}
+				free(nextNode);
+
+				// hop out of for loop if all nodes have been iterated over
+				if(nodes->getSize() == 0) { break; }
+
+				// add spline data to adjacency matrix if spline within node bounds
+				if(splineWithinNodes)
+				{
+					int latRow = this->adjMatFromSplines.rows() - (newLat - minLat) / latDelta * latRowsSpline;
+					int lonCol = (newLon - minLon) / lonDelta * lonColsSpline;
+
+					if(latRow >= 0 && latRow < this->adjMatFromSplines.rows() && lonCol >= 0 && lonCol < this->adjMatFromSplines.cols())
+					{
+						std::cout << u << "\tlat: " << (double)point(0,0) << "\tlon: " << (double)point(1,0) << std::endl;
+						double val = nextRawRoad->key / this->idScalar;
+						this->adjMatFromSplines(latRow, lonCol) = val;
+					}
+				}
+			}
+			nextRawRoad = rawRoads->nextEntry();
+		}
+
+		// fill in holes in the adjMat
+//		for(int row = 0; row < this->adjMatFromSplines.rows(); row++)
+//		{
+//			for(int col = 0; col < this->adjMatFromSplines.cols(); col++)
+//			{
+//
+//			}
+//		}
+		std::pair<GenericMap<int, Intersection*>*, GenericMap<long int, Road*>*>* parsedData = this->parseAdjMat();
 	}
+}
+
+void BuildCity::printAdjMats() {
+	std::cout << "printing adjacency matrix from build city" << std::endl;
+	if(this->hasNewBounds())
+	{
+		std::string csvName = "adjMatSpline.csv";
+
+		// remove old csv
+		std::string rm = "rm " + csvName;
+		system(rm.c_str());
+
+		// populate new csv
+		std::ofstream csv;
+		csv.open(csvName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
+		for(int row = 0; row < this->adjMatFromSplines.rows(); row++)
+		{
+			for(int col = 0; col < this->adjMatFromSplines.cols(); col++)
+			{
+				long int val = this->adjMatFromSplines(row, col) * this->idScalar;
+				csv << val << ",";
+			}
+			csv << "\n";
+		}
+		csv.close();
+	} else {
+		std::cout << "no new bounds" << std::endl;
+	}
+}
+
+bool BuildCity::hasNewBounds() {
+	return this->newBounds;
 }
 
 }

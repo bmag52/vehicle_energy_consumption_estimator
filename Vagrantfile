@@ -37,7 +37,13 @@ end
 		"libboost-all-dev"
 		"git"
 		"gdb"
-		"unzip")
+		"unzip"
+		"libopencv-dev"
+		"wkhtmltopdf"
+		"subversion"
+		"libqt4-webkit"
+		"libqt4-dev"
+		"cutycapt")
 
 	for i in "${program[@]}"
 	do

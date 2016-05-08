@@ -148,10 +148,6 @@ void BuildCity::updateGridData() {
 
 					if(latRow >= 0 && latRow < this->adjMatFromSplines.rows() && lonCol >= 0 && lonCol < this->adjMatFromSplines.cols())
 					{
-						if(nextRawRoad->key == 6438214)
-						{
-							int x = 2;
-						}
 						std::cout << u << "\tlat: " << (double)point(0,0) << "\tlon: " << (double)point(1,0) << std::endl;
 						adjMatIndicies->addEntry(latLonCount++, new std::pair<int, int>(latRow, lonCol));
 						this->adjMatFromSplines(latRow, lonCol) = this->scaleID(nextRawRoad->key);
@@ -208,20 +204,11 @@ void BuildCity::connectifyAjdMat() {
 		GenericEntry<int, std::pair<int, int>*>* currIdx = currIndicies->nextEntry();
 		GenericEntry<int, std::pair<int, int>*>* nextIdx = currIndicies->nextEntry();
 
-		if(nextRawRoad->key == 6438214)
-		{
-			int x = 2;
-		}
-
 		while(nextIdx != NULL)
 		{
 			if(!this->isAdj(currIdx, nextIdx))
 			{
-//				if(nextRawRoad->key == 6426982)
-//				{
-//					int x = 2;
-//				}
-
+				int fillCount = 0;
 				GenericEntry<int, std::pair<int, int>*>* fillIdx = new GenericEntry<int, std::pair<int, int>*>(1, currIdx->value);
 				while(!this->isAdj(fillIdx, nextIdx))
 				{
@@ -246,10 +233,16 @@ void BuildCity::connectifyAjdMat() {
 						fillIdx->value->second -= 1;
 					}
 					this->adjMatFromSplines(fillIdx->value->first, fillIdx->value->second) = this->scaleID(nextRawRoad->key);
+
+					// incase going to HAM connectifying
+					if(fillCount++ > 100)
+					{
+						break;
+					}
 				}
 			}
 			currIdx = nextIdx;
-			nextIdx = nextIdx = currIndicies->nextEntry();
+			nextIdx = currIndicies->nextEntry();
 		}
 		free(currIdx);
 		free(nextIdx);

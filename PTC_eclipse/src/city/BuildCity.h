@@ -29,7 +29,7 @@ private:
 	Eigen::MatrixXd adjMatFromSplines;
 
 	double splineStep = 0.025;
-	double adjMatPrecFromSplines = 0.00009;
+	double adjMatPrecFromSplines = 0.00001;
 	double gpsTolerance = 0.0001;
 	double idScalar = 10000.0;
 	bool newBounds = false;

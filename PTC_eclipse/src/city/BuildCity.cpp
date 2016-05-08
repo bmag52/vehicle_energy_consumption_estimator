@@ -104,9 +104,12 @@ void BuildCity::updateGridData() {
 			// adjacent matrix of splines
 			std::cout << "---- new road: " << nextRawRoad->key << " ----" << std::endl;
 
-			GenericMap<long int, Node*>* nodes = nextRawRoad->value->getNodes()->copy();
-			GenericMap<int, int>* adjMatIndicies = new GenericMap<int, int>();
 			bool splineWithinNodes = false;
+			int latLonCount = 1;
+
+			GenericMap<long int, Node*>* nodes = nextRawRoad->value->getNodes()->copy();
+			GenericMap<int, std::pair<int, int>*>* adjMatIndicies = new GenericMap<int, std::pair<int, int>*>();
+
 
 			Eigen::Spline<double,2> spline = nextRawRoad->value->getSpline();
 			for(double u = 0; u <= 1; u += this->splineStep)
@@ -145,9 +148,13 @@ void BuildCity::updateGridData() {
 
 					if(latRow >= 0 && latRow < this->adjMatFromSplines.rows() && lonCol >= 0 && lonCol < this->adjMatFromSplines.cols())
 					{
+						if(nextRawRoad->key == 6438214)
+						{
+							int x = 2;
+						}
 						std::cout << u << "\tlat: " << (double)point(0,0) << "\tlon: " << (double)point(1,0) << std::endl;
+						adjMatIndicies->addEntry(latLonCount++, new std::pair<int, int>(latRow, lonCol));
 						this->adjMatFromSplines(latRow, lonCol) = this->scaleID(nextRawRoad->key);
-						adjMatIndicies->addEntry(latRow, lonCol);
 					}
 				}
 			}
@@ -195,43 +202,54 @@ void BuildCity::connectifyAjdMat() {
 	GenericEntry<long int, Road*>* nextRawRoad = this->rawRoads->nextEntry();
 	while(nextRawRoad != NULL)
 	{
-		GenericMap<int, int>* currIndicies = nextRawRoad->value->getAdjMatIndicies()->copy();
-		GenericMap<int, int>* nextIndicies = nextRawRoad->value->getAdjMatIndicies()->copy();
+		GenericMap<int, std::pair<int, int>*>* currIndicies = nextRawRoad->value->getAdjMatIndicies();
+
 		currIndicies->initializeCounter();
-		nextIndicies->initializeCounter();
+		GenericEntry<int, std::pair<int, int>*>* currIdx = currIndicies->nextEntry();
+		GenericEntry<int, std::pair<int, int>*>* nextIdx = currIndicies->nextEntry();
 
-		nextIndicies->nextEntry(); // burn and idx to have curr and next indicies
-
-		GenericEntry<int, int>* currIdx = currIndicies->nextEntry();
-		GenericEntry<int, int>* nextIdx = nextIndicies->nextEntry();
+		if(nextRawRoad->key == 6438214)
+		{
+			int x = 2;
+		}
 
 		while(nextIdx != NULL)
 		{
 			if(!this->isAdj(currIdx, nextIdx))
 			{
-				GenericEntry<int, int>* idxFill = new GenericEntry<int, int>(currIdx->key, currIdx->value);
-				while(!this->isAdj(idxFill, nextIdx))
+//				if(nextRawRoad->key == 6426982)
+//				{
+//					int x = 2;
+//				}
+
+				GenericEntry<int, std::pair<int, int>*>* fillIdx = new GenericEntry<int, std::pair<int, int>*>(1, currIdx->value);
+				while(!this->isAdj(fillIdx, nextIdx))
 				{
 					// adjust x
-					if(idxFill->key < nextIdx->key)
+					int currX = fillIdx->value->first;
+					int currY = fillIdx->value->second;
+					int nextX = nextIdx->value->first;
+					int nextY = nextIdx->value->second;
+
+					if(currX < nextX)
 					{
-						idxFill->key += 1;
-					} else if(idxFill->key < nextIdx->key) {
-						idxFill->key -= 1;
+						fillIdx->value->first += 1;
+					} else if(currX < nextX) {
+						fillIdx->value->first -= 1;
 					}
 
 					// adjust y
-					if(idxFill->value < nextIdx->value)
+					if(currY < nextY)
 					{
-						idxFill->value += 1;
-					} else if(idxFill->value > nextIdx->value) {
-						idxFill->value -= 1;
+						fillIdx->value->second += 1;
+					} else if(currY > nextY) {
+						fillIdx->value->second -= 1;
 					}
-					this->adjMatFromSplines(idxFill->key, idxFill->value) = this->scaleID(nextRawRoad->key);
+					this->adjMatFromSplines(fillIdx->value->first, fillIdx->value->second) = this->scaleID(nextRawRoad->key);
 				}
 			}
-			currIdx = currIndicies->nextEntry();
-			nextIdx = nextIndicies->nextEntry();
+			currIdx = nextIdx;
+			nextIdx = nextIdx = currIndicies->nextEntry();
 		}
 		free(currIdx);
 		free(nextIdx);
@@ -241,11 +259,11 @@ void BuildCity::connectifyAjdMat() {
 	free(nextRawRoad);
 }
 
-bool BuildCity::isAdj(GenericEntry<int, int>* idx1, GenericEntry<int, int>* idx2) {
-	int x1 = idx1->key;
-	int y1 = idx1->value;
-	int x2 = idx2->key;
-	int y2 = idx2->value;
+bool BuildCity::isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntry<int, std::pair<int, int>*>* idx2) {
+	int x1 = idx1->value->first;
+	int y1 = idx1->value->second;
+	int x2 = idx2->value->first;
+	int y2 = idx2->value->second;
 
 	return abs(x1-x2) <= 1 && abs(y1-y2) <= 1;
 }

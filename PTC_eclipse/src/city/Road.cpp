@@ -73,11 +73,11 @@ void Road::assignSpline(Eigen::Spline<double, 2> spline) {
 	this->spline = spline;
 }
 
-void Road::assignAdjMatIndicies(GenericMap<int, int>* adjMatIndicies) {
+void Road::assignAdjMatIndicies(GenericMap<int, std::pair<int, int>*>* adjMatIndicies) {
 	this->adjMatIndices = adjMatIndicies;
 }
 
-GenericMap<int, int>* Road::getAdjMatIndicies() {
+GenericMap<int, std::pair<int, int>*>* Road::getAdjMatIndicies() {
 	return this->adjMatIndices;
 }
 

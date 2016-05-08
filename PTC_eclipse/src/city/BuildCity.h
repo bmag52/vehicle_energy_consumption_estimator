@@ -38,7 +38,7 @@ private:
 	double scaleID(long int id);
 	long int unScaleID(double id);
 	void connectifyAjdMat();
-	bool isAdj(GenericEntry<int, int>* idx1, GenericEntry<int, int>* idx2);
+	bool isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntry<int, std::pair<int, int>*>* idx2);
 public:
 	BuildCity();
 	void updateGridData(); // post-processing on shutdown

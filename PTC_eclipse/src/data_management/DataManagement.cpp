@@ -27,6 +27,49 @@ DataManagement::DataManagement() {
 }
 
 void DataManagement::addRouteData(Route* route) {
+	GenericMap<int, Link*> * links = route->getLinksPtr();
+	// go through links map, get NN value from link
+	// get 3 matricies which are JSONified to make them appear correctly
+	Goal * goal = route->getGoalPtr();
+
+	ptree routeLogs;
+
+	int routeID = 0;
+	try {
+		read_json(this->routeData, routeLogs);
+		BOOST_FOREACH(ptree::value_type& v, routeLogs) {
+			routeID = lexical_cast<int>(v.first.data());
+		}
+	} catch (const std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
+
+	ptree newRoute, newLinks;
+	links->initializeCounter();
+	GenericEntry<int, Link*> * next = links->nextEntry();
+	while (next != NULL) {
+		ptree link;
+		int num = next->key;
+		Link * nextLink = next->value;
+
+
+		link.put("", next->value);
+		newLinks.push_back(std::make_pair(lexical_cast<std::string>(num), link));
+	}
+
+	newRoute.push_back(std::make_pair("links", newLinks));
+
+	ptree newGoal, numSeenTree;
+	// do we need all this info about goals/do we need more?
+	int numSeen = goal->getNumSeen();
+	numSeenTree.put("", numSeen);
+	newGoal.push_back(std::make_pair("numSeen", numSeenTree));
+
+	newRoute.push_back(std::make_pair("goal", newGoal));
+
+	routeID++;
+	routeLogs.add_child(lexical_cast<std::string>(routeID), newRoute);
+	write_json(this->routeData, routeLogs);
 }
 
 void DataManagement::addCityData(City* city) {
@@ -214,7 +257,25 @@ void DataManagement::addTripData(GenericMap<long int, std::pair<double, double>*
 	write_json(this->tripData, tripLogs);
 }
 
+
 GenericMap<int, Route*>* DataManagement::getRoutes() {
+	// what do i do with cityclusternum???
+
+	ptree routeLogs;
+	try {
+		read_json(this->routeData, routeLogs);
+		BOOST_FOREACH(ptree::value_type &v, routeLogs)
+		{
+			GenericMap<int, Link*> * links = new GenericMap<int, Link*>();
+
+			/*
+			 *
+			 *
+			 */
+		}
+	} catch(const std::exception& e) {
+		std::cout << e.what() << std::endl;
+	}
 }
 
 City* DataManagement::getCityData() {

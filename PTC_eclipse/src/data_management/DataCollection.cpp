@@ -199,7 +199,6 @@ void DataCollection::pullOSMData(double lat, double lon) {
 }
 
 void DataCollection::pullSRTMData(double lat, double lon) {
-	std::cout << "pulling SRTM data ... " << std::endl;
 
 	// get bin for given lat and lon
 	double latMax = 60.0;
@@ -268,7 +267,7 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 			std::stringstream ss(line);
 			eleRay[row] = new int[this->numEleLats];
 			while(ss >> eleRay[row][col]) { col++; }
-			if(row % 1000 == 0) { std::cout << row << std::endl; }
+			if(row % 1000 == 0) { std::cout << row << " ..." << std::endl; }
 			col = 0;
 			row++;
 		}

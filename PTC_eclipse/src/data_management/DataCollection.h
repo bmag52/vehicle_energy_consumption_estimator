@@ -44,11 +44,13 @@ private:
 	std::string mapFile;
 	std::string eleFile;
 	std::string dataFolder = "data";
-	int** eleData;
-	int numEleLats;
-	int numEleLons;
+	std::string mapPNGName =  "mapImage.png";
+	int** eleDataSRTM;
+	int numEleLatsSRTM;
+	int numEleLonsSRTM;
 	int wayCount;
-	int boundsCount;
+	int boundsCountXML;
+	int boundsCountPNG;
 	double eleLowerLeftLat;
 	double eleLowerLeftLon;
 	double eleCellSize;
@@ -56,26 +58,37 @@ private:
 	int maxVisEntries = 5000;
 	GenericMap<long int, Node*> nodeMap;
 	GenericMap<int, Way*> wayMap;
-	GenericMap<int, Bounds*> boundsMap;
+	GenericMap<int, Bounds*> boundsMapXML;
+	GenericMap<int, Bounds*> boundsMapPNG;
+	GenericMap<int, std::pair<double, double>*> zoomSpreads;
 
 	const boost::property_tree::ptree& empty_ptree();
 	void queryFile(std::string serverName, std::string getCommand, std::string fileName);
 	std::string getBin(double hi, double lo, int bins, double latLon, bool isLat);
 	void checkDataFoler();
 	void pullSRTMData(double lat, double lon);
-	void pullOSMData(double lat, double lon);
-	int getElevation(double lat, double lon);
+	void pullOSMDataXML(double lat, double lon);
+	int pullOSMDataPNG(double lat, double lon);
+	void setZoomSpreads();
 
 public:
 	DataCollection();
 	DataCollection(double latDelta, double lonDelta);
-	void pullData(double lat, double lon);
+	void pullDataXML(double lat, double lon);
+	int pullDataPNG(double lat, double lon);
 	GenericMap<long int, Node*>* getNodeMap();
 	GenericMap<int, Way*>* getWayMap();
-	GenericMap<int, Bounds*>* getBoundsMap();
+	GenericMap<int, Bounds*>* getBoundsMapXML();
+	GenericMap<int, Bounds*>* getBoundsMapPNG();
 	int getVoidEle();
 	GenericMap<long int, Road*>* makeRawRoads();
+	std::string getDataFolder();
+	std::string getMapPNGName();
+	int getElevation(double lat, double lon);
+
 };
+
+
 
 } /* namespace PredictivePowertrain */
 

@@ -29,8 +29,10 @@ void buildCity_ut() {
 	dm.addTripData(latLon);
 
 	BuildCity bc;
-	bc.updateGridData();
+	bc.updateGridDataXML();
 	bc.printAdjMats();
+
+	bc.formatMapPNG();
 
 }
 

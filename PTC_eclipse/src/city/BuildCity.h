@@ -20,30 +20,42 @@
 #include <eigen3/unsupported/Eigen/Splines>
 #include <math.h>
 
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
 namespace PredictivePowertrain {
 
 class BuildCity {
 private:
+	// functional
 	City city;
 	GenericMap<long int, Road*>* rawRoads;
 	Eigen::MatrixXd adjMatFromSplines;
+	double maxLat = -DBL_MAX;
+	double minLat = -DBL_MAX;
+	double maxLon = DBL_MAX;
+	double minLon = DBL_MAX;
+	int boundsID = 0;
+	double idScalar = 10000.0;
+	bool newBounds = false;
 
+	// for spline shit using osm oxl
 	double splineStep = 0.025;
 	double adjMatPrecFromSplines = 0.00001;
 	double gpsTolerance = 0.0001;
-	double idScalar = 10000.0;
-	bool newBounds = false;
 
 	std::pair<GenericMap<int, Intersection*>*, GenericMap<long int, Road*>*>* parseAdjMat();
 	double scaleID(long int id);
 	long int unScaleID(double id);
 	void connectifyAjdMat();
 	bool isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntry<int, std::pair<int, int>*>* idx2);
+
 public:
 	BuildCity();
-	void updateGridData(); // post-processing on shutdown
+	void updateGridDataXML();
 	void printAdjMats();
 	bool hasNewBounds();
+	void formatMapPNG();
 };
 
 }

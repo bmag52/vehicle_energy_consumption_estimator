@@ -13,75 +13,21 @@ BuildCity::BuildCity() {
 }
 
 std::pair<GenericMap<int, Intersection*> *, GenericMap<long int, Road*>*>* BuildCity::parseAdjMat() {
-
+	// yeah uhhh no thanks
 }
 
-void BuildCity::updateGridData() {
-
-	DataManagement dm;
-	GenericMap<long int, std::pair<double, double>*>* tripLatLon = dm.getMostRecentTripData();
-	City* city = dm.getCityData();
-	int boundsID = 0;
-
-	double maxLat = -DBL_MAX;
-	double maxLon = -DBL_MAX;
-	double minLat = DBL_MAX;
-	double minLon = DBL_MAX;
-
-	tripLatLon->initializeCounter();
-	GenericEntry<long int, std::pair<double, double>*>* nextTripLatLon = tripLatLon->nextEntry();
-	if(city != NULL)
-	{
-		// bounds data already exists
-		GenericMap<int, Bounds*>* bounds = city->getBoundsMap();
-		while(nextTripLatLon != NULL)
-		{
-			bounds->initializeCounter();
-			GenericEntry<int, Bounds*>* nextBounds = bounds->nextEntry();
-			while(nextBounds != NULL)
-			{
-				double lat = nextTripLatLon->value->first;
-				double lon = nextTripLatLon->value->second;
-
-				Bounds* bound = nextBounds->value;
-				boundsID = bound->getID();
-				if(lat > bound->getMaxLat() || lat < bound->getMinLat() || lon > bound->getMaxLon() || lon < bound->getMinLon())
-				{
-					this->newBounds = true;
-					if(lat > maxLat) { maxLat = lat; } if(lat < minLat) { minLat = lat; }
-					if(lon > maxLon) { maxLon = lon; } if(lon < minLon) { minLon = lon; }
-
-				}
-				nextBounds = bounds->nextEntry();
-			}
-			nextTripLatLon = tripLatLon->nextEntry();
-			free(nextBounds);
-		}
-	} else {
-		// no bounds data
-		this->newBounds = true;
-		while(nextTripLatLon != NULL)
-		{
-			double lat = nextTripLatLon->value->first;
-			double lon = nextTripLatLon->value->second;
-
-			if(lat > maxLat) { maxLat = lat; } if(lat < minLat) { minLat = lat; }
-			if(lon > maxLon) { maxLon = lon; } if(lon < minLon) { minLon = lon; }
-			nextTripLatLon = tripLatLon->nextEntry();
-		}
-	}
-	free(nextTripLatLon);
+void BuildCity::updateGridDataXML() {
 
 	if(this->newBounds)
 	{
 		std::cout << "identifying intersections" << std::endl;
-		Bounds* newBoundsFromTrip = new Bounds(maxLat, minLat, maxLon, minLon);
-		newBoundsFromTrip->assignID(boundsID+1);
+		Bounds* newBoundsFromTrip = new Bounds(this->maxLat, this->minLat, this->maxLon, this->minLon);
+		newBoundsFromTrip->assignID(this->boundsID+1);
 
-		double latCenter = (maxLat + minLat) / 2.0;
-		double lonCenter = (maxLon + minLon) / 2.0;
-		double latDelta = maxLat - minLat;
-		double lonDelta = maxLon - minLon;
+		double latCenter = (this->maxLat + this->minLat) / 2.0;
+		double lonCenter = (this->maxLon + this->minLon) / 2.0;
+		double latDelta = this->maxLat - this->minLat;
+		double lonDelta = this->maxLon - this->minLon;
 
 		DataCollection* dc;
 		if(latDelta == 0 && lonDelta == 0)
@@ -90,7 +36,7 @@ void BuildCity::updateGridData() {
 		} else {
 			dc = new DataCollection(latDelta, lonDelta);
 		}
-		dc->pullData(latCenter, lonCenter);
+		dc->pullDataXML(latCenter, lonCenter);
 		this->rawRoads = dc->makeRawRoads();
 
 		int latRowsSpline = latDelta/this->adjMatPrecFromSplines;
@@ -269,8 +215,70 @@ long int BuildCity::unScaleID(double id) {
 	return id * this->idScalar;
 }
 
-bool BuildCity::hasNewBounds() {
-	return this->newBounds;
+void BuildCity::formatMapPNG() {
+	DataCollection dc;
+	std::string dataFolder = dc.getDataFolder();
+	std::string mapPNGName = dc.getMapPNGName();
+
+	std::string mapPicLoc = dataFolder + "/" + mapPNGName;
+
+	cv::Mat mapImage;
+	mapImage = cv::imread(mapPicLoc, CV_LOAD_IMAGE_COLOR);
+
+	cv::imshow("test", mapImage);
+
+
 }
 
+bool BuildCity::hasNewBounds() {
+	DataManagement dm;
+	GenericMap<long int, std::pair<double, double>*>* tripLatLon = dm.getMostRecentTripData();
+	City* city = dm.getCityData();
+
+	tripLatLon->initializeCounter();
+	GenericEntry<long int, std::pair<double, double>*>* nextTripLatLon = tripLatLon->nextEntry();
+	if(city != NULL)
+	{
+		// bounds data already exists
+		GenericMap<int, Bounds*>* bounds = city->getBoundsMap();
+		while(nextTripLatLon != NULL)
+		{
+			bounds->initializeCounter();
+			GenericEntry<int, Bounds*>* nextBounds = bounds->nextEntry();
+			while(nextBounds != NULL)
+			{
+				double lat = nextTripLatLon->value->first;
+				double lon = nextTripLatLon->value->second;
+
+				Bounds* bound = nextBounds->value;
+				this->boundsID = bound->getID();
+				if(lat > bound->getMaxLat() || lat < bound->getMinLat() || lon > bound->getMaxLon() || lon < bound->getMinLon())
+				{
+					this->newBounds = true;
+					if(lat > this->maxLat) { this->maxLat = lat; } if(lat < this->minLat) { this->minLat = lat; }
+					if(lon > this->maxLon) { this->maxLon = lon; } if(lon < this->minLon) { this->minLon = lon; }
+
+				}
+				nextBounds = bounds->nextEntry();
+			}
+			nextTripLatLon = tripLatLon->nextEntry();
+			free(nextBounds);
+		}
+	} else {
+		// no bounds data
+		this->newBounds = true;
+		while(nextTripLatLon != NULL)
+		{
+			double lat = nextTripLatLon->value->first;
+			double lon = nextTripLatLon->value->second;
+
+			if(lat > this->maxLat) { this->maxLat = lat; } if(lat < this->minLat) { this->minLat = lat; }
+			if(lon > this->maxLon) { this->maxLon = lon; } if(lon < this->minLon) { this->minLon = lon; }
+			nextTripLatLon = tripLatLon->nextEntry();
+		}
+	}
+	free(nextTripLatLon);
+
+	return this->newBounds;
+}
 }

@@ -25,6 +25,10 @@ The directory contains a `Vagrantfile` which is the build script, and a `package
 * `exit` once ssh'ed into vm
 * shared folder between host and VM in VM is `/vagrant`
 
+#### Installing OpenCV
+* Once VM is provisioned and running, open terminal
+* Follow instructions [here](http://docs.opencv.org/2.4/doc/tutorials/introduction/linux_install/linux_install.html)
+
 #### Update:
 * Update Vm: `git pull` this repo for the latest `Vagrantfile`
 * Run `vagrant up --provision` in the `Vagrantfile` directory

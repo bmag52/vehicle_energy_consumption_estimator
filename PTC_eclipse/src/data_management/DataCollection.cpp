@@ -16,10 +16,12 @@ using namespace boost::property_tree;
 namespace PredictivePowertrain {
 
 DataCollection::DataCollection() {
-	this->latDelta = .02;
-	this->lonDelta = .02;
+	this->latDelta = .0002;
+	this->lonDelta = .0002;
 	this->wayCount = 0;
-	this->boundsCount = 0;
+	this->boundsCountXML = 0;
+	this->boundsCountPNG = 0;
+	this->setZoomSpreads();
 	checkDataFoler();
 }
 
@@ -27,17 +29,25 @@ DataCollection::DataCollection(double latDelta, double lonDelta) {
 	this->latDelta = latDelta;
 	this->lonDelta = lonDelta;
 	this->wayCount = 0;
-	this->boundsCount = 0;
+	this->boundsCountXML = 0;
+	this->boundsCountPNG = 0;
+	this->setZoomSpreads();
 	checkDataFoler();
 }
 
 // must call functions in specific order
-void DataCollection::pullData(double lat, double lon) {
-	pullSRTMData(lat, lon);
-	pullOSMData(lat, lon);
+void DataCollection::pullDataXML(double lat, double lon) {
+	this->pullSRTMData(lat, lon);
+	this->pullOSMDataXML(lat, lon);
 }
 
-void DataCollection::pullOSMData(double lat, double lon) {
+int DataCollection::pullDataPNG(double lat, double lon) {
+	this->pullSRTMData(lat, lon);
+	return this->pullOSMDataPNG(lat, lon);
+}
+
+
+void DataCollection::pullOSMDataXML(double lat, double lon) {
 	std::cout << "pulling OSM data ..." << std::endl;
 
 	this->mapFile = "mapFile_";
@@ -191,14 +201,16 @@ void DataCollection::pullOSMData(double lat, double lon) {
 					std::cout << attr << " = " << maxLon << std::endl;
 				}
 			}
-			this->boundsCount++;
+			this->boundsCountXML++;
 			Bounds* bounds = new Bounds(maxLat, maxLon, minLat, minLon);
-			boundsMap.addEntry(this->boundsCount, bounds);
+			boundsMapXML.addEntry(this->boundsCountXML, bounds);
 		}
 	}
 }
 
 void DataCollection::pullSRTMData(double lat, double lon) {
+
+	std::cout << "Gathering Elevation Data" << std::endl;
 
 	// get bin for given lat and lon
 	double latMax = 60.0;
@@ -252,8 +264,8 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 			ss >> eleFeatures[i];
 		}
 
-		this->numEleLats = eleFeatures[0];
-		this->numEleLons = eleFeatures[1];
+		this->numEleLatsSRTM = eleFeatures[0];
+		this->numEleLonsSRTM = eleFeatures[1];
 		this->eleLowerLeftLon = eleFeatures[2];
 		this->eleLowerLeftLat = eleFeatures[3];
 		this->eleCellSize = eleFeatures[4];
@@ -261,18 +273,18 @@ void DataCollection::pullSRTMData(double lat, double lon) {
 
 		int row = 0;
 		int col = 0;
-		int **eleRay = new int*[this->numEleLons];
+		int **eleRay = new int*[this->numEleLonsSRTM];
 		while(getline(ifs, line))
 		{
 			std::stringstream ss(line);
-			eleRay[row] = new int[this->numEleLats];
+			eleRay[row] = new int[this->numEleLatsSRTM];
 			while(ss >> eleRay[row][col]) { col++; }
 			if(row % 1000 == 0) { std::cout << row << " ..." << std::endl; }
 			col = 0;
 			row++;
 		}
 		ifs.close();
-		this->eleData = eleRay;
+		this->eleDataSRTM = eleRay;
 	}
 }
 
@@ -378,31 +390,98 @@ const ptree& DataCollection::empty_ptree() {
     return t;
 }
 
+// WARNING! map image is always overwritten
+int DataCollection::pullOSMDataPNG(double lat, double lon) {
+
+	std::cout << "Pulling Map Image" << std::endl;
+
+	double latSpreadMin = 10;
+	double lonSpreadMin = 10;
+	int zoomIdx = -1;
+
+	this->zoomSpreads.initializeCounter();
+	GenericEntry<int, std::pair<double, double>*>* nextZoom = this->zoomSpreads.nextEntry();
+	while(nextZoom != NULL)
+	{
+		double latSpread = nextZoom->value->first;
+		double lonSpread = nextZoom->value->second;
+
+		// get desired delta in bounds of zoom
+		if(	this->latDelta < latSpread && this->lonDelta < lonSpread &&
+			this->latDelta < latSpreadMin && this->lonDelta < lonSpreadMin)
+		{
+			latSpreadMin = latSpread;
+			lonSpreadMin = lonSpread;
+			zoomIdx = nextZoom->key;
+		}
+		nextZoom = this->zoomSpreads.nextEntry();
+	}
+
+	std::string cutycapt = "cutycapt --min-width=6000 --min-height=6000 --delay=2000 --url=https://www.openstreetmap.org/export#map=";
+	cutycapt += lexical_cast<std::string>(zoomIdx) + "/";
+	cutycapt += lexical_cast<std::string>(lat) + "/";
+	cutycapt += lexical_cast<std::string>(lon) + " --out=";
+	cutycapt += this->dataFolder + "/" + this->mapPNGName;
+	system(cutycapt.c_str());
+
+	this->boundsCountPNG++;
+	Bounds* newBounds = new Bounds(lat+.5*latSpreadMin, lon+.5*lonSpreadMin, lat-.5*latSpreadMin, lon-.5*lonSpreadMin);
+	newBounds->assignID(this->boundsCountPNG);
+	this->boundsMapPNG.addEntry(this->boundsCountPNG, newBounds);
+
+	return zoomIdx;
+}
+
+void DataCollection::setZoomSpreads() {
+	// spreads for zoom index 19
+	double latSpread = 0.01075;
+	double lonSpread = 0.01515;
+
+	for(int i = 19; i >=13; i--)
+	{
+		this->zoomSpreads.addEntry(i, new std::pair<double, double>(latSpread, lonSpread));
+		latSpread *= 2.0;
+		lonSpread *= 2.0;
+	}
+}
+
+std::string DataCollection::getDataFolder() {
+	return this->dataFolder;
+}
+
+GenericMap<int, Bounds*>* DataCollection::getBoundsMapPNG() {
+	return &this->boundsMapPNG;
+}
+
+std::string DataCollection::getMapPNGName() {
+	return this->mapPNGName;
+}
+
 // lat lon increase L->R and B->T
 int DataCollection::getElevation(double lat, double lon) {
 
 	double nextLat, nextLon, latEleDiff, lonEleDiff, latScalar, lonScalar;
 
-	for(int k = this->numEleLats; k >= 0; k--)
+	for(int k = this->numEleLatsSRTM; k >= 0; k--)
 	{
-		nextLat = this->eleLowerLeftLat + (this->numEleLats-k+1)*this->eleCellSize;
+		nextLat = this->eleLowerLeftLat + (this->numEleLatsSRTM-k+1)*this->eleCellSize;
 		if(lat < nextLat)
 		{
-			for(int l = 0; l < this->numEleLons; l++)
+			for(int l = 0; l < this->numEleLonsSRTM; l++)
 			{
 				nextLon = this->eleLowerLeftLon + (l+1)*this->eleCellSize;
 				if(lon < nextLon)
 				{
-					int elevation = this->eleData[l][k];
+					int elevation = this->eleDataSRTM[l][k];
 
 					if(elevation == this->voidEle)
 					{
 						std::cout << "------- void elevation -------" << std::endl;
 						return elevation;
-					} else if((k < this->numEleLons-1) && (l < this->numEleLats-1))
+					} else if((k < this->numEleLonsSRTM-1) && (l < this->numEleLatsSRTM-1))
 					{
-						latEleDiff = this->eleData[l][k] - this->eleData[l+1][k];
-						lonEleDiff = this->eleData[l][k] - this->eleData[l][k+1];
+						latEleDiff = this->eleDataSRTM[l][k] - this->eleDataSRTM[l+1][k];
+						lonEleDiff = this->eleDataSRTM[l][k] - this->eleDataSRTM[l][k+1];
 
 						latScalar = (nextLat - lat) / this->eleCellSize;
 						lonScalar = (nextLon - lon) / this->eleCellSize;
@@ -553,8 +632,8 @@ int DataCollection::getVoidEle() {
 	return this->voidEle;
 }
 
-GenericMap<int, Bounds*>* DataCollection::getBoundsMap() {
-	return &this->boundsMap;
+GenericMap<int, Bounds*>* DataCollection::getBoundsMapXML() {
+	return &this->boundsMapXML;
 }
 
 }

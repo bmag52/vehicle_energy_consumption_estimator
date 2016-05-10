@@ -17,7 +17,8 @@ Compiled Object files
 *.mod
 
 # Map Data
-PTC_eclipse/data/*
+PTC_eclipse_linux/data
+PTC_eclipse_OSX/data
 
 # Compiled Static libraries
 *.lai
@@ -31,12 +32,12 @@ PTC_eclipse/data/*
 *.app
 
 # Compiler Ish
-PTC_eclipse/linaro_EVB
-PTC_eclipse/linaro_linux
-PTC_eclipse/Debug
-PTC_eclipse/Debug_OSX
-PTC_eclipse/srtm*
-PTC_eclipse/readme*
+PTC_eclipse_linux/linaro_EVB
+PTC_eclipse_linux/linaro_linux
+PTC_eclipse_linux/Debug
+PTC_eclipse_OSX/Debug_OSX
+PTC_eclipse_linux/srtm*
+PTC_eclipse_linux/readme*
 
 # Eclipse Ish
 .metadata

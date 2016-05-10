@@ -1,4 +1,4 @@
-Compiled Object files
+# Compiled Object files
 *.slo
 *.lo
 *.o
@@ -35,7 +35,7 @@ PTC_eclipse_OSX/data
 PTC_eclipse_linux/linaro_EVB
 PTC_eclipse_linux/linaro_linux
 PTC_eclipse_linux/Debug
-PTC_eclipse_OSX/Debug_OSX
+PTC_eclipse_OSX/Debug
 PTC_eclipse_linux/srtm*
 PTC_eclipse_linux/readme*
 

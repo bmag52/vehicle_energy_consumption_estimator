@@ -60,7 +60,8 @@ end
 		"libxine-dev"
 		"libunicap2-dev"
 		"swig"
-		"libdc1394-utils")
+		"libdc1394-utils"
+		"cmake")
 
 	for i in "${program[@]}"
 	do

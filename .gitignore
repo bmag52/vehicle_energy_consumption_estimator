@@ -34,11 +34,13 @@ PTC_eclipse/data/*
 PTC_eclipse/linaro_EVB
 PTC_eclipse/linaro_linux
 PTC_eclipse/Debug
+PTC_eclipse/Debug_OSX
 PTC_eclipse/srtm*
 PTC_eclipse/readme*
 
 # Eclipse Ish
 .metadata
+RemoteSystemsTempFiles
 
 # misc. 
 .vagrant
@@ -48,3 +50,5 @@ VM/package.box
 # data storage
 *.json
 *.csv
+*.png
+*.jpg

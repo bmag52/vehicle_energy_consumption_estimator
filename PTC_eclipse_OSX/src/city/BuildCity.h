@@ -32,9 +32,14 @@ private:
 	GenericMap<long int, Road*>* rawRoads;
 	Eigen::MatrixXd adjMatFromSplines;
 	double maxLat = -DBL_MAX;
-	double minLat = -DBL_MAX;
-	double maxLon = DBL_MAX;
+	double maxLon = -DBL_MAX;
+	double minLat = DBL_MAX;
 	double minLon = DBL_MAX;
+	double latCenter;
+	double lonCenter;
+	double latDelta;
+	double lonDelta;
+
 	int boundsID = 0;
 	double idScalar = 10000.0;
 	bool newBounds = false;
@@ -44,18 +49,21 @@ private:
 	double adjMatPrecFromSplines = 0.00001;
 	double gpsTolerance = 0.0001;
 
+
 	std::pair<GenericMap<int, Intersection*>*, GenericMap<long int, Road*>*>* parseAdjMat();
 	double scaleID(long int id);
 	long int unScaleID(double id);
 	void connectifyAjdMat();
 	bool isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntry<int, std::pair<int, int>*>* idx2);
+	std::pair<DataCollection*, Bounds*>* setupDataCollection();
+	void formatMapPNG(DataCollection* dc);
 
 public:
 	BuildCity();
 	void updateGridDataXML();
+	void updateGridDataPNG();
 	void printAdjMats();
 	bool hasNewBounds();
-	void formatMapPNG();
 };
 
 }

@@ -18,25 +18,14 @@ std::pair<GenericMap<int, Intersection*> *, GenericMap<long int, Road*>*>* Build
 
 void BuildCity::updateGridDataXML() {
 
-	if(this->newBounds)
+	if(this->hasNewBounds())
 	{
-		std::cout << "identifying intersections" << std::endl;
-		Bounds* newBoundsFromTrip = new Bounds(this->maxLat, this->minLat, this->maxLon, this->minLon);
-		newBoundsFromTrip->assignID(this->boundsID+1);
+		std::cout << "identifying intersections from XML" << std::endl;
+		std::pair<DataCollection*, Bounds*>* newMapData = this->setupDataCollection();
+		DataCollection* dc = newMapData->first;
+		Bounds* newBounds = newMapData->second;
 
-		double latCenter = (this->maxLat + this->minLat) / 2.0;
-		double lonCenter = (this->maxLon + this->minLon) / 2.0;
-		double latDelta = this->maxLat - this->minLat;
-		double lonDelta = this->maxLon - this->minLon;
-
-		DataCollection* dc;
-		if(latDelta == 0 && lonDelta == 0)
-		{
-			dc = new DataCollection();
-		} else {
-			dc = new DataCollection(latDelta, lonDelta);
-		}
-		dc->pullDataXML(latCenter, lonCenter);
+		dc->pullDataXML(this->latCenter, this->lonCenter);
 		this->rawRoads = dc->makeRawRoads();
 
 		int latRowsSpline = latDelta/this->adjMatPrecFromSplines;
@@ -89,8 +78,8 @@ void BuildCity::updateGridDataXML() {
 				// add spline data to adjacency matrix if spline within node bounds
 				if(splineWithinNodes)
 				{
-					int latRow = this->adjMatFromSplines.rows() - (newLat - minLat) / latDelta * latRowsSpline;
-					int lonCol = (newLon - minLon) / lonDelta * lonColsSpline;
+					int latRow = this->adjMatFromSplines.rows() - (newLat - this->minLat) / this->latDelta * latRowsSpline;
+					int lonCol = (newLon - this->minLon) / this->lonDelta * lonColsSpline;
 
 					if(latRow >= 0 && latRow < this->adjMatFromSplines.rows() && lonCol >= 0 && lonCol < this->adjMatFromSplines.cols())
 					{
@@ -215,10 +204,21 @@ long int BuildCity::unScaleID(double id) {
 	return id * this->idScalar;
 }
 
-void BuildCity::formatMapPNG() {
-	DataCollection dc;
-	std::string dataFolder = dc.getDataFolder();
-	std::string mapPNGName = dc.getMapPNGName();
+void BuildCity::updateGridDataPNG() {
+	if(this->hasNewBounds())
+	{
+		std::cout << "identifying intersections from PNG" << std::endl;
+		std::pair<DataCollection*, Bounds*>* newMapData = this->setupDataCollection();
+		DataCollection* dc = newMapData->first;
+		Bounds* newBounds = newMapData->second;
+
+		int zoomIdx = dc->pullDataPNG(this->latCenter, this->lonCenter);
+	}
+}
+
+void BuildCity::formatMapPNG(DataCollection* dc) {
+	std::string dataFolder = dc->getDataFolder();
+	std::string mapPNGName = dc->getMapPNGName();
 
 	std::string mapPicLoc = dataFolder + "/" + mapPNGName;
 
@@ -228,6 +228,25 @@ void BuildCity::formatMapPNG() {
 	cv::imshow("test", mapImage);
 
 
+}
+
+std::pair<DataCollection*, Bounds*>* BuildCity::setupDataCollection() {
+
+	Bounds* newBoundsFromTrip = new Bounds(this->maxLat, this->minLat, this->maxLon, this->minLon);
+	newBoundsFromTrip->assignID(this->boundsID+1);
+
+	this->latCenter = (this->maxLat + this->minLat) / 2.0;
+	this->lonCenter = (this->maxLon + this->minLon) / 2.0;
+	this->latDelta = this->maxLat - this->minLat;
+	this->lonDelta = this->maxLon - this->minLon;
+
+	DataCollection* dc;
+	if(this->latDelta == 0 && this->lonDelta == 0)
+	{
+		dc = new DataCollection();
+	} else {
+		dc = new DataCollection(this->latDelta, this->lonDelta);
+	}
 }
 
 bool BuildCity::hasNewBounds() {

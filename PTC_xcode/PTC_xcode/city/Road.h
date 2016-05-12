@@ -39,7 +39,7 @@ public:
 	void setEndIntersection(Intersection* endNode);
 	Intersection* getStartIntersection();
 	Intersection* getEndIntersection();
-	int getRoadID();
+	long int getRoadID();
 	int* getElevData();
 	int* getSpeedData();
 	int getBoundsID();

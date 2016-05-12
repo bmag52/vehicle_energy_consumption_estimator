@@ -36,7 +36,7 @@ Intersection* Road::getEndIntersection() {
 	return this->endNode;
 }
 
-int Road::getRoadID() {
+long int Road::getRoadID() {
 	return this->roadID;
 }
 
@@ -44,9 +44,13 @@ Road::~Road() {
 }
 
 int* Road::getSpeedData() {
+    // TODO
+    return NULL;
 }
 
 int* Road::getElevData() {
+    // TODO
+    return NULL;
 }
 
 int Road::getBoundsID() {

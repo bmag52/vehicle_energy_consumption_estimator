@@ -19,6 +19,8 @@ Link* makeLinks(int numberOfLinks)
 		Link newLink(i, rand() > .5);
 		links[i] = newLink;
 	}
+    // TODO
+    return NULL;
 }
 
 void routePrediction_UT()

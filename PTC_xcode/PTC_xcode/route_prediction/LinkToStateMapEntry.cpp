@@ -18,8 +18,10 @@ int LinkToStateMapEntry::addEntry(Link* li) {
 	if (this->entries.hasEntry(linkHash)){
 		int existingM = this->entries.getEntry(linkHash);
 		this->entries.updateEntry(linkHash, existingM + 1);
+        return 1;
 	} else {
 		this->entries.addEntry(linkHash, 1);
+        return -1;
 	}
 }
 

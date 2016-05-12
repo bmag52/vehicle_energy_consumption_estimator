@@ -5,7 +5,7 @@
  *      Author: vagrant
  */
 
-#include "../data_management/Way.h"
+#include "Way.h"
 
 namespace PredictivePowertrain {
 

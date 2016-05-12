@@ -21,6 +21,8 @@ std::pair<double, double>* GPS::getLatLon() {
 }
 
 bool GPS::isOnRoad(Road* road) {
+    // TODO
+    return NULL;
 }
 
 void GPS::updateTripLog() {

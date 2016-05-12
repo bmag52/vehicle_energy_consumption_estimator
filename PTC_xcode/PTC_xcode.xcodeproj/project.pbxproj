@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D3B910471CE3CC6F00B419B9 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3B9103F1CE3CC6F00B419B9 /* main.cpp */; };
 		D3B9107F1CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910481CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */; };
 		D3B910801CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910491CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */; };
 		D3B910811CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B9104A1CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib */; };
@@ -119,6 +118,78 @@
 		D3B911241CE3EEBD00B419B9 /* libboost_program_options.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910EC1CE3EEBD00B419B9 /* libboost_program_options.dylib */; };
 		D3B911251CE3EEBD00B419B9 /* libboost_random-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910ED1CE3EEBD00B419B9 /* libboost_random-mt.dylib */; };
 		D3B911291CE4026B00B419B9 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B911281CE4026B00B419B9 /* CoreFoundation.framework */; };
+		D3FABC701CE524A400892002 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC211CE524A400892002 /* Node.cpp */; };
+		D3FABC711CE524A400892002 /* Way.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC221CE524A400892002 /* Way.cpp */; };
+		D3FABC721CE524A400892002 /* Bounds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC231CE524A400892002 /* Bounds.cpp */; };
+		D3FABC731CE524A400892002 /* DataCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC241CE524A400892002 /* DataCollection.cpp */; };
+		D3FABC741CE524A400892002 /* DataCollection.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC251CE524A400892002 /* DataCollection.h */; };
+		D3FABC751CE524A400892002 /* DataManagement.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC261CE524A400892002 /* DataManagement.cpp */; };
+		D3FABC761CE524A400892002 /* Bounds.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC271CE524A400892002 /* Bounds.h */; };
+		D3FABC771CE524A400892002 /* DataManagement.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC281CE524A400892002 /* DataManagement.h */; };
+		D3FABC781CE524A400892002 /* Node.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC291CE524A400892002 /* Node.h */; };
+		D3FABC791CE524A400892002 /* Way.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC2A1CE524A400892002 /* Way.h */; };
+		D3FABC7B1CE524A400892002 /* City.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC2C1CE524A400892002 /* City.cpp */; };
+		D3FABC7C1CE524A400892002 /* City.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC2D1CE524A400892002 /* City.h */; };
+		D3FABC7D1CE524A400892002 /* BuildCity.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC2E1CE524A400892002 /* BuildCity.h */; };
+		D3FABC7E1CE524A400892002 /* BuildCity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC2F1CE524A400892002 /* BuildCity.cpp */; };
+		D3FABC7F1CE524A400892002 /* Road.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC301CE524A400892002 /* Road.cpp */; };
+		D3FABC801CE524A400892002 /* Road.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC311CE524A400892002 /* Road.h */; };
+		D3FABC811CE524A400892002 /* CitySection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC321CE524A400892002 /* CitySection.cpp */; };
+		D3FABC821CE524A400892002 /* CitySection.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC331CE524A400892002 /* CitySection.h */; };
+		D3FABC831CE524A400892002 /* ElevationTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC341CE524A400892002 /* ElevationTypes.cpp */; };
+		D3FABC841CE524A400892002 /* ElevationTypes.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC351CE524A400892002 /* ElevationTypes.h */; };
+		D3FABC851CE524A400892002 /* Intersection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC361CE524A400892002 /* Intersection.cpp */; };
+		D3FABC861CE524A400892002 /* Intersection.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC371CE524A400892002 /* Intersection.h */; };
+		D3FABC871CE524A400892002 /* IntersectionTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC381CE524A400892002 /* IntersectionTypes.cpp */; };
+		D3FABC881CE524A400892002 /* IntersectionTypes.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC391CE524A400892002 /* IntersectionTypes.h */; };
+		D3FABC891CE524A400892002 /* RoadTypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC3A1CE524A400892002 /* RoadTypes.cpp */; };
+		D3FABC8A1CE524A400892002 /* RoadTypes.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC3B1CE524A400892002 /* RoadTypes.h */; };
+		D3FABC8C1CE524A400892002 /* BuildCityUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC3D1CE524A400892002 /* BuildCityUnitTest.cpp */; };
+		D3FABC8D1CE524A400892002 /* DataCollectionUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC3E1CE524A400892002 /* DataCollectionUnitTest.cpp */; };
+		D3FABC8E1CE524A400892002 /* RouteUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC3F1CE524A400892002 /* RouteUnitTest.cpp */; };
+		D3FABC8F1CE524A400892002 /* CitySectionUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC401CE524A400892002 /* CitySectionUnitTest.cpp */; };
+		D3FABC901CE524A400892002 /* DataManagementUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC411CE524A400892002 /* DataManagementUnitTest.cpp */; };
+		D3FABC911CE524A400892002 /* ElevationTypesUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC421CE524A400892002 /* ElevationTypesUnitTest.cpp */; };
+		D3FABC921CE524A400892002 /* GoalToLinkMapUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC431CE524A400892002 /* GoalToLinkMapUnitTest.cpp */; };
+		D3FABC931CE524A400892002 /* IntersectionTypesUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC441CE524A400892002 /* IntersectionTypesUnitTest.cpp */; };
+		D3FABC941CE524A400892002 /* IntersectionUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC451CE524A400892002 /* IntersectionUnitTest.cpp */; };
+		D3FABC951CE524A400892002 /* LinkToStateMapUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC461CE524A400892002 /* LinkToStateMapUnitTest.cpp */; };
+		D3FABC961CE524A400892002 /* LinkUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC471CE524A400892002 /* LinkUnitTest.cpp */; };
+		D3FABC971CE524A400892002 /* NodeUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC481CE524A400892002 /* NodeUnitTest.cpp */; };
+		D3FABC981CE524A500892002 /* RoadTypesUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC491CE524A400892002 /* RoadTypesUnitTest.cpp */; };
+		D3FABC991CE524A500892002 /* UnitTests.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC4A1CE524A400892002 /* UnitTests.h */; };
+		D3FABC9A1CE524A500892002 /* RoadUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC4B1CE524A400892002 /* RoadUnitTest.cpp */; };
+		D3FABC9B1CE524A500892002 /* GoalMapEntryUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC4C1CE524A400892002 /* GoalMapEntryUnitTest.cpp */; };
+		D3FABC9C1CE524A500892002 /* GoalUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC4D1CE524A400892002 /* GoalUnitTest.cpp */; };
+		D3FABC9D1CE524A500892002 /* LinkToStateMapEntryUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC4E1CE524A400892002 /* LinkToStateMapEntryUnitTest.cpp */; };
+		D3FABC9E1CE524A500892002 /* ProbabilityUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC4F1CE524A400892002 /* ProbabilityUnitTest.cpp */; };
+		D3FABC9F1CE524A500892002 /* RoutePredictionUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC501CE524A400892002 /* RoutePredictionUnitTest.cpp */; };
+		D3FABCA11CE524A500892002 /* Route.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC521CE524A400892002 /* Route.h */; };
+		D3FABCA21CE524A500892002 /* LinkToStateMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC531CE524A400892002 /* LinkToStateMap.cpp */; };
+		D3FABCA31CE524A500892002 /* GoalToLinkMap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC541CE524A400892002 /* GoalToLinkMap.cpp */; };
+		D3FABCA41CE524A500892002 /* LinkToStateMap.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC551CE524A400892002 /* LinkToStateMap.h */; };
+		D3FABCA51CE524A500892002 /* LinkToStateMapEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC561CE524A400892002 /* LinkToStateMapEntry.cpp */; };
+		D3FABCA61CE524A500892002 /* Route.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC571CE524A400892002 /* Route.cpp */; };
+		D3FABCA71CE524A500892002 /* RoutePrediction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC581CE524A400892002 /* RoutePrediction.cpp */; };
+		D3FABCA81CE524A500892002 /* RoutePrediction.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC591CE524A400892002 /* RoutePrediction.h */; };
+		D3FABCA91CE524A500892002 /* GoalToLinkMap.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC5A1CE524A400892002 /* GoalToLinkMap.h */; };
+		D3FABCAA1CE524A500892002 /* GoalMapEntry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC5B1CE524A400892002 /* GoalMapEntry.cpp */; };
+		D3FABCAB1CE524A500892002 /* Goal.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC5C1CE524A400892002 /* Goal.cpp */; };
+		D3FABCAC1CE524A500892002 /* Goal.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC5D1CE524A400892002 /* Goal.h */; };
+		D3FABCAD1CE524A500892002 /* GoalMapEntry.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC5E1CE524A400892002 /* GoalMapEntry.h */; };
+		D3FABCAE1CE524A500892002 /* LinkToStateMapEntry.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC5F1CE524A400892002 /* LinkToStateMapEntry.h */; };
+		D3FABCB01CE524A500892002 /* GenericMap.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC611CE524A400892002 /* GenericMap.h */; };
+		D3FABCB11CE524A500892002 /* GenericEntry.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC621CE524A400892002 /* GenericEntry.h */; };
+		D3FABCB21CE524A500892002 /* GenericMapIterator.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC631CE524A400892002 /* GenericMapIterator.h */; };
+		D3FABCB41CE524A500892002 /* SpeedPrediction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC651CE524A400892002 /* SpeedPrediction.cpp */; };
+		D3FABCB51CE524A500892002 /* SpeedPrediction.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC661CE524A400892002 /* SpeedPrediction.h */; };
+		D3FABCB71CE524A500892002 /* Link.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC681CE524A400892002 /* Link.cpp */; };
+		D3FABCB81CE524A500892002 /* Link.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC691CE524A400892002 /* Link.h */; };
+		D3FABCB91CE524A500892002 /* Probability.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC6A1CE524A400892002 /* Probability.cpp */; };
+		D3FABCBA1CE524A500892002 /* Probability.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC6B1CE524A400892002 /* Probability.h */; };
+		D3FABCBC1CE524A500892002 /* GPS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC6D1CE524A400892002 /* GPS.cpp */; };
+		D3FABCBD1CE524A500892002 /* GPS.h in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC6E1CE524A400892002 /* GPS.h */; };
+		D3FABCC71CE525FB00892002 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC1F1CE524A400892002 /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -135,128 +206,191 @@
 
 /* Begin PBXFileReference section */
 		D3B910291CE3C83B00B419B9 /* PTC_xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTC_xcode; sourceTree = BUILT_PRODUCTS_DIR; };
-		D3B9103E1CE3CC6F00B419B9 /* city */ = {isa = PBXFileReference; lastKnownFileType = folder; path = city; sourceTree = "<group>"; };
-		D3B9103F1CE3CC6F00B419B9 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		D3B910401CE3CC6F00B419B9 /* data_management */ = {isa = PBXFileReference; lastKnownFileType = folder; path = data_management; sourceTree = "<group>"; };
-		D3B910411CE3CC6F00B419B9 /* route_prediction */ = {isa = PBXFileReference; lastKnownFileType = folder; path = route_prediction; sourceTree = "<group>"; };
-		D3B910421CE3CC6F00B419B9 /* unit_tests */ = {isa = PBXFileReference; lastKnownFileType = folder; path = unit_tests; sourceTree = "<group>"; };
-		D3B910431CE3CC6F00B419B9 /* map */ = {isa = PBXFileReference; lastKnownFileType = folder; path = map; sourceTree = "<group>"; };
-		D3B910441CE3CC6F00B419B9 /* speed_prediction */ = {isa = PBXFileReference; lastKnownFileType = folder; path = speed_prediction; sourceTree = "<group>"; };
-		D3B910451CE3CC6F00B419B9 /* driver_prediction */ = {isa = PBXFileReference; lastKnownFileType = folder; path = driver_prediction; sourceTree = "<group>"; };
-		D3B910461CE3CC6F00B419B9 /* gps */ = {isa = PBXFileReference; lastKnownFileType = folder; path = gps; sourceTree = "<group>"; };
-		D3B910481CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_videostab.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910491CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_calib3d.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_calib3d.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9104A1CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_contrib.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_contrib.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9104B1CE3EABC00B419B9 /* libopencv_core.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_core.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9104C1CE3EABC00B419B9 /* libopencv_features2d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_features2d.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_features2d.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9104D1CE3EABC00B419B9 /* libopencv_flann.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_flann.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_flann.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9104E1CE3EABC00B419B9 /* libopencv_gpu.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_gpu.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_gpu.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9104F1CE3EABC00B419B9 /* libopencv_highgui.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_highgui.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910501CE3EABC00B419B9 /* libopencv_imgproc.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_imgproc.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910511CE3EABC00B419B9 /* libopencv_legacy.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_legacy.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_legacy.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910521CE3EABC00B419B9 /* libopencv_ml.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ml.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ml.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910531CE3EABC00B419B9 /* libopencv_nonfree.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_nonfree.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_nonfree.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910541CE3EABC00B419B9 /* libopencv_objdetect.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_objdetect.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_objdetect.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910551CE3EABC00B419B9 /* libopencv_ocl.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ocl.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ocl.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910561CE3EABC00B419B9 /* libopencv_photo.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_photo.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_photo.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910571CE3EABC00B419B9 /* libopencv_stitching.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_stitching.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_stitching.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910581CE3EABC00B419B9 /* libopencv_superres.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_superres.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_superres.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910591CE3EABC00B419B9 /* libopencv_video.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_video.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_video.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9105A1CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_calib3d.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_calib3d.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9105B1CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_calib3d.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_calib3d.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9105C1CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_contrib.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_contrib.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9105D1CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_contrib.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_contrib.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9105E1CE3EABC00B419B9 /* libopencv_features2d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_features2d.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_features2d.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9105F1CE3EABC00B419B9 /* libopencv_features2d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_features2d.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_features2d.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910601CE3EABC00B419B9 /* libopencv_flann.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_flann.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_flann.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910611CE3EABC00B419B9 /* libopencv_gpu.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_gpu.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_gpu.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910621CE3EABC00B419B9 /* libopencv_gpu.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_gpu.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_gpu.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910631CE3EABC00B419B9 /* libopencv_highgui.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_highgui.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910641CE3EABC00B419B9 /* libopencv_highgui.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_highgui.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910651CE3EABC00B419B9 /* libopencv_imgproc.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_imgproc.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910661CE3EABC00B419B9 /* libopencv_imgproc.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_imgproc.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910671CE3EABC00B419B9 /* libopencv_legacy.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_legacy.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_legacy.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910681CE3EABC00B419B9 /* libopencv_legacy.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_legacy.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_legacy.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910691CE3EABC00B419B9 /* libopencv_ml.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ml.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ml.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9106A1CE3EABC00B419B9 /* libopencv_ml.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ml.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ml.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9106B1CE3EABC00B419B9 /* libopencv_nonfree.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_nonfree.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_nonfree.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9106C1CE3EABC00B419B9 /* libopencv_nonfree.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_nonfree.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_nonfree.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9106D1CE3EABC00B419B9 /* libopencv_objdetect.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_objdetect.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_objdetect.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9106E1CE3EABC00B419B9 /* libopencv_objdetect.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_objdetect.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_objdetect.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9106F1CE3EABC00B419B9 /* libopencv_ocl.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ocl.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ocl.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910701CE3EABC00B419B9 /* libopencv_ocl.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ocl.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ocl.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910711CE3EABC00B419B9 /* libopencv_photo.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_photo.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_photo.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910721CE3EABC00B419B9 /* libopencv_photo.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_photo.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_photo.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910731CE3EABC00B419B9 /* libopencv_stitching.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_stitching.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_stitching.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910741CE3EABC00B419B9 /* libopencv_stitching.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_stitching.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_stitching.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910751CE3EABC00B419B9 /* libopencv_superres.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_superres.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_superres.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910761CE3EABC00B419B9 /* libopencv_superres.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_superres.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_superres.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910771CE3EABC00B419B9 /* libopencv_ts.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_ts.a; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ts.a; sourceTree = "<group>"; };
-		D3B910781CE3EABC00B419B9 /* libopencv_video.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_video.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_video.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910791CE3EABC00B419B9 /* libopencv_video.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_video.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_video.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9107A1CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_videostab.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9107B1CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_videostab.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9107C1CE3EABC00B419B9 /* libopencv_core.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_core.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9107D1CE3EABC00B419B9 /* libopencv_core.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_core.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B9107E1CE3EABC00B419B9 /* libopencv_flann.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_flann.2.4.11.dylib; path = ../../../../../../../usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_flann.2.4.11.dylib; sourceTree = "<group>"; };
-		D3B910B61CE3EEBD00B419B9 /* libboost_random.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_random.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_random.dylib; sourceTree = "<group>"; };
-		D3B910B71CE3EEBD00B419B9 /* libboost_regex-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_regex-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_regex-mt.dylib"; sourceTree = "<group>"; };
-		D3B910B81CE3EEBD00B419B9 /* libboost_regex.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_regex.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_regex.dylib; sourceTree = "<group>"; };
-		D3B910B91CE3EEBD00B419B9 /* libboost_serialization-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_serialization-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_serialization-mt.dylib"; sourceTree = "<group>"; };
-		D3B910BA1CE3EEBD00B419B9 /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_serialization.dylib; sourceTree = "<group>"; };
-		D3B910BB1CE3EEBD00B419B9 /* libboost_signals-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_signals-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_signals-mt.dylib"; sourceTree = "<group>"; };
-		D3B910BC1CE3EEBD00B419B9 /* libboost_signals.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_signals.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_signals.dylib; sourceTree = "<group>"; };
-		D3B910BD1CE3EEBD00B419B9 /* libboost_system-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_system-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_system-mt.dylib"; sourceTree = "<group>"; };
-		D3B910BE1CE3EEBD00B419B9 /* libboost_system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_system.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_system.dylib; sourceTree = "<group>"; };
-		D3B910BF1CE3EEBD00B419B9 /* libboost_thread-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_thread-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_thread-mt.dylib"; sourceTree = "<group>"; };
-		D3B910C01CE3EEBD00B419B9 /* libboost_timer-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_timer-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_timer-mt.dylib"; sourceTree = "<group>"; };
-		D3B910C11CE3EEBD00B419B9 /* libboost_timer.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_timer.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_timer.dylib; sourceTree = "<group>"; };
-		D3B910C21CE3EEBD00B419B9 /* libboost_unit_test_framework-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_unit_test_framework-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_unit_test_framework-mt.dylib"; sourceTree = "<group>"; };
-		D3B910C31CE3EEBD00B419B9 /* libboost_unit_test_framework.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_unit_test_framework.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_unit_test_framework.dylib; sourceTree = "<group>"; };
-		D3B910C41CE3EEBD00B419B9 /* libboost_wave-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_wave-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_wave-mt.dylib"; sourceTree = "<group>"; };
-		D3B910C51CE3EEBD00B419B9 /* libboost_wave.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_wave.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_wave.dylib; sourceTree = "<group>"; };
-		D3B910C61CE3EEBD00B419B9 /* libboost_wserialization-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_wserialization-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_wserialization-mt.dylib"; sourceTree = "<group>"; };
-		D3B910C71CE3EEBD00B419B9 /* libboost_wserialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_wserialization.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_wserialization.dylib; sourceTree = "<group>"; };
-		D3B910C81CE3EEBD00B419B9 /* libboost_atomic-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_atomic-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_atomic-mt.dylib"; sourceTree = "<group>"; };
-		D3B910C91CE3EEBD00B419B9 /* libboost_chrono-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_chrono-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_chrono-mt.dylib"; sourceTree = "<group>"; };
-		D3B910CA1CE3EEBD00B419B9 /* libboost_chrono.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_chrono.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_chrono.dylib; sourceTree = "<group>"; };
-		D3B910CB1CE3EEBD00B419B9 /* libboost_container-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_container-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_container-mt.dylib"; sourceTree = "<group>"; };
-		D3B910CC1CE3EEBD00B419B9 /* libboost_container.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_container.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_container.dylib; sourceTree = "<group>"; };
-		D3B910CD1CE3EEBD00B419B9 /* libboost_context-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_context-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_context-mt.dylib"; sourceTree = "<group>"; };
-		D3B910CE1CE3EEBD00B419B9 /* libboost_coroutine-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_coroutine-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_coroutine-mt.dylib"; sourceTree = "<group>"; };
-		D3B910CF1CE3EEBD00B419B9 /* libboost_coroutine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_coroutine.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_coroutine.dylib; sourceTree = "<group>"; };
-		D3B910D01CE3EEBD00B419B9 /* libboost_date_time-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_date_time-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_date_time-mt.dylib"; sourceTree = "<group>"; };
-		D3B910D11CE3EEBD00B419B9 /* libboost_date_time.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_date_time.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_date_time.dylib; sourceTree = "<group>"; };
-		D3B910D21CE3EEBD00B419B9 /* libboost_filesystem-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_filesystem-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_filesystem-mt.dylib"; sourceTree = "<group>"; };
-		D3B910D31CE3EEBD00B419B9 /* libboost_filesystem.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_filesystem.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_filesystem.dylib; sourceTree = "<group>"; };
-		D3B910D41CE3EEBD00B419B9 /* libboost_graph-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_graph-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_graph-mt.dylib"; sourceTree = "<group>"; };
-		D3B910D51CE3EEBD00B419B9 /* libboost_graph.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_graph.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_graph.dylib; sourceTree = "<group>"; };
-		D3B910D61CE3EEBD00B419B9 /* libboost_iostreams-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_iostreams-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_iostreams-mt.dylib"; sourceTree = "<group>"; };
-		D3B910D71CE3EEBD00B419B9 /* libboost_iostreams.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_iostreams.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_iostreams.dylib; sourceTree = "<group>"; };
-		D3B910D81CE3EEBD00B419B9 /* libboost_locale-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_locale-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_locale-mt.dylib"; sourceTree = "<group>"; };
-		D3B910D91CE3EEBD00B419B9 /* libboost_log_setup-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_log_setup-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_log_setup-mt.dylib"; sourceTree = "<group>"; };
-		D3B910DA1CE3EEBD00B419B9 /* libboost_log_setup.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_log_setup.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_log_setup.dylib; sourceTree = "<group>"; };
-		D3B910DB1CE3EEBD00B419B9 /* libboost_log-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_log-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_log-mt.dylib"; sourceTree = "<group>"; };
-		D3B910DC1CE3EEBD00B419B9 /* libboost_log.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_log.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_log.dylib; sourceTree = "<group>"; };
-		D3B910DD1CE3EEBD00B419B9 /* libboost_math_c99-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_c99-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99-mt.dylib"; sourceTree = "<group>"; };
-		D3B910DE1CE3EEBD00B419B9 /* libboost_math_c99.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_c99.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99.dylib; sourceTree = "<group>"; };
-		D3B910DF1CE3EEBD00B419B9 /* libboost_math_c99f-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_c99f-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99f-mt.dylib"; sourceTree = "<group>"; };
-		D3B910E01CE3EEBD00B419B9 /* libboost_math_c99f.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_c99f.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99f.dylib; sourceTree = "<group>"; };
-		D3B910E11CE3EEBD00B419B9 /* libboost_math_c99l-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_c99l-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99l-mt.dylib"; sourceTree = "<group>"; };
-		D3B910E21CE3EEBD00B419B9 /* libboost_math_c99l.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_c99l.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99l.dylib; sourceTree = "<group>"; };
-		D3B910E31CE3EEBD00B419B9 /* libboost_math_tr1-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_tr1-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1-mt.dylib"; sourceTree = "<group>"; };
-		D3B910E41CE3EEBD00B419B9 /* libboost_math_tr1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_tr1.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1.dylib; sourceTree = "<group>"; };
-		D3B910E51CE3EEBD00B419B9 /* libboost_math_tr1f-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_tr1f-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1f-mt.dylib"; sourceTree = "<group>"; };
-		D3B910E61CE3EEBD00B419B9 /* libboost_math_tr1f.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_tr1f.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1f.dylib; sourceTree = "<group>"; };
-		D3B910E71CE3EEBD00B419B9 /* libboost_math_tr1l-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_tr1l-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1l-mt.dylib"; sourceTree = "<group>"; };
-		D3B910E81CE3EEBD00B419B9 /* libboost_math_tr1l.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_tr1l.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1l.dylib; sourceTree = "<group>"; };
-		D3B910E91CE3EEBD00B419B9 /* libboost_prg_exec_monitor-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_prg_exec_monitor-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_prg_exec_monitor-mt.dylib"; sourceTree = "<group>"; };
-		D3B910EA1CE3EEBD00B419B9 /* libboost_prg_exec_monitor.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_prg_exec_monitor.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_prg_exec_monitor.dylib; sourceTree = "<group>"; };
-		D3B910EB1CE3EEBD00B419B9 /* libboost_program_options-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_program_options-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_program_options-mt.dylib"; sourceTree = "<group>"; };
-		D3B910EC1CE3EEBD00B419B9 /* libboost_program_options.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_program_options.dylib; path = ../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_program_options.dylib; sourceTree = "<group>"; };
-		D3B910ED1CE3EEBD00B419B9 /* libboost_random-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_random-mt.dylib"; path = "../../../../../../../usr/local/Cellar/boost/1.58.0/lib/libboost_random-mt.dylib"; sourceTree = "<group>"; };
+		D3B910481CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_videostab.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910491CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_calib3d.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_calib3d.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9104A1CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_contrib.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_contrib.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9104B1CE3EABC00B419B9 /* libopencv_core.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_core.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9104C1CE3EABC00B419B9 /* libopencv_features2d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_features2d.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_features2d.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9104D1CE3EABC00B419B9 /* libopencv_flann.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_flann.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_flann.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9104E1CE3EABC00B419B9 /* libopencv_gpu.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_gpu.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_gpu.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9104F1CE3EABC00B419B9 /* libopencv_highgui.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_highgui.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910501CE3EABC00B419B9 /* libopencv_imgproc.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_imgproc.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910511CE3EABC00B419B9 /* libopencv_legacy.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_legacy.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_legacy.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910521CE3EABC00B419B9 /* libopencv_ml.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ml.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ml.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910531CE3EABC00B419B9 /* libopencv_nonfree.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_nonfree.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_nonfree.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910541CE3EABC00B419B9 /* libopencv_objdetect.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_objdetect.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_objdetect.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910551CE3EABC00B419B9 /* libopencv_ocl.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ocl.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ocl.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910561CE3EABC00B419B9 /* libopencv_photo.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_photo.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_photo.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910571CE3EABC00B419B9 /* libopencv_stitching.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_stitching.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_stitching.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910581CE3EABC00B419B9 /* libopencv_superres.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_superres.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_superres.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910591CE3EABC00B419B9 /* libopencv_video.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_video.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_video.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9105A1CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_calib3d.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_calib3d.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9105B1CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_calib3d.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_calib3d.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9105C1CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_contrib.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_contrib.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9105D1CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_contrib.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_contrib.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9105E1CE3EABC00B419B9 /* libopencv_features2d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_features2d.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_features2d.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9105F1CE3EABC00B419B9 /* libopencv_features2d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_features2d.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_features2d.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910601CE3EABC00B419B9 /* libopencv_flann.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_flann.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_flann.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910611CE3EABC00B419B9 /* libopencv_gpu.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_gpu.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_gpu.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910621CE3EABC00B419B9 /* libopencv_gpu.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_gpu.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_gpu.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910631CE3EABC00B419B9 /* libopencv_highgui.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_highgui.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910641CE3EABC00B419B9 /* libopencv_highgui.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_highgui.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_highgui.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910651CE3EABC00B419B9 /* libopencv_imgproc.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_imgproc.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910661CE3EABC00B419B9 /* libopencv_imgproc.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_imgproc.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_imgproc.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910671CE3EABC00B419B9 /* libopencv_legacy.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_legacy.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_legacy.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910681CE3EABC00B419B9 /* libopencv_legacy.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_legacy.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_legacy.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910691CE3EABC00B419B9 /* libopencv_ml.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ml.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ml.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9106A1CE3EABC00B419B9 /* libopencv_ml.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ml.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ml.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9106B1CE3EABC00B419B9 /* libopencv_nonfree.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_nonfree.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_nonfree.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9106C1CE3EABC00B419B9 /* libopencv_nonfree.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_nonfree.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_nonfree.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9106D1CE3EABC00B419B9 /* libopencv_objdetect.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_objdetect.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_objdetect.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9106E1CE3EABC00B419B9 /* libopencv_objdetect.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_objdetect.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_objdetect.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9106F1CE3EABC00B419B9 /* libopencv_ocl.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ocl.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ocl.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910701CE3EABC00B419B9 /* libopencv_ocl.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_ocl.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ocl.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910711CE3EABC00B419B9 /* libopencv_photo.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_photo.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_photo.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910721CE3EABC00B419B9 /* libopencv_photo.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_photo.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_photo.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910731CE3EABC00B419B9 /* libopencv_stitching.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_stitching.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_stitching.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910741CE3EABC00B419B9 /* libopencv_stitching.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_stitching.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_stitching.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910751CE3EABC00B419B9 /* libopencv_superres.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_superres.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_superres.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910761CE3EABC00B419B9 /* libopencv_superres.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_superres.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_superres.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910771CE3EABC00B419B9 /* libopencv_ts.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libopencv_ts.a; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_ts.a; sourceTree = "<absolute>"; };
+		D3B910781CE3EABC00B419B9 /* libopencv_video.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_video.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_video.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910791CE3EABC00B419B9 /* libopencv_video.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_video.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_video.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9107A1CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_videostab.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9107B1CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_videostab.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9107C1CE3EABC00B419B9 /* libopencv_core.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_core.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9107D1CE3EABC00B419B9 /* libopencv_core.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_core.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_core.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B9107E1CE3EABC00B419B9 /* libopencv_flann.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_flann.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_flann.2.4.11.dylib; sourceTree = "<absolute>"; };
+		D3B910B61CE3EEBD00B419B9 /* libboost_random.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_random.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_random.dylib; sourceTree = "<absolute>"; };
+		D3B910B71CE3EEBD00B419B9 /* libboost_regex-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_regex-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_regex-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910B81CE3EEBD00B419B9 /* libboost_regex.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_regex.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_regex.dylib; sourceTree = "<absolute>"; };
+		D3B910B91CE3EEBD00B419B9 /* libboost_serialization-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_serialization-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_serialization-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910BA1CE3EEBD00B419B9 /* libboost_serialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_serialization.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_serialization.dylib; sourceTree = "<absolute>"; };
+		D3B910BB1CE3EEBD00B419B9 /* libboost_signals-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_signals-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_signals-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910BC1CE3EEBD00B419B9 /* libboost_signals.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_signals.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_signals.dylib; sourceTree = "<absolute>"; };
+		D3B910BD1CE3EEBD00B419B9 /* libboost_system-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_system-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_system-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910BE1CE3EEBD00B419B9 /* libboost_system.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_system.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_system.dylib; sourceTree = "<absolute>"; };
+		D3B910BF1CE3EEBD00B419B9 /* libboost_thread-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_thread-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_thread-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910C01CE3EEBD00B419B9 /* libboost_timer-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_timer-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_timer-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910C11CE3EEBD00B419B9 /* libboost_timer.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_timer.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_timer.dylib; sourceTree = "<absolute>"; };
+		D3B910C21CE3EEBD00B419B9 /* libboost_unit_test_framework-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_unit_test_framework-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_unit_test_framework-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910C31CE3EEBD00B419B9 /* libboost_unit_test_framework.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_unit_test_framework.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_unit_test_framework.dylib; sourceTree = "<absolute>"; };
+		D3B910C41CE3EEBD00B419B9 /* libboost_wave-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_wave-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_wave-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910C51CE3EEBD00B419B9 /* libboost_wave.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_wave.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_wave.dylib; sourceTree = "<absolute>"; };
+		D3B910C61CE3EEBD00B419B9 /* libboost_wserialization-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_wserialization-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_wserialization-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910C71CE3EEBD00B419B9 /* libboost_wserialization.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_wserialization.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_wserialization.dylib; sourceTree = "<absolute>"; };
+		D3B910C81CE3EEBD00B419B9 /* libboost_atomic-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_atomic-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_atomic-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910C91CE3EEBD00B419B9 /* libboost_chrono-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_chrono-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_chrono-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910CA1CE3EEBD00B419B9 /* libboost_chrono.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_chrono.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_chrono.dylib; sourceTree = "<absolute>"; };
+		D3B910CB1CE3EEBD00B419B9 /* libboost_container-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_container-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_container-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910CC1CE3EEBD00B419B9 /* libboost_container.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_container.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_container.dylib; sourceTree = "<absolute>"; };
+		D3B910CD1CE3EEBD00B419B9 /* libboost_context-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_context-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_context-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910CE1CE3EEBD00B419B9 /* libboost_coroutine-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_coroutine-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_coroutine-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910CF1CE3EEBD00B419B9 /* libboost_coroutine.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_coroutine.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_coroutine.dylib; sourceTree = "<absolute>"; };
+		D3B910D01CE3EEBD00B419B9 /* libboost_date_time-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_date_time-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_date_time-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910D11CE3EEBD00B419B9 /* libboost_date_time.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_date_time.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_date_time.dylib; sourceTree = "<absolute>"; };
+		D3B910D21CE3EEBD00B419B9 /* libboost_filesystem-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_filesystem-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_filesystem-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910D31CE3EEBD00B419B9 /* libboost_filesystem.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_filesystem.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_filesystem.dylib; sourceTree = "<absolute>"; };
+		D3B910D41CE3EEBD00B419B9 /* libboost_graph-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_graph-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_graph-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910D51CE3EEBD00B419B9 /* libboost_graph.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_graph.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_graph.dylib; sourceTree = "<absolute>"; };
+		D3B910D61CE3EEBD00B419B9 /* libboost_iostreams-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_iostreams-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_iostreams-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910D71CE3EEBD00B419B9 /* libboost_iostreams.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_iostreams.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_iostreams.dylib; sourceTree = "<absolute>"; };
+		D3B910D81CE3EEBD00B419B9 /* libboost_locale-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_locale-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_locale-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910D91CE3EEBD00B419B9 /* libboost_log_setup-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_log_setup-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_log_setup-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910DA1CE3EEBD00B419B9 /* libboost_log_setup.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_log_setup.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_log_setup.dylib; sourceTree = "<absolute>"; };
+		D3B910DB1CE3EEBD00B419B9 /* libboost_log-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_log-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_log-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910DC1CE3EEBD00B419B9 /* libboost_log.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_log.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_log.dylib; sourceTree = "<absolute>"; };
+		D3B910DD1CE3EEBD00B419B9 /* libboost_math_c99-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_c99-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910DE1CE3EEBD00B419B9 /* libboost_math_c99.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_c99.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99.dylib; sourceTree = "<absolute>"; };
+		D3B910DF1CE3EEBD00B419B9 /* libboost_math_c99f-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_c99f-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99f-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910E01CE3EEBD00B419B9 /* libboost_math_c99f.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_c99f.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99f.dylib; sourceTree = "<absolute>"; };
+		D3B910E11CE3EEBD00B419B9 /* libboost_math_c99l-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_c99l-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99l-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910E21CE3EEBD00B419B9 /* libboost_math_c99l.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_c99l.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_math_c99l.dylib; sourceTree = "<absolute>"; };
+		D3B910E31CE3EEBD00B419B9 /* libboost_math_tr1-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_tr1-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910E41CE3EEBD00B419B9 /* libboost_math_tr1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_tr1.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1.dylib; sourceTree = "<absolute>"; };
+		D3B910E51CE3EEBD00B419B9 /* libboost_math_tr1f-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_tr1f-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1f-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910E61CE3EEBD00B419B9 /* libboost_math_tr1f.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_tr1f.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1f.dylib; sourceTree = "<absolute>"; };
+		D3B910E71CE3EEBD00B419B9 /* libboost_math_tr1l-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_math_tr1l-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1l-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910E81CE3EEBD00B419B9 /* libboost_math_tr1l.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_math_tr1l.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_math_tr1l.dylib; sourceTree = "<absolute>"; };
+		D3B910E91CE3EEBD00B419B9 /* libboost_prg_exec_monitor-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_prg_exec_monitor-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_prg_exec_monitor-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910EA1CE3EEBD00B419B9 /* libboost_prg_exec_monitor.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_prg_exec_monitor.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_prg_exec_monitor.dylib; sourceTree = "<absolute>"; };
+		D3B910EB1CE3EEBD00B419B9 /* libboost_program_options-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_program_options-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_program_options-mt.dylib"; sourceTree = "<absolute>"; };
+		D3B910EC1CE3EEBD00B419B9 /* libboost_program_options.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libboost_program_options.dylib; path = /usr/local/Cellar/boost/1.58.0/lib/libboost_program_options.dylib; sourceTree = "<absolute>"; };
+		D3B910ED1CE3EEBD00B419B9 /* libboost_random-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_random-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_random-mt.dylib"; sourceTree = "<absolute>"; };
 		D3B911261CE3F7AD00B419B9 /* libcrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcrypto.tbd; path = usr/lib/libcrypto.tbd; sourceTree = SDKROOT; };
 		D3B911281CE4026B00B419B9 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		D3FABC1F1CE524A400892002 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = PTC_xcode/main.cpp; sourceTree = "<group>"; };
+		D3FABC211CE524A400892002 /* Node.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = PTC_xcode/data_management/Node.cpp; sourceTree = "<group>"; };
+		D3FABC221CE524A400892002 /* Way.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Way.cpp; path = PTC_xcode/data_management/Way.cpp; sourceTree = "<group>"; };
+		D3FABC231CE524A400892002 /* Bounds.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Bounds.cpp; path = PTC_xcode/data_management/Bounds.cpp; sourceTree = "<group>"; };
+		D3FABC241CE524A400892002 /* DataCollection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DataCollection.cpp; path = PTC_xcode/data_management/DataCollection.cpp; sourceTree = "<group>"; };
+		D3FABC251CE524A400892002 /* DataCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataCollection.h; path = PTC_xcode/data_management/DataCollection.h; sourceTree = "<group>"; };
+		D3FABC261CE524A400892002 /* DataManagement.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DataManagement.cpp; path = PTC_xcode/data_management/DataManagement.cpp; sourceTree = "<group>"; };
+		D3FABC271CE524A400892002 /* Bounds.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Bounds.h; path = PTC_xcode/data_management/Bounds.h; sourceTree = "<group>"; };
+		D3FABC281CE524A400892002 /* DataManagement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataManagement.h; path = PTC_xcode/data_management/DataManagement.h; sourceTree = "<group>"; };
+		D3FABC291CE524A400892002 /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Node.h; path = PTC_xcode/data_management/Node.h; sourceTree = "<group>"; };
+		D3FABC2A1CE524A400892002 /* Way.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Way.h; path = PTC_xcode/data_management/Way.h; sourceTree = "<group>"; };
+		D3FABC2C1CE524A400892002 /* City.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = City.cpp; path = PTC_xcode/city/City.cpp; sourceTree = "<group>"; };
+		D3FABC2D1CE524A400892002 /* City.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = City.h; path = PTC_xcode/city/City.h; sourceTree = "<group>"; };
+		D3FABC2E1CE524A400892002 /* BuildCity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BuildCity.h; path = PTC_xcode/city/BuildCity.h; sourceTree = "<group>"; };
+		D3FABC2F1CE524A400892002 /* BuildCity.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BuildCity.cpp; path = PTC_xcode/city/BuildCity.cpp; sourceTree = "<group>"; };
+		D3FABC301CE524A400892002 /* Road.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Road.cpp; path = PTC_xcode/city/Road.cpp; sourceTree = "<group>"; };
+		D3FABC311CE524A400892002 /* Road.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Road.h; path = PTC_xcode/city/Road.h; sourceTree = "<group>"; };
+		D3FABC321CE524A400892002 /* CitySection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CitySection.cpp; path = PTC_xcode/city/CitySection.cpp; sourceTree = "<group>"; };
+		D3FABC331CE524A400892002 /* CitySection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CitySection.h; path = PTC_xcode/city/CitySection.h; sourceTree = "<group>"; };
+		D3FABC341CE524A400892002 /* ElevationTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ElevationTypes.cpp; path = PTC_xcode/city/ElevationTypes.cpp; sourceTree = "<group>"; };
+		D3FABC351CE524A400892002 /* ElevationTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ElevationTypes.h; path = PTC_xcode/city/ElevationTypes.h; sourceTree = "<group>"; };
+		D3FABC361CE524A400892002 /* Intersection.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Intersection.cpp; path = PTC_xcode/city/Intersection.cpp; sourceTree = "<group>"; };
+		D3FABC371CE524A400892002 /* Intersection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Intersection.h; path = PTC_xcode/city/Intersection.h; sourceTree = "<group>"; };
+		D3FABC381CE524A400892002 /* IntersectionTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = IntersectionTypes.cpp; path = PTC_xcode/city/IntersectionTypes.cpp; sourceTree = "<group>"; };
+		D3FABC391CE524A400892002 /* IntersectionTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IntersectionTypes.h; path = PTC_xcode/city/IntersectionTypes.h; sourceTree = "<group>"; };
+		D3FABC3A1CE524A400892002 /* RoadTypes.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RoadTypes.cpp; path = PTC_xcode/city/RoadTypes.cpp; sourceTree = "<group>"; };
+		D3FABC3B1CE524A400892002 /* RoadTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RoadTypes.h; path = PTC_xcode/city/RoadTypes.h; sourceTree = "<group>"; };
+		D3FABC3D1CE524A400892002 /* BuildCityUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BuildCityUnitTest.cpp; path = PTC_xcode/unit_tests/BuildCityUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC3E1CE524A400892002 /* DataCollectionUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DataCollectionUnitTest.cpp; path = PTC_xcode/unit_tests/DataCollectionUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC3F1CE524A400892002 /* RouteUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RouteUnitTest.cpp; path = PTC_xcode/unit_tests/RouteUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC401CE524A400892002 /* CitySectionUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CitySectionUnitTest.cpp; path = PTC_xcode/unit_tests/CitySectionUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC411CE524A400892002 /* DataManagementUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DataManagementUnitTest.cpp; path = PTC_xcode/unit_tests/DataManagementUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC421CE524A400892002 /* ElevationTypesUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ElevationTypesUnitTest.cpp; path = PTC_xcode/unit_tests/ElevationTypesUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC431CE524A400892002 /* GoalToLinkMapUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GoalToLinkMapUnitTest.cpp; path = PTC_xcode/unit_tests/GoalToLinkMapUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC441CE524A400892002 /* IntersectionTypesUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = IntersectionTypesUnitTest.cpp; path = PTC_xcode/unit_tests/IntersectionTypesUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC451CE524A400892002 /* IntersectionUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = IntersectionUnitTest.cpp; path = PTC_xcode/unit_tests/IntersectionUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC461CE524A400892002 /* LinkToStateMapUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LinkToStateMapUnitTest.cpp; path = PTC_xcode/unit_tests/LinkToStateMapUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC471CE524A400892002 /* LinkUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LinkUnitTest.cpp; path = PTC_xcode/unit_tests/LinkUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC481CE524A400892002 /* NodeUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NodeUnitTest.cpp; path = PTC_xcode/unit_tests/NodeUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC491CE524A400892002 /* RoadTypesUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RoadTypesUnitTest.cpp; path = PTC_xcode/unit_tests/RoadTypesUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC4A1CE524A400892002 /* UnitTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnitTests.h; path = PTC_xcode/unit_tests/UnitTests.h; sourceTree = "<group>"; };
+		D3FABC4B1CE524A400892002 /* RoadUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RoadUnitTest.cpp; path = PTC_xcode/unit_tests/RoadUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC4C1CE524A400892002 /* GoalMapEntryUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GoalMapEntryUnitTest.cpp; path = PTC_xcode/unit_tests/GoalMapEntryUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC4D1CE524A400892002 /* GoalUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GoalUnitTest.cpp; path = PTC_xcode/unit_tests/GoalUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC4E1CE524A400892002 /* LinkToStateMapEntryUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LinkToStateMapEntryUnitTest.cpp; path = PTC_xcode/unit_tests/LinkToStateMapEntryUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC4F1CE524A400892002 /* ProbabilityUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ProbabilityUnitTest.cpp; path = PTC_xcode/unit_tests/ProbabilityUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC501CE524A400892002 /* RoutePredictionUnitTest.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RoutePredictionUnitTest.cpp; path = PTC_xcode/unit_tests/RoutePredictionUnitTest.cpp; sourceTree = "<group>"; };
+		D3FABC521CE524A400892002 /* Route.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Route.h; path = PTC_xcode/route_prediction/Route.h; sourceTree = "<group>"; };
+		D3FABC531CE524A400892002 /* LinkToStateMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LinkToStateMap.cpp; path = PTC_xcode/route_prediction/LinkToStateMap.cpp; sourceTree = "<group>"; };
+		D3FABC541CE524A400892002 /* GoalToLinkMap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GoalToLinkMap.cpp; path = PTC_xcode/route_prediction/GoalToLinkMap.cpp; sourceTree = "<group>"; };
+		D3FABC551CE524A400892002 /* LinkToStateMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LinkToStateMap.h; path = PTC_xcode/route_prediction/LinkToStateMap.h; sourceTree = "<group>"; };
+		D3FABC561CE524A400892002 /* LinkToStateMapEntry.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LinkToStateMapEntry.cpp; path = PTC_xcode/route_prediction/LinkToStateMapEntry.cpp; sourceTree = "<group>"; };
+		D3FABC571CE524A400892002 /* Route.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Route.cpp; path = PTC_xcode/route_prediction/Route.cpp; sourceTree = "<group>"; };
+		D3FABC581CE524A400892002 /* RoutePrediction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RoutePrediction.cpp; path = PTC_xcode/route_prediction/RoutePrediction.cpp; sourceTree = "<group>"; };
+		D3FABC591CE524A400892002 /* RoutePrediction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RoutePrediction.h; path = PTC_xcode/route_prediction/RoutePrediction.h; sourceTree = "<group>"; };
+		D3FABC5A1CE524A400892002 /* GoalToLinkMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GoalToLinkMap.h; path = PTC_xcode/route_prediction/GoalToLinkMap.h; sourceTree = "<group>"; };
+		D3FABC5B1CE524A400892002 /* GoalMapEntry.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GoalMapEntry.cpp; path = PTC_xcode/route_prediction/GoalMapEntry.cpp; sourceTree = "<group>"; };
+		D3FABC5C1CE524A400892002 /* Goal.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Goal.cpp; path = PTC_xcode/route_prediction/Goal.cpp; sourceTree = "<group>"; };
+		D3FABC5D1CE524A400892002 /* Goal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Goal.h; path = PTC_xcode/route_prediction/Goal.h; sourceTree = "<group>"; };
+		D3FABC5E1CE524A400892002 /* GoalMapEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GoalMapEntry.h; path = PTC_xcode/route_prediction/GoalMapEntry.h; sourceTree = "<group>"; };
+		D3FABC5F1CE524A400892002 /* LinkToStateMapEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LinkToStateMapEntry.h; path = PTC_xcode/route_prediction/LinkToStateMapEntry.h; sourceTree = "<group>"; };
+		D3FABC611CE524A400892002 /* GenericMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericMap.h; path = PTC_xcode/map/GenericMap.h; sourceTree = "<group>"; };
+		D3FABC621CE524A400892002 /* GenericEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericEntry.h; path = PTC_xcode/map/GenericEntry.h; sourceTree = "<group>"; };
+		D3FABC631CE524A400892002 /* GenericMapIterator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericMapIterator.h; path = PTC_xcode/map/GenericMapIterator.h; sourceTree = "<group>"; };
+		D3FABC651CE524A400892002 /* SpeedPrediction.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SpeedPrediction.cpp; path = PTC_xcode/speed_prediction/SpeedPrediction.cpp; sourceTree = "<group>"; };
+		D3FABC661CE524A400892002 /* SpeedPrediction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SpeedPrediction.h; path = PTC_xcode/speed_prediction/SpeedPrediction.h; sourceTree = "<group>"; };
+		D3FABC681CE524A400892002 /* Link.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Link.cpp; path = PTC_xcode/driver_prediction/Link.cpp; sourceTree = "<group>"; };
+		D3FABC691CE524A400892002 /* Link.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Link.h; path = PTC_xcode/driver_prediction/Link.h; sourceTree = "<group>"; };
+		D3FABC6A1CE524A400892002 /* Probability.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Probability.cpp; path = PTC_xcode/driver_prediction/Probability.cpp; sourceTree = "<group>"; };
+		D3FABC6B1CE524A400892002 /* Probability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Probability.h; path = PTC_xcode/driver_prediction/Probability.h; sourceTree = "<group>"; };
+		D3FABC6D1CE524A400892002 /* GPS.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GPS.cpp; path = PTC_xcode/gps/GPS.cpp; sourceTree = "<group>"; };
+		D3FABC6E1CE524A400892002 /* GPS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GPS.h; path = PTC_xcode/gps/GPS.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -384,6 +518,23 @@
 		D3B910201CE3C83B00B419B9 = {
 			isa = PBXGroup;
 			children = (
+				D3FABCC61CE525DD00892002 /* src */,
+				D3FABB481CE5014E00892002 /* libs */,
+				D3B9102A1CE3C83B00B419B9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		D3B9102A1CE3C83B00B419B9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D3B910291CE3C83B00B419B9 /* PTC_xcode */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D3FABB481CE5014E00892002 /* libs */ = {
+			isa = PBXGroup;
+			children = (
 				D3B911281CE4026B00B419B9 /* CoreFoundation.framework */,
 				D3B911261CE3F7AD00B419B9 /* libcrypto.tbd */,
 				D3B910B61CE3EEBD00B419B9 /* libboost_random.dylib */,
@@ -497,33 +648,151 @@
 				D3B9107C1CE3EABC00B419B9 /* libopencv_core.2.4.11.dylib */,
 				D3B9107D1CE3EABC00B419B9 /* libopencv_core.2.4.11.dylib */,
 				D3B9107E1CE3EABC00B419B9 /* libopencv_flann.2.4.11.dylib */,
-				D3B9102B1CE3C83B00B419B9 /* PTC_xcode */,
-				D3B9102A1CE3C83B00B419B9 /* Products */,
 			);
+			name = libs;
 			sourceTree = "<group>";
 		};
-		D3B9102A1CE3C83B00B419B9 /* Products */ = {
+		D3FABCBE1CE524E100892002 /* data_management */ = {
 			isa = PBXGroup;
 			children = (
-				D3B910291CE3C83B00B419B9 /* PTC_xcode */,
+				D3FABC211CE524A400892002 /* Node.cpp */,
+				D3FABC221CE524A400892002 /* Way.cpp */,
+				D3FABC231CE524A400892002 /* Bounds.cpp */,
+				D3FABC241CE524A400892002 /* DataCollection.cpp */,
+				D3FABC251CE524A400892002 /* DataCollection.h */,
+				D3FABC261CE524A400892002 /* DataManagement.cpp */,
+				D3FABC271CE524A400892002 /* Bounds.h */,
+				D3FABC281CE524A400892002 /* DataManagement.h */,
+				D3FABC291CE524A400892002 /* Node.h */,
+				D3FABC2A1CE524A400892002 /* Way.h */,
 			);
-			name = Products;
+			name = data_management;
 			sourceTree = "<group>";
 		};
-		D3B9102B1CE3C83B00B419B9 /* PTC_xcode */ = {
+		D3FABCBF1CE524FF00892002 /* city */ = {
 			isa = PBXGroup;
 			children = (
-				D3B9103E1CE3CC6F00B419B9 /* city */,
-				D3B910401CE3CC6F00B419B9 /* data_management */,
-				D3B910451CE3CC6F00B419B9 /* driver_prediction */,
-				D3B910461CE3CC6F00B419B9 /* gps */,
-				D3B910431CE3CC6F00B419B9 /* map */,
-				D3B910411CE3CC6F00B419B9 /* route_prediction */,
-				D3B910441CE3CC6F00B419B9 /* speed_prediction */,
-				D3B910421CE3CC6F00B419B9 /* unit_tests */,
-				D3B9103F1CE3CC6F00B419B9 /* main.cpp */,
+				D3FABC2C1CE524A400892002 /* City.cpp */,
+				D3FABC2D1CE524A400892002 /* City.h */,
+				D3FABC2E1CE524A400892002 /* BuildCity.h */,
+				D3FABC2F1CE524A400892002 /* BuildCity.cpp */,
+				D3FABC301CE524A400892002 /* Road.cpp */,
+				D3FABC311CE524A400892002 /* Road.h */,
+				D3FABC321CE524A400892002 /* CitySection.cpp */,
+				D3FABC331CE524A400892002 /* CitySection.h */,
+				D3FABC341CE524A400892002 /* ElevationTypes.cpp */,
+				D3FABC351CE524A400892002 /* ElevationTypes.h */,
+				D3FABC361CE524A400892002 /* Intersection.cpp */,
+				D3FABC371CE524A400892002 /* Intersection.h */,
+				D3FABC381CE524A400892002 /* IntersectionTypes.cpp */,
+				D3FABC391CE524A400892002 /* IntersectionTypes.h */,
+				D3FABC3A1CE524A400892002 /* RoadTypes.cpp */,
+				D3FABC3B1CE524A400892002 /* RoadTypes.h */,
 			);
-			path = PTC_xcode;
+			name = city;
+			sourceTree = "<group>";
+		};
+		D3FABCC01CE5251300892002 /* unit_tests */ = {
+			isa = PBXGroup;
+			children = (
+				D3FABC3D1CE524A400892002 /* BuildCityUnitTest.cpp */,
+				D3FABC3E1CE524A400892002 /* DataCollectionUnitTest.cpp */,
+				D3FABC3F1CE524A400892002 /* RouteUnitTest.cpp */,
+				D3FABC401CE524A400892002 /* CitySectionUnitTest.cpp */,
+				D3FABC411CE524A400892002 /* DataManagementUnitTest.cpp */,
+				D3FABC421CE524A400892002 /* ElevationTypesUnitTest.cpp */,
+				D3FABC431CE524A400892002 /* GoalToLinkMapUnitTest.cpp */,
+				D3FABC441CE524A400892002 /* IntersectionTypesUnitTest.cpp */,
+				D3FABC451CE524A400892002 /* IntersectionUnitTest.cpp */,
+				D3FABC461CE524A400892002 /* LinkToStateMapUnitTest.cpp */,
+				D3FABC471CE524A400892002 /* LinkUnitTest.cpp */,
+				D3FABC481CE524A400892002 /* NodeUnitTest.cpp */,
+				D3FABC491CE524A400892002 /* RoadTypesUnitTest.cpp */,
+				D3FABC4A1CE524A400892002 /* UnitTests.h */,
+				D3FABC4B1CE524A400892002 /* RoadUnitTest.cpp */,
+				D3FABC4C1CE524A400892002 /* GoalMapEntryUnitTest.cpp */,
+				D3FABC4D1CE524A400892002 /* GoalUnitTest.cpp */,
+				D3FABC4E1CE524A400892002 /* LinkToStateMapEntryUnitTest.cpp */,
+				D3FABC4F1CE524A400892002 /* ProbabilityUnitTest.cpp */,
+				D3FABC501CE524A400892002 /* RoutePredictionUnitTest.cpp */,
+			);
+			name = unit_tests;
+			sourceTree = "<group>";
+		};
+		D3FABCC11CE5253D00892002 /* route_prediction */ = {
+			isa = PBXGroup;
+			children = (
+				D3FABC521CE524A400892002 /* Route.h */,
+				D3FABC531CE524A400892002 /* LinkToStateMap.cpp */,
+				D3FABC541CE524A400892002 /* GoalToLinkMap.cpp */,
+				D3FABC551CE524A400892002 /* LinkToStateMap.h */,
+				D3FABC561CE524A400892002 /* LinkToStateMapEntry.cpp */,
+				D3FABC571CE524A400892002 /* Route.cpp */,
+				D3FABC581CE524A400892002 /* RoutePrediction.cpp */,
+				D3FABC591CE524A400892002 /* RoutePrediction.h */,
+				D3FABC5A1CE524A400892002 /* GoalToLinkMap.h */,
+				D3FABC5B1CE524A400892002 /* GoalMapEntry.cpp */,
+				D3FABC5C1CE524A400892002 /* Goal.cpp */,
+				D3FABC5D1CE524A400892002 /* Goal.h */,
+				D3FABC5E1CE524A400892002 /* GoalMapEntry.h */,
+				D3FABC5F1CE524A400892002 /* LinkToStateMapEntry.h */,
+			);
+			name = route_prediction;
+			sourceTree = "<group>";
+		};
+		D3FABCC21CE5255600892002 /* map */ = {
+			isa = PBXGroup;
+			children = (
+				D3FABC611CE524A400892002 /* GenericMap.h */,
+				D3FABC621CE524A400892002 /* GenericEntry.h */,
+				D3FABC631CE524A400892002 /* GenericMapIterator.h */,
+			);
+			name = map;
+			sourceTree = "<group>";
+		};
+		D3FABCC31CE5256600892002 /* speed_prediction */ = {
+			isa = PBXGroup;
+			children = (
+				D3FABC651CE524A400892002 /* SpeedPrediction.cpp */,
+				D3FABC661CE524A400892002 /* SpeedPrediction.h */,
+			);
+			name = speed_prediction;
+			sourceTree = "<group>";
+		};
+		D3FABCC41CE5259700892002 /* driver_prediction */ = {
+			isa = PBXGroup;
+			children = (
+				D3FABC681CE524A400892002 /* Link.cpp */,
+				D3FABC691CE524A400892002 /* Link.h */,
+				D3FABC6A1CE524A400892002 /* Probability.cpp */,
+				D3FABC6B1CE524A400892002 /* Probability.h */,
+			);
+			name = driver_prediction;
+			sourceTree = "<group>";
+		};
+		D3FABCC51CE525B400892002 /* gps */ = {
+			isa = PBXGroup;
+			children = (
+				D3FABC6D1CE524A400892002 /* GPS.cpp */,
+				D3FABC6E1CE524A400892002 /* GPS.h */,
+			);
+			name = gps;
+			sourceTree = "<group>";
+		};
+		D3FABCC61CE525DD00892002 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				D3FABC1F1CE524A400892002 /* main.cpp */,
+				D3FABCBF1CE524FF00892002 /* city */,
+				D3FABCBE1CE524E100892002 /* data_management */,
+				D3FABCC41CE5259700892002 /* driver_prediction */,
+				D3FABCC51CE525B400892002 /* gps */,
+				D3FABCC21CE5255600892002 /* map */,
+				D3FABCC11CE5253D00892002 /* route_prediction */,
+				D3FABCC31CE5256600892002 /* speed_prediction */,
+				D3FABCC01CE5251300892002 /* unit_tests */,
+			);
+			name = src;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -582,7 +851,78 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D3B910471CE3CC6F00B419B9 /* main.cpp in Sources */,
+				D3FABCC71CE525FB00892002 /* main.cpp in Sources */,
+				D3FABC701CE524A400892002 /* Node.cpp in Sources */,
+				D3FABC711CE524A400892002 /* Way.cpp in Sources */,
+				D3FABC721CE524A400892002 /* Bounds.cpp in Sources */,
+				D3FABC731CE524A400892002 /* DataCollection.cpp in Sources */,
+				D3FABC741CE524A400892002 /* DataCollection.h in Sources */,
+				D3FABC751CE524A400892002 /* DataManagement.cpp in Sources */,
+				D3FABC761CE524A400892002 /* Bounds.h in Sources */,
+				D3FABC771CE524A400892002 /* DataManagement.h in Sources */,
+				D3FABC781CE524A400892002 /* Node.h in Sources */,
+				D3FABC791CE524A400892002 /* Way.h in Sources */,
+				D3FABC7B1CE524A400892002 /* City.cpp in Sources */,
+				D3FABC7C1CE524A400892002 /* City.h in Sources */,
+				D3FABC7D1CE524A400892002 /* BuildCity.h in Sources */,
+				D3FABC7E1CE524A400892002 /* BuildCity.cpp in Sources */,
+				D3FABC7F1CE524A400892002 /* Road.cpp in Sources */,
+				D3FABC801CE524A400892002 /* Road.h in Sources */,
+				D3FABC811CE524A400892002 /* CitySection.cpp in Sources */,
+				D3FABC821CE524A400892002 /* CitySection.h in Sources */,
+				D3FABC831CE524A400892002 /* ElevationTypes.cpp in Sources */,
+				D3FABC841CE524A400892002 /* ElevationTypes.h in Sources */,
+				D3FABC851CE524A400892002 /* Intersection.cpp in Sources */,
+				D3FABC861CE524A400892002 /* Intersection.h in Sources */,
+				D3FABC871CE524A400892002 /* IntersectionTypes.cpp in Sources */,
+				D3FABC881CE524A400892002 /* IntersectionTypes.h in Sources */,
+				D3FABC891CE524A400892002 /* RoadTypes.cpp in Sources */,
+				D3FABC8A1CE524A400892002 /* RoadTypes.h in Sources */,
+				D3FABC8C1CE524A400892002 /* BuildCityUnitTest.cpp in Sources */,
+				D3FABC8D1CE524A400892002 /* DataCollectionUnitTest.cpp in Sources */,
+				D3FABC8E1CE524A400892002 /* RouteUnitTest.cpp in Sources */,
+				D3FABC8F1CE524A400892002 /* CitySectionUnitTest.cpp in Sources */,
+				D3FABC901CE524A400892002 /* DataManagementUnitTest.cpp in Sources */,
+				D3FABC911CE524A400892002 /* ElevationTypesUnitTest.cpp in Sources */,
+				D3FABC921CE524A400892002 /* GoalToLinkMapUnitTest.cpp in Sources */,
+				D3FABC931CE524A400892002 /* IntersectionTypesUnitTest.cpp in Sources */,
+				D3FABC941CE524A400892002 /* IntersectionUnitTest.cpp in Sources */,
+				D3FABC951CE524A400892002 /* LinkToStateMapUnitTest.cpp in Sources */,
+				D3FABC961CE524A400892002 /* LinkUnitTest.cpp in Sources */,
+				D3FABC971CE524A400892002 /* NodeUnitTest.cpp in Sources */,
+				D3FABC981CE524A500892002 /* RoadTypesUnitTest.cpp in Sources */,
+				D3FABC991CE524A500892002 /* UnitTests.h in Sources */,
+				D3FABC9A1CE524A500892002 /* RoadUnitTest.cpp in Sources */,
+				D3FABC9B1CE524A500892002 /* GoalMapEntryUnitTest.cpp in Sources */,
+				D3FABC9C1CE524A500892002 /* GoalUnitTest.cpp in Sources */,
+				D3FABC9D1CE524A500892002 /* LinkToStateMapEntryUnitTest.cpp in Sources */,
+				D3FABC9E1CE524A500892002 /* ProbabilityUnitTest.cpp in Sources */,
+				D3FABC9F1CE524A500892002 /* RoutePredictionUnitTest.cpp in Sources */,
+				D3FABCA11CE524A500892002 /* Route.h in Sources */,
+				D3FABCA21CE524A500892002 /* LinkToStateMap.cpp in Sources */,
+				D3FABCA31CE524A500892002 /* GoalToLinkMap.cpp in Sources */,
+				D3FABCA41CE524A500892002 /* LinkToStateMap.h in Sources */,
+				D3FABCA51CE524A500892002 /* LinkToStateMapEntry.cpp in Sources */,
+				D3FABCA61CE524A500892002 /* Route.cpp in Sources */,
+				D3FABCA71CE524A500892002 /* RoutePrediction.cpp in Sources */,
+				D3FABCA81CE524A500892002 /* RoutePrediction.h in Sources */,
+				D3FABCA91CE524A500892002 /* GoalToLinkMap.h in Sources */,
+				D3FABCAA1CE524A500892002 /* GoalMapEntry.cpp in Sources */,
+				D3FABCAB1CE524A500892002 /* Goal.cpp in Sources */,
+				D3FABCAC1CE524A500892002 /* Goal.h in Sources */,
+				D3FABCAD1CE524A500892002 /* GoalMapEntry.h in Sources */,
+				D3FABCAE1CE524A500892002 /* LinkToStateMapEntry.h in Sources */,
+				D3FABCB01CE524A500892002 /* GenericMap.h in Sources */,
+				D3FABCB11CE524A500892002 /* GenericEntry.h in Sources */,
+				D3FABCB21CE524A500892002 /* GenericMapIterator.h in Sources */,
+				D3FABCB41CE524A500892002 /* SpeedPrediction.cpp in Sources */,
+				D3FABCB51CE524A500892002 /* SpeedPrediction.h in Sources */,
+				D3FABCB71CE524A500892002 /* Link.cpp in Sources */,
+				D3FABCB81CE524A500892002 /* Link.h in Sources */,
+				D3FABCB91CE524A500892002 /* Probability.cpp in Sources */,
+				D3FABCBA1CE524A500892002 /* Probability.h in Sources */,
+				D3FABCBC1CE524A500892002 /* GPS.cpp in Sources */,
+				D3FABCBD1CE524A500892002 /* GPS.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -673,12 +1013,17 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CODE_SIGN_IDENTITY = "";
+				ENABLE_TESTABILITY = NO;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					/usr/local/include,
 					/usr/local/include/eigen3,
 					/usr/local/include/opencv,
 					/usr/local/include/opencv2,
 					/usr/local/include/boost,
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -689,8 +1034,9 @@
 					/usr/local/Cellar/opencv/2.4.11_1/lib,
 					/usr/local/Cellar/boost/1.58.0/lib,
 					/usr/local/Cellar/eigen/3.2.4/include/eigen3,
+					"$(inherited)",
 				);
-				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "$(boost_thread-mt)";
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -700,12 +1046,16 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CODE_SIGN_IDENTITY = "";
+				ENABLE_TESTABILITY = NO;
 				"HEADER_SEARCH_PATHS[arch=*]" = (
 					/usr/local/include,
 					/usr/local/include/eigen3,
 					/usr/local/include/opencv,
 					/usr/local/include/opencv2,
 					/usr/local/include/boost,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(inherited)",
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -716,8 +1066,9 @@
 					/usr/local/Cellar/opencv/2.4.11_1/lib,
 					/usr/local/Cellar/boost/1.58.0/lib,
 					/usr/local/Cellar/eigen/3.2.4/include/eigen3,
+					"$(inherited)",
 				);
-				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "$(boost_thread-mt)";
+				"OTHER_CPLUSPLUSFLAGS[arch=*]" = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -741,6 +1092,7 @@
 				D3B910321CE3C83B00B419B9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -276,6 +276,8 @@ GenericMap<int, Route*>* DataManagement::getRoutes() {
 	} catch(const std::exception& e) {
 		std::cout << e.what() << std::endl;
 	}
+    // TODO
+    return NULL;
 }
 
 City* DataManagement::getCityData() {

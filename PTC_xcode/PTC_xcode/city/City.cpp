@@ -148,10 +148,6 @@ Intersection* City::addIntersection(Intersection* intersections, Intersection* i
 	return newInts;
 }
 
-City::~City() {
-	// TODO Auto-generated destructor stub
-}
-
 int* City::reverseTrace(int* trace)
 {
 	int traceSize = sizeof(*trace)/sizeof(int);

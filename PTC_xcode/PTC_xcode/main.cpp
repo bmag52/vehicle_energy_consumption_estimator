@@ -55,7 +55,6 @@ int main() {
     BuildCity bc;
     bc.updateGridDataPNG();
     
-    
     Eigen::MatrixXd testEigen;
     
     cv::Mat testOpenCv;

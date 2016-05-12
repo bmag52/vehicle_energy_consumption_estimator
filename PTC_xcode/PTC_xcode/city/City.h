@@ -55,7 +55,6 @@ public:
 	Intersection* getIntersectionFromLink(Link* link, bool isIntersection);
 	Intersection* getIntersection(int intersectionNum);
 	Route* getPath(Intersection* start, Intersection* end, int* conditions, int fastest);
-	virtual ~City();
 	std::pair<int*, int*>* getRoadData(Link* link);
 	bool legalRoute(Route* route);
 	std::pair<int*, double*>* routeToData(Route* route, int dist);

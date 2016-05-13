@@ -213,11 +213,14 @@ void BuildCity::updateGridDataPNG() {
         DataCollection* dc = newMapData->first;
         Bounds* newBounds = newMapData->second;
         
-        int zoomIdx = dc->pullDataPNG(this->latCenter, this->lonCenter);
+        pullAndFormatMapPNG(dc);
     }
 }
 
-void BuildCity::formatMapPNG(DataCollection* dc) {
+void BuildCity::pullAndFormatMapPNG(DataCollection* dc) {
+    
+    int zoomIdx = dc->pullDataPNG(this->latCenter, this->lonCenter);
+    
     std::string dataFolder = dc->getDataFolder();
     std::string mapPNGName = dc->getMapPNGName();
     

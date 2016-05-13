@@ -56,7 +56,7 @@ namespace PredictivePowertrain {
         void connectifyAjdMat();
         bool isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntry<int, std::pair<int, int>*>* idx2);
         std::pair<DataCollection*, Bounds*>* setupDataCollection();
-        void formatMapPNG(DataCollection* dc);
+        void pullAndFormatMapPNG(DataCollection* dc);
         
     public:
         BuildCity();

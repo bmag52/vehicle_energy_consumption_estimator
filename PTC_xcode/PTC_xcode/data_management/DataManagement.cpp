@@ -430,6 +430,8 @@ City* DataManagement::getCityData() {
 }
 
 GenericMap<long int, std::pair<double, double>*>* DataManagement::getMostRecentTripData() {
+    
+    std::cout << "getting most recent trip log data" << std::endl;
 
 	ptree tripLog;
 	int dayID = 0;

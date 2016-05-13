@@ -417,12 +417,17 @@ int DataCollection::pullOSMDataPNG(double lat, double lon) {
 		nextZoom = this->zoomSpreads.nextEntry();
 	}
 
-	std::string cutycapt = "cutycapt --min-width=6000 --min-height=6000 --delay=2000 --url=https://www.openstreetmap.org/export#map=";
-	cutycapt += lexical_cast<std::string>(zoomIdx) + "/";
-	cutycapt += lexical_cast<std::string>(lat) + "/";
-	cutycapt += lexical_cast<std::string>(lon) + " --out=";
-	cutycapt += this->dataFolder + "/" + this->mapPNGName;
-	system(cutycapt.c_str());
+	std::string webkit2png = "/usr/local/bin/webkit2png -W 6000 -H 6000 -o ";
+    webkit2png += this->dataFolder + "/" + this->mapPNGName + " ";
+    webkit2png += "https://www.openstreetmap.org/export#map=";
+	webkit2png += lexical_cast<std::string>(zoomIdx) + "/";
+	webkit2png += lexical_cast<std::string>(lat) + "/";
+    webkit2png += lexical_cast<std::string>(lon);
+    
+    std::cout << "command used ..." << std::endl;
+    std::cout << webkit2png << std::endl;
+    
+    system(webkit2png.c_str());
 
 	this->boundsCountPNG++;
 	Bounds* newBounds = new Bounds(lat+.5*latSpreadMin, lon+.5*lonSpreadMin, lat-.5*latSpreadMin, lon-.5*lonSpreadMin);
@@ -547,7 +552,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 			if(node != NULL)
 			{
 				nodes->addEntry(node->getID(), node);
-				csv << way->getID() << ",";									//name
+				csv << way->getID() << ",";								//name
 				csv << "\"Node ID: " << node->getID() << " | ";			//Node ID
 				csv << "Ele: " << node->getEle() << " | ";				//Ele
 				csv << "Way ID: " << way->getID() << " | ";				//Way ID

@@ -20,8 +20,11 @@
 #include <eigen3/unsupported/Eigen/Splines>
 #include <math.h>
 
+#include <opencv2/opencv.hpp>
 #include <opencv2/core/core.hpp>
+#include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 
 namespace PredictivePowertrain {
     
@@ -31,10 +34,10 @@ namespace PredictivePowertrain {
         City city;
         GenericMap<long int, Road*>* rawRoads;
         Eigen::MatrixXd adjMatFromSplines;
-        double maxLat = -DBL_MAX;
-        double maxLon = -DBL_MAX;
-        double minLat = DBL_MAX;
-        double minLon = DBL_MAX;
+        double maxLat;
+        double maxLon;
+        double minLat;
+        double minLon;
         double latCenter;
         double lonCenter;
         double latDelta;
@@ -56,7 +59,7 @@ namespace PredictivePowertrain {
         void connectifyAjdMat();
         bool isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntry<int, std::pair<int, int>*>* idx2);
         std::pair<DataCollection*, Bounds*>* setupDataCollection();
-        void pullAndFormatMapPNG(DataCollection* dc);
+        cv::Mat pullAndFormatMapPNG(DataCollection* dc);
         
     public:
         BuildCity();

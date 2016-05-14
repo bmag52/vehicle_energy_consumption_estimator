@@ -213,24 +213,45 @@ void BuildCity::updateGridDataPNG() {
         DataCollection* dc = newMapData->first;
         Bounds* newBounds = newMapData->second;
         
-        pullAndFormatMapPNG(dc);
+        cv::Mat roadGrid = pullAndFormatMapPNG(dc);
     }
 }
 
-void BuildCity::pullAndFormatMapPNG(DataCollection* dc) {
+cv::Mat BuildCity::pullAndFormatMapPNG(DataCollection* dc) {
     
+    // pull in image
     int zoomIdx = dc->pullDataPNG(this->latCenter, this->lonCenter);
-    
     std::string dataFolder = dc->getDataFolder();
     std::string mapPNGName = dc->getMapPNGName();
-    
     std::string mapPicLoc = dataFolder + "/" + mapPNGName;
     
-    cv::Mat mapImage;
-    mapImage = cv::imread(mapPicLoc, CV_LOAD_IMAGE_COLOR);
+    // get raw image
+    cv::Mat mapImage = cv::imread(mapPicLoc, CV_LOAD_IMAGE_COLOR);
     
-    cv::imshow("test", mapImage);
+    // trim raw image
+    cv::Rect roi(350, 55, 5650, 5945);
+    cv::Mat croppedMapImage = mapImage(roi);
     
+    // red highway color filter
+    cv::Mat redMask;
+    cv::Scalar redLB = cv::Scalar(80, 65, 190);
+    cv::Scalar redUB = cv::Scalar(170, 147, 251);
+    cv::inRange(croppedMapImage, redLB, redUB, redMask);
+    
+    // yellow access road color filter
+    cv::Mat yellowMask;
+    cv::Scalar yellowLB = cv::Scalar(117, 223, 228);
+    cv::Scalar yellowUB = cv::Scalar(195, 270, 251);
+    cv::inRange(croppedMapImage, yellowLB, yellowUB, yellowMask);
+    
+    // white residential road color filter
+    cv::Mat whiteMask;
+    cv::Scalar whiteLB = cv::Scalar(250, 250, 250);
+    cv::Scalar whiteUB = cv::Scalar(254, 254, 254);
+    cv::inRange(croppedMapImage, whiteLB, whiteUB, whiteMask);
+    
+    cv::imwrite("/Users/Brian/Desktop/misc/test.png", redMask + yellowMask + whiteMask);
+    return croppedMapImage;
     
 }
 
@@ -259,6 +280,11 @@ bool BuildCity::hasNewBounds() {
     DataManagement dm;
     GenericMap<long int, std::pair<double, double>*>* tripLatLon = dm.getMostRecentTripData();
     City* city = dm.getCityData();
+    
+    this->maxLat = -DBL_MAX;
+    this->maxLon = -DBL_MAX;
+    this->minLat = DBL_MAX;
+    this->minLon = DBL_MAX;
     
     tripLatLon->initializeCounter();
     GenericEntry<long int, std::pair<double, double>*>* nextTripLatLon = tripLatLon->nextEntry();

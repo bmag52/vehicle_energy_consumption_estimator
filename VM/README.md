@@ -52,16 +52,12 @@ The directory contains a `Vagrantfile` which is the build script, and a `package
 * Uninstall Vm: `vagrant destroy` in the `VM/` directory. You will loose you virtual machine, but can reinstall fresh.
 
 #### Adding pertinent drivers for OSX developement:
-* install eclipse 64-bit for osx [here](http://www.eclipse.org/downloads/packages/eclipse-ide-cc-developers/galileosr2)
 * install brew [here](http://brew.sh/)
 * in terminal make the following calls 
 	* brew install eigen
 	* brew install boost
 	* brew install opencv
-	* brew install g++
-	* brew install gdb
-	* brew install cuty_capt
-* follow instructions [here](http://stackoverflow.com/questions/13913818/how-to-get-a-codesigned-gdb-on-osx) allow usage of debugger
+	* brew install webkit2png
 
 
 

@@ -213,17 +213,288 @@ void BuildCity::updateGridDataPNG() {
         DataCollection* dc = newMapData->first;
         Bounds* newBounds = newMapData->second;
         
-        cv::Mat roadGrid = pullAndFormatMapPNG(dc);
+        std::pair<int, cv::Mat>* newGridData = pullAndFormatMapPNG(dc);
+        int zoomIdx = newGridData->first;
+        cv::Mat map = newGridData->second;
+    
+        int kernelSideDim = 75;
+        
+//        for(int row = 0; row < map.rows; row += kernelSideDim)
+//        {
+//            std::cout << "row: " << row << std::endl;
+//            for(int col = 0; col < map.cols; col += kernelSideDim)
+//            {
+//                std::cout << "col: " << col << std::endl;
+//                if(row + kernelSideDim < map.rows && col + kernelSideDim < map.cols)
+//                {
+//                    cv::Rect roi(col, row, kernelSideDim, kernelSideDim);
+//                    cv::Mat kernel = map(roi);
+//                    
+//                    perimeterScanKernelForRoads(kernel);
+//                }
+//            }
+//        }
+        perimeterScanKernelForRoads(map);
+
+        
+        // Display the detected hough lines
+        imshow("Hough lines", map);
+        
+        // 1 slide a kernel along road to find intersections (
+        //      perimeter scanning kernel to identify incoming roads crossing perimeter
+        //      if two road inlets detected and scan back to center, no intersection detected
+        //      if three or more inlets detected and scan back to center, intersection detected
+        //      motion along previous road direction and update direction only after new trajectory conects back to center
+        // 2 once intersection found, add it to map with connecting road or update connecting road if intersection exists
+        // 3 add road to map with connecting intersection or update intersection if road exists
+        // repeat 1-3 on in direction of other roads
+
     }
 }
+    
+GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* BuildCity::perimeterScanKernelForRoads(cv::Mat kernel) {
 
-cv::Mat BuildCity::pullAndFormatMapPNG(DataCollection* dc) {
+    std::cout << kernel.type() << std::endl;
+    
+    GenericMap<int, cv::Point*>* points = new GenericMap<int, cv::Point*>();
+    int pointCount = 1;
+    
+    cv::Vec3f lastPixel = kernel.at<cv::Vec3f>(0, 0);
+    
+    // top edge
+    std::cout << "top edge" << std::endl;
+    for(int i = 1; i < kernel.cols; i++)
+    {
+        cv::Vec3f nextPixel = kernel.at<cv::Vec3f>(i, 0);
+        int diff = std::abs(nextPixel[0] - lastPixel[0]);
+
+        cv::Point testPoint(i, 0);
+        drawPoint(kernel, testPoint);
+        
+        if(i > 160)
+        {
+            cv::imshow("test", kernel);
+        }
+        
+        // found difference
+        if(diff > 100)
+        {
+            cv::Point* newPt = new cv::Point(i, 0);
+            drawPoint(kernel, *newPt);
+            points->addEntry(pointCount, newPt);
+            pointCount++;
+            
+        }
+        lastPixel = nextPixel;
+    }
+    
+    // right edge
+    std::cout << "right edge" << std::endl;
+    for(int i = 0; i < kernel.rows; i++)
+    {
+        cv::Vec3f nextPixel = kernel.at<cv::Vec3f>(kernel.cols-1, i);
+        int diff = std::abs(nextPixel[0] - lastPixel[0]);
+        
+        cv::Point testPoint(kernel.cols-1, i);
+        drawPoint(kernel, testPoint);
+        
+        // found difference
+        if(diff > 100)
+        {
+            cv::Point* newPt = new cv::Point(kernel.cols-1, i);
+            drawPoint(kernel, *newPt);
+            points->addEntry(pointCount, newPt);
+            pointCount++;
+        }
+        lastPixel = nextPixel;
+    }
+   
+    // bottom edge
+    std::cout << "bottom edge" << std::endl;
+    for(int i = kernel.cols-1; i >= 0; i--)
+    {
+        cv::Vec3f nextPixel = kernel.at<cv::Vec3f>(i, kernel.rows-1);
+        int diff = std::abs(nextPixel[0] - lastPixel[0]);
+        
+        cv::Point testPoint(i, kernel.rows-1);
+        drawPoint(kernel, testPoint);
+        
+        // found difference
+        if(diff > 100)
+        {
+            cv::Point* newPt = new cv::Point(i, kernel.rows-1);
+            drawPoint(kernel, *newPt);
+            points->addEntry(pointCount, newPt);
+            pointCount++;
+            
+        }
+        lastPixel = nextPixel;
+    }
+    
+    // left edge
+    std::cout << "left edge" << std::endl;
+    for(int i = kernel.rows-1; i >= 0; i--)
+    {
+        cv::Vec3f nextPixel = kernel.at<cv::Vec3f>(0, i);
+        int diff = std::abs(nextPixel[0] - lastPixel[0]);
+        
+        cv::Point testPoint(0, i);
+        drawPoint(kernel, testPoint);
+        
+        // found difference
+        if(diff > 100)
+        {
+            cv::Point* newPt = new cv::Point(0, i);
+            drawPoint(kernel, *newPt);
+            points->addEntry(pointCount, newPt);
+            pointCount++;
+        }
+        lastPixel = nextPixel;
+    }
+    
+    if(points->getSize() > 0)
+    {
+        cv::imshow("kernel", kernel);
+    }
+    return NULL;
+}
+    
+// Draw the detected intersection point on an image
+void BuildCity::drawPoint(cv::Mat &image, cv::Point point) {
+  
+    int rad = 4;
+    cv::Scalar color = cv::Scalar(255,255,255); // line color
+    cv::circle( image, point, rad, color, -1, 8 );
+    
+}
+    
+GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map) {
+    // find intersection for all roads
+    GenericMap<int, cv::Point*>* ints = new GenericMap<int, cv::Point*>();
+    
+    int pointCount = 1;
+    int kernelSideDim = 76; // not dynamically set
+    
+    for(int row = 0; row < map.rows; row += kernelSideDim)
+    {
+        std::cout << "row: " << row << std::endl;
+        for(int col = 0; col < map.cols; col += kernelSideDim)
+        {
+            std::cout << "col: " << col << std::endl;
+            if(row + kernelSideDim < map.rows && col + kernelSideDim < map.cols)
+            {
+                cv::Rect roi(row, col, kernelSideDim, kernelSideDim);
+                cv::Mat kernel = map(roi);
+
+                int xCount[kernelSideDim];
+                int yCount[kernelSideDim];
+
+                std::fill_n(xCount, kernelSideDim, 0);
+                std::fill_n(yCount, kernelSideDim, 0);
+
+                std::vector<cv::Vec2f> lines;
+                cv::HoughLines(kernel, lines, 1, CV_PI/180, 25, 0, 0 ); // need to dynamically scale point-on-line count according to zoom
+
+                // Draw the hough lines
+                std::vector<cv::Vec2f>::const_iterator it1 = lines.begin();
+                while(it1 != lines.end())
+                {
+                    std::pair<cv::Point, cv::Point>* linePoints1 = this->polarToCartisian((*it1)[0], (*it1)[1], kernel.rows);
+
+                    std::vector<cv::Vec2f>::const_iterator it2 = lines.begin();
+                    while(it2 != lines.end())
+                    {
+                        std::pair<cv::Point, cv::Point>* linePoints2 = this->polarToCartisian((*it2)[0], (*it2)[1], kernel.rows);
+
+                        if(std::abs((*it1)[1] - (*it2)[1]) > 10*CV_PI/180) {
+
+                            cv::Point intPnt;
+                            bool linesIntersect = getIntersectionPoint(linePoints1->first, linePoints1->second, linePoints2->first, linePoints2->second, intPnt);
+
+                            if(linesIntersect && intPnt.x < kernelSideDim && intPnt.y < kernelSideDim && intPnt.x >= 0 && intPnt.y >= 0)
+                            {
+                                xCount[intPnt.x] += 1;
+                                yCount[intPnt.y] += 1;
+                            }
+                        }
+                        ++it2;
+                    }
+                    ++it1;
+                }
+
+                cv::Point* intersectPnt = new cv::Point();
+                intersectPnt->x = getCoord(xCount, kernelSideDim, 2) + row;
+                intersectPnt->y = getCoord(yCount, kernelSideDim, 2) + col;
+                if(intersectPnt->x != -1)
+                {
+                    int rad = 4;
+                    cv::Scalar color=cv::Scalar(255,255,255); // line color
+                    cv::circle(map, *intersectPnt, rad, color, -1, 8);
+                    
+                    ints->addEntry(pointCount, intersectPnt);
+                    pointCount++;
+                } else {
+                    free(intersectPnt);
+                }
+            }
+        }
+    }
+    cv::imshow("intersection", map);
+    return ints;
+}
+    
+int BuildCity::getCoord(int* dimCount, int dim, int tol) {
+    int i, coordCount = 0, max = 0, coord = -1, itr = 0;
+    for(i = 0; i < dim; i++) {
+        if(itr == tol) {
+            if(coordCount > max) {
+                max = coordCount;
+                coord = i + tol / 2;
+            }
+            coordCount = 0;
+            itr = 0;
+        } else if(dimCount[i] != 0) {
+            int c = dimCount[i];
+            coordCount += c;
+        }
+        itr++;
+    }
+    return coord;
+}
+    
+// get intersection points
+bool BuildCity::getIntersectionPoint(cv::Point a1, cv::Point a2, cv::Point b1, cv::Point b2, cv::Point & intPnt) {
+    cv::Point p = a1;
+    cv::Point q = b1;
+    cv::Point r(a2-a1);
+    cv::Point s(b2-b1);
+    
+    if(cross(r,s) == 0) {
+        return false;}
+    
+    double t = cross(q-p,s)/cross(r,s);
+    
+    intPnt = p + t*r;
+    return true;
+}
+    
+double BuildCity::cross(cv::Point v1, cv::Point v2) {
+    return v1.x*v2.y - v1.y*v2.x;
+}
+    
+std::pair<cv::Point, cv::Point>* BuildCity::polarToCartisian(float mag, float angle, int rows) {
+    cv::Point pt1(mag / cos(angle), 0);
+    cv::Point pt2((mag - rows * sin(angle)) / cos(angle), rows);
+    return new std::pair<cv::Point, cv::Point>(pt1, pt2);
+}
+
+std::pair<int, cv::Mat>* BuildCity::pullAndFormatMapPNG(DataCollection* dc) {
     
     // pull in image
     int zoomIdx = dc->pullDataPNG(this->latCenter, this->lonCenter);
     std::string dataFolder = dc->getDataFolder();
     std::string mapPNGName = dc->getMapPNGName();
-    std::string mapPicLoc = dataFolder + "/" + mapPNGName;
+    std::string mapPicLoc = dataFolder + "/" + mapPNGName + "-full.png";
     
     // get raw image
     cv::Mat mapImage = cv::imread(mapPicLoc, CV_LOAD_IMAGE_COLOR);
@@ -240,18 +511,24 @@ cv::Mat BuildCity::pullAndFormatMapPNG(DataCollection* dc) {
     
     // yellow access road color filter
     cv::Mat yellowMask;
-    cv::Scalar yellowLB = cv::Scalar(117, 223, 228);
-    cv::Scalar yellowUB = cv::Scalar(195, 270, 251);
+    cv::Scalar yellowLB = cv::Scalar(107, 220, 210);
+    cv::Scalar yellowUB = cv::Scalar(205, 255, 255);
     cv::inRange(croppedMapImage, yellowLB, yellowUB, yellowMask);
     
     // white residential road color filter
     cv::Mat whiteMask;
     cv::Scalar whiteLB = cv::Scalar(250, 250, 250);
-    cv::Scalar whiteUB = cv::Scalar(254, 254, 254);
+    cv::Scalar whiteUB = cv::Scalar(255, 255, 255);
     cv::inRange(croppedMapImage, whiteLB, whiteUB, whiteMask);
     
-    cv::imwrite("/Users/Brian/Desktop/misc/test.png", redMask + yellowMask + whiteMask);
-    return croppedMapImage;
+    // orange small highways color filter
+    cv::Mat orangeMask;
+    cv::Scalar orangeLB = cv::Scalar(120, 180, 220);
+    cv::Scalar orangeUB = cv::Scalar(175, 230, 255);
+    cv::inRange(croppedMapImage, orangeLB, orangeUB, orangeMask);
+    
+    cv::imwrite(dataFolder + "/test.png", redMask + yellowMask + whiteMask + orangeMask);
+    return new std::pair<int, cv::Mat>(zoomIdx, redMask + yellowMask + whiteMask + orangeMask);
     
 }
 

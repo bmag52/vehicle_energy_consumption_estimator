@@ -24,6 +24,10 @@ void buildCity_ut() {
     latLon->addEntry(6, new std::pair<double, double>(47.686, -122.323));
     latLon->addEntry(7, new std::pair<double, double>(47.687, -122.322));
     
+//    GenericMap<long int, std::pair<double, double>*>* latLon = new GenericMap<long int, std::pair<double, double>*>();
+//    latLon->addEntry(1, new std::pair<double, double>(47.656784, -122.307302));
+//    latLon->addEntry(2, new std::pair<double, double>(47.560249, -122.379874));
+
     // jsonify trip log -> delete existing jsons
     DataManagement dm;
     dm.addTripData(latLon);

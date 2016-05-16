@@ -427,7 +427,7 @@ int DataCollection::pullOSMDataPNG(double lat, double lon) {
     std::cout << "command used ..." << std::endl;
     std::cout << webkit2png << std::endl;
     
-    system(webkit2png.c_str());
+//    system(webkit2png.c_str());
 
 	this->boundsCountPNG++;
 	Bounds* newBounds = new Bounds(lat+.5*latSpreadMin, lon+.5*lonSpreadMin, lat-.5*latSpreadMin, lon-.5*lonSpreadMin);

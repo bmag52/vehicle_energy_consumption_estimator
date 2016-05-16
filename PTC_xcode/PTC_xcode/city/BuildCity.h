@@ -59,7 +59,14 @@ namespace PredictivePowertrain {
         void connectifyAjdMat();
         bool isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntry<int, std::pair<int, int>*>* idx2);
         std::pair<DataCollection*, Bounds*>* setupDataCollection();
-        cv::Mat pullAndFormatMapPNG(DataCollection* dc);
+        std::pair<int, cv::Mat>* pullAndFormatMapPNG(DataCollection* dc);
+        bool getIntersectionPoint(cv::Point a1, cv::Point a2, cv::Point b1, cv::Point b2, cv::Point & intPnt);
+        std::pair<cv::Point, cv::Point>* polarToCartisian(float mag, float angle, int rows);
+        double cross(cv::Point v1, cv::Point v2);
+        int getCoord(int* dimCount, int dim, int tol);
+        GenericMap<int, cv::Point*>* getIntersectionsFromMapPNG(cv::Mat map);
+        GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* perimeterScanKernelForRoads(cv::Mat kernel);
+        void drawPoint(cv::Mat &image, cv::Point point);
         
     public:
         BuildCity();

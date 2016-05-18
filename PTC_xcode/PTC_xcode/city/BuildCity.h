@@ -67,6 +67,7 @@ namespace PredictivePowertrain {
         GenericMap<int, cv::Point*>* getIntersectionsFromMapPNG(cv::Mat map);
         GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* perimeterScanKernelForRoads(cv::Mat kernel);
         void drawPoint(cv::Mat &image, cv::Point point);
+        void checkNextPixel(int x, int y, GenericMap<int, cv::Point*>& points, cv::Mat& kernel, int& lastPixel);
         
     public:
         BuildCity();

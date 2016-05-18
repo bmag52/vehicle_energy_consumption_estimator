@@ -238,7 +238,9 @@ void BuildCity::updateGridDataPNG() {
 
         
         // Display the detected hough lines
-        imshow("Hough lines", map);
+        cv::imshow("incoming road dots", map);
+        cv::imwrite("/Users/Brian/Desktop/misc/kernelDev.png", map);
+        
         
         // 1 slide a kernel along road to find intersections (
         //      perimeter scanning kernel to identify incoming roads crossing perimeter
@@ -253,116 +255,66 @@ void BuildCity::updateGridDataPNG() {
 }
     
 GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* BuildCity::perimeterScanKernelForRoads(cv::Mat kernel) {
-
-    std::cout << kernel.type() << std::endl;
     
-    GenericMap<int, cv::Point*>* points = new GenericMap<int, cv::Point*>();
-    int pointCount = 1;
+    GenericMap<int, cv::Point*> points;
     
-    cv::Vec3f lastPixel = kernel.at<cv::Vec3f>(0, 0);
+    int lastPixel = kernel.at<uchar>(0, 0);
     
     // top edge
     std::cout << "top edge" << std::endl;
     for(int i = 1; i < kernel.cols; i++)
     {
-        cv::Vec3f nextPixel = kernel.at<cv::Vec3f>(i, 0);
-        int diff = std::abs(nextPixel[0] - lastPixel[0]);
-
-        cv::Point testPoint(i, 0);
-        drawPoint(kernel, testPoint);
-        
-        if(i > 160)
-        {
-            cv::imshow("test", kernel);
-        }
-        
-        // found difference
-        if(diff > 100)
-        {
-            cv::Point* newPt = new cv::Point(i, 0);
-            drawPoint(kernel, *newPt);
-            points->addEntry(pointCount, newPt);
-            pointCount++;
-            
-        }
-        lastPixel = nextPixel;
+        checkNextPixel(i, 100, points, kernel, lastPixel);
     }
     
     // right edge
     std::cout << "right edge" << std::endl;
     for(int i = 0; i < kernel.rows; i++)
     {
-        cv::Vec3f nextPixel = kernel.at<cv::Vec3f>(kernel.cols-1, i);
-        int diff = std::abs(nextPixel[0] - lastPixel[0]);
-        
-        cv::Point testPoint(kernel.cols-1, i);
-        drawPoint(kernel, testPoint);
-        
-        // found difference
-        if(diff > 100)
-        {
-            cv::Point* newPt = new cv::Point(kernel.cols-1, i);
-            drawPoint(kernel, *newPt);
-            points->addEntry(pointCount, newPt);
-            pointCount++;
-        }
-        lastPixel = nextPixel;
+        checkNextPixel(kernel.cols-1, i, points, kernel, lastPixel);
     }
    
     // bottom edge
     std::cout << "bottom edge" << std::endl;
     for(int i = kernel.cols-1; i >= 0; i--)
     {
-        cv::Vec3f nextPixel = kernel.at<cv::Vec3f>(i, kernel.rows-1);
-        int diff = std::abs(nextPixel[0] - lastPixel[0]);
-        
-        cv::Point testPoint(i, kernel.rows-1);
-        drawPoint(kernel, testPoint);
-        
-        // found difference
-        if(diff > 100)
-        {
-            cv::Point* newPt = new cv::Point(i, kernel.rows-1);
-            drawPoint(kernel, *newPt);
-            points->addEntry(pointCount, newPt);
-            pointCount++;
-            
-        }
-        lastPixel = nextPixel;
+        checkNextPixel(i, kernel.rows-1, points, kernel, lastPixel);
     }
     
     // left edge
     std::cout << "left edge" << std::endl;
     for(int i = kernel.rows-1; i >= 0; i--)
     {
-        cv::Vec3f nextPixel = kernel.at<cv::Vec3f>(0, i);
-        int diff = std::abs(nextPixel[0] - lastPixel[0]);
-        
-        cv::Point testPoint(0, i);
-        drawPoint(kernel, testPoint);
-        
-        // found difference
-        if(diff > 100)
-        {
-            cv::Point* newPt = new cv::Point(0, i);
-            drawPoint(kernel, *newPt);
-            points->addEntry(pointCount, newPt);
-            pointCount++;
-        }
-        lastPixel = nextPixel;
+        checkNextPixel(0, i, points, kernel, lastPixel);
     }
     
-    if(points->getSize() > 0)
+    if(points.getSize() > 0)
     {
         cv::imshow("kernel", kernel);
     }
     return NULL;
 }
     
+void BuildCity::checkNextPixel(int x, int y, GenericMap<int, cv::Point*>& points, cv::Mat& kernel, int& lastPixel){
+    int nextPixel = kernel.at<uchar>(x, y);
+    
+    std::cout << lastPixel << " " << nextPixel << std::endl;
+    
+    // found difference
+    if(nextPixel != lastPixel)
+    {
+        cv::Point* newPt = new cv::Point(x, y);
+        drawPoint(kernel, *newPt);
+        points.addEntry(points.getSize()+1, newPt);
+        cv::imshow("test", kernel);
+    }
+    lastPixel = nextPixel;
+}
+    
 // Draw the detected intersection point on an image
 void BuildCity::drawPoint(cv::Mat &image, cv::Point point) {
   
-    int rad = 4;
+    int rad = 7;
     cv::Scalar color = cv::Scalar(255,255,255); // line color
     cv::circle( image, point, rad, color, -1, 8 );
     
@@ -529,7 +481,6 @@ std::pair<int, cv::Mat>* BuildCity::pullAndFormatMapPNG(DataCollection* dc) {
     
     cv::imwrite(dataFolder + "/test.png", redMask + yellowMask + whiteMask + orangeMask);
     return new std::pair<int, cv::Mat>(zoomIdx, redMask + yellowMask + whiteMask + orangeMask);
-    
 }
 
 std::pair<DataCollection*, Bounds*>* BuildCity::setupDataCollection() {

@@ -222,10 +222,10 @@ void BuildCity::formatMapPNG() {
 
 	std::string mapPicLoc = dataFolder + "/" + mapPNGName;
 
-	cv::Mat mapImage;
-	mapImage = cv::imread(mapPicLoc, CV_LOAD_IMAGE_COLOR);
-
-	cv::imshow("test", mapImage);
+//	cv::Mat mapImage;
+//	mapImage = cv::imread(mapPicLoc, CV_LOAD_IMAGE_COLOR);
+//
+//	cv::imshow("test", mapImage);
 
 
 }

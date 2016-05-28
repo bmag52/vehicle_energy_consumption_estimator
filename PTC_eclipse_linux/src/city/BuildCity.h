@@ -20,8 +20,8 @@
 #include <eigen3/unsupported/Eigen/Splines>
 #include <math.h>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+//#include <opencv2/core/core.hpp>
+//#include <opencv2/highgui/highgui.hpp>
 
 namespace PredictivePowertrain {
 

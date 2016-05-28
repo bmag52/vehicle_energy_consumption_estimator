@@ -23,5 +23,7 @@ void goalmapentry_ut();
 void intersectiontypes_ut();
 void goalToLinkMap_ut();
 void buildCity_ut();
+void routePrediction_ut();
+void speedPrediction_ut();
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

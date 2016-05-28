@@ -306,7 +306,7 @@ void BuildCity::checkNextPixel(int x, int y, GenericMap<int, cv::Point*>& points
         cv::Point* newPt = new cv::Point(x, y);
         drawPoint(kernel, *newPt);
         points.addEntry(points.getSize()+1, newPt);
-        cv::imshow("test", kernel);
+//        cv::imshow("test", kernel);
     }
     lastPixel = nextPixel;
 }

@@ -21,7 +21,18 @@ Link* makeLinks(int numberOfLinks)
 	}
 }
 
-void routePrediction_UT()
+void routePrediction_ut()
 {
+	std::cout << "Route Prediction Unit Test" << std::endl;
 
+	int i = 0;
+	while(i < 1000000)
+	{
+		int ii;
+		while(ii < 1000000)
+		{
+			ii++;
+		}
+		i++;
+	}
 }

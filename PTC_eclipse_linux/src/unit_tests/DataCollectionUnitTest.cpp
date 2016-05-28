@@ -14,7 +14,7 @@ void dataCollection_ut() {
 
 	DataCollection testDC;
 
-	std::cout << testDC.pullDataPNG(47.681, -122.328) << std::endl; // greenlake
+//	std::cout << testDC.pullDataPNG(47.681, -122.328) << std::endl; // greenlake
 
 	testDC.pullDataXML(47.681, -122.328); // greenlake
 	std::cout << "node size " << testDC.getNodeMap()->getSize() << std::endl;
@@ -23,8 +23,8 @@ void dataCollection_ut() {
 	std::cout << "road Count " << testDC.makeRawRoads()->getSize() << std::endl;
 	GenericMap<long int, Road*>* roads = testDC.makeRawRoads();
 
-	testDC.pullDataXML(47.618174, -122.330838); // downtown
-	std::cout << "node size " << testDC.getNodeMap()->getSize() << std::endl;
-	std::cout << "boundCount " << testDC.getBoundsMapXML()->getSize() << std::endl;
-	std::cout << "road Count " << testDC.makeRawRoads()->getSize() << std::endl;
+//	testDC.pullDataXML(47.618174, -122.330838); // downtown
+//	std::cout << "node size " << testDC.getNodeMap()->getSize() << std::endl;
+//	std::cout << "boundCount " << testDC.getBoundsMapXML()->getSize() << std::endl;
+//	std::cout << "road Count " << testDC.makeRawRoads()->getSize() << std::endl;
 }

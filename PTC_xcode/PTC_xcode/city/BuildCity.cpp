@@ -216,8 +216,6 @@ void BuildCity::updateGridDataPNG() {
         std::pair<int, cv::Mat>* newGridData = pullAndFormatMapPNG(dc);
         int zoomIdx = newGridData->first;
         cv::Mat map = newGridData->second;
-    
-        int kernelSideDim = 75;
         
 //        for(int row = 0; row < map.rows; row += kernelSideDim)
 //        {
@@ -234,7 +232,8 @@ void BuildCity::updateGridDataPNG() {
 //                }
 //            }
 //        }
-        perimeterScanKernelForRoads(map);
+//        perimeterScanKernelForRoads(map);
+        getIntersectionsFromMapPNG(map);
 
         
         // Display the detected hough lines
@@ -264,7 +263,7 @@ GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* BuildCity::perimeterScanKer
     std::cout << "top edge" << std::endl;
     for(int i = 1; i < kernel.cols; i++)
     {
-        checkNextPixel(i, 100, points, kernel, lastPixel);
+        checkNextPixel(i, 0, points, kernel, lastPixel);
     }
     
     // right edge
@@ -322,77 +321,113 @@ void BuildCity::drawPoint(cv::Mat &image, cv::Point point) {
     
 GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map) {
     // find intersection for all roads
-    GenericMap<int, cv::Point*>* ints = new GenericMap<int, cv::Point*>();
+    GenericMap<int, cv::Point*>* intersections= new GenericMap<int, cv::Point*>();
     
-    int pointCount = 1;
-    int kernelSideDim = 76; // not dynamically set
+    // all needs to be dynamically set
+    int kernelSideDim = 200;
+    int angleThreshold = 45;
+    int pntThreshold = .75*kernelSideDim;
+    int imageProcessingResolution = .25*kernelSideDim;
+    int coordBinResolution = 6;
+    int maxLines = 200;
+    bool debug = false;
     
-    for(int row = 0; row < map.rows; row += kernelSideDim)
+    for(int row = 0; row < map.rows; row += imageProcessingResolution)
     {
-        std::cout << "row: " << row << std::endl;
-        for(int col = 0; col < map.cols; col += kernelSideDim)
+        if(debug) { std::cout << "row: " << row << std::endl; }
+        for(int col = 0; col < map.cols; col += imageProcessingResolution)
         {
-            std::cout << "col: " << col << std::endl;
-            if(row + kernelSideDim < map.rows && col + kernelSideDim < map.cols)
+            if(debug) { std::cout << "col: " << col << std::endl; }
+            if((row + kernelSideDim) < map.rows && (col + kernelSideDim) < map.cols)
             {
-                cv::Rect roi(row, col, kernelSideDim, kernelSideDim);
+                cv::Rect roi(col, row, kernelSideDim, kernelSideDim);
                 cv::Mat kernel = map(roi);
 
-                int xCount[kernelSideDim];
-                int yCount[kernelSideDim];
-
-                std::fill_n(xCount, kernelSideDim, 0);
-                std::fill_n(yCount, kernelSideDim, 0);
-
                 std::vector<cv::Vec2f> lines;
-                cv::HoughLines(kernel, lines, 1, CV_PI/180, 25, 0, 0 ); // need to dynamically scale point-on-line count according to zoom
+                cv::HoughLines(kernel, lines, 1, CV_PI/180, pntThreshold, 0, 0 );
 
                 // Draw the hough lines
                 std::vector<cv::Vec2f>::const_iterator it1 = lines.begin();
-                while(it1 != lines.end())
+                if(lines.size() < maxLines)
                 {
-                    std::pair<cv::Point, cv::Point>* linePoints1 = this->polarToCartisian((*it1)[0], (*it1)[1], kernel.rows);
-
-                    std::vector<cv::Vec2f>::const_iterator it2 = lines.begin();
-                    while(it2 != lines.end())
-                    {
-                        std::pair<cv::Point, cv::Point>* linePoints2 = this->polarToCartisian((*it2)[0], (*it2)[1], kernel.rows);
-
-                        if(std::abs((*it1)[1] - (*it2)[1]) > 10*CV_PI/180) {
-
-                            cv::Point intPnt;
-                            bool linesIntersect = getIntersectionPoint(linePoints1->first, linePoints1->second, linePoints2->first, linePoints2->second, intPnt);
-
-                            if(linesIntersect && intPnt.x < kernelSideDim && intPnt.y < kernelSideDim && intPnt.x >= 0 && intPnt.y >= 0)
-                            {
-                                xCount[intPnt.x] += 1;
-                                yCount[intPnt.y] += 1;
-                            }
-                        }
-                        ++it2;
-                    }
-                    ++it1;
-                }
-
-                cv::Point* intersectPnt = new cv::Point();
-                intersectPnt->x = getCoord(xCount, kernelSideDim, 2) + row;
-                intersectPnt->y = getCoord(yCount, kernelSideDim, 2) + col;
-                if(intersectPnt->x != -1)
-                {
-                    int rad = 4;
-                    cv::Scalar color=cv::Scalar(255,255,255); // line color
-                    cv::circle(map, *intersectPnt, rad, color, -1, 8);
+                    int xCount[kernelSideDim];
+                    int yCount[kernelSideDim];
                     
-                    ints->addEntry(pointCount, intersectPnt);
-                    pointCount++;
-                } else {
-                    free(intersectPnt);
+                    std::fill_n(xCount, kernelSideDim, 0);
+                    std::fill_n(yCount, kernelSideDim, 0);
+                    
+                    while(it1 != lines.end())
+                    {
+                        std::pair<cv::Point, cv::Point>* linePoints1 = this->polarToCartisian((*it1)[0], (*it1)[1], kernel.rows);
+
+                        std::vector<cv::Vec2f>::const_iterator it2 = lines.begin();
+                        while(it2 != lines.end())
+                        {
+                            std::pair<cv::Point, cv::Point>* linePoints2 = this->polarToCartisian((*it2)[0], (*it2)[1], kernel.rows);
+
+                            double lineAngle = std::abs((*it1)[1] - (*it2)[1])*180/CV_PI;
+                            if(lineAngle > angleThreshold && lineAngle < 180 - angleThreshold) {
+
+                                cv::Point intPnt;
+                                bool linesIntersect = getIntersectionPoint(linePoints1->first, linePoints1->second, linePoints2->first, linePoints2->second, intPnt);
+
+                                if(linesIntersect && intPnt.x < kernelSideDim && intPnt.y < kernelSideDim && intPnt.x >= 0 && intPnt.y >= 0)
+                                {
+                                    if(debug)
+                                    {
+                                        cv::line( kernel, linePoints1->first, linePoints1->second, cv::Scalar(0,0,0), 1);
+                                        cv::line( kernel, linePoints2->first, linePoints2->second, cv::Scalar(0,0,0), 1);
+                                    }
+                                    
+                                    xCount[intPnt.x] += 1;
+                                    yCount[intPnt.y] += 1;
+                                }
+                            }
+                            ++it2;
+                        }
+                        ++it1;
+                    }
+
+                    cv::Point* intersectPnt = new cv::Point();
+                    intersectPnt->x = getCoord(xCount, kernelSideDim, coordBinResolution);
+                    intersectPnt->y = getCoord(yCount, kernelSideDim, coordBinResolution);
+                    
+                    if(intersectPnt->x != -1)
+                    {
+                        intersectPnt->x += col;
+                        intersectPnt->y += row;
+                        
+                        int rad = 9;
+                        cv::Scalar color = cv::Scalar(0,0,0); // line color
+                        cv::circle(map, *intersectPnt, rad, color, -1, 8);
+                        intersections->addEntry(hashCoords(intersectPnt->x, intersectPnt->y), intersectPnt);
+                        
+                        if(debug)
+                        {
+                            cv::Point* intersectPntDebug = new cv::Point();
+                            intersectPntDebug->x = getCoord(xCount, kernelSideDim, coordBinResolution);
+                            intersectPntDebug->y = getCoord(yCount, kernelSideDim, coordBinResolution);
+                            cv::circle(kernel, *intersectPntDebug, rad, color, -1, 8);
+                        }
+                    } else {
+                        free(intersectPnt);
+                    }
+                    
+                    if(debug)
+                    {
+                        cv::imshow("test kenerel", kernel);
+                        cv::waitKey(10);
+                    }
                 }
             }
         }
     }
     cv::imshow("intersection", map);
-    return ints;
+    return intersections;
+}
+    
+int BuildCity::hashCoords(int x, int y) {
+    return (x * 0x1f1f1f1f) ^ y;
 }
     
 int BuildCity::getCoord(int* dimCount, int dim, int tol) {
@@ -421,8 +456,7 @@ bool BuildCity::getIntersectionPoint(cv::Point a1, cv::Point a2, cv::Point b1, c
     cv::Point r(a2-a1);
     cv::Point s(b2-b1);
     
-    if(cross(r,s) == 0) {
-        return false;}
+    if(cross(r,s) == 0) { return false; }
     
     double t = cross(q-p,s)/cross(r,s);
     

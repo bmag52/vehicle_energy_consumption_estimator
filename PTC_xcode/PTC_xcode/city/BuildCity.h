@@ -51,8 +51,7 @@ namespace PredictivePowertrain {
         double splineStep = 0.025;
         double adjMatPrecFromSplines = 0.00001;
         double gpsTolerance = 0.0001;
-        
-        
+                
         std::pair<GenericMap<int, Intersection*>*, GenericMap<long int, Road*>*>* parseAdjMat();
         double scaleID(long int id);
         long int unScaleID(double id);
@@ -68,6 +67,7 @@ namespace PredictivePowertrain {
         GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* perimeterScanKernelForRoads(cv::Mat kernel);
         void drawPoint(cv::Mat &image, cv::Point point);
         void checkNextPixel(int x, int y, GenericMap<int, cv::Point*>& points, cv::Mat& kernel, int& lastPixel);
+        int hashCoords(int x, int y);
         
     public:
         BuildCity();

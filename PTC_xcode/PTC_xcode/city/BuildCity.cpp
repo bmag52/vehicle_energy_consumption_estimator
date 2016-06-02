@@ -194,7 +194,7 @@ bool BuildCity::isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntr
     int x2 = idx2->value->first;
     int y2 = idx2->value->second;
     
-    return abs(x1-x2) <= 1 && abs(y1-y2) <= 1;
+    return std::abs(x1-x2) <= 1 && std::abs(y1-y2) <= 1;
 }
 
 double BuildCity::scaleID(long int id) {
@@ -302,6 +302,7 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
             newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
             newZoomParams.coordBinResolution = 6;
             newZoomParams.maxLines = 200;
+            newZoomParams.maxClusterPntDistance = 20;
             break;
         case 18 :
             newZoomParams.kernelSideDim = 200;
@@ -310,6 +311,7 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
             newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
             newZoomParams.coordBinResolution = 6;
             newZoomParams.maxLines = 200;
+            newZoomParams.maxClusterPntDistance = 20;
             break;
         case 17 :
             newZoomParams.kernelSideDim = 200;
@@ -318,6 +320,7 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
             newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
             newZoomParams.coordBinResolution = 6;
             newZoomParams.maxLines = 200;
+            newZoomParams.maxClusterPntDistance = 20;
             break;
         case 16 :
             newZoomParams.kernelSideDim = 200;
@@ -326,6 +329,7 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
             newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
             newZoomParams.coordBinResolution = 6;
             newZoomParams.maxLines = 200;
+            newZoomParams.maxClusterPntDistance = 20;
             break;
         case 15 :
             newZoomParams.kernelSideDim = 200;
@@ -334,6 +338,7 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
             newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
             newZoomParams.coordBinResolution = 6;
             newZoomParams.maxLines = 200;
+            newZoomParams.maxClusterPntDistance = 20;
             break;
         case 14 :
             newZoomParams.kernelSideDim = 200;
@@ -342,6 +347,7 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
             newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
             newZoomParams.coordBinResolution = 6;
             newZoomParams.maxLines = 200;
+            newZoomParams.maxClusterPntDistance = 20;
             break;
         case 13 :
             newZoomParams.kernelSideDim = 200;
@@ -350,6 +356,7 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
             newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
             newZoomParams.coordBinResolution = 6;
             newZoomParams.maxLines = 200;
+            newZoomParams.maxClusterPntDistance = 20;
             break;
         default :
             std::cout << "no zoom params for " << zoom << std::endl;
@@ -360,7 +367,7 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
     
 GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map, int zoom) {
 
-    GenericMap<int, cv::Point*>* rawIntersectionPoints = new GenericMap<int, cv::Point*>();
+    GenericMap<int, cv::Point*> rawIntersectionPoints;
     
     zoomParams zp = getZoomParams(zoom);
     bool debug = false;
@@ -439,7 +446,7 @@ GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map, 
                         intersectPnt->y += row;
 
                         cv::circle(map, *intersectPnt, rad, color, -1, 8);
-                        rawIntersectionPoints->addEntry(hashCoords(intersectPnt->x, intersectPnt->y), intersectPnt);
+                        rawIntersectionPoints.addEntry(hashCoords(intersectPnt->x, intersectPnt->y), intersectPnt);
                         
                     } else {
                         free(intersectPnt);
@@ -455,24 +462,84 @@ GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map, 
         }
     }
     
-    cv::imshow("intersection", map);
-    
     // pick best point from cluster
     GenericMap<int, cv::Point*>* intersections = new GenericMap<int, cv::Point*>();
     
-    GenericEntry<int, cv::Point*>* nextRawIntersectionPoint = rawIntersectionPoints->getFirstEntry();
+    cv::Point* nextRawIntersectionPoint = rawIntersectionPoints.getFirstEntry();
     while(nextRawIntersectionPoint != NULL)
     {
+        GenericMap<int, cv::Point*> intersectionPointCluster;
         
+        int key = hashCoords(nextRawIntersectionPoint->x, nextRawIntersectionPoint->y);
+        intersectionPointCluster.addEntry(key, nextRawIntersectionPoint);
+        rawIntersectionPoints.erase(key);
         
-        nextRawIntersectionPoint = rawIntersectionPoints->getFirstEntry();
+        declusterIntersectionPoints(nextRawIntersectionPoint, rawIntersectionPoints, intersectionPointCluster, .25*zp.kernelSideDim, zp.maxClusterPntDistance);
+        
+        // average point locations in cluster and plop new intersection point
+        if(intersectionPointCluster.getSize() > 1)
+        {
+            int sumX = 0;
+            int sumY = 0;
+            
+            intersectionPointCluster.initializeCounter();
+            GenericEntry<int, cv::Point*>* nextIntPnt = intersectionPointCluster.nextEntry();
+            while(nextIntPnt != NULL)
+            {
+                sumX += nextIntPnt->value->x;
+                sumY += nextIntPnt->value->y;
+                
+                nextIntPnt = intersectionPointCluster.nextEntry();
+            }
+            
+            int avgX = sumX / intersectionPointCluster.getSize();
+            int avgY = sumY / intersectionPointCluster.getSize();
+            
+            cv::Point* intersection = new cv::Point(avgX, avgY);
+            intersections->addEntry(hashCoords(avgX, avgY), intersection);
+            
+            cv::circle(map, *intersection, 4, cv::Scalar(255,255,255));
+            
+        }
+        nextRawIntersectionPoint = rawIntersectionPoints.getFirstEntry();
     }
     
     return intersections;
 }
     
+void BuildCity::declusterIntersectionPoints(cv::Point* rawIntPnt, GenericMap<int, cv::Point*>& rawIntPnts, GenericMap<int, cv::Point*>& intPnts, int kernelSideDim, double maxDistance)
+{
+    int rawIntPntX = rawIntPnt->x;
+    int rawIntPntY = rawIntPnt->y;
+    
+    int rowStart = rawIntPntY - .5*kernelSideDim;
+    int rowEnd = rawIntPntY + .5*kernelSideDim;
+    int colStart = rawIntPntX - .5*kernelSideDim;
+    int colEnd = rawIntPntX + .5*kernelSideDim;
+    
+    for(int row = rowStart; row < rowEnd; row++)
+    {
+        for(int col = colStart; col < colEnd; col++)
+        {
+            int key = hashCoords(col, row);
+            if(rawIntPnts.hasEntry(key))
+            {
+                double distance = sqrt(pow(rawIntPntX - col, 2) + pow(rawIntPntY - row, 2));
+                if(distance < maxDistance)
+                {
+                    cv::Point* closeRawIntPnt = rawIntPnts.getEntry(key);
+                   
+                    rawIntPnts.erase(key);
+                    intPnts.addEntry(key, closeRawIntPnt);
+                    declusterIntersectionPoints(closeRawIntPnt, rawIntPnts, intPnts, kernelSideDim, maxDistance);
+                }
+            }
+        }
+    }
+}
+    
 int BuildCity::hashCoords(int x, int y) {
-    return (x * 0x1f1f1f1f) ^ y;
+    return y * 6000 + x; // assign pixel number counting left to right, top to bottom
 }
     
 int BuildCity::getCoord(int* dimCount, int dim, int tol) {

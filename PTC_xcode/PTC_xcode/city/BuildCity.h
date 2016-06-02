@@ -50,6 +50,7 @@ private:
         int imageProcessingResolution;
         int coordBinResolution;
         int maxLines;
+        double maxClusterPntDistance;
     };
     
     int boundsID = 0;
@@ -76,6 +77,7 @@ private:
     GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* perimeterScanKernelForRoads(cv::Mat kernel);
     void drawPoint(cv::Mat &image, cv::Point point);
     void checkNextPixel(int x, int y, GenericMap<int, cv::Point*>& points, cv::Mat& kernel, int& lastPixel);
+    void declusterIntersectionPoints(cv::Point* rawIntPnt, GenericMap<int, cv::Point*>& rawIntPnts, GenericMap<int, cv::Point*>& intPnts, int kernelSideDim, double maxDistance);
     zoomParams getZoomParams(int zoom);
     int hashCoords(int x, int y);
     

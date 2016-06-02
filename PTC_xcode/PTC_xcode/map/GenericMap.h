@@ -32,7 +32,7 @@ public:
 	GenericEntry<K,V>* getMinEntry();
 	bool hasEntry(K key);
 	V getEntry(K key);
-    GenericEntry<K,V>* getFirstEntry();
+    V getFirstEntry();
 	typename std::map<K,V>::iterator iterator();
 	typename std::map<K,V>::iterator begin();
 	typename std::map<K,V>::iterator end();
@@ -155,11 +155,10 @@ V GenericMap<K, V>::getEntry(K key) {
 }
     
 template<class K, class V>
-GenericEntry<K,V>* GenericMap<K, V>::getFirstEntry() {
+V GenericMap<K, V>::getFirstEntry() {
     
-    if(this->getSize() > 0) {
-        GenericEntry<K,V>* entry = new GenericEntry<K,V>(this->begin()->first,this->begin()->second);
-        return entry;
+    if (this->getSize() > 0) {
+        return this->begin()->second;
     } else {
         return NULL;
     }

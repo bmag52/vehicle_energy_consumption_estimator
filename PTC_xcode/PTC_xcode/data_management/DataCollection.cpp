@@ -442,7 +442,7 @@ void DataCollection::setZoomSpreads() {
 	double latSpread = 0.01075;
 	double lonSpread = 0.01515;
 
-	for(int i = 19; i >=13; i--)
+	for(int i = 19; i >= 13; i--)
 	{
 		this->zoomSpreads.addEntry(i, new std::pair<double, double>(latSpread, lonSpread));
 		latSpread *= 2.0;

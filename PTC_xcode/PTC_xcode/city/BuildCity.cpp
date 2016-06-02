@@ -61,9 +61,9 @@ void BuildCity::updateGridDataXML() {
                 {
                     // make sure spline is within node bounds
                     if(	newLat + this->gpsTolerance > nextNode->value->getLat() &&
-                       newLat - this->gpsTolerance < nextNode->value->getLat() &&
-                       newLon + this->gpsTolerance > nextNode->value->getLon() &&
-                       newLon - this->gpsTolerance < nextNode->value->getLon() )
+                        newLat - this->gpsTolerance < nextNode->value->getLat() &&
+                        newLon + this->gpsTolerance > nextNode->value->getLon() &&
+                        newLon - this->gpsTolerance < nextNode->value->getLon() )
                     {
                         splineWithinNodes = true;
                         nodes->erase(nextNode->key);
@@ -217,38 +217,11 @@ void BuildCity::updateGridDataPNG() {
         int zoomIdx = newGridData->first;
         cv::Mat map = newGridData->second;
         
-//        for(int row = 0; row < map.rows; row += kernelSideDim)
-//        {
-//            std::cout << "row: " << row << std::endl;
-//            for(int col = 0; col < map.cols; col += kernelSideDim)
-//            {
-//                std::cout << "col: " << col << std::endl;
-//                if(row + kernelSideDim < map.rows && col + kernelSideDim < map.cols)
-//                {
-//                    cv::Rect roi(col, row, kernelSideDim, kernelSideDim);
-//                    cv::Mat kernel = map(roi);
-//                    
-//                    perimeterScanKernelForRoads(kernel);
-//                }
-//            }
-//        }
-//        perimeterScanKernelForRoads(map);
-        getIntersectionsFromMapPNG(map);
+        getIntersectionsFromMapPNG(map, zoomIdx);
 
-        
         // Display the detected hough lines
         cv::imshow("incoming road dots", map);
         cv::imwrite("/Users/Brian/Desktop/misc/kernelDev.png", map);
-        
-        
-        // 1 slide a kernel along road to find intersections (
-        //      perimeter scanning kernel to identify incoming roads crossing perimeter
-        //      if two road inlets detected and scan back to center, no intersection detected
-        //      if three or more inlets detected and scan back to center, intersection detected
-        //      motion along previous road direction and update direction only after new trajectory conects back to center
-        // 2 once intersection found, add it to map with connecting road or update connecting road if intersection exists
-        // 3 add road to map with connecting intersection or update intersection if road exists
-        // repeat 1-3 on in direction of other roads
 
     }
 }
@@ -305,56 +278,116 @@ void BuildCity::checkNextPixel(int x, int y, GenericMap<int, cv::Point*>& points
         cv::Point* newPt = new cv::Point(x, y);
         drawPoint(kernel, *newPt);
         points.addEntry(points.getSize()+1, newPt);
-//        cv::imshow("test", kernel);
     }
     lastPixel = nextPixel;
 }
     
 // Draw the detected intersection point on an image
 void BuildCity::drawPoint(cv::Mat &image, cv::Point point) {
-  
     int rad = 7;
     cv::Scalar color = cv::Scalar(255,255,255); // line color
     cv::circle( image, point, rad, color, -1, 8 );
-    
 }
     
-GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map) {
-    // find intersection for all roads
-    GenericMap<int, cv::Point*>* intersections= new GenericMap<int, cv::Point*>();
+BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
     
-    // all needs to be dynamically set
-    int kernelSideDim = 200;
-    int angleThreshold = 45;
-    int pntThreshold = .75*kernelSideDim;
-    int imageProcessingResolution = .25*kernelSideDim;
-    int coordBinResolution = 6;
-    int maxLines = 200;
+    zoomParams newZoomParams;
+    
+    switch(zoom)
+    {
+        case 19 :
+            newZoomParams.kernelSideDim = 200;
+            newZoomParams.angleThreshold = 45;
+            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
+            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
+            newZoomParams.coordBinResolution = 6;
+            newZoomParams.maxLines = 200;
+            break;
+        case 18 :
+            newZoomParams.kernelSideDim = 200;
+            newZoomParams.angleThreshold = 45;
+            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
+            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
+            newZoomParams.coordBinResolution = 6;
+            newZoomParams.maxLines = 200;
+            break;
+        case 17 :
+            newZoomParams.kernelSideDim = 200;
+            newZoomParams.angleThreshold = 45;
+            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
+            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
+            newZoomParams.coordBinResolution = 6;
+            newZoomParams.maxLines = 200;
+            break;
+        case 16 :
+            newZoomParams.kernelSideDim = 200;
+            newZoomParams.angleThreshold = 45;
+            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
+            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
+            newZoomParams.coordBinResolution = 6;
+            newZoomParams.maxLines = 200;
+            break;
+        case 15 :
+            newZoomParams.kernelSideDim = 200;
+            newZoomParams.angleThreshold = 45;
+            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
+            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
+            newZoomParams.coordBinResolution = 6;
+            newZoomParams.maxLines = 200;
+            break;
+        case 14 :
+            newZoomParams.kernelSideDim = 200;
+            newZoomParams.angleThreshold = 45;
+            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
+            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
+            newZoomParams.coordBinResolution = 6;
+            newZoomParams.maxLines = 200;
+            break;
+        case 13 :
+            newZoomParams.kernelSideDim = 200;
+            newZoomParams.angleThreshold = 45;
+            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
+            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
+            newZoomParams.coordBinResolution = 6;
+            newZoomParams.maxLines = 200;
+            break;
+        default :
+            std::cout << "no zoom params for " << zoom << std::endl;
+    }
+    
+    return newZoomParams;
+}
+    
+GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map, int zoom) {
+
+    GenericMap<int, cv::Point*>* rawIntersectionPoints = new GenericMap<int, cv::Point*>();
+    
+    zoomParams zp = getZoomParams(zoom);
     bool debug = false;
     
-    for(int row = 0; row < map.rows; row += imageProcessingResolution)
+    for(int row = 0; row < map.rows; row += zp.imageProcessingResolution)
     {
         if(debug) { std::cout << "row: " << row << std::endl; }
-        for(int col = 0; col < map.cols; col += imageProcessingResolution)
+        for(int col = 0; col < map.cols; col += zp.imageProcessingResolution)
         {
             if(debug) { std::cout << "col: " << col << std::endl; }
-            if((row + kernelSideDim) < map.rows && (col + kernelSideDim) < map.cols)
+            if((row + zp.kernelSideDim) < map.rows && (col + zp.kernelSideDim) < map.cols)
             {
-                cv::Rect roi(col, row, kernelSideDim, kernelSideDim);
+                cv::Rect roi(col, row, zp.kernelSideDim, zp.kernelSideDim);
                 cv::Mat kernel = map(roi);
 
                 std::vector<cv::Vec2f> lines;
-                cv::HoughLines(kernel, lines, 1, CV_PI/180, pntThreshold, 0, 0 );
+                cv::HoughLines(kernel, lines, 1, CV_PI/180, zp.pntThreshold, 0, 0 );
 
                 // Draw the hough lines
                 std::vector<cv::Vec2f>::const_iterator it1 = lines.begin();
-                if(lines.size() < maxLines)
+                if(lines.size() < zp.maxLines)
                 {
-                    int xCount[kernelSideDim];
-                    int yCount[kernelSideDim];
+                    int xCount[zp.kernelSideDim];
+                    int yCount[zp.kernelSideDim];
                     
-                    std::fill_n(xCount, kernelSideDim, 0);
-                    std::fill_n(yCount, kernelSideDim, 0);
+                    std::fill_n(xCount, zp.kernelSideDim, 0);
+                    std::fill_n(yCount, zp.kernelSideDim, 0);
                     
                     while(it1 != lines.end())
                     {
@@ -366,12 +399,12 @@ GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map) 
                             std::pair<cv::Point, cv::Point>* linePoints2 = this->polarToCartisian((*it2)[0], (*it2)[1], kernel.rows);
 
                             double lineAngle = std::abs((*it1)[1] - (*it2)[1])*180/CV_PI;
-                            if(lineAngle > angleThreshold && lineAngle < 180 - angleThreshold) {
+                            if(lineAngle > zp.angleThreshold && lineAngle < 180 - zp.angleThreshold) {
 
                                 cv::Point intPnt;
                                 bool linesIntersect = getIntersectionPoint(linePoints1->first, linePoints1->second, linePoints2->first, linePoints2->second, intPnt);
 
-                                if(linesIntersect && intPnt.x < kernelSideDim && intPnt.y < kernelSideDim && intPnt.x >= 0 && intPnt.y >= 0)
+                                if(linesIntersect && intPnt.x < zp.kernelSideDim && intPnt.y < zp.kernelSideDim && intPnt.x >= 0 && intPnt.y >= 0)
                                 {
                                     if(debug)
                                     {
@@ -389,26 +422,25 @@ GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map) 
                     }
 
                     cv::Point* intersectPnt = new cv::Point();
-                    intersectPnt->x = getCoord(xCount, kernelSideDim, coordBinResolution);
-                    intersectPnt->y = getCoord(yCount, kernelSideDim, coordBinResolution);
+                    intersectPnt->x = getCoord(xCount, zp.kernelSideDim, zp.coordBinResolution);
+                    intersectPnt->y = getCoord(yCount, zp.kernelSideDim, zp.coordBinResolution);
                     
                     if(intersectPnt->x != -1)
                     {
-                        intersectPnt->x += col;
-                        intersectPnt->y += row;
-                        
                         int rad = 9;
-                        cv::Scalar color = cv::Scalar(0,0,0); // line color
-                        cv::circle(map, *intersectPnt, rad, color, -1, 8);
-                        intersections->addEntry(hashCoords(intersectPnt->x, intersectPnt->y), intersectPnt);
+                        cv::Scalar color = cv::Scalar(0,0,0);
                         
                         if(debug)
                         {
-                            cv::Point* intersectPntDebug = new cv::Point();
-                            intersectPntDebug->x = getCoord(xCount, kernelSideDim, coordBinResolution);
-                            intersectPntDebug->y = getCoord(yCount, kernelSideDim, coordBinResolution);
-                            cv::circle(kernel, *intersectPntDebug, rad, color, -1, 8);
+                            cv::circle(kernel, *intersectPnt, rad, color, -1, 8);
                         }
+                        
+                        intersectPnt->x += col;
+                        intersectPnt->y += row;
+
+                        cv::circle(map, *intersectPnt, rad, color, -1, 8);
+                        rawIntersectionPoints->addEntry(hashCoords(intersectPnt->x, intersectPnt->y), intersectPnt);
+                        
                     } else {
                         free(intersectPnt);
                     }
@@ -422,7 +454,20 @@ GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map) 
             }
         }
     }
+    
     cv::imshow("intersection", map);
+    
+    // pick best point from cluster
+    GenericMap<int, cv::Point*>* intersections = new GenericMap<int, cv::Point*>();
+    
+    GenericEntry<int, cv::Point*>* nextRawIntersectionPoint = rawIntersectionPoints->getFirstEntry();
+    while(nextRawIntersectionPoint != NULL)
+    {
+        
+        
+        nextRawIntersectionPoint = rawIntersectionPoints->getFirstEntry();
+    }
+    
     return intersections;
 }
     

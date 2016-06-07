@@ -73,13 +73,15 @@ private:
     std::pair<cv::Point, cv::Point>* polarToCartisian(float mag, float angle, int rows);
     double cross(cv::Point v1, cv::Point v2);
     int getCoord(int* dimCount, int dim, int tol);
-    GenericMap<int, cv::Point*>* getIntersectionsFromMapPNG(cv::Mat map, int zoom);
+    GenericMap<int, cv::Point*>* getIntersectionPointsFromMapPNG(cv::Mat map, int zoom);
     GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* perimeterScanKernelForRoads(cv::Mat kernel);
     void drawPoint(cv::Mat &image, cv::Point point);
     void checkNextPixel(int x, int y, GenericMap<int, cv::Point*>& points, cv::Mat& kernel, int& lastPixel);
     void declusterIntersectionPoints(cv::Point* rawIntPnt, GenericMap<int, cv::Point*>& rawIntPnts, GenericMap<int, cv::Point*>& intPnts, int kernelSideDim, double maxDistance);
     zoomParams getZoomParams(int zoom);
     int hashCoords(int x, int y);
+    std::pair<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*>* makeRoadsAndIntersections(GenericMap<int, cv::Point*>* rawInts, cv::Mat map);
+    std::pair<bool, GenericMap<int, cv::Point*>*>* traceRoad(cv::Point* nextClosestPnt, cv::Point* pnt, cv::Mat map, GenericMap<int, cv::Point*>& searchedIntPnts);
     
 public:
     BuildCity();

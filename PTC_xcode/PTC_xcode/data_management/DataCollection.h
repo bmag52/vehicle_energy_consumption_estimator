@@ -51,6 +51,8 @@ private:
 	int wayCount;
 	int boundsCountXML;
 	int boundsCountPNG;
+    int zoomMax;
+    int zoomMin;
 	double eleLowerLeftLat;
 	double eleLowerLeftLon;
 	double eleCellSize;
@@ -70,6 +72,7 @@ private:
 	void pullOSMDataXML(double lat, double lon);
 	int pullOSMDataPNG(double lat, double lon);
 	void setZoomSpreads();
+    void initialize(double latDelta, double lonDelta);
 
 public:
 	DataCollection();

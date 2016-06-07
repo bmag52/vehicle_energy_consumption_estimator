@@ -16,23 +16,23 @@ using namespace boost::property_tree;
 namespace PredictivePowertrain {
 
 DataCollection::DataCollection() {
-	this->latDelta = .0002;
-	this->lonDelta = .0002;
-	this->wayCount = 0;
-	this->boundsCountXML = 0;
-	this->boundsCountPNG = 0;
-	this->setZoomSpreads();
-	checkDataFoler();
+    this->initialize(.0002, .0002);
 }
 
 DataCollection::DataCollection(double latDelta, double lonDelta) {
-	this->latDelta = latDelta;
-	this->lonDelta = lonDelta;
-	this->wayCount = 0;
-	this->boundsCountXML = 0;
-	this->boundsCountPNG = 0;
-	this->setZoomSpreads();
-	checkDataFoler();
+    this->initialize(latDelta, lonDelta);
+}
+    
+void DataCollection::initialize(double latDelta, double lonDelta) {
+    this->latDelta = latDelta;
+    this->lonDelta = lonDelta;
+    this->zoomMax = 19;
+    this->zoomMin = 18;
+    this->wayCount = 0;
+    this->boundsCountXML = 0;
+    this->boundsCountPNG = 0;
+    this->setZoomSpreads();
+    checkDataFoler();
 }
 
 // must call functions in specific order
@@ -395,27 +395,23 @@ int DataCollection::pullOSMDataPNG(double lat, double lon) {
 
 	std::cout << "Pulling Map Image" << std::endl;
 
-	double latSpreadMin = 10;
-	double lonSpreadMin = 10;
-	int zoomIdx = -1;
+	double latDeltaMin = 10;
+	double lonDeltaMin = 10;
+    int zoomIdx = this->zoomMin;
 
-	this->zoomSpreads.initializeCounter();
-	GenericEntry<int, std::pair<double, double>*>* nextZoom = this->zoomSpreads.nextEntry();
-	while(nextZoom != NULL)
-	{
-		double latSpread = nextZoom->value->first;
-		double lonSpread = nextZoom->value->second;
+    for(int i = this->zoomMin; i <= this->zoomMax; i++)
+    {
+        std::pair<double, double>* latLonDeltas = this->zoomSpreads.getEntry(i);
+        double currLatDelta = latLonDeltas->first;
+        double currLonDelta = latLonDeltas->second;
 
-		// get desired delta in bounds of zoom
-		if(	this->latDelta < latSpread && this->lonDelta < lonSpread &&
-			this->latDelta < latSpreadMin && this->lonDelta < lonSpreadMin)
-		{
-			latSpreadMin = latSpread;
-			lonSpreadMin = lonSpread;
-			zoomIdx = nextZoom->key;
-		}
-		nextZoom = this->zoomSpreads.nextEntry();
-	}
+        if(this->latDelta < currLatDelta && this->lonDelta < currLonDelta && this->latDelta < latDeltaMin && this->lonDelta < lonDeltaMin)
+        {
+            latDeltaMin = currLatDelta;
+            lonDeltaMin = currLonDelta;
+            zoomIdx = i;
+        }
+    }
 
 	std::string webkit2png = "/usr/local/bin/webkit2png -W 6000 -H 6000 -o ";
     webkit2png += this->dataFolder + "/" + this->mapPNGName + " ";
@@ -430,7 +426,7 @@ int DataCollection::pullOSMDataPNG(double lat, double lon) {
     system(webkit2png.c_str());
 
 	this->boundsCountPNG++;
-	Bounds* newBounds = new Bounds(lat+.5*latSpreadMin, lon+.5*lonSpreadMin, lat-.5*latSpreadMin, lon-.5*lonSpreadMin);
+	Bounds* newBounds = new Bounds(lat+.5*latDeltaMin, lon+.5*lonDeltaMin, lat-.5*latDeltaMin, lon-.5*lonDeltaMin);
 	newBounds->assignID(this->boundsCountPNG);
 	this->boundsMapPNG.addEntry(this->boundsCountPNG, newBounds);
 
@@ -442,7 +438,7 @@ void DataCollection::setZoomSpreads() {
 	double latSpread = 0.01075;
 	double lonSpread = 0.01515;
 
-	for(int i = 19; i >= 13; i--)
+	for(int i = this->zoomMax; i >= this->zoomMin; i--)
 	{
 		this->zoomSpreads.addEntry(i, new std::pair<double, double>(latSpread, lonSpread));
 		latSpread *= 2.0;

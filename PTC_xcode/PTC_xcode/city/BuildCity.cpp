@@ -29,8 +29,8 @@ void BuildCity::updateGridDataXML() {
         dc->pullDataXML(this->latCenter, this->lonCenter);
         this->rawRoads = dc->makeRawRoads();
         
-        int latRowsSpline = latDelta/this->adjMatPrecFromSplines;
-        int lonColsSpline = lonDelta/this->adjMatPrecFromSplines;
+        int latRowsSpline = this->latDelta/this->adjMatPrecFromSplines;
+        int lonColsSpline = this->lonDelta/this->adjMatPrecFromSplines;
         this->adjMatFromSplines = Eigen::MatrixXd::Zero(latRowsSpline, lonColsSpline);
         
         this->rawRoads->initializeCounter();
@@ -217,13 +217,80 @@ void BuildCity::updateGridDataPNG() {
         int zoomIdx = newGridData->first;
         cv::Mat map = newGridData->second;
         
-        getIntersectionsFromMapPNG(map, zoomIdx);
+        GenericMap<int, cv::Point*>* rawInts = getIntersectionPointsFromMapPNG(map, zoomIdx);
+        
+//        std::pair<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*>* roadsAndInts = makeRoadsAndIntersections(rawInts, map);
 
         // Display the detected hough lines
         cv::imshow("incoming road dots", map);
         cv::imwrite("/Users/Brian/Desktop/misc/kernelDev.png", map);
-
     }
+}
+    
+std::pair<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*>* BuildCity::makeRoadsAndIntersections(GenericMap<int, cv::Point*>* rawInts, cv::Mat map) {
+ 
+    GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
+    GenericMap<int, Road*>* roads = new GenericMap<int, Road*>();
+    int searchKernelSideDim = 700;
+    
+    rawInts->initializeCounter();
+    cv::Point* nextCentralIntPoint = rawInts->getFirstEntry();
+    while(nextCentralIntPoint != NULL)
+    {
+        
+        // get find all intersection points in close proximity to current intersection
+        int startRow = nextCentralIntPoint->x - .5*searchKernelSideDim;
+        int endRow = nextCentralIntPoint->x + .5*searchKernelSideDim;
+        int startCol = nextCentralIntPoint->y -.5*searchKernelSideDim;
+        int endCol = nextCentralIntPoint->y + .5*searchKernelSideDim;
+        
+        GenericMap<int, double>* closeIntPnts = new GenericMap<int, double>();
+        
+        for(int row = startRow; row < endRow; row++)
+        {
+            for(int col = startCol; col < endCol; col++)
+            {
+                int key = hashCoords(col, row);
+                if(rawInts->hasEntry(key))
+                {
+                    double distance = sqrt(pow(nextCentralIntPoint->x - col, 2) + pow(nextCentralIntPoint->y - row, 2));
+                    closeIntPnts->addEntry(key, distance);
+                }
+            }
+        }
+        
+        GenericMap<int, cv::Point*> searchedIntPnts;
+        
+        while(true)
+        {
+            GenericEntry<int, double>* nextClosestIntPntData = closeIntPnts->getMinEntry();
+            cv::Point* nextClosestIntPnt = rawInts->getEntry(nextClosestIntPntData->key);
+            
+            // trace out to closest point
+            std::pair<bool, GenericMap<int, cv::Point*>*>* roadTraceData = traceRoad(nextClosestIntPnt, nextCentralIntPoint, map, searchedIntPnts);
+            
+         
+            
+        }
+        
+        nextCentralIntPoint = rawInts->getFirstEntry();
+    }
+    
+    
+    return NULL;
+}
+    
+std::pair<bool, GenericMap<int, cv::Point*>*>* BuildCity::traceRoad(cv::Point* nextClosestPnt, cv::Point* pnt, cv::Mat map, GenericMap<int, cv::Point*>& searchedIntPnts) {
+    
+    bool isPreTraveledRoad = false;
+    GenericMap<int, cv::Point*>* roadPntTrace = new GenericMap<int, cv::Point*>();
+    
+    for(int deg = 0; deg < 360; deg++)
+    {
+        
+    }
+    
+    return new std::pair<bool, GenericMap<int, cv::Point*>*>;
 }
     
 GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* BuildCity::perimeterScanKernelForRoads(cv::Mat kernel) {
@@ -296,64 +363,13 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
     switch(zoom)
     {
         case 19 :
-            newZoomParams.kernelSideDim = 200;
-            newZoomParams.angleThreshold = 45;
-            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
-            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
+            newZoomParams.kernelSideDim = 175;
             newZoomParams.coordBinResolution = 6;
             newZoomParams.maxLines = 200;
-            newZoomParams.maxClusterPntDistance = 20;
+            newZoomParams.maxClusterPntDistance = 25;
             break;
         case 18 :
-            newZoomParams.kernelSideDim = 200;
-            newZoomParams.angleThreshold = 45;
-            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
-            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
-            newZoomParams.coordBinResolution = 6;
-            newZoomParams.maxLines = 200;
-            newZoomParams.maxClusterPntDistance = 20;
-            break;
-        case 17 :
-            newZoomParams.kernelSideDim = 200;
-            newZoomParams.angleThreshold = 45;
-            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
-            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
-            newZoomParams.coordBinResolution = 6;
-            newZoomParams.maxLines = 200;
-            newZoomParams.maxClusterPntDistance = 20;
-            break;
-        case 16 :
-            newZoomParams.kernelSideDim = 200;
-            newZoomParams.angleThreshold = 45;
-            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
-            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
-            newZoomParams.coordBinResolution = 6;
-            newZoomParams.maxLines = 200;
-            newZoomParams.maxClusterPntDistance = 20;
-            break;
-        case 15 :
-            newZoomParams.kernelSideDim = 200;
-            newZoomParams.angleThreshold = 45;
-            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
-            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
-            newZoomParams.coordBinResolution = 6;
-            newZoomParams.maxLines = 200;
-            newZoomParams.maxClusterPntDistance = 20;
-            break;
-        case 14 :
-            newZoomParams.kernelSideDim = 200;
-            newZoomParams.angleThreshold = 45;
-            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
-            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
-            newZoomParams.coordBinResolution = 6;
-            newZoomParams.maxLines = 200;
-            newZoomParams.maxClusterPntDistance = 20;
-            break;
-        case 13 :
-            newZoomParams.kernelSideDim = 200;
-            newZoomParams.angleThreshold = 45;
-            newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
-            newZoomParams.imageProcessingResolution = .25*newZoomParams.kernelSideDim;
+            newZoomParams.kernelSideDim = 150;
             newZoomParams.coordBinResolution = 6;
             newZoomParams.maxLines = 200;
             newZoomParams.maxClusterPntDistance = 20;
@@ -362,22 +378,23 @@ BuildCity::zoomParams BuildCity::getZoomParams(int zoom) {
             std::cout << "no zoom params for " << zoom << std::endl;
     }
     
+    newZoomParams.angleThreshold = 30;
+    newZoomParams.pntThreshold = .75*newZoomParams.kernelSideDim;
+    newZoomParams.imageProcessingResolution = .20*newZoomParams.kernelSideDim;
+    
     return newZoomParams;
 }
     
-GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map, int zoom) {
+GenericMap<int, cv::Point*>* BuildCity::getIntersectionPointsFromMapPNG(cv::Mat map, int zoom) {
 
     GenericMap<int, cv::Point*> rawIntersectionPoints;
     
     zoomParams zp = getZoomParams(zoom);
-    bool debug = false;
     
     for(int row = 0; row < map.rows; row += zp.imageProcessingResolution)
     {
-        if(debug) { std::cout << "row: " << row << std::endl; }
         for(int col = 0; col < map.cols; col += zp.imageProcessingResolution)
         {
-            if(debug) { std::cout << "col: " << col << std::endl; }
             if((row + zp.kernelSideDim) < map.rows && (col + zp.kernelSideDim) < map.cols)
             {
                 cv::Rect roi(col, row, zp.kernelSideDim, zp.kernelSideDim);
@@ -413,12 +430,6 @@ GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map, 
 
                                 if(linesIntersect && intPnt.x < zp.kernelSideDim && intPnt.y < zp.kernelSideDim && intPnt.x >= 0 && intPnt.y >= 0)
                                 {
-                                    if(debug)
-                                    {
-                                        cv::line( kernel, linePoints1->first, linePoints1->second, cv::Scalar(0,0,0), 1);
-                                        cv::line( kernel, linePoints2->first, linePoints2->second, cv::Scalar(0,0,0), 1);
-                                    }
-                                    
                                     xCount[intPnt.x] += 1;
                                     yCount[intPnt.y] += 1;
                                 }
@@ -434,28 +445,13 @@ GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map, 
                     
                     if(intersectPnt->x != -1)
                     {
-                        int rad = 9;
-                        cv::Scalar color = cv::Scalar(0,0,0);
-                        
-                        if(debug)
-                        {
-                            cv::circle(kernel, *intersectPnt, rad, color, -1, 8);
-                        }
-                        
                         intersectPnt->x += col;
                         intersectPnt->y += row;
 
-                        cv::circle(map, *intersectPnt, rad, color, -1, 8);
                         rawIntersectionPoints.addEntry(hashCoords(intersectPnt->x, intersectPnt->y), intersectPnt);
                         
                     } else {
                         free(intersectPnt);
-                    }
-                    
-                    if(debug)
-                    {
-                        cv::imshow("test kenerel", kernel);
-                        cv::waitKey(10);
                     }
                 }
             }
@@ -498,8 +494,7 @@ GenericMap<int, cv::Point*>* BuildCity::getIntersectionsFromMapPNG(cv::Mat map, 
             cv::Point* intersection = new cv::Point(avgX, avgY);
             intersections->addEntry(hashCoords(avgX, avgY), intersection);
             
-            cv::circle(map, *intersection, 4, cv::Scalar(255,255,255));
-            
+            cv::circle(map, *intersection, 3, cv::Scalar(0,0,0));
         }
         nextRawIntersectionPoint = rawIntersectionPoints.getFirstEntry();
     }

@@ -21,7 +21,7 @@ class Intersection; // forward declaration
 
 class Road {
 private:
-	Eigen::Spline<double, 2> spline;
+	Eigen::Spline<float, 2> spline;
 	GenericMap<long int, Node*>* nodes;
 	GenericMap<int, std::pair<int, int>*>* adjMatIndices;
 	std::string roadType;
@@ -46,8 +46,8 @@ public:
 	void setBoundsID(int id);
 	std::string getRoadType();
 	GenericMap<long int, Node*>* getNodes();
-	Eigen::Spline<double, 2> getSpline();
-	void assignSpline(Eigen::Spline<double, 2> spline);
+	Eigen::Spline<float, 2> getSpline();
+	void assignSpline(Eigen::Spline<float, 2> spline);
 	void assignAdjMatIndicies(GenericMap<int, std::pair<int, int>*>* adjMatIndicies);
 	GenericMap<int, std::pair<int, int>*>* getAdjMatIndicies();
 };

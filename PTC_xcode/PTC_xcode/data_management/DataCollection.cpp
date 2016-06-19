@@ -1,5 +1,5 @@
 /*
- * MakeOSM.cpp
+ * DataCollection.cpp
  *
  *  Created on: Apr 4, 2016
  *      Author: vagrant
@@ -90,7 +90,7 @@ void DataCollection::pullOSMDataXML(double lat, double lon) {
 		if(!tagName.compare("node"))
 		{
 			long int nodeID;
-			double lat, lon;
+			float lat, lon;
 			const ptree & attributes = f.second.get_child("<xmlattr>", empty_ptree());
 			BOOST_FOREACH(const ptree::value_type &v, attributes)
 			{
@@ -101,10 +101,10 @@ void DataCollection::pullOSMDataXML(double lat, double lon) {
 					nodeID = lexical_cast<long int>(v.second.data());
 					std::cout << attr << " = " << nodeID << std::endl;
 				} else if(!attr.compare("lat")) {
-					lat = lexical_cast<double>(v.second.data());
+					lat = lexical_cast<float>(v.second.data());
 					std::cout << attr << " = " << lat << std::endl;
 				} else if(!attr.compare("lon")) {
-					lon = lexical_cast<double>(v.second.data());
+					lon = lexical_cast<float>(v.second.data());
 					std::cout << attr << " = " << lon << std::endl;
 				}
 
@@ -566,55 +566,96 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 		if(nodes->getSize() > 2)
 		{
 			Road* newRoad = new Road(way->getWayType(), way->getID(), nodes);
-
-			// add spline
-			int latLonCount = 0;
-
+			
 			try { // potential source of really weird run-time errors
-				Eigen::MatrixXd points(2, nodes->getSize());
+                
+                int latLonCount = 0;
+                
+                // for splines
+				Eigen::MatrixXf points(2, nodes->getSize());
+                
+                // for fitted poly
+                std::vector<float> lats(nodes->getSize());
+                std::vector<float> lons(nodes->getSize());
 
+                std::cout << "******** raw nodes ********" << std::endl;
+                
 				nodes->initializeCounter();
 				GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
 				while(nextNode != NULL)
 				{
-					points(0, latLonCount) = nextNode->value->getLat();
-					points(1, latLonCount) = nextNode->value->getLon();
-
+                    float lat = nextNode->value->getLat();
+                    float lon = nextNode->value->getLon();
+                    
+                    printf("%.6f,%.6f\n", lat, lon);
+                    
+                    // for splines
+                    points(0, latLonCount) = lat;
+                    points(1, latLonCount) = lon;
+                    
+                    // for fitted poly
+                    lats.at(latLonCount) = lat;
+                    lons.at(latLonCount) = lon;
+                    
 					nextNode = nodes->nextEntry();
 					latLonCount++;
 				}
 				free(nextNode);
+//
+//				// fit the best spline
+//				typedef Eigen::Spline<float, 2> spline2f;
+//				spline2f splineRay[3]; // array of different splines, 3rd - 1st degree
+//                int missCounts[3] = {0,0,0};
+//				for(int i = 2; i >= 0; i--)
+//				{
+//                    std::cout << "******** " << i << " order spline " << "********" << std::endl;
+//					splineRay[i] = Eigen::SplineFitting<spline2f>::Interpolate(points, i+1);
+//					for(double u = 0; u <= 1; u += 0.025)
+//					{
+//						Eigen::Spline<float,2>::PointType point = splineRay[i](u);
+//						float lat = point(0,0);
+//						float lon = point(1,0);
+//                        
+//                        printf("%.6f,%.6f\n", lat, lon);
+//                        
+//                        // doesn't work this way
+//						if(lat > 90 || lat < -90 || lon > 180 || lon < -180)
+//						{
+//							missCounts[i]++;
+//						}
+//					}
+//				}
+//
+//				int bestSplineIdx = -1;
+//				int lowestMisses = 10000;
+//				for(int i = 0; i < 3; i++)
+//				{
+//					if(missCounts[i] < lowestMisses)
+//					{
+//						lowestMisses = missCounts[i];
+//						bestSplineIdx = i;
+//					}
+//				}
+//
+//				newRoad->assignSpline(splineRay[bestSplineIdx]);
+                
+                // fit the best poly
+                GenericMap<int, std::vector<float>*> coeffMap;
+                for(int i = 0; i <= 2; i++)
+                {
+                    try {
+                    
+                        std::vector<float> coeffs = polyfit(lats, lons, i);
+                        coeffMap.addEntry(i, &coeffs);
+                        
+                    } catch(const std::exception& e) {
+                        std::cout << e.what() << std::endl;
+                        continue;
+                    }
+                    
+                }
+                
 
-				// fit the best spline
-				typedef Eigen::Spline<double, 2> spline2d;
-				spline2d splineRay[3]; // array of different splines, 3rd - 1st degree
-				int missCounts[3]; // number of times a spline cannot return a val due to overfit
-				for(int i = 2; i >= 0; i--)
-				{
-					splineRay[i] = Eigen::SplineFitting<spline2d>::Interpolate(points, i+1);
-					for(double u = 0; u <= 1; u += 0.025)
-					{
-						Eigen::Spline<double,2>::PointType point = splineRay[i](u);
-						double lat = point(0,0);
-						double lon = point(1,0);
-						if(lat > 90 || lat < -90 || lon > 180 || lon < -180)
-						{
-							missCounts[i]++;
-						}
-					}
-				}
-
-				int bestSplineIdx = -1;
-				int lowestMisses = 10000;
-				for(int i = 0; i < 3; i++)
-				{
-					if(missCounts[i] < lowestMisses)
-					{
-						lowestMisses = missCounts[i];
-						bestSplineIdx = i;
-					}
-				}
-				newRoad->assignSpline(splineRay[bestSplineIdx]);
 			} catch(const std::exception& e) {
 				std::cout << e.what() << std::endl;
 			}

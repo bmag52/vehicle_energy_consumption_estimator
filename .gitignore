@@ -19,6 +19,7 @@
 # Map Data
 PTC_eclipse_linux/data
 PTC_eclipse_OSX/data
+data
 
 # Compiled Static libraries
 *.lai

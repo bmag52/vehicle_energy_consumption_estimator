@@ -1,5 +1,5 @@
 /*
- * MakeOSM.h
+ * DataCollection.h
  *
  *  Created on: Apr 4, 2016
  *      Author: vagrant
@@ -23,6 +23,7 @@
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/unsupported/Eigen/Splines>
+#include "polyfit.hpp"
 
 #include <iostream>
 #include <fstream>

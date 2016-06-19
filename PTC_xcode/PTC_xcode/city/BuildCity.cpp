@@ -47,13 +47,13 @@ void BuildCity::updateGridDataXML() {
             GenericMap<int, std::pair<int, int>*>* adjMatIndicies = new GenericMap<int, std::pair<int, int>*>();
             
             
-            Eigen::Spline<double,2> spline = nextRawRoad->value->getSpline();
+            Eigen::Spline<float,2> spline = nextRawRoad->value->getSpline();
             for(double u = 0; u <= 1; u += this->splineStep)
             {
-                Eigen::Spline<double,2>::PointType point = spline(u);
+                Eigen::Spline<float,2>::PointType point = spline(u);
                 
-                double newLat = point(0,0);
-                double newLon = point(1,0);
+                float newLat = point(0,0);
+                float newLon = point(1,0);
                 
                 nodes->initializeCounter();
                 GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();

@@ -644,7 +644,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                 for(int i = 0; i <= 2; i++)
                 {
                     try {
-                    
+                        
                         std::vector<float> coeffs = polyfit(lats, lons, i);
                         coeffMap.addEntry(i, &coeffs);
                         
@@ -655,6 +655,34 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                     
                 }
                 
+                int bestPolyFitDeg = 0;
+                double minErrAvg = 10000;
+                
+                coeffMap.initializeCounter();
+                GenericEntry<int, std::vector<float>*>* nextCoeffs = coeffMap.nextEntry();
+                while(nextCoeffs != NULL)
+                {
+                    std::vector<float> testLons = polyval(*nextCoeffs->value, lats);
+                    assert(testLons.size() == lons.size());
+                    
+                    double sum = 0;
+                    for(int i = 0; i < lons.size(); i++)
+                    {
+                        sum += abs(testLons.at(i) = lons.at(i));
+                    }
+                    
+                    double errAvg = sum / (double)lons.size();
+                    
+                    if(errAvg < minErrAvg)
+                    {
+                        bestPolyFitDeg = nextCoeffs->key;
+                        minErrAvg = errAvg;
+                    }
+                 
+                    nextCoeffs = coeffMap.nextEntry();
+                }
+                
+                int x = 3;
 
 			} catch(const std::exception& e) {
 				std::cout << e.what() << std::endl;

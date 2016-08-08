@@ -569,6 +569,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 			
 			try { // potential source of really weird run-time errors
                 
+                // acquire data for curve fitting
                 int latLonCount = 0;
                 
                 // for splines
@@ -577,6 +578,8 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                 // for fitted poly
                 std::vector<float> lats(nodes->getSize());
                 std::vector<float> lons(nodes->getSize());
+                float minLat = 10000;
+                float maxLat = -10000;
 
                 std::cout << "******** raw nodes ********" << std::endl;
                 
@@ -597,92 +600,120 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                     lats.at(latLonCount) = lat;
                     lons.at(latLonCount) = lon;
                     
+                    if(lat < minLat) { minLat = lat; }
+                    if(lat > maxLat) { maxLat = lat; }
+                    
 					nextNode = nodes->nextEntry();
 					latLonCount++;
 				}
 				free(nextNode);
-//
-//				// fit the best spline
-//				typedef Eigen::Spline<float, 2> spline2f;
-//				spline2f splineRay[3]; // array of different splines, 3rd - 1st degree
-//                int missCounts[3] = {0,0,0};
-//				for(int i = 2; i >= 0; i--)
-//				{
-//                    std::cout << "******** " << i << " order spline " << "********" << std::endl;
-//					splineRay[i] = Eigen::SplineFitting<spline2f>::Interpolate(points, i+1);
-//					for(double u = 0; u <= 1; u += 0.025)
-//					{
-//						Eigen::Spline<float,2>::PointType point = splineRay[i](u);
-//						float lat = point(0,0);
-//						float lon = point(1,0);
-//                        
-//                        printf("%.6f,%.6f\n", lat, lon);
-//                        
-//                        // doesn't work this way
-//						if(lat > 90 || lat < -90 || lon > 180 || lon < -180)
-//						{
-//							missCounts[i]++;
-//						}
-//					}
-//				}
-//
-//				int bestSplineIdx = -1;
-//				int lowestMisses = 10000;
-//				for(int i = 0; i < 3; i++)
-//				{
-//					if(missCounts[i] < lowestMisses)
-//					{
-//						lowestMisses = missCounts[i];
-//						bestSplineIdx = i;
-//					}
-//				}
-//
-//				newRoad->assignSpline(splineRay[bestSplineIdx]);
-                
-                // fit the best poly
-                GenericMap<int, std::vector<float>*> coeffMap;
-                for(int i = 0; i <= 2; i++)
-                {
-                    try {
+
+				// fit the best spline
+				typedef Eigen::Spline<float, 2> spline2f;
+				spline2f splineRay[3]; // array of different splines, 3rd - 1st degree
+                int missCounts[3] = {0,0,0};
+				for(int i = 2; i >= 0; i--)
+				{
+                    std::cout << "******** " << i << " order spline " << "********" << std::endl;
+					splineRay[i] = Eigen::SplineFitting<spline2f>::Interpolate(points, i+1);
+					for(double u = 0; u <= 1; u += 0.025)
+					{
+						Eigen::Spline<float,2>::PointType point = splineRay[i](u);
+						float lat = point(0,0);
+						float lon = point(1,0);
                         
-                        std::vector<float> coeffs = polyfit(lats, lons, i);
-                        coeffMap.addEntry(i, &coeffs);
+                        printf("%.6f,%.6f\n", lat, lon);
                         
-                    } catch(const std::exception& e) {
-                        std::cout << e.what() << std::endl;
-                        continue;
-                    }
-                    
-                }
+                        // doesn't work this way
+						if(lat > 90 || lat < -90 || lon > 180 || lon < -180)
+						{
+							missCounts[i]++;
+						}
+					}
+				}
+
+				int bestSplineIdx = -1;
+				int lowestMisses = 10000;
+				for(int i = 0; i < 3; i++)
+				{
+					if(missCounts[i] < lowestMisses)
+					{
+						lowestMisses = missCounts[i];
+						bestSplineIdx = i;
+					}
+				}
+
+				newRoad->assignSpline(splineRay[bestSplineIdx]);
+
+//                // fit the 1-3 degree polynomials
+//                GenericMap<int, std::vector<float>*> coeffMap;
+//                for(int i = 0; i <= 6; i++)
+//                {
+//                    try {
+//                        
+//                        std::vector<float>* coeffs = polyfit(lats, lons, i);
+//                        //std::cout << i << " , " << coeffs->size() << std::endl;
+//                        coeffMap.addEntry(i, coeffs);
+//                        
+//                    } catch(const std::exception& e) {
+//                        //std::cout << e.what() << std::endl;
+//                        continue;
+//                    }
+//                }
+//                
+//                // find the best polynomial
+//                int bestPolyFitDeg = 0;
+//                double minErrAvg = 10000;
+//                
+//                coeffMap.initializeCounter();
+//                GenericEntry<int, std::vector<float>*>* nextCoeffs = coeffMap.nextEntry();
+//                while(nextCoeffs != NULL)
+//                {
+//                    std::vector<float>* testLons = polyval(nextCoeffs->value, &lats);
+//                    assert(testLons->size() == lons.size());
+//                    
+//                    double sum = 0;
+//                    for(int i = 0; i < lons.size(); i++)
+//                    {
+//                        sum += std::abs(testLons->at(i) - lons.at(i));
+//                    }
+//                    
+//                    double errAvg = sum / (double)lons.size();
+//                    
+//                    if(errAvg < minErrAvg)
+//                    {
+//                        bestPolyFitDeg = nextCoeffs->key;
+//                        minErrAvg = errAvg;
+//                    }
+//                    
+//                    free(testLons);
+//                    nextCoeffs = coeffMap.nextEntry();
+//                }
+//                free(nextCoeffs);
+//                
+//                std::vector<float>* bestPolyCoeffs = coeffMap.getEntry(bestPolyFitDeg);
+//                
+//                //create poly
+//                int polyPoints = 20;
+//                float nextLatDist = minLat;
+//                float latDistPrecision = (maxLat - minLat) / (float)polyPoints;
+//                
+//                std::vector<float>* polyLats =  new std::vector<float>(polyPoints+1);
+//                polyLats->at(0) = nextLatDist;
+//                for(float i = 1; i < polyLats->size(); i ++)
+//                {
+//                    nextLatDist += latDistPrecision;
+//                    polyLats->at(i) = nextLatDist;
+//                }
+//                std::vector<float>* polyLons = polyval(bestPolyCoeffs, polyLats);
+//                
+//                std::cout << "****** poly values " << bestPolyFitDeg << " *******" << std::endl;
+//                assert(polyLats->size() == polyLons->size());
+//                for(int i = 0; i < polyLats->size(); i++)
+//                {
+//                    printf("%.6f,%.6f\n", polyLats->at(i), polyLons->at(i));
+//                }
                 
-                int bestPolyFitDeg = 0;
-                double minErrAvg = 10000;
-                
-                coeffMap.initializeCounter();
-                GenericEntry<int, std::vector<float>*>* nextCoeffs = coeffMap.nextEntry();
-                while(nextCoeffs != NULL)
-                {
-                    std::vector<float> testLons = polyval(*nextCoeffs->value, lats);
-                    assert(testLons.size() == lons.size());
-                    
-                    double sum = 0;
-                    for(int i = 0; i < lons.size(); i++)
-                    {
-                        sum += abs(testLons.at(i) = lons.at(i));
-                    }
-                    
-                    double errAvg = sum / (double)lons.size();
-                    
-                    if(errAvg < minErrAvg)
-                    {
-                        bestPolyFitDeg = nextCoeffs->key;
-                        minErrAvg = errAvg;
-                    }
-                 
-                    nextCoeffs = coeffMap.nextEntry();
-                }
-                
-                int x = 3;
 
 			} catch(const std::exception& e) {
 				std::cout << e.what() << std::endl;

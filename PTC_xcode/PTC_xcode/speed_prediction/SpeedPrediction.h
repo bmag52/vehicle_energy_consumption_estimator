@@ -42,6 +42,8 @@ public:
 	int getO();
 	void formatInData(Eigen::MatrixXd * input);
 	void formatOutData(Eigen::MatrixXd * output);
+    void scaleTrainingSpeed(Eigen::MatrixXd * input);
+    void descaleTrainingSpeed(Eigen::MatrixXd * output);
 };
 
 }

@@ -48,8 +48,11 @@ SpeedPrediction::SpeedPrediction()
 	}
 }
 
+// create NN using inputted weights and activations
 SpeedPrediction::SpeedPrediction(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
 {
+    
+    // must assert NN geometry matches geometr of input
 	initParams();
 
 	this->Wts = Wts;
@@ -100,7 +103,7 @@ void SpeedPrediction::predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_ou
 	// **input to hidden layers
 	for(int i = 0; i < this->HN[0]; i++)
 	{
-		Eigen::MatrixXd tempWts = this->Wts[0].row(i);
+		Eigen::MatrixXd tempWts = this->Wts[0].row(i);        
 		double act = (x*tempWts.transpose())(0);
 		this->yInHid[0](0,i) = act;
 		this->yHid[0](0,i) = 1 / (1 + exp(-act));
@@ -257,6 +260,22 @@ void SpeedPrediction::formatInData(Eigen::MatrixXd * input)
 	Eigen::MatrixXd offset = Eigen::MatrixXd::Ones(1,this->I+1) * this->lb_offset;
 	(*input) = (*input) / this->maxSpeed + offset;
 	(*input)(0,this->I) = 1;
+}
+    
+void SpeedPrediction::scaleTrainingSpeed(Eigen::MatrixXd * input)
+{
+    // only accept row vector
+    assert((*input).rows() == 1);
+    Eigen::MatrixXd offset = Eigen::MatrixXd::Ones(1,(*input).cols()) * this->lb_offset;
+    (*input) = (*input) / this->maxSpeed + offset;
+}
+    
+void SpeedPrediction::descaleTrainingSpeed(Eigen::MatrixXd * output)
+{
+    // accept only row vector
+    assert((*output).rows() == 1);
+    Eigen::MatrixXd offset = Eigen::MatrixXd::Ones(1,(*output).cols()) * this->lb_offset;
+    (*output) = (*output) * this->maxSpeed - offset;
 }
 
 // scale output data

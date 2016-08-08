@@ -44,7 +44,7 @@ private:
 	double lonDelta;
 	std::string mapFile;
 	std::string eleFile;
-	std::string dataFolder = "/Users/Brian/Desktop/ecocar/Git/predictive_thermo_controller/data";
+	std::string dataFolder = "/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data";
 	std::string mapPNGName =  "mapImage.png";
 	int** eleDataSRTM;
 	int numEleLatsSRTM;

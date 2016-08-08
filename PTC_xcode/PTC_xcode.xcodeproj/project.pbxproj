@@ -119,6 +119,7 @@
 		D3B911241CE3EEBD00B419B9 /* libboost_program_options.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910EC1CE3EEBD00B419B9 /* libboost_program_options.dylib */; };
 		D3B911251CE3EEBD00B419B9 /* libboost_random-mt.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910ED1CE3EEBD00B419B9 /* libboost_random-mt.dylib */; };
 		D3B911291CE4026B00B419B9 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B911281CE4026B00B419B9 /* CoreFoundation.framework */; };
+		D3F7F4441D57E0E300F682C4 /* SpeedPredictionUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3F7F4421D57E0E300F682C4 /* SpeedPredictionUnitTest.cpp */; };
 		D3FABC701CE524A400892002 /* Node.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC211CE524A400892002 /* Node.cpp */; };
 		D3FABC711CE524A400892002 /* Way.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC221CE524A400892002 /* Way.cpp */; };
 		D3FABC721CE524A400892002 /* Bounds.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3FABC231CE524A400892002 /* Bounds.cpp */; };
@@ -321,6 +322,7 @@
 		D3B910ED1CE3EEBD00B419B9 /* libboost_random-mt.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libboost_random-mt.dylib"; path = "/usr/local/Cellar/boost/1.58.0/lib/libboost_random-mt.dylib"; sourceTree = "<absolute>"; };
 		D3B911261CE3F7AD00B419B9 /* libcrypto.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libcrypto.tbd; path = usr/lib/libcrypto.tbd; sourceTree = SDKROOT; };
 		D3B911281CE4026B00B419B9 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
+		D3F7F4421D57E0E300F682C4 /* SpeedPredictionUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SpeedPredictionUnitTest.cpp; path = PTC_xcode/unit_tests/SpeedPredictionUnitTest.cpp; sourceTree = "<group>"; };
 		D3FABC1F1CE524A400892002 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = PTC_xcode/main.cpp; sourceTree = "<group>"; };
 		D3FABC211CE524A400892002 /* Node.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Node.cpp; path = PTC_xcode/data_management/Node.cpp; sourceTree = "<group>"; };
 		D3FABC221CE524A400892002 /* Way.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Way.cpp; path = PTC_xcode/data_management/Way.cpp; sourceTree = "<group>"; };
@@ -718,6 +720,7 @@
 				D3FABC4E1CE524A400892002 /* LinkToStateMapEntryUnitTest.cpp */,
 				D3FABC4F1CE524A400892002 /* ProbabilityUnitTest.cpp */,
 				D3FABC501CE524A400892002 /* RoutePredictionUnitTest.cpp */,
+				D3F7F4421D57E0E300F682C4 /* SpeedPredictionUnitTest.cpp */,
 			);
 			name = unit_tests;
 			sourceTree = "<group>";
@@ -914,6 +917,7 @@
 				D3FABCAA1CE524A500892002 /* GoalMapEntry.cpp in Sources */,
 				D3FABCAB1CE524A500892002 /* Goal.cpp in Sources */,
 				D3FABCAC1CE524A500892002 /* Goal.h in Sources */,
+				D3F7F4441D57E0E300F682C4 /* SpeedPredictionUnitTest.cpp in Sources */,
 				D3FABCAD1CE524A500892002 /* GoalMapEntry.h in Sources */,
 				D3FABCAE1CE524A500892002 /* LinkToStateMapEntry.h in Sources */,
 				D3FABCB01CE524A500892002 /* GenericMap.h in Sources */,

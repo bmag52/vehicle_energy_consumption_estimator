@@ -106,7 +106,7 @@ void BuildCity::printAdjMats() {
     std::cout << "printing adjacency matrix from build city" << std::endl;
     if(this->hasNewBounds())
     {
-        std::string csvName = "adjMatSpline.csv";
+        std::string csvName = "/Users/Brian/Desktop/ecocar/Git/predictive_thermo_controller/data/   adjMatSpline.csv";
         
         // remove old csv
         std::string rm = "rm " + csvName;
@@ -268,9 +268,7 @@ std::pair<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*>* BuildCity::
             
             // trace out to closest point
             std::pair<bool, GenericMap<int, cv::Point*>*>* roadTraceData = traceRoad(nextClosestIntPnt, nextCentralIntPoint, map, searchedIntPnts);
-            
-         
-            
+
         }
         
         nextCentralIntPoint = rawInts->getFirstEntry();

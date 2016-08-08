@@ -14,7 +14,9 @@ int main() {
 
 //	dataManagement_ut();
 //	dataCollection_ut();
-	buildCity_ut();
+//	buildCity_ut();    <----
+    
+    speedPrediction_ut();
 
 	std::cout << "finished" << std::endl;
 

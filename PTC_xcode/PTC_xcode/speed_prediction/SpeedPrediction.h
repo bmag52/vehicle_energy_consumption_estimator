@@ -43,7 +43,7 @@ public:
 	void formatInData(Eigen::MatrixXd * input);
 	void formatOutData(Eigen::MatrixXd * output);
     void scaleTrainingSpeed(Eigen::MatrixXd * input);
-    void descaleTrainingSpeed(Eigen::MatrixXd * output);
+    void unscaleTrainingSpeed(Eigen::MatrixXd * output);
 };
 
 }

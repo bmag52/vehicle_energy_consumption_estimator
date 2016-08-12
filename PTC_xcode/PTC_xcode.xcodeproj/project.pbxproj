@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		D325CB791D1740FB009BB3D8 /* polyfit.hpp in Sources */ = {isa = PBXBuildFile; fileRef = D325CB781D1740CA009BB3D8 /* polyfit.hpp */; };
 		D3B9107F1CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910481CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */; };
 		D3B910801CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910491CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */; };
 		D3B910811CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B9104A1CE3EABC00B419B9 /* libopencv_contrib.2.4.11.dylib */; };
@@ -207,7 +206,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		D325CB781D1740CA009BB3D8 /* polyfit.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = polyfit.hpp; path = PTC_xcode/data_management/polyfit.hpp; sourceTree = "<group>"; };
 		D3B910291CE3C83B00B419B9 /* PTC_xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTC_xcode; sourceTree = BUILT_PRODUCTS_DIR; };
 		D3B910481CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_videostab.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_videostab.2.4.11.dylib; sourceTree = "<absolute>"; };
 		D3B910491CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libopencv_calib3d.2.4.11.dylib; path = /usr/local/Cellar/opencv/2.4.11_1/lib/libopencv_calib3d.2.4.11.dylib; sourceTree = "<absolute>"; };
@@ -659,7 +657,6 @@
 		D3FABCBE1CE524E100892002 /* data_management */ = {
 			isa = PBXGroup;
 			children = (
-				D325CB781D1740CA009BB3D8 /* polyfit.hpp */,
 				D3FABC211CE524A400892002 /* Node.cpp */,
 				D3FABC221CE524A400892002 /* Way.cpp */,
 				D3FABC231CE524A400892002 /* Bounds.cpp */,
@@ -857,7 +854,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D325CB791D1740FB009BB3D8 /* polyfit.hpp in Sources */,
 				D3FABCC71CE525FB00892002 /* main.cpp in Sources */,
 				D3FABC701CE524A400892002 /* Node.cpp in Sources */,
 				D3FABC711CE524A400892002 /* Way.cpp in Sources */,

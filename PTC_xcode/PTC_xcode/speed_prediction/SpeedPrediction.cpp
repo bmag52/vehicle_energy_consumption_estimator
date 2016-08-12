@@ -64,7 +64,7 @@ void SpeedPrediction::initParams()
 {
 	// NN architectural params
 	this->I = 100;						// input neurons
-	this->O = 14;						// output neurons
+	this->O = 30;						// output neurons
 	int HN[] = {80, 65, 50, 35, 20};	// hidden layer neurons
 
 	// scaling parameters
@@ -270,7 +270,7 @@ void SpeedPrediction::scaleTrainingSpeed(Eigen::MatrixXd * input)
     (*input) = (*input) / this->maxSpeed + offset;
 }
     
-void SpeedPrediction::descaleTrainingSpeed(Eigen::MatrixXd * output)
+void SpeedPrediction::unscaleTrainingSpeed(Eigen::MatrixXd * output)
 {
     // accept only row vector
     assert((*output).rows() == 1);

@@ -34,6 +34,10 @@ using namespace PredictivePowertrain;
 
 // unit test for the SpeedPrediction class
 void speedPrediction_ut(){
+    
+    int testEpochs = 100; // number of calls
+    int refreshRate = 1; // call every one unit of input
+    
     SpeedPrediction sp;
     
     std::ofstream myfile("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/speedPredictionResults.csv");
@@ -60,19 +64,14 @@ void speedPrediction_ut(){
     int k = I;
     
     // k < 9985 (original)
-    while ( k < 9985){
+    while ( k < I + testEpochs){
         Eigen::MatrixXd temp_in = Eigen::MatrixXd::Ones(1, I+1);
-        memcpy(&temp_in(0,0), &spd_in(0, k-100), I*sizeof(double));
+        memcpy(&temp_in(0,0), &spd_in(0, k-I), I*sizeof(double));
         
         Eigen::MatrixXd temp_act = Eigen::MatrixXd::Zero(1,O);
         memcpy(&temp_act(0,0), &spd_in(0,k), O*sizeof(double));
         
         Eigen::MatrixXd temp_pred = Eigen::MatrixXd::Zero(1,O);
-        
-        std::cout<< "Input" << std::endl;
-        std::cout<< temp_in << std::endl;
-        std::cout<< "Actual" << std::endl;
-        std::cout<< temp_act << std::endl;
         
         // Format input data
         sp.formatInData(&temp_in);
@@ -86,26 +85,23 @@ void speedPrediction_ut(){
         
         // format output data
         sp.formatOutData(&temp_pred);
-        sp.descaleTrainingSpeed(&temp_act);
-        
-        std::cout<< "Predicted" << std::endl;
-        std::cout<< temp_pred << std::endl;
+        sp.unscaleTrainingSpeed(&temp_act);
         
         // concatenate predicted and actual data
-        int index = k-101;
+        int index = k-(I+1);
         for (int j =0; j < O; j++){
             spd_pred(0, index+j) = temp_pred(0, j);
             spd_act(0, index+j) = temp_act(0, j);
         }
         
         // update k
-        k = k + O;
+        k = k + refreshRate;
         
         std::cout<< k << std::endl;
     }
     
     // write the actual and predicted speed
-    for (int i = 0; i < 9898; i++){
+    for (int i = 0; i < testEpochs; i++){
         myfile << spd_act(0,i);
         myfile << ", ";
         myfile << spd_pred(0,i);

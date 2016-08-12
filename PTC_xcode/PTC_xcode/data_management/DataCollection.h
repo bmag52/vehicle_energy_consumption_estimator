@@ -23,7 +23,6 @@
 
 #include <eigen3/Eigen/Core>
 #include <eigen3/unsupported/Eigen/Splines>
-#include "polyfit.hpp"
 
 #include <iostream>
 #include <fstream>

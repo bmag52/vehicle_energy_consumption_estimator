@@ -179,6 +179,7 @@ void DataCollection::pullOSMDataXML(double lat, double lon) {
 				Way* way = new Way(nodeIDs, wayID, wayType, waySpeed);
 				this->wayMap.addEntry(this->wayCount, way);
 			}
+            
 		} else if(!tagName.compare("bounds")) {
 
 			double maxLat, maxLon, minLat, minLon;
@@ -540,6 +541,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 		GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
 
 		// iterate through node IDs of way
+        long int node_count = 0;
 		way->getNodeIDs()->initializeCounter();
 		GenericEntry<int, long int>* nextWayNodeID = way->getNodeIDs()->nextEntry();
 		while(nextWayNodeID != NULL)
@@ -547,7 +549,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 			Node* node = this->nodeMap.getEntry(nextWayNodeID->value);
 			if(node != NULL)
 			{
-				nodes->addEntry(node->getID(), node);
+				nodes->addEntry(node_count, node);
 				csv << way->getID() << ",";								//name
 				csv << "\"Node ID: " << node->getID() << " | ";			//Node ID
 				csv << "Ele: " << node->getEle() << " | ";				//Ele
@@ -557,6 +559,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 				csv << "red" << ",";									//color
 				csv << node->getLat() << ",";							//lat
 				csv << node->getLon() << "\n";							//lon
+                node_count++;
 			}
 			nextWayNodeID = way->getNodeIDs()->nextEntry();
 		}

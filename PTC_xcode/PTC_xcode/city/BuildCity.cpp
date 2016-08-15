@@ -16,12 +16,110 @@ std::pair<GenericMap<int, Intersection*> *, GenericMap<long int, Road*>*>* Build
     // TODO yeah uhhh no thanks
     return NULL;
 }
+    
+void BuildCity::updateGridDataXMLSpline()
+{
+    if(this->hasNewBounds())
+    {
+        std::cout << "identifying intersections from XML splines" << std::endl;
+        
+        // get map data
+        std::pair<DataCollection*, Bounds*>* newMapData = this->setupDataCollection();
+        DataCollection* dc = newMapData->first;
+        Bounds* newBounds = newMapData->second;
+        
+        dc->pullDataXML(this->latCenter, this->lonCenter);
+        this->newInts = new GenericMap<long int, Intersection*>();
+        this->rawRoads = dc->makeRawRoads();
+        GenericMap<long int, Road*>* rawRoadsCopy = this->rawRoads->copy();
+        
+        // get current road
+        int intCount = 1;
+        this->rawRoads->initializeCounter();
+        GenericEntry<long int, Road*>* nextRawRoad = this->rawRoads->nextEntry();
+        while(nextRawRoad != NULL)
+        {
+            // spline of current road
+            Eigen::Spline<float,2> currSpline = nextRawRoad->value->getSpline();
+            
+            // loop through all other roads
+            rawRoadsCopy->initializeCounter();
+            GenericEntry<long int, Road*>* nextOtherRawRoad = rawRoadsCopy->nextEntry();
+            while(nextOtherRawRoad != NULL)
+            {
+                // don't look at the same roads
+                if(nextRawRoad->key == nextOtherRawRoad->key)
+                {
+                    nextOtherRawRoad = rawRoadsCopy->nextEntry();
+                    continue;
+                }
+                
+                // get other road spline
+                Eigen::Spline<float,2> nextSpline = nextOtherRawRoad->value->getSpline();
+                
+                // iteratate through road splines
+                Eigen::Spline<float,2>::PointType currPointA = currSpline(0);
+                for(double u = this->splineStep; u <= 1; u += this->splineStep)
+                {
+                    Eigen::Spline<float,2>::PointType currPointB = currSpline(u);
+                    
+                    // iterate through other spline
+                    Eigen::Spline<float,2>::PointType nextPointA = nextSpline(0);
+                    for(double s = this->splineStep; s <= 1; s += this->splineStep)
+                    {
+                        Eigen::Spline<float,2>::PointType nextPointB = nextSpline(s);
+                        
+                        cv::Point currA(currPointA(0,0), currPointA(1,0));
+                        cv::Point currB(currPointB(0,0), currPointB(1,0));
+                        cv::Point nextA(nextPointA(0,0), nextPointA(1,0));
+                        cv::Point nextB(nextPointB(0,0), nextPointB(1,0));
+                        cv::Point intersect;
+                        
+                        if(this->getIntersectionPoint(currA, currB, nextA, nextB, intersect))
+                        {
+                            GenericMap<long int, Road*>* intRoads = new GenericMap<long int, Road*>();
+                            intRoads->addEntry(nextRawRoad->key, nextRawRoad->value);
+                            intRoads->addEntry(nextOtherRawRoad->key, nextOtherRawRoad->value);
+                            
+                            Intersection* newInt = new Intersection(intRoads, intersect.x, intersect.y, 0, 0);
+                            this->newInts->addEntry(intCount, newInt);
+                            intCount++;
+                        }
+                        
+                        nextPointA = nextPointB;
+                    }
+                    
+                    currPointA = currPointB;
+                }
+                nextOtherRawRoad = rawRoadsCopy->nextEntry();
+            }
+            free(nextOtherRawRoad);
+            nextRawRoad = this->rawRoads->nextEntry();
+        }
+        free(nextRawRoad);
+    }
+}
 
-void BuildCity::updateGridDataXML() {
+void BuildCity::printIntersections()
+{
+    if(this->newInts->getSize() > 0)
+    {
+        this->newInts->initializeCounter();
+        GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
+        while(nextInt != NULL)
+        {
+            printf("%.6f,%.6f\n", nextInt->value->getLat(), nextInt->value->getLon());
+            nextInt = this->newInts->nextEntry();
+        }
+        free(nextInt);
+    }
+}
+
+void BuildCity::updateGridDataXMLAdj() {
     
     if(this->hasNewBounds())
     {
-        std::cout << "identifying intersections from XML" << std::endl;
+        std::cout << "identifying intersections from XML Adjacency Matrix" << std::endl;
         std::pair<DataCollection*, Bounds*>* newMapData = this->setupDataCollection();
         DataCollection* dc = newMapData->first;
         Bounds* newBounds = newMapData->second;

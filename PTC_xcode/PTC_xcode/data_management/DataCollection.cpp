@@ -46,7 +46,6 @@ int DataCollection::pullDataPNG(double lat, double lon) {
 	return this->pullOSMDataPNG(lat, lon);
 }
 
-
 void DataCollection::pullOSMDataXML(double lat, double lon) {
 	std::cout << "pulling OSM data ..." << std::endl;
 
@@ -143,8 +142,8 @@ void DataCollection::pullOSMDataXML(double lat, double lon) {
 							std::string val = lexical_cast<std::string>(z.second.data());
 							std::size_t found = val.find("mph");
 							if(!val.compare("motorway") || !val.compare("primary") || !val.compare("secondary") || !val.compare("tertiary")
-									|| !val.compare("motorway link") || !val.compare("primary link") /*|| !val.compare("unclassified")*/
-									|| !val.compare("road") || !val.compare("residential") /*|| !val.compare("service")*/)
+									|| !val.compare("motorway link") || !val.compare("primary link") || !val.compare("unclassified")
+									|| !val.compare("road") || !val.compare("residential") || !val.compare("service"))
 							{
 								wayType = val;
 								isDesiredWay = true;
@@ -524,11 +523,11 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 	system(rm.c_str());
 
 	// create new csv
-	std::ofstream csv;
-	csv.open(csvName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app);
-
+    FILE* csv;
+    csv = std::fopen(csvName.c_str(), "w");
+    
 	// add header to csv
-	csv << "name, description, color, latitude, longitude\n";
+	fprintf(csv, "name, description, color, latitude, longitude\n");
 
 	// begin iterating through ways
 	this->wayMap.initializeCounter();
@@ -550,17 +549,8 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 			if(node != NULL)
 			{
 				nodes->addEntry(node_count, node);
-				csv << way->getID() << ",";								//name
-				csv << "\"Node ID: " << node->getID() << " | ";			//Node ID
-				csv << "Ele: " << node->getEle() << " | ";				//Ele
-				csv << "Way ID: " << way->getID() << " | ";				//Way ID
-				csv << "Way Type: " << way->getWayType() << " | ";		//Way Type
-				csv << "Way Speed: " << way->getWaySpeed() << "\",";	//Way Speed
-				csv << "red" << ",";									//color
-				csv << node->getLat() << ",";							//lat
-				csv << node->getLon() << "\n";							//lon
                 node_count++;
-			}
+            }
 			nextWayNodeID = way->getNodeIDs()->nextEntry();
 		}
 		free(nextWayNodeID);
@@ -577,15 +567,10 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                 
                 // for splines
 				Eigen::MatrixXf points(2, nodes->getSize());
-                
-                // for fitted poly
-                std::vector<float> lats(nodes->getSize());
-                std::vector<float> lons(nodes->getSize());
-                float minLat = 10000;
-                float maxLat = -10000;
 
-                std::cout << "******** raw nodes ********" << std::endl;
+                std::cout << "******** node control points ********" << std::endl;
                 
+                // set control points for spline
 				nodes->initializeCounter();
 				GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
 				while(nextNode != NULL)
@@ -593,130 +578,45 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                     float lat = nextNode->value->getLat();
                     float lon = nextNode->value->getLon();
                     
+                    // print control points
                     printf("%.6f,%.6f\n", lat, lon);
                     
                     // for splines
                     points(0, latLonCount) = lat;
                     points(1, latLonCount) = lon;
                     
-                    // for fitted poly
-                    lats.at(latLonCount) = lat;
-                    lons.at(latLonCount) = lon;
-                    
-                    if(lat < minLat) { minLat = lat; }
-                    if(lat > maxLat) { maxLat = lat; }
-                    
 					nextNode = nodes->nextEntry();
 					latLonCount++;
 				}
 				free(nextNode);
 
-				// fit the best spline
+				// fit first order spline spline
 				typedef Eigen::Spline<float, 2> spline2f;
-				spline2f splineRay[3]; // array of different splines, 3rd - 1st degree
-                int missCounts[3] = {0,0,0};
-				for(int i = 2; i >= 0; i--)
-				{
-                    std::cout << "******** " << i << " order spline " << "********" << std::endl;
-					splineRay[i] = Eigen::SplineFitting<spline2f>::Interpolate(points, i+1);
-					for(double u = 0; u <= 1; u += 0.025)
-					{
-						Eigen::Spline<float,2>::PointType point = splineRay[i](u);
-						float lat = point(0,0);
-						float lon = point(1,0);
-                        
-                        printf("%.6f,%.6f\n", lat, lon);
-                        
-                        // doesn't work this way
-						if(lat > 90 || lat < -90 || lon > 180 || lon < -180)
-						{
-							missCounts[i]++;
-						}
-					}
-				}
 
-				int bestSplineIdx = -1;
-				int lowestMisses = 10000;
-				for(int i = 0; i < 3; i++)
-				{
-					if(missCounts[i] < lowestMisses)
-					{
-						lowestMisses = missCounts[i];
-						bestSplineIdx = i;
-					}
-				}
-
-				newRoad->assignSpline(splineRay[bestSplineIdx]);
-
-//                // fit the 1-3 degree polynomials
-//                GenericMap<int, std::vector<float>*> coeffMap;
-//                for(int i = 0; i <= 6; i++)
-//                {
-//                    try {
-//                        
-//                        std::vector<float>* coeffs = polyfit(lats, lons, i);
-//                        //std::cout << i << " , " << coeffs->size() << std::endl;
-//                        coeffMap.addEntry(i, coeffs);
-//                        
-//                    } catch(const std::exception& e) {
-//                        //std::cout << e.what() << std::endl;
-//                        continue;
-//                    }
-//                }
-//                
-//                // find the best polynomial
-//                int bestPolyFitDeg = 0;
-//                double minErrAvg = 10000;
-//                
-//                coeffMap.initializeCounter();
-//                GenericEntry<int, std::vector<float>*>* nextCoeffs = coeffMap.nextEntry();
-//                while(nextCoeffs != NULL)
-//                {
-//                    std::vector<float>* testLons = polyval(nextCoeffs->value, &lats);
-//                    assert(testLons->size() == lons.size());
-//                    
-//                    double sum = 0;
-//                    for(int i = 0; i < lons.size(); i++)
-//                    {
-//                        sum += std::abs(testLons->at(i) - lons.at(i));
-//                    }
-//                    
-//                    double errAvg = sum / (double)lons.size();
-//                    
-//                    if(errAvg < minErrAvg)
-//                    {
-//                        bestPolyFitDeg = nextCoeffs->key;
-//                        minErrAvg = errAvg;
-//                    }
-//                    
-//                    free(testLons);
-//                    nextCoeffs = coeffMap.nextEntry();
-//                }
-//                free(nextCoeffs);
-//                
-//                std::vector<float>* bestPolyCoeffs = coeffMap.getEntry(bestPolyFitDeg);
-//                
-//                //create poly
-//                int polyPoints = 20;
-//                float nextLatDist = minLat;
-//                float latDistPrecision = (maxLat - minLat) / (float)polyPoints;
-//                
-//                std::vector<float>* polyLats =  new std::vector<float>(polyPoints+1);
-//                polyLats->at(0) = nextLatDist;
-//                for(float i = 1; i < polyLats->size(); i ++)
-//                {
-//                    nextLatDist += latDistPrecision;
-//                    polyLats->at(i) = nextLatDist;
-//                }
-//                std::vector<float>* polyLons = polyval(bestPolyCoeffs, polyLats);
-//                
-//                std::cout << "****** poly values " << bestPolyFitDeg << " *******" << std::endl;
-//                assert(polyLats->size() == polyLons->size());
-//                for(int i = 0; i < polyLats->size(); i++)
-//                {
-//                    printf("%.6f,%.6f\n", polyLats->at(i), polyLons->at(i));
-//                }
+                // fit spline
+                std::cout << "******** 1st order spline " << "********" << std::endl;
+                spline2f rawRoadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
                 
+                // evaluate spline and save points to cvs for viewing
+                for(double u = 0; u <= 1; u += 0.025)
+                {
+                    Eigen::Spline<float,2>::PointType point = rawRoadSpline(u);
+                    float lat = point(0,0);
+                    float lon = point(1,0);
+                    
+                    // to console
+                    printf("%.6f,%.6f\n", lat, lon);
+                    
+                    // to csv
+                    fprintf(csv, "%d,", way->getID());
+                    fprintf(csv, "Way ID: %d | ", way->getID());
+                    fprintf(csv, "Way Type: %s | ", way->getWayType().c_str());
+                    fprintf(csv, "Way Speed: %d,", way->getWaySpeed());
+                    fprintf(csv, "red,");
+                    fprintf(csv, "%.6f,%.6f\n", lat, lon);
+                }
+
+				newRoad->assignSpline(rawRoadSpline);
 
 			} catch(const std::exception& e) {
 				std::cout << e.what() << std::endl;
@@ -728,7 +628,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 	}
 	free(nextWay);
 
-	csv.close();
+    fclose(csv);
 	return rawRoads;
 }
 

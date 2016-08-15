@@ -36,6 +36,6 @@ void buildCity_ut() {
     
     BuildCity bc;
 //    bc.updateGridDataPNG();
-    bc.updateGridDataXML();
-    bc.printAdjMats();
+    bc.updateGridDataXMLSpline();
+    bc.printIntersections();
 }

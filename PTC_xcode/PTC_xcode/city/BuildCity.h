@@ -33,6 +33,7 @@ private:
     // functional
     City city;
     GenericMap<long int, Road*>* rawRoads;
+    GenericMap<long int, Intersection*>* newInts;
     Eigen::MatrixXd adjMatFromSplines;
     double maxLat;
     double maxLon;
@@ -57,7 +58,7 @@ private:
     double idScalar = 10000.0;
     bool newBounds = false;
     
-    // for spline shit using osm oxl
+    // for spline shit using osm 
     double splineStep = 0.025;
     double adjMatPrecFromSplines = 0.00001;
     double gpsTolerance = 0.0001;
@@ -85,9 +86,11 @@ private:
     
 public:
     BuildCity();
-    void updateGridDataXML();
+    void updateGridDataXMLSpline();
+    void updateGridDataXMLAdj();
     void updateGridDataPNG();
     void printAdjMats();
+    void printIntersections();
     bool hasNewBounds();
 };
     

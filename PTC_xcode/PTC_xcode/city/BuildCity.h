@@ -70,9 +70,9 @@ private:
     bool isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntry<int, std::pair<int, int>*>* idx2);
     std::pair<DataCollection*, Bounds*>* setupDataCollection();
     std::pair<int, cv::Mat>* pullAndFormatMapPNG(DataCollection* dc);
-    bool getIntersectionPoint(cv::Point a1, cv::Point a2, cv::Point b1, cv::Point b2, cv::Point & intPnt);
+    template<typename K> bool getIntersectionPoint(cv::Point_<K> a1, cv::Point_<K> a2, cv::Point_<K> b1, cv::Point_<K> b2, cv::Point_<K> & intPnt);
     std::pair<cv::Point, cv::Point>* polarToCartisian(float mag, float angle, int rows);
-    double cross(cv::Point v1, cv::Point v2);
+    template<typename K> double cross(cv::Point_<K> v1, cv::Point_<K> v2);
     int getCoord(int* dimCount, int dim, int tol);
     GenericMap<int, cv::Point*>* getIntersectionPointsFromMapPNG(cv::Mat map, int zoom);
     GenericMap<int, std::pair<cv::Point*, cv::Point*>*>* perimeterScanKernelForRoads(cv::Mat kernel);

@@ -69,11 +69,11 @@ void BuildCity::updateGridDataXMLSpline()
                     {
                         Eigen::Spline<float,2>::PointType nextPointB = nextSpline(s);
                         
-                        cv::Point currA(currPointA(0,0), currPointA(1,0));
-                        cv::Point currB(currPointB(0,0), currPointB(1,0));
-                        cv::Point nextA(nextPointA(0,0), nextPointA(1,0));
-                        cv::Point nextB(nextPointB(0,0), nextPointB(1,0));
-                        cv::Point intersect;
+                        cv::Point_<float> currA(currPointA(0,0), currPointA(1,0));
+                        cv::Point_<float> currB(currPointB(0,0), currPointB(1,0));
+                        cv::Point_<float> nextA(nextPointA(0,0), nextPointA(1,0));
+                        cv::Point_<float> nextB(nextPointB(0,0), nextPointB(1,0));
+                        cv::Point_<float> intersect;
                         
                         if(this->getIntersectionPoint(currA, currB, nextA, nextB, intersect))
                         {
@@ -317,7 +317,7 @@ void BuildCity::updateGridDataPNG() {
         
         GenericMap<int, cv::Point*>* rawInts = getIntersectionPointsFromMapPNG(map, zoomIdx);
         
-//        std::pair<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*>* roadsAndInts = makeRoadsAndIntersections(rawInts, map);
+        std::pair<GenericMap<int, Road*>*, GenericMap<int, Intersection*>*>* roadsAndInts = makeRoadsAndIntersections(rawInts, map);
 
         // Display the detected hough lines
         cv::imshow("incoming road dots", map);
@@ -653,11 +653,12 @@ int BuildCity::getCoord(int* dimCount, int dim, int tol) {
 }
     
 // get intersection points
-bool BuildCity::getIntersectionPoint(cv::Point a1, cv::Point a2, cv::Point b1, cv::Point b2, cv::Point & intPnt) {
-    cv::Point p = a1;
-    cv::Point q = b1;
-    cv::Point r(a2-a1);
-    cv::Point s(b2-b1);
+template<typename K>
+bool BuildCity::getIntersectionPoint(cv::Point_<K> a1, cv::Point_<K> a2, cv::Point_<K> b1, cv::Point_<K> b2, cv::Point_<K> & intPnt) {
+    cv::Point_<K> p = a1;
+    cv::Point_<K> q = b1;
+    cv::Point_<K> r(a2-a1);
+    cv::Point_<K> s(b2-b1);
     
     if(cross(r,s) == 0) { return false; }
     
@@ -666,8 +667,9 @@ bool BuildCity::getIntersectionPoint(cv::Point a1, cv::Point a2, cv::Point b1, c
     intPnt = p + t*r;
     return true;
 }
-    
-double BuildCity::cross(cv::Point v1, cv::Point v2) {
+
+template<typename K>
+double BuildCity::cross(cv::Point_<K> v1, cv::Point_<K> v2) {
     return v1.x*v2.y - v1.y*v2.x;
 }
     

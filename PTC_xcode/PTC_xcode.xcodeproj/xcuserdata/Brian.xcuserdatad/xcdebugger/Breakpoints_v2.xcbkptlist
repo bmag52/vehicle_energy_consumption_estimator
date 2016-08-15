@@ -40,7 +40,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "313"
@@ -56,11 +56,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "684"
-            endingLineNumber = "684"
+            startingLineNumber = "686"
+            endingLineNumber = "686"
             landmarkName = "BuildCity::pullAndFormatMapPNG(DataCollection* dc)"
             landmarkType = "5">
          </BreakpointContent>
@@ -88,11 +88,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "685"
-            endingLineNumber = "685"
+            startingLineNumber = "687"
+            endingLineNumber = "687"
             landmarkName = "BuildCity::pullAndFormatMapPNG(DataCollection* dc)"
             landmarkType = "5">
          </BreakpointContent>
@@ -104,55 +104,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "689"
-            endingLineNumber = "689"
-            landmarkName = "BuildCity::pullAndFormatMapPNG(DataCollection* dc)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "721"
-            endingLineNumber = "721"
-            landmarkName = "BuildCity::pullAndFormatMapPNG(DataCollection* dc)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "720"
-            endingLineNumber = "720"
-            landmarkName = "BuildCity::pullAndFormatMapPNG(DataCollection* dc)"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "691"
@@ -168,11 +120,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "692"
-            endingLineNumber = "692"
+            startingLineNumber = "723"
+            endingLineNumber = "723"
             landmarkName = "BuildCity::pullAndFormatMapPNG(DataCollection* dc)"
             landmarkType = "5">
          </BreakpointContent>
@@ -184,7 +136,55 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "722"
+            endingLineNumber = "722"
+            landmarkName = "BuildCity::pullAndFormatMapPNG(DataCollection* dc)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/city/BuildCity.cpp"
+            timestampString = "492931909.650433"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "693"
+            endingLineNumber = "693"
+            landmarkName = "BuildCity::pullAndFormatMapPNG(DataCollection* dc)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/city/BuildCity.cpp"
+            timestampString = "492931909.650433"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "694"
+            endingLineNumber = "694"
+            landmarkName = "BuildCity::pullAndFormatMapPNG(DataCollection* dc)"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/city/BuildCity.cpp"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "323"
@@ -200,7 +200,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "638"
@@ -216,7 +216,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "430"
@@ -232,7 +232,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "428"
@@ -248,7 +248,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "409"
@@ -264,7 +264,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "406"
@@ -280,7 +280,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "441"
@@ -296,7 +296,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "436"
@@ -312,7 +312,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "437"
@@ -328,7 +328,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "442"
@@ -344,7 +344,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "496"
@@ -360,7 +360,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "512"
@@ -376,7 +376,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "576"
@@ -392,7 +392,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "569"
@@ -408,7 +408,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "590"
@@ -424,7 +424,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "619"
@@ -616,7 +616,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "175"
@@ -632,7 +632,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "196"
@@ -664,7 +664,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "205"
@@ -1079,7 +1079,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "81"
@@ -1095,7 +1095,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911238.75267"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "94"
@@ -1127,7 +1127,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911222.741379"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "79"
@@ -1139,17 +1139,257 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/BuildCity.cpp"
-            timestampString = "492911224.3243"
+            timestampString = "492931909.650433"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "78"
             endingLineNumber = "78"
             landmarkName = "BuildCity::updateGridDataXMLSpline()"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/city/BuildCity.cpp"
+            timestampString = "492931909.650433"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "663"
+            endingLineNumber = "663"
+            landmarkName = "BuildCity::getIntersectionPoint(cv::Point_&lt;K&gt; a1, cv::Point_&lt;K&gt; a2, cv::Point_&lt;K&gt; b1, cv::Point_&lt;K&gt; b2, cv::Point_&lt;K&gt; &amp; intPnt)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "bool PredictivePowertrain::BuildCity::getIntersectionPoint&lt;float&gt;(cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;&amp;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931847.142553"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "668"
+                  endingLineNumber = "668"
+                  offsetFromSymbolStart = "140">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "bool PredictivePowertrain::BuildCity::getIntersectionPoint&lt;int&gt;(cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;&amp;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931847.142795"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "668"
+                  endingLineNumber = "668"
+                  offsetFromSymbolStart = "140">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/city/BuildCity.cpp"
+            timestampString = "492931909.650433"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "672"
+            endingLineNumber = "672"
+            landmarkName = "BuildCity::cross(cv::Point_&lt;K&gt; v1, cv::Point_&lt;K&gt; v2)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "double PredictivePowertrain::BuildCity::cross&lt;float&gt;(cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931847.143656"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "678"
+                  endingLineNumber = "678"
+                  offsetFromSymbolStart = "8">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "double PredictivePowertrain::BuildCity::cross&lt;int&gt;(cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931847.143846"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "678"
+                  endingLineNumber = "678"
+                  offsetFromSymbolStart = "8">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/city/BuildCity.cpp"
+            timestampString = "492931909.650433"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "660"
+            endingLineNumber = "660"
+            landmarkName = "BuildCity::getIntersectionPoint(cv::Point_&lt;K&gt; a1, cv::Point_&lt;K&gt; a2, cv::Point_&lt;K&gt; b1, cv::Point_&lt;K&gt; b2, cv::Point_&lt;K&gt; &amp; intPnt)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "bool PredictivePowertrain::BuildCity::getIntersectionPoint&lt;float&gt;(cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;&amp;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931847.144657"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "665"
+                  endingLineNumber = "665"
+                  offsetFromSymbolStart = "90">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "bool PredictivePowertrain::BuildCity::getIntersectionPoint&lt;int&gt;(cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;&amp;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931847.144867"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "665"
+                  endingLineNumber = "665"
+                  offsetFromSymbolStart = "90">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/city/BuildCity.cpp"
+            timestampString = "492931909.650433"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "661"
+            endingLineNumber = "661"
+            landmarkName = "BuildCity::getIntersectionPoint(cv::Point_&lt;K&gt; a1, cv::Point_&lt;K&gt; a2, cv::Point_&lt;K&gt; b1, cv::Point_&lt;K&gt; b2, cv::Point_&lt;K&gt; &amp; intPnt)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "bool PredictivePowertrain::BuildCity::getIntersectionPoint&lt;float&gt;(cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;&amp;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931847.145458"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "666"
+                  endingLineNumber = "666"
+                  offsetFromSymbolStart = "113">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "bool PredictivePowertrain::BuildCity::getIntersectionPoint&lt;int&gt;(cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;&amp;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931847.145656"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "666"
+                  endingLineNumber = "666"
+                  offsetFromSymbolStart = "113">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/city/BuildCity.cpp"
+            timestampString = "492931909.650433"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "673"
+            endingLineNumber = "673"
+            landmarkName = "BuildCity::cross(cv::Point_&lt;K&gt; v1, cv::Point_&lt;K&gt; v2)"
+            landmarkType = "5">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "double PredictivePowertrain::BuildCity::cross&lt;float&gt;(cv::Point_&lt;float&gt;, cv::Point_&lt;float&gt;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931868.741607"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "678"
+                  endingLineNumber = "678"
+                  offsetFromSymbolStart = "8">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "double PredictivePowertrain::BuildCity::cross&lt;int&gt;(cv::Point_&lt;int&gt;, cv::Point_&lt;int&gt;)"
+                  moduleName = "PTC_xcode"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/PTC_xcode/PTC_xcode/city/BuildCity.cpp"
+                  timestampString = "492931868.741959"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "678"
+                  endingLineNumber = "678"
+                  offsetFromSymbolStart = "8">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

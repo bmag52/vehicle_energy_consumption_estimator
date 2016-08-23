@@ -60,9 +60,19 @@ int Road::getBoundsID() {
 void Road::setBoundsID(int id) {
 	this->boundsID = id;
 }
+    
+float Road::getSplineLength()
+{
+    return this->splineLength;
+}
 
 std::string Road::getRoadType() {
 	return this->roadType;
+}
+    
+void Road::assignSplineLength(float dist)
+{
+    this->splineLength = dist;
 }
 
 GenericMap<long int, Node*>* Road::getNodes() {

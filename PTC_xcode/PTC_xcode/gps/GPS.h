@@ -9,6 +9,8 @@
 #define GPS_GPS_H_
 
 #include <utility>
+#include <cmath>
+#include <math.h>
 #include "../city/Road.h"
 
 namespace PredictivePowertrain {
@@ -17,6 +19,7 @@ class GPS {
 private:
 	GenericMap<long int, std::pair<double, double>*> tripLog;
 	long int tripCount;
+    float toRadians(float degrees);
 
 public:
 	GPS();
@@ -24,6 +27,7 @@ public:
 	static bool isOnRoad(Road* road);
 	void updateTripLog();
 	GenericMap<long int, std::pair<double, double>*>* getTripLog();
+    float deltaLatLonToXY(float lat1, float lon1, float lat2, float lon2);
 };
 
 }

@@ -660,7 +660,10 @@ bool BuildCity::getIntersectionPoint(cv::Point_<K> a1, cv::Point_<K> a2, cv::Poi
     cv::Point_<K> r(a2-a1);
     cv::Point_<K> s(b2-b1);
     
-    if(cross(r,s) == 0) { return false; }
+    if(cross(r,s) == 0)
+    {
+        return false;
+    }
     
     double t = cross(q-p,s)/cross(r,s);
     

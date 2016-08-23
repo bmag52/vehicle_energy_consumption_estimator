@@ -512,6 +512,8 @@ GenericMap<int, Way*>* DataCollection::getWayMap() {
 
 // for loading into http://www.gpsvisualizer.com/
 GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
+    
+    GPS converter;
 
 	std::cout << "making raw roads" << std::endl;
 
@@ -598,24 +600,37 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                 spline2f rawRoadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
                 
                 // evaluate spline and save points to cvs for viewing
+                Eigen::Spline<float,2>::PointType pt = rawRoadSpline(0);
+                float prev_lat = pt(0,0);
+                float prev_lon = pt(1,0);
+                float dist = 0.0;
+                
                 for(double u = 0; u <= 1; u += 0.025)
                 {
-                    Eigen::Spline<float,2>::PointType point = rawRoadSpline(u);
-                    float lat = point(0,0);
-                    float lon = point(1,0);
+                    Eigen::Spline<float,2>::PointType pt = rawRoadSpline(u);
+                    float curr_lat = pt(0,0);
+                    float curr_lon = pt(1,0);
                     
                     // to console
-                    printf("%.6f,%.6f\n", lat, lon);
+                    printf("%.6f,%.6f\n", curr_lat, curr_lon);
+                    
+                    // get distance of eval point along spline
+                    dist += converter.deltaLatLonToXY(prev_lat, prev_lon, curr_lat, curr_lon);
                     
                     // to csv
                     fprintf(csv, "%d,", way->getID());
                     fprintf(csv, "Way ID: %d | ", way->getID());
                     fprintf(csv, "Way Type: %s | ", way->getWayType().c_str());
-                    fprintf(csv, "Way Speed: %d,", way->getWaySpeed());
+                    fprintf(csv, "Way Speed: %d | ", way->getWaySpeed());
+                    fprintf(csv, "Distance: %.2f,", dist);
                     fprintf(csv, "red,");
-                    fprintf(csv, "%.6f,%.6f\n", lat, lon);
+                    fprintf(csv, "%.12f,%.12f\n", curr_lat, curr_lon);
+                    
+                    prev_lat = curr_lat;
+                    prev_lon = curr_lon;
                 }
 
+                newRoad->assignSplineLength(dist);
 				newRoad->assignSpline(rawRoadSpline);
 
 			} catch(const std::exception& e) {

@@ -13,6 +13,7 @@
 #include "../city/Road.h"
 #include "../city/Intersection.h"
 #include "../map/GenericMap.h"
+#include "../gps/GPS.h"
 #include "boost/foreach.hpp"
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/xml_parser.hpp"

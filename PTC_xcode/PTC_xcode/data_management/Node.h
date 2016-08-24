@@ -12,16 +12,16 @@ namespace PredictivePowertrain {
 
 class Node {
 private:
-	float lat;
-	float lon;
+	double lat;
+	double lon;
 	int ele;
 	int long id;
 
 public:
 	Node();
-	Node(float lat, float lon, int ele, long int id);
-	float getLat();
-	float getLon();
+	Node(double lat, double lon, int ele, long int id);
+	double getLat();
+	double getLon();
 	long int getID();
 	int getEle();
 };

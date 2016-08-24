@@ -28,19 +28,22 @@ void BuildCity::updateGridDataXMLSpline()
         DataCollection* dc = newMapData->first;
         Bounds* newBounds = newMapData->second;
         
+        // parse new map data to gen raw roads
         dc->pullDataXML(this->latCenter, this->lonCenter);
-        this->newInts = new GenericMap<long int, Intersection*>();
         this->rawRoads = dc->makeRawRoads();
-        GenericMap<long int, Road*>* rawRoadsCopy = this->rawRoads->copy();
         
-        // get current road
+        // iterate through each road and check every other road for intersection
         int intCount = 1;
         this->rawRoads->initializeCounter();
         GenericEntry<long int, Road*>* nextRawRoad = this->rawRoads->nextEntry();
+        GPS converter(this->latCenter, this->lonCenter);
+        
+        this->newInts = new GenericMap<long int, Intersection*>();
+        GenericMap<long int, Road*>* rawRoadsCopy = this->rawRoads->copy();
         while(nextRawRoad != NULL)
         {
             // spline of current road
-            Eigen::Spline<float,2> currSpline = nextRawRoad->value->getSpline();
+            Eigen::Spline<double,2> currSpline = nextRawRoad->value->getSpline();
             
             // loop through all other roads
             rawRoadsCopy->initializeCounter();
@@ -54,42 +57,60 @@ void BuildCity::updateGridDataXMLSpline()
                     continue;
                 }
                 
+                // count number of times the roads intersect.
+                int roadPairIntCount = 0;
+                
                 // get other road spline
-                Eigen::Spline<float,2> nextSpline = nextOtherRawRoad->value->getSpline();
+                Eigen::Spline<double,2> nextSpline = nextOtherRawRoad->value->getSpline();
                 
                 // iteratate through road splines
-                Eigen::Spline<float,2>::PointType currPointA = currSpline(0);
+                Eigen::Spline<double,2>::PointType currPtA = currSpline(0);
+                std::pair<double, double>* currA_xy = converter.convertLatLonToXY(currPtA(0,0), currPtA(1,0));
                 for(double u = this->splineStep; u <= 1; u += this->splineStep)
                 {
-                    Eigen::Spline<float,2>::PointType currPointB = currSpline(u);
+                    Eigen::Spline<double,2>::PointType currPtB = currSpline(u);
+                    std::pair<double, double>* currB_xy = converter.convertLatLonToXY(currPtB(0,0), currPtB(1,0));
                     
                     // iterate through other spline
-                    Eigen::Spline<float,2>::PointType nextPointA = nextSpline(0);
+                    Eigen::Spline<double,2>::PointType nextPtA = nextSpline(0);
+                    std::pair<double, double>* nextA_xy = converter.convertLatLonToXY(nextPtA(0,0), nextPtA(1,0));
                     for(double s = this->splineStep; s <= 1; s += this->splineStep)
                     {
-                        Eigen::Spline<float,2>::PointType nextPointB = nextSpline(s);
+                        Eigen::Spline<double,2>::PointType nextPtB = nextSpline(s);
+                        std::pair<double, double>* nextB_xy = converter.convertLatLonToXY(nextPtB(0,0), nextPtB(1,0));
+
                         
-                        cv::Point_<float> currA(currPointA(0,0), currPointA(1,0));
-                        cv::Point_<float> currB(currPointB(0,0), currPointB(1,0));
-                        cv::Point_<float> nextA(nextPointA(0,0), nextPointA(1,0));
-                        cv::Point_<float> nextB(nextPointB(0,0), nextPointB(1,0));
-                        cv::Point_<float> intersect;
+//                        if(nextRawRoad->key == 6438214 && nextOtherRawRoad->key == 35171644 && u > .15 && s > .2)
+//                        {
+//                            int test = 2;
+//                        }
                         
-                        if(this->getIntersectionPoint(currA, currB, nextA, nextB, intersect))
+                        cv::Point_<double> currA(currA_xy->first, currA_xy->second);
+                        cv::Point_<double> currB(currB_xy->first, currB_xy->second);
+                        cv::Point_<double> nextA(nextA_xy->first, nextA_xy->second);
+                        cv::Point_<double> nextB(nextB_xy->first, nextB_xy->second);
+                        cv::Point_<double> intersect;
+                        
+                        // get intersection and expect roads to only intersect once (take for int)
+                        if(this->getIntersectionPoint(currA, currB, nextA, nextB, intersect) && roadPairIntCount < 1)
                         {
                             GenericMap<long int, Road*>* intRoads = new GenericMap<long int, Road*>();
                             intRoads->addEntry(nextRawRoad->key, nextRawRoad->value);
                             intRoads->addEntry(nextOtherRawRoad->key, nextOtherRawRoad->value);
                             
-                            Intersection* newInt = new Intersection(intRoads, intersect.x, intersect.y, 0, 0);
+                            std::pair<double, double>* latLon = converter.convertXYToLatLon(intersect.x, intersect.y);
+                            Intersection* newInt = new Intersection(intRoads, latLon->first, latLon->second, 0, 0);
                             this->newInts->addEntry(intCount, newInt);
+                            
+                            free(latLon);
+                            roadPairIntCount++;
                             intCount++;
                         }
-                        
-                        nextPointA = nextPointB;
+                        free(nextA_xy);
+                        nextA_xy = nextB_xy;
                     }
-                    
-                    currPointA = currPointB;
+                    free(currA_xy);
+                    currA_xy = currB_xy;
                 }
                 nextOtherRawRoad = rawRoadsCopy->nextEntry();
             }
@@ -104,11 +125,12 @@ void BuildCity::printIntersections()
 {
     if(this->newInts->getSize() > 0)
     {
+        std::cout << "************ printing intersection lat/lon ***********" << std::endl;
         this->newInts->initializeCounter();
         GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
         while(nextInt != NULL)
         {
-            printf("%.6f,%.6f\n", nextInt->value->getLat(), nextInt->value->getLon());
+            printf("%.12f,%.12f\n", nextInt->value->getLat(), nextInt->value->getLon());
             nextInt = this->newInts->nextEntry();
         }
         free(nextInt);
@@ -145,13 +167,13 @@ void BuildCity::updateGridDataXMLAdj() {
             GenericMap<int, std::pair<int, int>*>* adjMatIndicies = new GenericMap<int, std::pair<int, int>*>();
             
             
-            Eigen::Spline<float,2> spline = nextRawRoad->value->getSpline();
+            Eigen::Spline<double,2> spline = nextRawRoad->value->getSpline();
             for(double u = 0; u <= 1; u += this->splineStep)
             {
-                Eigen::Spline<float,2>::PointType point = spline(u);
+                Eigen::Spline<double,2>::PointType point = spline(u);
                 
-                float newLat = point(0,0);
-                float newLon = point(1,0);
+                double newLat = point(0,0);
+                double newLon = point(1,0);
                 
                 nodes->initializeCounter();
                 GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
@@ -660,7 +682,9 @@ bool BuildCity::getIntersectionPoint(cv::Point_<K> a1, cv::Point_<K> a2, cv::Poi
     cv::Point_<K> r(a2-a1);
     cv::Point_<K> s(b2-b1);
     
-    if(cross(r,s) == 0)
+    // check for crossage
+    double crossage = cross(r,s);
+    if(crossage < .00000001)
     {
         return false;
     }

@@ -12,6 +12,12 @@ namespace PredictivePowertrain {
 GPS::GPS() {
 	this->tripCount = 0;
 }
+    
+GPS::GPS(double refLat, double refLon)
+{
+    this->refLat = refLat;
+    this->refLon = refLon;
+}
 
 std::pair<double, double>* GPS::getLatLon() {
 	double lat, lon;
@@ -34,9 +40,8 @@ GenericMap<long int, std::pair<double, double>*>* GPS::getTripLog() {
 	return &this->tripLog;
 }
     
-float GPS::deltaLatLonToXY(float lat1, float lon1, float lat2, float lon2)
+float GPS::deltaLatLonToXY(double lat1, double lon1, double lat2, double lon2)
 {
-    double earthRadius = 6371000; //meters
     double dLat = toRadians(lat2-lat1);
     double dLon = toRadians(lon2-lon1);
     
@@ -45,12 +50,32 @@ float GPS::deltaLatLonToXY(float lat1, float lon1, float lat2, float lon2)
     std::sin(dLon/2) * std::sin(dLon/2);
     
     double c = 2 * std::atan2(std::sqrt(a), std::sqrt(1-a));
-    float dist = (float) (earthRadius * c);
+    float dist = (float) (EARTH_RADIUS * c);
     
     return dist;
 }
     
-float GPS::toRadians(float degrees)
+std::pair<double, double>* GPS::convertLatLonToXY(double lat, double lon)
+{
+    float dist = deltaLatLonToXY(lat, lon, this->refLat, this->refLon);
+    double angle = std::atan2(lat - this->refLat, lon - this->refLon);
+    return new std::pair<double, double>(dist * std::sin(angle), dist * std::cos(angle));
+}
+    
+std::pair<double, double>* GPS::convertXYToLatLon(double x, double y)
+{
+    double latDelta = y/EARTH_RADIUS;
+    double lonDelta = x/(EARTH_RADIUS*std::cos(this->refLat));
+    
+    return new std::pair<double, double>(this->refLat+toDegrees(latDelta), this->refLon+toDegrees(lonDelta));
+}
+    
+double GPS::toDegrees(double radians)
+{
+    return radians / (2* M_PI) * 360.0;
+}
+    
+double GPS::toRadians(double degrees)
 {
     return degrees / 180.0 * M_PI;
 }

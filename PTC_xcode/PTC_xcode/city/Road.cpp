@@ -79,11 +79,11 @@ GenericMap<long int, Node*>* Road::getNodes() {
 	return this->nodes;
 }
 
-Eigen::Spline<float, 2> Road::getSpline() {
+Eigen::Spline<double, 2> Road::getSpline() {
 	return this->spline;
 }
 
-void Road::assignSpline(Eigen::Spline<float, 2> spline) {
+void Road::assignSpline(Eigen::Spline<double, 2> spline) {
 	this->spline = spline;
 }
 
@@ -93,6 +93,46 @@ void Road::assignAdjMatIndicies(GenericMap<int, std::pair<int, int>*>* adjMatInd
 
 GenericMap<int, std::pair<int, int>*>* Road::getAdjMatIndicies() {
 	return this->adjMatIndices;
+}
+
+std::pair<double, double>* Road::getMidLatLon()
+{
+    double DBL_MAX = std::numeric_limits<double>::max();
+    
+    double minLat = DBL_MAX;
+    double maxLat = -DBL_MAX;
+    double minLon = DBL_MAX;
+    double maxLon = -DBL_MAX;
+    
+    for(double u = 0; u <= 1; u += .025)
+    {
+        Eigen::Spline<double,2>::PointType point = this->spline(u);
+        
+        double lat = point(0,0);
+        double lon = point(1,0);
+        
+        if(lat < minLat)
+        {
+            minLat = lat;
+        }
+        
+        if(lat > maxLat)
+        {
+            maxLat = lat;
+        }
+        
+        if(lon < minLon)
+        {
+            minLon = lon;
+        }
+        
+        if(lon > maxLon)
+        {
+            maxLon = lon;
+        }
+    }
+    
+    return new std::pair<double, double>(maxLat - minLat, maxLon - minLon);
 }
 
 } /* namespace PredictivePowertrain */

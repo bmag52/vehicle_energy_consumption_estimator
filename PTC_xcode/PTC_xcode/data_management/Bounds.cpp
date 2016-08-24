@@ -9,7 +9,8 @@
 
 namespace PredictivePowertrain {
 
-Bounds::Bounds() {
+Bounds::Bounds()
+{
 }
 
 Bounds::Bounds(double maxLat, double maxLon, double minLat, double minLon) {
@@ -43,7 +44,11 @@ void Bounds::assignID(int id) {
 int Bounds::getID() {
 	return this->id;
 }
-
+    
+std::pair<double, double>* Bounds::getMidLatLon()
+{
+    return new std::pair<double, double>(this->maxLat - this->minLat, this->maxLon - this->minLon);
+}
 
 }
 

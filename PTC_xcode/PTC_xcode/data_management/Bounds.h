@@ -8,8 +8,10 @@
 #ifndef DATA_MANAGEMENT_BOUNDS_H_
 #define DATA_MANAGEMENT_BOUNDS_H_
 
-namespace PredictivePowertrain {
+#include <utility>
 
+namespace PredictivePowertrain {
+    
 class Bounds {
 private:
 	double maxLat;
@@ -25,6 +27,7 @@ public:
 	double getMaxLon();
 	double getMinLat();
 	double getMinLon();
+    std::pair<double, double>* getMidLatLon();
 	void assignID(int id);
 	int getID();
 };

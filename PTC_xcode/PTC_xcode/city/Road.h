@@ -12,6 +12,8 @@
 #include "../data_management/Node.h"
 
 #include <string>
+#include <limits.h>
+#include <utility>
 #include <eigen3/Eigen/Core>
 #include <eigen3/unsupported/Eigen/Splines>
 
@@ -21,7 +23,7 @@ class Intersection; // forward declaration
 
 class Road {
 private:
-	Eigen::Spline<float, 2> spline;
+	Eigen::Spline<double, 2> spline;
     float splineLength;
 	GenericMap<long int, Node*>* nodes;
 	GenericMap<int, std::pair<int, int>*>* adjMatIndices;
@@ -48,11 +50,12 @@ public:
     float getSplineLength();
 	std::string getRoadType();
 	GenericMap<long int, Node*>* getNodes();
-	Eigen::Spline<float, 2> getSpline();
-	void assignSpline(Eigen::Spline<float, 2> spline);
+	Eigen::Spline<double, 2> getSpline();
+	void assignSpline(Eigen::Spline<double, 2> spline);
     void assignSplineLength(float dist);
 	void assignAdjMatIndicies(GenericMap<int, std::pair<int, int>*>* adjMatIndicies);
 	GenericMap<int, std::pair<int, int>*>* getAdjMatIndicies();
+    std::pair<double, double>* getMidLatLon();
 };
 
 } /* namespace PredictivePowertrain */

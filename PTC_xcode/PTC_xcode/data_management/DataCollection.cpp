@@ -568,7 +568,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                 int latLonCount = 0;
                 
                 // for splines
-				Eigen::MatrixXf points(2, nodes->getSize());
+				Eigen::MatrixXd points(2, nodes->getSize());
 
                 std::cout << "******** node control points ********" << std::endl;
                 
@@ -577,8 +577,8 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 				GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
 				while(nextNode != NULL)
 				{
-                    float lat = nextNode->value->getLat();
-                    float lon = nextNode->value->getLon();
+                    double lat = nextNode->value->getLat();
+                    double lon = nextNode->value->getLon();
                     
                     // print control points
                     printf("%.6f,%.6f\n", lat, lon);
@@ -593,23 +593,23 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 				free(nextNode);
 
 				// fit first order spline spline
-				typedef Eigen::Spline<float, 2> spline2f;
+				typedef Eigen::Spline<double, 2> spline2f;
 
                 // fit spline
                 std::cout << "******** 1st order spline " << "********" << std::endl;
                 spline2f rawRoadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
                 
                 // evaluate spline and save points to cvs for viewing
-                Eigen::Spline<float,2>::PointType pt = rawRoadSpline(0);
-                float prev_lat = pt(0,0);
-                float prev_lon = pt(1,0);
+                Eigen::Spline<double,2>::PointType pt = rawRoadSpline(0);
+                double prev_lat = pt(0,0);
+                double prev_lon = pt(1,0);
                 float dist = 0.0;
                 
                 for(double u = 0; u <= 1; u += 0.025)
                 {
-                    Eigen::Spline<float,2>::PointType pt = rawRoadSpline(u);
-                    float curr_lat = pt(0,0);
-                    float curr_lon = pt(1,0);
+                    Eigen::Spline<double,2>::PointType pt = rawRoadSpline(u);
+                    double curr_lat = pt(0,0);
+                    double curr_lon = pt(1,0);
                     
                     // to console
                     printf("%.6f,%.6f\n", curr_lat, curr_lon);

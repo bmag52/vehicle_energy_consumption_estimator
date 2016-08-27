@@ -82,7 +82,7 @@ void BuildCity::updateGridDataXMLSpline()
                         
 //                        if(nextRawRoad->key == 6438214 && nextOtherRawRoad->key == 35171644 && u > .15 && s > .2)
 //                        {
-//                            int test = 2;
+//                            int test = 2; found intersecting splines
 //                        }
                         
                         cv::Point_<double> currA(currA_xy->first, currA_xy->second);
@@ -125,7 +125,7 @@ void BuildCity::printIntersections()
 {
     if(this->newInts->getSize() > 0)
     {
-        std::cout << "************ printing intersection lat/lon ***********" << std::endl;
+        std::cout << "**** printing intersection lat/lon ****" << std::endl;
         this->newInts->initializeCounter();
         GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
         while(nextInt != NULL)

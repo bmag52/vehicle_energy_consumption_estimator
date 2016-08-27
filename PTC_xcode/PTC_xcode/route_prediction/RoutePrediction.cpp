@@ -19,8 +19,9 @@ RoutePrediction::RoutePrediction(City* city) {
 	Link overLink(1,1);
 	Goal unknownGoal(-1);
 	Goal overGoal(1);
-	Route unknownRoute(NULL, &unknownGoal);
-	Route overRoute(NULL, &overGoal);
+    
+	Route unknownRoute(new GenericMap<int, Link*>(), &unknownGoal);
+	Route overRoute(new GenericMap<int, Link*>(), &overGoal);
 	this->unknownRoute = &unknownRoute;
 	this->overRoute = &overRoute;
 }

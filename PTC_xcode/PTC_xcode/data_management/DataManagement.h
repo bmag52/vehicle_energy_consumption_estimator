@@ -30,9 +30,10 @@ namespace PredictivePowertrain {
 
 class DataManagement {
 private:
-	std::string routeData = "routes.json";
-	std::string cityData = "cities.json";
-	std::string tripData = "tripLogs.json";
+    std::string saveFolder = "/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/";
+	std::string routeData = saveFolder + "routes.json";
+	std::string cityData = saveFolder + "cities.json";
+	std::string tripData = saveFolder + "tripLogs.json";
 
 public:
 	DataManagement();

@@ -39,10 +39,8 @@ private:
 	GenericMap<long int, Road*>* roads;
 	GenericMap<int, Intersection*>* intersections;
 	GenericMap<int, Bounds*>* boundsMap;
-
 	int* reverseTrace(int* trace);
 	Road* getConnectingRoad(Intersection* one, Intersection* two);
-	Route* randomPath(Intersection* startInt, Route* initialRoute, int totalLength, int* conditions);
 	Intersection* addIntersection(Intersection* intersections, Intersection* intersection);
 	std::pair<double*, int>* elevationToSlope(int* elev, int oldElev);
 public:
@@ -53,6 +51,7 @@ public:
 	int getBoundsMapSize();
 	GenericMap<int, Link*>* getNextLinks(Link* link);
 	Intersection* getIntersectionFromLink(Link* link, bool isIntersection);
+    Route* randomPath(Intersection* startInt, Route* initialRoute, int totalLength, int* conditions);
 	Intersection* getIntersection(int intersectionNum);
 	Route* getPath(Intersection* start, Intersection* end, int* conditions, int fastest);
 	std::pair<int*, int*>* getRoadData(Link* link);

@@ -28,11 +28,11 @@ namespace PredictivePowertrain {
 
 class RoutePrediction {
 private:
-	LinkToStateMap linkToState;
-	GoalToLinkMap goalToLink;
-	GenericMap<int, Link*> links;
-	GenericMap<int, Goal*> goals;
-	GenericMap<int, pair<Link*,Goal*>*> states;
+	LinkToStateMap* linkToState;
+	GoalToLinkMap* goalToLink;
+	GenericMap<int, Link*>* links;
+	GenericMap<int, Goal*>* goals;
+	GenericMap<int, pair<Link*,Goal*>*>* states;
 	Route* predictedRoute;
 	Route* currentRoute;
 	double *probabilities;
@@ -50,14 +50,15 @@ private:
 	Route* createRoute();
 	Route* createRouteConditions(int* currentCondition);
 	Route* createRouteIntersection(Intersection* intersection, int* currentCondition);
+    void initialize();
 
 public:
 	RoutePrediction();
 	RoutePrediction(City* city);
+    ~RoutePrediction();
 	Route* startPrediction(Intersection* currentIntersection, int* currentCondition);
 	Route* predict(Link* linkTaken);
 	void parseRoute(Route* route);
-	~RoutePrediction();
 };
 
 

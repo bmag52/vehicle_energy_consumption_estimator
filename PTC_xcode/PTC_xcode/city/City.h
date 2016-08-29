@@ -46,6 +46,7 @@ private:
 public:
 	City();
 	City(GenericMap<int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
+    ~City();
 	int getRoadMapSize();
 	int getInstersectionMapSize();
 	int getBoundsMapSize();

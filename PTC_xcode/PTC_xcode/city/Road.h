@@ -38,6 +38,7 @@ public:
 	Road(std::string roadType, long int roadID, GenericMap<long int, Node*>* nodes);
 	void copy(Road* other);
 	virtual ~Road();
+    void assignID(long int id);
 	void setStartIntersection(Intersection* startNode);
 	void setEndIntersection(Intersection* endNode);
 	Intersection* getStartIntersection();

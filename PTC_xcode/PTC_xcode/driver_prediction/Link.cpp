@@ -16,8 +16,8 @@ Link::Link() {
 }
 
 Link::Link(int direction, int linkNumber) {
+    this->link_number = linkNumber;
 	this->link_direction = direction;
-	this->link_number = linkNumber;
 }
 
 Link::~Link() {
@@ -25,16 +25,12 @@ Link::~Link() {
 }
 
 Link* Link::copy(int direction, int linkNumber) {
-	Link link(direction, linkNumber);
-	return &link;
+	Link* link = new Link(direction, linkNumber);
+	return link;
 }
 
 bool Link::isEqual(Link* other) {
-	if ((*other).link_direction == this->link_direction && (*other).link_number == this->link_number) {
-		return true;
-	} else {
-		return false;
-	}
+    return other->link_direction == this->link_direction && other->link_number == this->link_number;
 }
 
 int Link::getNumber() {
@@ -46,8 +42,8 @@ int Link::getDirection() {
 }
 
 Link* Link::newLinkFromHash(int hash) {
-	Link link(hash % 2, hash / 2);
-	return &link;
+	Link* link = new Link(hash % 2, hash / 2);
+	return link;
 }
 
 int Link::getHash() {
@@ -55,15 +51,20 @@ int Link::getHash() {
 }
 
 Link* Link::finalLink() {
-	Link link(0, 0);
-	return &link;
+	Link* link = new Link(0, 0);
+	return link;
+}
+
+bool Link::isFinalLink()
+{
+    return this->link_direction == 0 && this->link_number == 0;
 }
 
 Link* Link::linkFromRoad(Road* road, Intersection* intersection) {
 	int linkNum = road->getRoadID();
-	int linkDir = road->getEndIntersection()->getIntersectionID();
-	Link newLink(linkDir, linkNum);
-	return &newLink;
+	int linkDir = road->getEndIntersection()->getIntersectionID() == intersection->getIntersectionID();
+	Link* link = new Link(linkDir, linkNum);
+	return link;
 }
 
 } /* namespace PredictivePowertrain */

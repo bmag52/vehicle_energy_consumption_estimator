@@ -27,10 +27,10 @@ DataManagement::DataManagement() {
 }
 
 void DataManagement::addRouteData(Route* route) {
-	GenericMap<int, Link*> * links = route->getLinksPtr();
+	GenericMap<int, Link*> * links = route->getLinks();
 	// go through links map, get NN value from link
 	// get 3 matricies which are JSONified to make them appear correctly
-	Goal * goal = route->getGoalPtr();
+	Goal * goal = route->getGoal();
 
 	ptree routeLogs;
 

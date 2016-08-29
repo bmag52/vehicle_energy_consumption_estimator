@@ -8,9 +8,16 @@
 #include "Route.h"
 
 namespace PredictivePowertrain {
+    
+Route::~Route()
+{
+    free(this->links);
+}
 
-Route::Route() {
+Route::Route()
+{
 	this->linkCount = 0;
+    this->links = new GenericMap<int, Link*>();
 }
 
 Route::Route(GenericMap<int, Link*>* links, Goal* goal) {
@@ -23,26 +30,34 @@ Route::Route(GenericMap<int, Link*>* links, Goal* goal) {
 }
 
 // adds new link to end of route
-void Route::addlink(Link* link) {
-	this->linkCount++;
+void Route::addLink(Link* link) {
 	this->links->addEntry(this->linkCount, link);
+    this->linkCount++;
 }
 
 // checks if the route is equal to the route passed in
-bool Route::isequal(Route * other) {
+bool Route::isequal(Route * other)
+{
 	if(this->getLinkSize() == other->getLinkSize()) {
-
-		GenericMap<int, Link*>* otherLinks = other->getLinksPtr();
+		GenericMap<int, Link*>* otherLinks = other->getLinks();
+        
 		this->links->initializeCounter();
+        otherLinks->initializeCounter();
+        
 		GenericEntry<int, Link*>* nextLink = this->links->nextEntry();
-
-		while(nextLink != NULL)
+        GenericEntry<int, Link*>* nextOtherLink = this->links->nextEntry();
+		while(nextLink != NULL && nextOtherLink != NULL)
 		{
-			if(!otherLinks->hasEntry(nextLink->key)) {
+			if(!nextLink->value->isEqual(nextOtherLink->value)) {
 				return false;
 			}
 			nextLink = this->links->nextEntry();
+            nextOtherLink = otherLinks->nextEntry();
 		}
+        
+        free(nextLink);
+        free(nextOtherLink);
+        
 		return true;
 	} else {
 		return false;
@@ -60,15 +75,20 @@ int Route::getGoalHash() {
 	return this->goal->getHash();
 }
 
-Goal* Route::getGoalPtr() {
+Goal* Route::getGoal() {
 	return this->goal;
+}
+    
+void Route::assignGoal(Goal* goal)
+{
+    this->goal = goal;
 }
 
 int Route::getLinkSize() {
 	return this->links->getSize();
 }
 
-GenericMap<int, Link*>* Route::getLinksPtr() {
+GenericMap<int, Link*>* Route::getLinks() {
 	return this->links;
 }
 
@@ -81,12 +101,12 @@ bool Route::isIntersection() {
 	return this->goalIsIntersection;
 }
 
-Intersection* Route::getIntersectionPtr() {
+Intersection* Route::getIntersection() {
 	return this->intersection;
 }
 
-Link* Route::getLastLinkPtr() {
-	return this->links->getEntry(this->linkCount);
+Link* Route::getLastLink() {
+	return this->links->getEntry(this->linkCount - 1);
 }
 
 bool Route::isEmpty() {
@@ -94,7 +114,7 @@ bool Route::isEmpty() {
 }
 
 Link* Route::getEntry(int index) {
-	if(index > this->linkCount)
+	if(index > this->linkCount - 1)
 	{
 		return this->error;
 	}

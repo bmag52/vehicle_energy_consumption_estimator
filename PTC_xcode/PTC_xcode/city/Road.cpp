@@ -35,6 +35,10 @@ Intersection* Road::getStartIntersection() {
 Intersection* Road::getEndIntersection() {
 	return this->endNode;
 }
+void Road::assignID(long int id)
+{
+    this->roadID = id;
+}
 
 long int Road::getRoadID() {
 	return this->roadID;

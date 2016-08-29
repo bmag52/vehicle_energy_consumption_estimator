@@ -26,6 +26,7 @@ public:
 	Link* copy(int, int);
 	int getHash();
 	bool isEqual(Link* other);
+    bool isFinalLink();
 	int getNumber();
 	int getDirection();
 	static Link* newLinkFromHash(int);

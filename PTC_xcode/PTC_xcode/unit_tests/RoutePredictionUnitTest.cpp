@@ -12,6 +12,8 @@
 #include "../data_management/DataManagement.h"
 #include "../route_prediction/RoutePrediction.h"
 #include "../route_prediction/Route.h"
+
+#include <math.h>
 #include <iostream>
 #include <assert.h>
 
@@ -22,7 +24,7 @@ Link* makeLinks(int numberOfLinks)
 	Link* links = new Link[numberOfLinks];
 	for(int i = 0; i < numberOfLinks; i++)
 	{
-		Link newLink(i, rand() > .5);
+		Link newLink(rand() > .5, i + 1);
 		links[i] = newLink;
 	}
     return links;
@@ -30,26 +32,75 @@ Link* makeLinks(int numberOfLinks)
 
 void routePrediction_UT()
 {
-    // for now get city data from data management unit tests
-    DataManagement dm;
+    // create a square city grid to predict over
+    const int gridSideDim = 4;
+    const int numInters = gridSideDim * gridSideDim;
+    Intersection inters[numInters];
+    
+    GenericMap<long int, Road*>* roads = new GenericMap<long int, Road*>();
+    GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
+    
+    // fence post addage of the first intersection
+    inters[0].assignID(1);
+    intersections->addEntry(inters[0].getIntersectionID(), &inters[0]);
+    
+    // make all grid connections
+    int horzCount = 0;
+    int vertCount = (gridSideDim - 1) * gridSideDim;
+    for(int i = 1; i < numInters; i++)
+    {
+        int interID = i + 1;
+        
+        inters[i].assignID(interID);
+        
+        // make horizontal connections
+        if(i % gridSideDim != 0)
+        {
+            horzCount++;
+            
+            Road* newHorzRoad = new Road();
+            newHorzRoad->assignID(horzCount);
+            
+            inters[i].addRoad(newHorzRoad, 1);
+            inters[i-1].addRoad(newHorzRoad, 0);
+            
+            roads->addEntry(horzCount, newHorzRoad);
+        }
+        
+        // make vertical conections
+        if(interID > gridSideDim)
+        {
+            vertCount++;
+            
+            Road* newVertRoad = new Road();
+            newVertRoad->assignID(vertCount);
+            
+            inters[i].addRoad(newVertRoad, 1);
+            inters[i - gridSideDim].addRoad(newVertRoad, 0);
+            
+            roads->addEntry(vertCount, newVertRoad);
+        }
+        
+        intersections->addEntry(inters[i].getIntersectionID(), &inters[i]);
+    }
     
     // build city
-    City* city = dm.getCityData();
+    City city(intersections, roads, new GenericMap<int, Bounds*>());
     Link* links = makeLinks(5);
     int conditions[] = {1, 2};
     Goal goal(1, conditions);
     
     // add routes to route prediction
-    RoutePrediction pred(city);
+    RoutePrediction pred(&city);
     Link link = links[0];
     int routeLength = 10;
-    Intersection* startIntersection = city->getIntersectionFromLink(&link, false);
+    Intersection* startIntersection = city.getIntersectionFromLink(&link, false);
     
     // generate random actual route
-    GenericMap<int, Link*> singleLinkMap;
-    singleLinkMap.addEntry(1, &link);
-    Route singleLinkRoute(&singleLinkMap, &goal);
-    Route* route = city->randomPath(startIntersection, &singleLinkRoute, routeLength, conditions);
+    Route singleLinkRoute;
+    singleLinkRoute.addLink(&link);
+    singleLinkRoute.assignGoal(&goal);
+    Route* route = city.randomPath(startIntersection, &singleLinkRoute, routeLength, conditions);
     
     // add trainging iterations here (simulates driving over the route multiple times)
     pred.parseRoute(route);

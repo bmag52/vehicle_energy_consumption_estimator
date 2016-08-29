@@ -21,9 +21,16 @@ Intersection::Intersection(GenericMap<long int, Road*>* roads, double lat, doubl
 }
 
 Intersection::~Intersection() {
+    free(this->roads);
 }
 
 Intersection::Intersection() {
+    this->roads = new GenericMap<long int, Road*>();
+}
+    
+void Intersection::assignID(int ID)
+{
+    this->id = ID;
 }
 
 int Intersection::getIntersectionID() {

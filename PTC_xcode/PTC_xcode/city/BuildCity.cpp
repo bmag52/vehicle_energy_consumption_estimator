@@ -11,6 +11,11 @@ namespace PredictivePowertrain {
     
 BuildCity::BuildCity() {
 }
+    
+BuildCity::~BuildCity()
+{
+    free(this->rawRoads);
+}
 
 std::pair<GenericMap<int, Intersection*> *, GenericMap<long int, Road*>*>* BuildCity::parseAdjMat() {
     // TODO yeah uhhh no thanks

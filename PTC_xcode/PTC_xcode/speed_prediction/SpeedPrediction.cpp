@@ -28,7 +28,7 @@ SpeedPrediction::SpeedPrediction()
 		{
 			for(int k = 0; k < L2; k++)
 			{
-				this->Wts[i](k,j) = -.01 + .02 * (rand() % 10) / 10;
+                this->Wts[i](k,j) = -.01 + .02 * (double) std::rand() / RAND_MAX;
 			}
 		}
 	}

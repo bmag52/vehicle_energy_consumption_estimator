@@ -22,10 +22,12 @@ namespace PredictivePowertrain {
 
 class LinkToStateMap {
 private:
-	GenericMap<int, LinkToStateMapEntry*> linkMap;
-	GenericMap<int, GoalMapEntry*> goalMap;
+	GenericMap<int, LinkToStateMapEntry*>* linkMap;
+	GenericMap<int, GoalMapEntry*>* goalMap;
 
 public:
+    GenericMap<int, LinkToStateMapEntry*>* getLinkMap();
+    GenericMap<int, GoalMapEntry*>* getGoalMap();
 	int incrementTransition(Link* lj, Goal* gj, Link* li);
 	double getProbability(Link* li, Link* lj, Goal* gj, bool isSimilar);
 	LinkToStateMap();

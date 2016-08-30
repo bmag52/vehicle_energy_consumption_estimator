@@ -9,11 +9,13 @@
 
 namespace PredictivePowertrain {
 
-RoutePrediction::RoutePrediction() {
+RoutePrediction::RoutePrediction()
+{
     initialize();
 }
 
-RoutePrediction::RoutePrediction(City* city) {
+RoutePrediction::RoutePrediction(City* city)
+{
 	this->city = city;
     initialize();
 }
@@ -47,7 +49,8 @@ RoutePrediction::~RoutePrediction()
     free(this->states);
 }
 
-Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* currentCondition) {
+Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* currentCondition)
+{
 	this->predictedGoal = Goal(1, currentCondition);
 
 	GenericMap<int, Link*>* nextLinks = currentIntersection->getOutgoingLinks();
@@ -98,7 +101,8 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 	return createRouteConditions(currentCondition);
 }
 
-double* RoutePrediction::copyProbs() {
+double* RoutePrediction::copyProbs()
+{
 	double* copy = new double[this->probabilitySize];
 	for(int i = 0; i < this->probabilitySize; i++)
 	{
@@ -107,7 +111,8 @@ double* RoutePrediction::copyProbs() {
 	return copy;
 }
 
-Route* RoutePrediction::predict(Link* linkTaken) {
+Route* RoutePrediction::predict(Link* linkTaken)
+{
 	GenericMap<int, Link*>* legalLinks;
 	if(this->currentRoute->isIntersection())
 	{
@@ -162,7 +167,8 @@ Route* RoutePrediction::predict(Link* linkTaken) {
 	}
 }
 
-void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities) {
+void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities)
+{
 	// get next links
 	GenericMap<int, Link*>* nextLinks = this->city->getNextLinks(chosenLink);
 
@@ -223,7 +229,8 @@ void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,
 	currentStates = &newStates;
 }
 
-Route* RoutePrediction::predictPrivate(Route* currentRoute, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities) {
+Route* RoutePrediction::predictPrivate(Route* currentRoute, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities)
+{
 	// check for uninitialized probability values
 	int currentProbabilitySize = sizeof(*currentProbabilities)/sizeof(double);
 	for(int i = 0; i < currentProbabilitySize; i++)
@@ -256,23 +263,27 @@ Route* RoutePrediction::predictPrivate(Route* currentRoute, GenericMap<int, pair
 	return currentRoute;
 }
 
-Route* RoutePrediction::createRoute() {
+Route* RoutePrediction::createRoute()
+{
 	return createRouteConditions(this->predictedGoal.getBins());
 }
 
-Route* RoutePrediction::createRouteConditions(int* currentConditions) {
+Route* RoutePrediction::createRouteConditions(int* currentConditions)
+{
 	int lastLinkIndex = this->predictedRoute->getLinkSize() - 1;
 	return createRouteIntersection(this->city->getIntersectionFromLink(this->predictedRoute->getEntry(lastLinkIndex), true), currentConditions);
 }
 
-Route* RoutePrediction::createRouteIntersection(Intersection* intersection, int* currentConditions) {
+Route* RoutePrediction::createRouteIntersection(Intersection* intersection, int* currentConditions)
+{
 	free(&this->predictedGoal);
 	this->predictedGoal = Goal(intersection->getIntersectionID(), currentConditions);
 	Route route(this->predictedRoute->getLinks(), &this->predictedGoal);
 	return &route;
 }
 
-void RoutePrediction::parseRoute(Route* route) {
+void RoutePrediction::parseRoute(Route* route)
+{
 	// get hash of route goal and add it to goals if nonexistent
 	int goalHash = route->getGoalHash();
 	if(this->goals->hasEntry(goalHash))

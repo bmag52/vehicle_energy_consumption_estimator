@@ -9,6 +9,7 @@
 #define DRIVER_PREDICTION_GOAL_H_
 
 #include <functional>
+#include <cmath>
 
 namespace PredictivePowertrain {
 
@@ -26,7 +27,7 @@ public:
 	Goal(Goal * other);
 	bool isSimilar(Goal * other);
 	bool isEqual(Goal * other);
-	size_t getHash() const;
+	int getHash() const;
 	int getNumSeen();
 	void setNumSeen(int numSeen);
 	void incrementNumSeen();

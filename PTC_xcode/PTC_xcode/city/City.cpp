@@ -269,7 +269,7 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
 		path->addEntry(i, nextLink);
 		links = getNextLinks(nextLink);
 	}
-	path->addEntry(totalLength+1, this->link->finalLink());
+	path->addEntry(totalLength, this->link->finalLink());
 	Goal* goal = new Goal(getIntersectionFromLink(path->getEntry(path->getSize()-2),true)->getIntersectionID(), conditions);
 	Route *route = new Route(path, goal);
 	return route;

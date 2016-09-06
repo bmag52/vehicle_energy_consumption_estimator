@@ -49,12 +49,12 @@ double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link* link, Goal* goal, bool
 		prob[probCount] = new double[2];
 		int linkCount;
 		int linkHash = link->getHash();
-		if(goal->isSimilar((goalEntry->value)->getGoalPtr())) {
+		if(goal->isSimilar((goalEntry->value)->getGoal())) {
 			linkCount = this->linkHashCounts->getEntry(linkHash);
 		} else {
 			linkCount = 0;
 		}
-		int goalHash = (goalEntry->value)->getGoalPtr()->getHash();
+		int goalHash = (goalEntry->value)->getGoal()->getHash();
 		totalLinkCount += linkCount;
 		prob[probCount][0]= goalHash;
 		prob[probCount][1] = linkCount;

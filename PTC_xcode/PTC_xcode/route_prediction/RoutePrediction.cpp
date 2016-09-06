@@ -300,7 +300,7 @@ void RoutePrediction::parseRoute(Route* route)
 		Link* li; Link* lj;
 		lj = route->getLinks()->getEntry(i);
 
-		if(i == route->getLinkSize())
+		if(i == route->getLinkSize() - 1)
 		{
 			li = this->link.finalLink();
 		} else {

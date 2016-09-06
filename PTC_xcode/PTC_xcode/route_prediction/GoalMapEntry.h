@@ -15,18 +15,21 @@ namespace PredictivePowertrain {
 
 class GoalMapEntry {
 private:
-	GenericMap<int, LinkToStateMapEntry*> maps;
-	Goal goal;
+	GenericMap<int, LinkToStateMapEntry*>* map;
+	Goal* goal;
 	int m;
+    void initialize();
 
 public:
 	GoalMapEntry();
 	GoalMapEntry(Goal* goal);
 	void incrementCount();
 	virtual ~GoalMapEntry();
-	Goal* getGoalPtr();
+	Goal* getGoal();
 	LinkToStateMapEntry* getMapEntry(int key);
+    void addMapEntry(int key, LinkToStateMapEntry* val);
 	int getM();
+    GenericMap<int, LinkToStateMapEntry*>* getMap();
 };
 
 } /* namespace PredictivePowertrain */

@@ -21,7 +21,7 @@ void goalmapentry_ut(){
 	//test goal constructor
 	Goal test(1);
 	GoalMapEntry testGoal2(&test);
-	assert(testGoal.getGoalPtr() == &test);
+	assert(testGoal.getGoal() == &test);
 }
 
 

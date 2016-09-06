@@ -109,14 +109,14 @@ void routePrediction_UT()
     pred.parseRoute(route);
     pred.parseRoute(route);
     
-//    % add 4 random routes
-//    for i = 1:4
-//        randomRoute = city.random_path(start_intersection,{link},ceil(rand*route_length),goal.bins);
+//    for(int i = 1; i <= 4; i++)
+//    {
+//        Route* randomRoute = city.randomPath(startIntersection, &singleLinkRoute, std::ceil(std::rand() / RAND_MAX * routeLength), conditions);
 //        while(randomRoute.isequal(route))
-//            randomRoute = city.random_path(start_intersection,{link},ceil(rand*route_length),goal.bins);
+//            randomRoute = city.randomPath(startIntersection, &singleLinkRoute, std::ceil(std::rand() / RAND_MAX * routeLength), conditions);
 //        end
 //        pred.parse_route(randomRoute);
-//    end
+//    }
 //    
 //    %% plot predicted route and update actual route
 //    pred_route = pred.start_prediction(start_intersection,goal.bins);

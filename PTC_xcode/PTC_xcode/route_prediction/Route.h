@@ -27,7 +27,7 @@ public:
 	Route(GenericMap<int, Link*>* links, Goal* goal);
     ~Route();
     void addLink(Link* link);
-	bool isequal(Route* other);
+	bool isEqual(Route* other);
 	int getGoalHash();
 	int getLinkSize();
     void assignGoal(Goal* goal);

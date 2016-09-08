@@ -91,6 +91,9 @@ void SpeedPrediction::initParams()
 		this->totalLayers[i] = this->HN[i-1];
 	}
 	this->totalLayers[this->lastLayer+1] = this->O;
+    
+    // seed random gen
+    std::srand(std::time(0));
 }
 
 // feed-forward prediction

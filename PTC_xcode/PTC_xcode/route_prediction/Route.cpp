@@ -36,7 +36,7 @@ void Route::addLink(Link* link) {
 }
 
 // checks if the route is equal to the route passed in
-bool Route::isequal(Route * other)
+bool Route::isEqual(Route * other)
 {
 	if(this->getLinkSize() == other->getLinkSize()) {
 		GenericMap<int, Link*>* otherLinks = other->getLinks();

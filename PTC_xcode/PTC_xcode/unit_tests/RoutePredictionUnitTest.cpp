@@ -16,6 +16,9 @@
 #include <math.h>
 #include <iostream>
 #include <assert.h>
+#include <climits>
+#include <algorithm>
+#include <ctime>
 
 using namespace PredictivePowertrain;
 
@@ -32,6 +35,9 @@ Link* makeLinks(int numberOfLinks)
 
 void routePrediction_UT()
 {
+    // seed random generator
+    std::srand(std::time(0));
+    
     // create a square city grid to predict over
     const int gridSideDim = 4;
     const int numInters = gridSideDim * gridSideDim;
@@ -91,57 +97,65 @@ void routePrediction_UT()
     Goal goal(1, conditions);
     
     // add routes to route prediction
-    RoutePrediction pred(&city);
+    RoutePrediction routePrediction(&city);
     Link link = links[0];
     int routeLength = 10;
     Intersection* startIntersection = city.getIntersectionFromLink(&link, false);
     
     // generate random actual route
-    Route singleLinkRoute;
-    singleLinkRoute.addLink(&link);
-    singleLinkRoute.assignGoal(&goal);
-    Route* route = city.randomPath(startIntersection, &singleLinkRoute, routeLength, conditions);
+    Route startRoute;
+    startRoute.addLink(&link);
+    startRoute.assignGoal(&goal);
+    Route* route = city.randomPath(startIntersection, &startRoute, routeLength, conditions);
+    
+    std::cout << "143542612" << std::endl;
+    std::cout <<  std::rand() << std::endl;
+    std::cout << RAND_MAX << std::endl;
+    std::cout << (double)std::rand() / RAND_MAX << std::endl;
+    std::cout << (double)std::rand() / RAND_MAX * routeLength << std::endl;
+    std::cout << std::ceil((double)std::rand() / RAND_MAX * routeLength) << std::endl;
     
     // add trainging iterations here (simulates driving over the route multiple times)
-    pred.parseRoute(route);
-    pred.parseRoute(route);
-    pred.parseRoute(route);
-    pred.parseRoute(route);
-    pred.parseRoute(route);
+    routePrediction.parseRoute(route);
+    routePrediction.parseRoute(route);
+    routePrediction.parseRoute(route);
+    routePrediction.parseRoute(route);
+    routePrediction.parseRoute(route);
     
-//    for(int i = 1; i <= 4; i++)
-//    {
-//        Route* randomRoute = city.randomPath(startIntersection, &singleLinkRoute, std::ceil(std::rand() / RAND_MAX * routeLength), conditions);
-//        while(randomRoute.isequal(route))
-//            randomRoute = city.randomPath(startIntersection, &singleLinkRoute, std::ceil(std::rand() / RAND_MAX * routeLength), conditions);
-//        end
-//        pred.parse_route(randomRoute);
-//    }
-//    
-//    %% plot predicted route and update actual route
-//    pred_route = pred.start_prediction(start_intersection,goal.bins);
-//    for i=1:(length(route.links)-1)
-//        pred_route = pred.predict_route(route.links{1});
-//    
-//        % plot predicted route
-//        pred_route_handles = PlotRoute(fig, city, pred_route, 'g', 3);
-//        
-//        % show figure
-//        xlabel('x coordinates');
-//        ylabel('y coordinates');
-//        title('Hidden Markov Model Visuals');
-//        pause(0.1);
-//        
-//        % delete wrong route
-//        if(~route.isequal(pred_route) == 1)
-//            for ii = 1:length(pred_route_handles)
-//                delete(pred_route_handles{ii});
-//            end
-//        end
-//    
-//        % update current route
-//        route.links(1) = [];
-//        set(actual_route_handles{i}, 'color', 'yellow');
-//    end
+    // create number of random routes to include in test set
+    int num_rand_routes = 4;
+    
+    for(int i = 1; i <= num_rand_routes; i++)
+    {
+        // create random route
+        Route* randomRoute = city.randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), conditions);
+        while(randomRoute->isEqual(route))
+        {
+            randomRoute = city.randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), conditions);
+        }
+        
+        // add random route to test set
+        routePrediction.parseRoute(randomRoute);
+    }
+    
+    // predict actual route as it is 'driven' over
+    Route* predRoute = routePrediction.startPrediction(startIntersection, conditions);
+    for(int i = 1; i <= route->getLinkSize(); i++)
+    {
+        // predict route
+        predRoute = routePrediction.predict(route->getLinks()->getEntry(0));
+        
+        // check if predicted route is actual route
+        if(route->isEqual(predRoute))
+        {
+            std::cout << "predicted routed before reaching end destination!" << std::endl;
+            std::cout << "Links traversed: " << i << endl;
+            std::cout << "Links in route: " << route->getLinkSize() << std::endl;
+            break;
+        }
+    
+        // update actual route as it's 'driven' over
+        route->removeFirstLink();
+    }
 
 }

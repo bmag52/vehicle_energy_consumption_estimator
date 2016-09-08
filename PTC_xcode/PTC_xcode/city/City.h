@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <climits>
 #include <math.h>
+#include <ctime>
 
 namespace PredictivePowertrain {
 

@@ -11,8 +11,8 @@
 #include "unit_tests/UnitTests.h"
 
 int main() {
-
-	dataManagement_ut();
+    
+//	dataManagement_ut();
 //	dataCollection_ut();
 //	buildCity_ut(); 
     

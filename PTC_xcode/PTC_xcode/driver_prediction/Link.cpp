@@ -51,13 +51,13 @@ int Link::getHash() {
 }
 
 Link* Link::finalLink() {
-	Link* link = new Link(0, 0);
+	Link* link = new Link(-1, -1);
 	return link;
 }
 
 bool Link::isFinalLink()
 {
-    return this->link_direction == 0 && this->link_number == 0;
+    return this->link_direction == -1 && this->link_number == -1;
 }
 
 Link* Link::linkFromRoad(Road* road, Intersection* intersection) {

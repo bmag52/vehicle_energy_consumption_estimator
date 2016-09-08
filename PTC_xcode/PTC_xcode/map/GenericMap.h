@@ -21,8 +21,6 @@ private:
 	std::map<K,V> map;
 	typename std::map<K,V>::iterator iter;
 	bool hasNextEntry;
-	int hashCounter; // might not be needed, use iterator
-	int arrayCounter; // might not be needed, use iterator
 public:
 	GenericMap();
 	GenericMap(GenericMap& other);
@@ -41,14 +39,13 @@ public:
 	void updateEntry(K key, V value);
 	virtual ~GenericMap();
 	bool erase(K key);
+    bool indexErase(K key);
 };
 
 template<class K, class V>
 GenericMap<K, V>::GenericMap() {
 	this->map = std::map<K,V>();
 	this->iter = map.end();
-	this->hashCounter = 0;
-	this->arrayCounter = 0;
 	this->hasNextEntry = false;
 }
 
@@ -78,8 +75,6 @@ GenericMap<K, V>* GenericMap<K, V>::copy() {
 
 template<class K, class V>
 void GenericMap<K, V>::initializeCounter() {
-	this->hashCounter = 0;
-	this->arrayCounter = 0;
 	if(this->getSize() > 0)
 	{
 		this->iter = this->map.begin();
@@ -142,6 +137,27 @@ bool GenericMap<K, V>::erase(K key) {
 	} else {
 		return false;
 	}
+}
+    
+template<class K, class V>
+bool GenericMap<K, V>::indexErase(K key) {
+    typename std::map<K,V>::iterator iter = this->map.find(key);
+    if (iter != this->map.end()) {
+        
+        iter = this->map.erase(iter);
+        
+        while(iter != this->map.end())
+        {
+            V entry = this->getEntry(iter->first);
+            this->addEntry(iter->first - 1, entry);
+            iter = this->map.erase(iter);
+        }
+        
+        return true;
+    } else {
+        return false;
+    }
+    
 }
 
 template<class K, class V>

@@ -108,13 +108,6 @@ void routePrediction_UT()
     startRoute.assignGoal(&goal);
     Route* route = city.randomPath(startIntersection, &startRoute, routeLength, conditions);
     
-    std::cout << "143542612" << std::endl;
-    std::cout <<  std::rand() << std::endl;
-    std::cout << RAND_MAX << std::endl;
-    std::cout << (double)std::rand() / RAND_MAX << std::endl;
-    std::cout << (double)std::rand() / RAND_MAX * routeLength << std::endl;
-    std::cout << std::ceil((double)std::rand() / RAND_MAX * routeLength) << std::endl;
-    
     // add trainging iterations here (simulates driving over the route multiple times)
     routePrediction.parseRoute(route);
     routePrediction.parseRoute(route);

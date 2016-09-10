@@ -18,15 +18,13 @@ namespace PredictivePowertrain {
 
 class GoalToLinkMap {
 private:
-	GenericMap<int,GoalMapEntry*>* goalMap;
-	GenericMap<int, int>* linkHashCounts;
+	GenericMap<int, GoalMapEntry<int, int>*>* goalMap;
 public:
 	int maps_size;
 	GoalToLinkMap();
 	GoalToLinkMap(GoalToLinkMap &other);
 	int linkTraversed(Link* link, Goal* goal);
-    GenericMap<int, GoalMapEntry*>* getGoalMap();
-    GenericMap<int, int>* getLinkHashCounts();
+    GenericMap<int, GoalMapEntry<int, int>*>* getGoalMap();
 	double** probabilityOfGoalsGivenLink(Link * link, Goal * goal, bool isSimilar);
 	double probabilityOfGoalGivenLink(Link* link, Goal* goal, bool isSimilar);
 	GenericMap<int, int> * probabilityOfGoalsGivenLinkMap(Link * link, Goal * goal, bool isSimilar);

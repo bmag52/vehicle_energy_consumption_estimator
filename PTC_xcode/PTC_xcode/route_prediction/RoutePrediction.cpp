@@ -55,7 +55,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 
 	GenericMap<int, Link*>* nextLinks = currentIntersection->getOutgoingLinks();
 
-	this->probabilitySize = nextLinks->getSize()*this->goals->getSize();
+	this->probabilitySize = nextLinks->getSize() * this->goals->getSize();
 	this->probabilities = new double[this->probabilitySize];
 
 	// creating the probability of each goal based on its relation to the conditions
@@ -75,7 +75,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 				goalProbability *= nextGoal->value->getNumSeen();
 			} else {
 				// lower probability since condition is wrong
-				goalProbability *= .1*nextGoal->value->getNumSeen();
+				goalProbability *= .1 * nextGoal->value->getNumSeen();
 			}
 
 			std::pair<Link*, Goal*>* thisPair = new std::pair<Link*, Goal*>(nextLink->value, nextGoal->value);

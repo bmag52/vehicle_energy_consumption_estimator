@@ -125,6 +125,7 @@ void routePrediction_UT()
         while(randomRoute->isEqual(route))
         {
             randomRoute = city.randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), conditions);
+            std::cout << "remake random route" << std::endl;
         }
         
         // add random route to test set

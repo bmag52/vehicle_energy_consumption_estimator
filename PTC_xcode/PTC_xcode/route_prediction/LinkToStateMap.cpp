@@ -12,9 +12,9 @@ namespace PredictivePowertrain {
 int LinkToStateMap::incrementTransition(Link* lj, Goal* gj, Link* li)
 {
 	int goalHash = gj->getHash();
-	GoalMapEntry* goalEntry;
+	GoalMapEntry<int, LinkToStateMapEntry*>* goalEntry;
 	if(!(this->goalMap->hasEntry(goalHash))) {
-		goalEntry = new GoalMapEntry(gj);
+		goalEntry = new GoalMapEntry<int, LinkToStateMapEntry*>(gj);
 		this->goalMap->addEntry(goalHash, goalEntry);
 	} else {
 		goalEntry = this->goalMap->getEntry(goalHash);
@@ -33,7 +33,7 @@ double LinkToStateMap::getProbability(Link* li, Link* lj, Goal* gj, bool isSimil
 	Probability p_g;
 	Probability p_l_lg;
 	this->goalMap->initializeCounter();
-	GenericEntry<int, GoalMapEntry*>* next = this->goalMap->nextEntry();
+	GenericEntry<int, GoalMapEntry<int, LinkToStateMapEntry*>*>* next = this->goalMap->nextEntry();
 	while(next != NULL) { // next->key != 1
 		Goal* g = next->value->getGoal();
 		if(gj->isEqual(g) || isSimilar) {
@@ -58,28 +58,20 @@ double LinkToStateMap::getProbability(Link* li, Link* lj, Goal* gj, bool isSimil
 
 LinkToStateMap::LinkToStateMap()
 {
-    this->linkMap = new GenericMap<int, LinkToStateMapEntry*>();
-    this->goalMap = new GenericMap<int, GoalMapEntry*>();
+    this->goalMap = new GenericMap<int, GoalMapEntry<int, LinkToStateMapEntry*>*>();
 }
 
 LinkToStateMap::LinkToStateMap(LinkToStateMap& other)
 {
-    this->linkMap = other.getLinkMap()->copy();
     this->goalMap = other.getGoalMap()->copy();
 }
 
 LinkToStateMap::~LinkToStateMap()
 {
-    free(this->linkMap);
     free(this->goalMap);
 }
-    
-GenericMap<int, LinkToStateMapEntry*>* LinkToStateMap::getLinkMap()
-{
-    return this->linkMap;
-}
-    
-GenericMap<int, GoalMapEntry*>* LinkToStateMap::getGoalMap()
+
+GenericMap<int, GoalMapEntry<int, LinkToStateMapEntry*>*>* LinkToStateMap::getGoalMap()
 {
     return this->goalMap;
 }

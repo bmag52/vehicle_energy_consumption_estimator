@@ -16,7 +16,7 @@ namespace PredictivePowertrain {
 
 class LinkToStateMapEntry {
 private:
-	GenericMap<int,int> entries;
+	GenericMap<int,int>* entries;
 public:
 	LinkToStateMapEntry();
 	LinkToStateMapEntry(LinkToStateMapEntry &other);

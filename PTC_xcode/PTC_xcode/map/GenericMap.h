@@ -43,14 +43,16 @@ public:
 };
 
 template<class K, class V>
-GenericMap<K, V>::GenericMap() {
+GenericMap<K, V>::GenericMap()
+{
 	this->map = std::map<K,V>();
 	this->iter = map.end();
 	this->hasNextEntry = false;
 }
 
 template<class K, class V>
-GenericMap<K, V>::GenericMap(GenericMap& other) {
+GenericMap<K, V>::GenericMap(GenericMap& other)
+{
 	this->map = std::map<K,V>();
 	this->iter = map.end();
 	this->hashCounter = 0;
@@ -59,7 +61,8 @@ GenericMap<K, V>::GenericMap(GenericMap& other) {
 }
 
 template<class K, class V>
-GenericMap<K, V>* GenericMap<K, V>::copy() {
+GenericMap<K, V>* GenericMap<K, V>::copy()
+{
 	GenericMap<K, V>* newMap = new GenericMap<K, V>();
 
 	this->initializeCounter();
@@ -74,7 +77,8 @@ GenericMap<K, V>* GenericMap<K, V>::copy() {
 }
 
 template<class K, class V>
-void GenericMap<K, V>::initializeCounter() {
+void GenericMap<K, V>::initializeCounter()
+{
 	if(this->getSize() > 0)
 	{
 		this->iter = this->map.begin();
@@ -83,7 +87,8 @@ void GenericMap<K, V>::initializeCounter() {
 }
 
 template<class K, class V>
-GenericEntry<K,V>* GenericMap<K, V>::nextEntry() {
+GenericEntry<K,V>* GenericMap<K, V>::nextEntry()
+{
 
 	GenericEntry<K,V>* entry = NULL;
 	if(this->hasNextEntry) {
@@ -98,7 +103,8 @@ GenericEntry<K,V>* GenericMap<K, V>::nextEntry() {
 }
 
 template<class K, class V>
-GenericEntry<K, V>* GenericMap<K, V>::getMinEntry() {
+GenericEntry<K, V>* GenericMap<K, V>::getMinEntry()
+{
 	typename std::map<K,V>::iterator iter = this->map.begin();
 	V minVal = NULL;
 	K key = NULL;
@@ -119,7 +125,8 @@ GenericEntry<K, V>* GenericMap<K, V>::getMinEntry() {
 }
 
 template<class K, class V>
-bool GenericMap<K, V>::hasEntry(K key) {
+bool GenericMap<K, V>::hasEntry(K key)
+{
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
 		return true;
@@ -129,7 +136,8 @@ bool GenericMap<K, V>::hasEntry(K key) {
 }
 
 template<class K, class V>
-bool GenericMap<K, V>::erase(K key) {
+bool GenericMap<K, V>::erase(K key)
+{
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
 		this->map.erase(iter);
@@ -140,7 +148,8 @@ bool GenericMap<K, V>::erase(K key) {
 }
     
 template<class K, class V>
-bool GenericMap<K, V>::indexErase(K key) {
+bool GenericMap<K, V>::indexErase(K key)
+{
     typename std::map<K,V>::iterator iter = this->map.find(key);
     if (iter != this->map.end()) {
         
@@ -161,7 +170,8 @@ bool GenericMap<K, V>::indexErase(K key) {
 }
 
 template<class K, class V>
-V GenericMap<K, V>::getEntry(K key) {
+V GenericMap<K, V>::getEntry(K key)
+{
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
 		return iter->second;
@@ -171,7 +181,8 @@ V GenericMap<K, V>::getEntry(K key) {
 }
     
 template<class K, class V>
-V GenericMap<K, V>::getFirstEntry() {
+V GenericMap<K, V>::getFirstEntry()
+{
     
     if (this->getSize() > 0) {
         return this->begin()->second;
@@ -181,22 +192,26 @@ V GenericMap<K, V>::getFirstEntry() {
 }
     
 template<class K, class V>
-typename std::map<K, V>::iterator GenericMap<K, V>::begin() {
+typename std::map<K, V>::iterator GenericMap<K, V>::begin()
+{
 	return map.begin();
 }
 
 template<class K, class V>
-typename std::map<K, V>::iterator GenericMap<K, V>::end() {
+typename std::map<K, V>::iterator GenericMap<K, V>::end()
+{
 	return map.end();
 }
 
 template<class K, class V>
-int PredictivePowertrain::GenericMap<K, V>::getSize() {
+int GenericMap<K, V>::getSize()
+{
 	return this->map.size();
 }
 
 template<class K, class V>
-int GenericMap<K, V>::addEntry(K key, V value) {
+int GenericMap<K, V>::addEntry(K key, V value)
+{
 	if(this->getEntry(key) != NULL) {
 		return 0;
 	} else if(this->map.insert(std::pair<K,V>(key, value)).second == true) {
@@ -207,16 +222,19 @@ int GenericMap<K, V>::addEntry(K key, V value) {
 }
 
 template<class K, class V>
-void GenericMap<K, V>::updateEntry(K key, V value) {
+void GenericMap<K, V>::updateEntry(K key, V value)
+{
 	typename std::map<K,V>::iterator iter = this->map.find(key);
-		if (iter != this->map.end()) {
+		if (iter != this->map.end())
+        {
 			this->map.erase(iter);
 		}
 		this->addEntry(key, value);
 }
 
 template<class K, class V>
-GenericMap<K,V>::~GenericMap() {
+GenericMap<K,V>::~GenericMap()
+{
 	// TODO Auto-generated destructor stub
 }
 

@@ -13,14 +13,14 @@
 using namespace PredictivePowertrain;
 
 void goalmapentry_ut(){
-	GoalMapEntry testGoal;
+	GoalMapEntry<int, int> testGoal;
 	// test increment method
 	testGoal.incrementCount();
 	assert(testGoal.getM() == 1);
 
 	//test goal constructor
 	Goal test(1);
-	GoalMapEntry testGoal2(&test);
+	GoalMapEntry<int, int> testGoal2(&test);
 	assert(testGoal.getGoal() == &test);
 }
 

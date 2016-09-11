@@ -44,9 +44,9 @@ private:
 	Route* overRoute;
 	Link link;
 
-	void updateStates(Link* chosenLink, GenericMap<int, pair<Link*,Goal*>*>* oldStates, double* oldProbabilities);
+	void updateStates(Link* chosenLink);
 	double* copyProbs();
-	Route* predictPrivate(Route* currentRoute, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities);
+	Route* predictPrivate(Route* currentRoute);
 	Route* createRoute();
 	Route* createRouteConditions(int* currentCondition);
 	Route* createRouteIntersection(Intersection* intersection, int* currentCondition);

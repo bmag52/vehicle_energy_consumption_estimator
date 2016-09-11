@@ -18,12 +18,12 @@ Route::Route()
 {
 	this->linkCount = 0;
     this->links = new GenericMap<int, Link*>();
+    this->intersection = new Intersection();
 }
 
 Route::Route(GenericMap<int, Link*>* links, Goal* goal) {
 	this->links = links;
 	this->goal = goal;
-	//this->counter = 0;
 	this->linkCount = links->getSize();
 	Link error(NULL, -1);
 	this->error = &error;

@@ -28,6 +28,8 @@ void RoutePrediction::initialize()
     Goal overGoal(1);
     
     this->unknownRoute = new Route(new GenericMap<int, Link*>(), &unknownGoal);
+    this->unknownRoute->addLink(&unknownLink);
+    
     this->overRoute = new Route(new GenericMap<int, Link*>(), &overGoal);;
     
     this->linkToState = new LinkToStateMap();
@@ -35,6 +37,7 @@ void RoutePrediction::initialize()
     this->links = new GenericMap<int, Link*>();
     this->goals = new GenericMap<int, Goal*>();
     this->states = new GenericMap<int, std::pair<Link*, Goal*>*>();
+    this->currentRoute = new Route();
     
 }
     
@@ -59,7 +62,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 	this->probabilities = new double[this->probabilitySize];
 
 	// creating the probability of each goal based on its relation to the conditions
-	int counter = 1;
+	int counter = 0;
 	this->goals->initializeCounter();
 	GenericEntry<int, Goal*>* nextGoal = this->goals->nextEntry();
 	while(nextGoal != NULL)
@@ -80,7 +83,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 
 			std::pair<Link*, Goal*>* thisPair = new std::pair<Link*, Goal*>(nextLink->value, nextGoal->value);
 			this->states->addEntry(counter, thisPair);
-			this->probabilities[counter] = max(this->minInitialProbability*1/this->goals->getSize(), goalProbability);
+			this->probabilities[counter] = max(this->minInitialProbability / this->goals->getSize(), goalProbability);
 
 			counter++;
 			nextLink = nextLinks->nextEntry();
@@ -89,7 +92,6 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 		nextGoal = this->goals->nextEntry();
 	}
 	free(nextGoal);
-	free(nextLinks);
 
 	// normalize probabilities
 	int sum = 0;
@@ -97,7 +99,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 	for(int i = 0; i < this->probabilitySize; i++) { this->probabilities[i] /= sum; }
 
 	this->currentRoute->setToIntersection(currentIntersection);
-	this->predictedRoute = predictPrivate(NULL, this->states->copy(), copyProbs());
+	this->predictedRoute = predictPrivate(NULL);
 	return createRouteConditions(currentCondition);
 }
 
@@ -106,7 +108,8 @@ double* RoutePrediction::copyProbs()
 	double* copy = new double[this->probabilitySize];
 	for(int i = 0; i < this->probabilitySize; i++)
 	{
-		copy[i] = this->probabilities[i];
+        double temp = this->probabilities[i];
+		copy[i] = temp;
 	}
 	return copy;
 }
@@ -147,14 +150,14 @@ Route* RoutePrediction::predict(Link* linkTaken)
 		return this->overRoute;
 	}
 
-	updateStates(linkTaken, this->states, this->probabilities);
+	updateStates(linkTaken);
 	this->currentRoute->addLink(linkTaken);
 
 	if(linkTaken->isEqual(this->predictedRoute->getEntry(0)))
 	{
 		this->predictedRoute->removeFirstLink();
 	} else {
-		this->predictedRoute = predictPrivate(NULL, this->states->copy(), copyProbs());
+		this->predictedRoute = predictPrivate(NULL);
 	}
 
 	if(this->predictedRoute->isEmpty())
@@ -167,13 +170,13 @@ Route* RoutePrediction::predict(Link* linkTaken)
 	}
 }
 
-void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities)
+void RoutePrediction::updateStates(Link* chosenLink)
 {
 	// get next links
 	GenericMap<int, Link*>* nextLinks = this->city->getNextLinks(chosenLink);
 
 	// generate new data structures
-	GenericMap<int, pair<Link*,Goal*>*> newStates;
+    GenericMap<int, std::pair<Link*,Goal*>*>* newStates = new GenericMap<int, std::pair<Link*,Goal*>*>();
 	int newProbabilitySize = sizeof(*nextLinks)/sizeof(Link)*this->goals->getSize();
 	double* newProbabilities = new double[newProbabilitySize];
 
@@ -183,7 +186,7 @@ void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,
 	Goal* gi;
 	Goal* gj;
 	double pSi, pGl, pLs, minProbability;
-	pair<Link*, Goal*>* sj;
+    std::pair<Link*, Goal*>* sj;
 	int counter = 0;
 
 	// calculate new states and probabilities
@@ -193,25 +196,25 @@ void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,
 	{
 		this->goals->initializeCounter();
 		GenericEntry<int, Goal*>* nextGoal = this->goals->nextEntry();
-		li = nextLink->value;
 		while(nextGoal != NULL)
 		{
 			pSi = 0;
 			gi = nextGoal->value;
-			for(int j = 0; j < currentStates->getSize(); j++)
+            li = nextLink->value;
+			for(int j = 0; j < this->states->getSize(); j++)
 			{
-				sj = currentStates->getEntry(j);
+				sj = this->states->getEntry(j);
 				if(sj->first->isEqual(li))
 				{
 					gj = sj->second;
 					minProbability = this->minInitialProbability / this->goals->getSize();
 					pGl = this->goalToLink->probabilityOfGoalGivenLink(li, gi, 0);
 					pLs = this->linkToState->getProbability(li, chosenLink, gj, false);
-					pSi += max(minProbability,currentProbabilities[j])*max(minProbability,pLs)*max(minProbability,pGl);
+                    pSi += std::max(minProbability,this->probabilities[j]) * std::max(minProbability,pLs) * std::max(minProbability,pGl);
 				}
 			}
-			pair<Link*, Goal*> si (nextLink->value, gi);
-			newStates.addEntry(counter, &si);
+            std::pair<Link*, Goal*> si (nextLink->value, gi);
+			newStates->addEntry(counter, &si);
 			newProbabilities[counter] = pSi;
 			nextGoal = this->goals->nextEntry();
 		}
@@ -224,42 +227,47 @@ void RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, pair<Link*,
 	for(int i = 0; i < newProbabilitySize; i++) { newProbabilities[i] /= sum; }
 
 	// update probabilities and states
-	free(currentProbabilities); free(currentStates);
-	currentProbabilities = newProbabilities;
-	currentStates = &newStates;
+	free(this->probabilities); free(this->states);
+	this->probabilities = newProbabilities;
+	this->states = newStates;
 }
 
-Route* RoutePrediction::predictPrivate(Route* currentRoute, GenericMap<int, pair<Link*,Goal*>*>* currentStates, double* currentProbabilities)
+Route* RoutePrediction::predictPrivate(Route* currentRoute)
 {
 	// check for uninitialized probability values
-	int currentProbabilitySize = sizeof(*currentProbabilities)/sizeof(double);
+    // get most probable state
+    int maxProbability = -1;
+    int nextStateIndex = -1;
+	int currentProbabilitySize = sizeof(this->probabilities);
 	for(int i = 0; i < currentProbabilitySize; i++)
 	{
-		if(currentProbabilities[i] == 0) { return this->unknownRoute; }
-	}
-
-	// get most probable state
-	int maxProbability = -1;
-	int nextStateIndex = -1;
-	for(int i = 0; i < currentProbabilitySize; i++)
-	{
-		if(currentProbabilities[i] > maxProbability)
-		{
-			maxProbability = currentProbabilities[i];
-			nextStateIndex = i;
-		}
+        // check curr probability
+        double currProb = this->probabilities[i];
+        
+        // return unknown route if curr probability is not assigned
+		if(currProb < 0.0 || currProb > 1.0) { return this->unknownRoute; }
+        
+        // find max prob
+        if(this->probabilities[i] > maxProbability)
+        {
+            maxProbability = this->probabilities[i];
+            nextStateIndex = i;
+        }
 	}
 
 	// get state with highest probability and add it to route
-	pair<Link*, Goal*> *nextState = currentStates->getEntry(nextStateIndex);
-	(*currentRoute).addLink(nextState->first);
+    std::pair<Link*, Goal*> *nextState = this->states->getEntry(nextStateIndex);
+    if(currentRoute == NULL)
+    {
+        currentRoute = new Route();
+    }
+    currentRoute->addLink(nextState->first);
 
-	if(!(*nextState->first).isFinalLink())
+	if(!nextState->first->isFinalLink())
 	{
-		updateStates(nextState->first, currentStates, currentProbabilities);
-		return predictPrivate(currentRoute, currentStates, currentProbabilities);
+		updateStates(nextState->first);
+		return predictPrivate(currentRoute);
 	}
-	free(currentStates); free(currentProbabilities);
 	return currentRoute;
 }
 

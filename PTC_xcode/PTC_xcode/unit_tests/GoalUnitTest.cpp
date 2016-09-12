@@ -7,6 +7,7 @@
 #include "../route_prediction/Goal.h"
 #include <iostream>
 #include <assert.h>
+#include <vector>
 #include "UnitTests.h"
 
 using namespace PredictivePowertrain;
@@ -15,11 +16,11 @@ void goal_ut(){
 	// testing constructors (int destination, int [] bin, int size)
 	Goal goalOne;
 	Goal goalTwo(1);
-	int arr[1] = {0};
-	Goal goalThree(1, arr);
-	Goal goalFour(2, arr, 1);
+    std::vector<float> arr = {0};
+	Goal goalThree(1, &arr);
+	Goal goalFour(2, &arr);
 	Goal goalFive(goalFour);
-	Goal goalSix(3, arr, 1);
+	Goal goalSix(3, &arr);
 
 	// test isSimilar (doesn't compare destination)
 	assert(goalFour.isSimilar(&goalSix));	// true
@@ -36,8 +37,8 @@ void goal_ut(){
 	assert(oldNum + 1 == goalOne.getNumSeen());
 
 	// getBins()
-	int* bins = goalThree.getBins();
-	assert(arr[1] == bins[1]);
+    std::vector<float>* bins = goalThree.getBins();
+	assert(arr.at(1) == bins->at(1));
 }
 
 

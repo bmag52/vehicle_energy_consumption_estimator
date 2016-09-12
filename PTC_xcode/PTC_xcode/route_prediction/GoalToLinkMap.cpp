@@ -33,60 +33,66 @@ int GoalToLinkMap::linkTraversed(Link* link, Goal* goal)
     
 	int linkHash = link->getHash();
 	int count = 1 + goalEntry->getMapEntry(linkHash);
-	goalEntry->addMapEntry(linkHash, count);
+	this->goalMap->getEntry(goalHash)->addMapEntry(linkHash, count);
 	return count;
 }
 
-double** GoalToLinkMap::probabilityOfGoalsGivenLink(Link* link, Goal* goal, bool isSimilar)
+std::vector<std::vector<float>*>* GoalToLinkMap::probabilityOfGoalsGivenLink(Link* link, Goal* goal, bool isSimilar)
 {
 	this->goalMap->initializeCounter();
 	GenericEntry<int, GoalMapEntry<int, int>*>* goalEntry = this->goalMap->nextEntry();
     
     int probLength = this->goalMap->getSize();
-	double** prob = new double*[probLength];
+    std::vector<std::vector<float>*>* prob = new std::vector<std::vector<float>*>(probLength);
     
 	int probCount = 0;
 	int totalLinkCount = 0;
     
 	while(goalEntry != NULL) {
-		prob[probCount] = new double[2];
+        prob->at(probCount) = new std::vector<float>(2);
 		int linkCount;
         
-		int linkHash = link->getHash();
-		if(goal->isSimilar(goalEntry->value->getGoal())) {
-            linkCount = goalEntry->value->getMapEntry(link->getHash());
+		if(goal->isSimilar(goalEntry->value->getGoal()))
+        {
+            if(goalEntry->value->getMap()->hasEntry(link->getHash()))
+            {
+                linkCount = goalEntry->value->getMapEntry(link->getHash());
+                totalLinkCount += linkCount;
+            } else {
+                linkCount = -1;
+            }
 		} else {
 			linkCount = 0;
 		}
 		int goalHash = goalEntry->value->getGoal()->getHash();
-        
-		totalLinkCount += linkCount;
-		prob[probCount][0]= goalHash;
-		prob[probCount][1] = linkCount;
+
+		prob->at(probCount)->at(0) = goalHash;
+		prob->at(probCount)->at(1) = linkCount;
         
 		goalEntry = this->goalMap->nextEntry();
         probCount++;
 	}
     
 	for (int i = 0; i < probLength; i++) {
-        double prob_i = prob[i][1] / (double)( (totalLinkCount > 0 ) * totalLinkCount + (totalLinkCount <= 0));
-        prob[i][1] = prob_i;
+        double prob_i = prob->at(i)->at(1) / (double)( (totalLinkCount > 0 ) * totalLinkCount + (totalLinkCount <= 0));
+        prob->at(i)->at(1) = prob_i;
 	}
 	return prob;
 }
 
-double GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal * goal, bool isSimilar)
+float GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal * goal, bool isSimilar)
 {
-	double** matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
-	int matrixLength = sizeof(matrix);
+    std::vector<std::vector<float>*>* matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
+	size_t matrixLength = matrix->size();
 	double goalHash = (double) goal->getHash();
 	for(int i = 0; i < matrixLength; i++) {
-		if(matrix[i][0] == goalHash) {
-			return matrix[i][1];
+		if(matrix->at(i)->at(0) == goalHash) {
+            float probability = matrix->at(i)->at(1);
+            free(matrix);
+			return probability;
 		}
 	}
 	return 0;
-
 }
     
 GenericMap<int, GoalMapEntry<int, int>*>* GoalToLinkMap::getGoalMap()
@@ -94,14 +100,14 @@ GenericMap<int, GoalMapEntry<int, int>*>* GoalToLinkMap::getGoalMap()
     return this->goalMap;
 }
     
-GenericMap<int, int>* GoalToLinkMap::probabilityOfGoalsGivenLinkMap(Link * link, Goal * goal, bool isSimilar)
+GenericMap<float, float>* GoalToLinkMap::probabilityOfGoalsGivenLinkMap(Link * link, Goal * goal, bool isSimilar)
 {
-	double** matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
-	GenericMap<int, int>* result = new GenericMap<int, int>();
-	int matrixLength = sizeof(*matrix) / sizeof(int);
+    std::vector<std::vector<float>*>* matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
+	GenericMap<float, float>* result = new GenericMap<float, float>();
+	size_t matrixLength = matrix->size();
 	for(int i = 0; i < matrixLength; i++)
     {
-		result->addEntry(matrix[i][0], matrix[i][1]);
+		result->addEntry(matrix->at(i)->at(0), matrix->at(i)->at(1));
 	}
 	return result;
 }

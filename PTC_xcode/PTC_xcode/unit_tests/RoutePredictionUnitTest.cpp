@@ -19,6 +19,7 @@
 #include <climits>
 #include <algorithm>
 #include <ctime>
+#include <vector>
 
 using namespace PredictivePowertrain;
 
@@ -93,8 +94,8 @@ void routePrediction_UT()
     // build city
     City city(intersections, roads, new GenericMap<int, Bounds*>());
     Link* links = makeLinks(5);
-    int conditions[] = {1, 2};
-    Goal goal(1, conditions);
+    std::vector<float> conditions = {1, 2};
+    Goal goal(1, &conditions);
     
     // add routes to route prediction
     RoutePrediction routePrediction(&city);
@@ -106,7 +107,7 @@ void routePrediction_UT()
     Route startRoute;
     startRoute.addLink(&link);
     startRoute.assignGoal(&goal);
-    Route* route = city.randomPath(startIntersection, &startRoute, routeLength, conditions);
+    Route* route = city.randomPath(startIntersection, &startRoute, routeLength, &conditions);
     
     // add trainging iterations here (simulates driving over the route multiple times)
     routePrediction.parseRoute(route);
@@ -121,10 +122,10 @@ void routePrediction_UT()
     for(int i = 1; i <= num_rand_routes; i++)
     {
         // create random route
-        Route* randomRoute = city.randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), conditions);
+        Route* randomRoute = city.randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), &conditions);
         while(randomRoute->isEqual(route))
         {
-            randomRoute = city.randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), conditions);
+            randomRoute = city.randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), &conditions);
             std::cout << "remake random route" << std::endl;
         }
         
@@ -133,7 +134,7 @@ void routePrediction_UT()
     }
     
     // predict actual route as it is 'driven' over
-    Route* predRoute = routePrediction.startPrediction(startIntersection, conditions);
+    Route* predRoute = routePrediction.startPrediction(startIntersection, &conditions);
     for(int i = 1; i <= route->getLinkSize(); i++)
     {
         // predict route

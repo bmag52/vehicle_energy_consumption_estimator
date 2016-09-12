@@ -11,6 +11,7 @@ namespace PredictivePowertrain {
 
 RoutePrediction::RoutePrediction()
 {
+    this->city = new City();
     initialize();
 }
 
@@ -22,23 +23,31 @@ RoutePrediction::RoutePrediction(City* city)
     
 void RoutePrediction::initialize()
 {
-    Link unknownLink(-1, -1);
-    Link overLink(1,1);
-    Goal unknownGoal(-1);
-    Goal overGoal(1);
+    Link* unknownLink = new Link(-1, -1);
+    Link* overLink = new Link(1,1);
+    Goal* unknownGoal = new Goal(-1);
+    Goal* overGoal = new Goal(1);
     
-    this->unknownRoute = new Route(new GenericMap<int, Link*>(), &unknownGoal);
-    this->unknownRoute->addLink(&unknownLink);
+    this->unknownRoute = new Route(new GenericMap<int, Link*>(), unknownGoal);
+    this->unknownRoute->addLink(unknownLink);
     
-    this->overRoute = new Route(new GenericMap<int, Link*>(), &overGoal);;
+    this->overRoute = new Route(new GenericMap<int, Link*>(), overGoal);;
     
     this->linkToState = new LinkToStateMap();
     this->goalToLink = new GoalToLinkMap();
     this->links = new GenericMap<int, Link*>();
     this->goals = new GenericMap<int, Goal*>();
     this->states = new GenericMap<int, std::pair<Link*, Goal*>*>();
+    this->predictedRoute = new Route();
     this->currentRoute = new Route();
+    this->predictedGoal = unknownGoal;
     
+    if(this->city->getInstersectionMapSize() != 0)
+    {
+        this->minInitialProbability = 0.1 / this->city->getInstersectionMapSize();
+    } else {
+        this->minInitialProbability = 0;
+    }
 }
     
 RoutePrediction::~RoutePrediction()
@@ -50,16 +59,20 @@ RoutePrediction::~RoutePrediction()
     free(this->links);
     free(this->goals);
     free(this->states);
+    free(this->predictedRoute);
+    free(this->currentRoute);
+    free(this->predictedGoal);
+    
 }
 
-Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* currentCondition)
+Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::vector<float>* currentCondition)
 {
-	this->predictedGoal = Goal(1, currentCondition);
+    free(this->predictedGoal);
+	this->predictedGoal = new Goal(1, currentCondition);
 
 	GenericMap<int, Link*>* nextLinks = currentIntersection->getOutgoingLinks();
 
-	this->probabilitySize = nextLinks->getSize() * this->goals->getSize();
-	this->probabilities = new double[this->probabilitySize];
+    this->probabilities = new std::vector<float>(nextLinks->getSize() * this->goals->getSize());
 
 	// creating the probability of each goal based on its relation to the conditions
 	int counter = 0;
@@ -71,8 +84,8 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 		GenericEntry<int, Link*>* nextLink = nextLinks->nextEntry();
 		while(nextLink != NULL)
 		{
-			double goalProbability = this->goalToLink->probabilityOfGoalGivenLink(nextLink->value, nextGoal->value, false);
-			if(this->predictedGoal.isSimilar(nextGoal->value))
+			float goalProbability = this->goalToLink->probabilityOfGoalGivenLink(nextLink->value, nextGoal->value, false);
+			if(this->predictedGoal->isSimilar(nextGoal->value))
 			{
 				// high probability since condition is right
 				goalProbability *= nextGoal->value->getNumSeen();
@@ -83,9 +96,9 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 
 			std::pair<Link*, Goal*>* thisPair = new std::pair<Link*, Goal*>(nextLink->value, nextGoal->value);
 			this->states->addEntry(counter, thisPair);
-			this->probabilities[counter] = max(this->minInitialProbability / this->goals->getSize(), goalProbability);
-
+            this->probabilities->at(counter) = std::max(this->minInitialProbability / this->goals->getSize(), goalProbability);
 			counter++;
+            
 			nextLink = nextLinks->nextEntry();
 		}
 		free(nextLink);
@@ -95,23 +108,12 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, int* 
 
 	// normalize probabilities
 	int sum = 0;
-	for(int i = 0; i < this->probabilitySize; i++) { sum += this->probabilities[i]; }
-	for(int i = 0; i < this->probabilitySize; i++) { this->probabilities[i] /= sum; }
+	for(int i = 0; i < this->probabilities->size(); i++) { sum += this->probabilities->at(i); }
+	for(int i = 0; i < this->probabilities->size(); i++) { this->probabilities->at(i) /= sum; }
 
 	this->currentRoute->setToIntersection(currentIntersection);
 	this->predictedRoute = predictPrivate(NULL);
 	return createRouteConditions(currentCondition);
-}
-
-double* RoutePrediction::copyProbs()
-{
-	double* copy = new double[this->probabilitySize];
-	for(int i = 0; i < this->probabilitySize; i++)
-	{
-        double temp = this->probabilities[i];
-		copy[i] = temp;
-	}
-	return copy;
 }
 
 Route* RoutePrediction::predict(Link* linkTaken)
@@ -164,7 +166,7 @@ Route* RoutePrediction::predict(Link* linkTaken)
 	{
 		return this->predictedRoute;
 	} else if (this->predictedRoute->getLinkSize() == 1) {
-		return createRouteIntersection(this->city->getIntersectionFromLink(linkTaken, true), this->predictedGoal.getBins());
+		return createRouteIntersection(this->city->getIntersectionFromLink(linkTaken, true), this->predictedGoal->getBins());
 	} else {
 		return createRoute();
 	}
@@ -176,16 +178,15 @@ void RoutePrediction::updateStates(Link* chosenLink)
 	GenericMap<int, Link*>* nextLinks = this->city->getNextLinks(chosenLink);
 
 	// generate new data structures
-    GenericMap<int, std::pair<Link*,Goal*>*>* newStates = new GenericMap<int, std::pair<Link*,Goal*>*>();
-	int newProbabilitySize = sizeof(*nextLinks)/sizeof(Link)*this->goals->getSize();
-	double* newProbabilities = new double[newProbabilitySize];
+    GenericMap<int, std::pair<Link*, Goal*>*>* newStates = new GenericMap<int, std::pair<Link*, Goal*>*>();
+    std::vector<float>* newProbabilities = new std::vector<float>(nextLinks->getSize() * this->goals->getSize());
 
 	// generate reused fields
 	int* hash;
 	Link* li;
 	Goal* gi;
 	Goal* gj;
-	double pSi, pGl, pLs, minProbability;
+	float pSi, pGl, pLs, minProbability;
     std::pair<Link*, Goal*>* sj;
 	int counter = 0;
 
@@ -204,18 +205,21 @@ void RoutePrediction::updateStates(Link* chosenLink)
 			for(int j = 0; j < this->states->getSize(); j++)
 			{
 				sj = this->states->getEntry(j);
-				if(sj->first->isEqual(li))
+				if(sj->first->isEqual(chosenLink))
 				{
 					gj = sj->second;
 					minProbability = this->minInitialProbability / this->goals->getSize();
 					pGl = this->goalToLink->probabilityOfGoalGivenLink(li, gi, 0);
 					pLs = this->linkToState->getProbability(li, chosenLink, gj, false);
-                    pSi += std::max(minProbability,this->probabilities[j]) * std::max(minProbability,pLs) * std::max(minProbability,pGl);
+                    pSi += std::max(minProbability,  this->probabilities->at(j)) * std::max(minProbability,pLs) * std::max(minProbability,pGl);
 				}
 			}
-            std::pair<Link*, Goal*> si (nextLink->value, gi);
-			newStates->addEntry(counter, &si);
-			newProbabilities[counter] = pSi;
+            // add new state to new states
+            std::pair<Link*, Goal*>* si = new std::pair<Link*, Goal*>(nextLink->value, gi);
+			newStates->addEntry(counter, si);
+			newProbabilities->at(counter) = pSi;
+            counter++;
+            
 			nextGoal = this->goals->nextEntry();
 		}
 		nextLink = nextLinks->nextEntry();
@@ -223,8 +227,8 @@ void RoutePrediction::updateStates(Link* chosenLink)
 
 	// normalize probabilities
 	int sum = 0;
-	for(int i = 0; i < newProbabilitySize; i++) { sum += newProbabilities[i]; }
-	for(int i = 0; i < newProbabilitySize; i++) { newProbabilities[i] /= sum; }
+	for(int i = 0; i < newProbabilities->size(); i++) { sum += newProbabilities->at(i); }
+	for(int i = 0; i < newProbabilities->size(); i++) { newProbabilities->at(i) /= sum; }
 
 	// update probabilities and states
 	free(this->probabilities); free(this->states);
@@ -236,27 +240,36 @@ Route* RoutePrediction::predictPrivate(Route* currentRoute)
 {
 	// check for uninitialized probability values
     // get most probable state
-    int maxProbability = -1;
+    float maxProbability = -1;
     int nextStateIndex = -1;
-	int currentProbabilitySize = sizeof(this->probabilities);
-	for(int i = 0; i < currentProbabilitySize; i++)
-	{
+    int negCount = 0;
+    
+	for(int i = 0; i < this->probabilities->size(); i++)
+    {
         // check curr probability
-        double currProb = this->probabilities[i];
+        float currProb = this->probabilities->at(i);
         
-        // return unknown route if curr probability is not assigned
-		if(currProb < 0.0 || currProb > 1.0) { return this->unknownRoute; }
+        if(currProb < 0)
+        {
+            negCount++;
+            continue;
+        }
         
         // find max prob
-        if(this->probabilities[i] > maxProbability)
+        if(this->probabilities->at(i) > maxProbability)
         {
-            maxProbability = this->probabilities[i];
+            maxProbability = this->probabilities->at(i);
             nextStateIndex = i;
         }
 	}
+    
+    if(negCount == this->probabilities->size())
+    {
+        return this->unknownRoute;
+    }
 
 	// get state with highest probability and add it to route
-    std::pair<Link*, Goal*> *nextState = this->states->getEntry(nextStateIndex);
+    std::pair<Link*, Goal*>* nextState = this->states->getEntry(nextStateIndex);
     if(currentRoute == NULL)
     {
         currentRoute = new Route();
@@ -273,20 +286,20 @@ Route* RoutePrediction::predictPrivate(Route* currentRoute)
 
 Route* RoutePrediction::createRoute()
 {
-	return createRouteConditions(this->predictedGoal.getBins());
+	return createRouteConditions(this->predictedGoal->getBins());
 }
 
-Route* RoutePrediction::createRouteConditions(int* currentConditions)
+Route* RoutePrediction::createRouteConditions(std::vector<float>* currentConditions)
 {
 	int lastLinkIndex = this->predictedRoute->getLinkSize() - 1;
 	return createRouteIntersection(this->city->getIntersectionFromLink(this->predictedRoute->getEntry(lastLinkIndex), true), currentConditions);
 }
 
-Route* RoutePrediction::createRouteIntersection(Intersection* intersection, int* currentConditions)
+Route* RoutePrediction::createRouteIntersection(Intersection* intersection, std::vector<float>* currentConditions)
 {
-	free(&this->predictedGoal);
-	this->predictedGoal = Goal(intersection->getIntersectionID(), currentConditions);
-	Route route(this->predictedRoute->getLinks(), &this->predictedGoal);
+	free(this->predictedGoal);
+	this->predictedGoal = new Goal(intersection->getIntersectionID(), currentConditions);
+	Route route(this->predictedRoute->getLinks(), this->predictedGoal);
 	return &route;
 }
 

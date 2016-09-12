@@ -10,20 +10,19 @@
 
 #include <functional>
 #include <cmath>
+#include <vector>
 
 namespace PredictivePowertrain {
 
 class Goal {
 private:
 	int destination;
-	int *bins;
+    std::vector<float>* bins;
 	int numSeen;
-	int size;
 public:
 	Goal();
 	Goal(int destination);
-	Goal(int destination, int* bin);
-	Goal(int destination, int bin[], int size);
+    Goal(int destination, std::vector<float>* bins);
 	Goal(Goal * other);
 	bool isSimilar(Goal * other);
 	bool isEqual(Goal * other);
@@ -31,7 +30,7 @@ public:
 	int getNumSeen();
 	void setNumSeen(int numSeen);
 	void incrementNumSeen();
-	int* getBins();
+    std::vector<float>* getBins();
 	virtual ~Goal();
 };
 

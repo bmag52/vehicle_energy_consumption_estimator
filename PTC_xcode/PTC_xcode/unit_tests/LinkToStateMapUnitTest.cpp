@@ -5,6 +5,7 @@
 #include "../route_prediction/LinkToStateMap.h"
 #include "UnitTests.h"
 #include <iostream>
+#include <vector>
 
 using namespace PredictivePowertrain;
 using namespace std;
@@ -19,12 +20,12 @@ void linkToStateMap_ut() {
 		links[i] = &newLink;
 	}
 
-	int bins2[] = {2};
-	int bins4[] = {4};
+    std::vector<float> bins2 = {2};
+    std::vector<float> bins4 = {4};
 
-	Goal goal1(1, bins2);
-	Goal goal2(2, bins4);
-	Goal goal3(2, bins2);
+	Goal goal1(1, &bins2);
+	Goal goal2(2, &bins4);
+	Goal goal3(2, &bins2);
 	assert(goal1.isSimilar(&goal3)); // goal 1 and goal3 should be similar
 
 	// Test 1: increment transition

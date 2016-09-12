@@ -235,7 +235,12 @@ void GenericMap<K, V>::updateEntry(K key, V value)
 template<class K, class V>
 GenericMap<K,V>::~GenericMap()
 {
-	// TODO Auto-generated destructor stub
+    typename std::map<K,V>::iterator iter = this->map.begin();
+    
+    while(iter != this->map.end())
+    {
+        iter = this->map.erase(iter);
+    }
 }
 
 

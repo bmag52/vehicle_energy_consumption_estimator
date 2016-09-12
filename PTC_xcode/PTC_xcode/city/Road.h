@@ -14,6 +14,7 @@
 #include <string>
 #include <limits.h>
 #include <utility>
+#include <vector>
 #include <eigen3/Eigen/Core>
 #include <eigen3/unsupported/Eigen/Splines>
 
@@ -44,8 +45,8 @@ public:
 	Intersection* getStartIntersection();
 	Intersection* getEndIntersection();
 	long int getRoadID();
-	int* getElevData();
-	int* getSpeedData();
+    std::vector<float>* getElevData();
+    std::vector<float>* getSpeedData();
 	int getBoundsID();
 	void setBoundsID(int id);
     float getSplineLength();

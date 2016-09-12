@@ -21,6 +21,7 @@
 #include <algorithm>
 #include <assert.h>
 #include "stdlib.h"
+#include <vector>
 
 using namespace std;
 
@@ -35,28 +36,26 @@ private:
 	GenericMap<int, pair<Link*,Goal*>*>* states;
 	Route* predictedRoute;
 	Route* currentRoute;
-	double *probabilities;
+    std::vector<float>* probabilities;
 	City *city;
-	Goal predictedGoal;
-	double minInitialProbability;
-	int probabilitySize;
+	Goal *predictedGoal;
+	float minInitialProbability;
 	Route* unknownRoute;
 	Route* overRoute;
 	Link link;
 
 	void updateStates(Link* chosenLink);
-	double* copyProbs();
 	Route* predictPrivate(Route* currentRoute);
 	Route* createRoute();
-	Route* createRouteConditions(int* currentCondition);
-	Route* createRouteIntersection(Intersection* intersection, int* currentCondition);
+    Route* createRouteConditions(std::vector<float>* currentCondition);
+    Route* createRouteIntersection(Intersection* intersection, std::vector<float>* currentCondition);
     void initialize();
 
 public:
 	RoutePrediction();
 	RoutePrediction(City* city);
     ~RoutePrediction();
-	Route* startPrediction(Intersection* currentIntersection, int* currentCondition);
+    Route* startPrediction(Intersection* currentIntersection, std::vector<float>* currentCondition);
 	Route* predict(Link* linkTaken);
 	void parseRoute(Route* route);
 };

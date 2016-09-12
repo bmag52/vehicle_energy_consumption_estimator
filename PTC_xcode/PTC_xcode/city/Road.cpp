@@ -47,12 +47,12 @@ long int Road::getRoadID() {
 Road::~Road() {
 }
 
-int* Road::getSpeedData() {
+std::vector<float>* Road::getSpeedData() {
     // TODO
     return NULL;
 }
 
-int* Road::getElevData() {
+std::vector<float>* Road::getElevData() {
     // TODO
     return NULL;
 }

@@ -10,6 +10,7 @@
 #include "../route_prediction/Route.h"
 #include <iostream>
 #include <assert.h>
+#include <vector>
 #include "UnitTests.h"
 
 using namespace std;
@@ -30,10 +31,10 @@ void route_ut() {
 	links2[1] = link1;
 	links2[2] = link2;
 
-	int bins[] = {1};
+    std::vector<float> bins = {1};
 
-	Goal goal1(1, bins);
-	Goal goal2(2, bins);
+	Goal goal1(1, &bins);
+	Goal goal2(2, &bins);
 
 //	Route route1(links1, &goal1);
 //	Route route2(links1, &goal2);

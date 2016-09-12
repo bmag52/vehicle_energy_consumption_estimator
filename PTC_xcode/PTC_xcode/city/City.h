@@ -25,6 +25,7 @@
 #include <climits>
 #include <math.h>
 #include <ctime>
+#include <vector>
 
 namespace PredictivePowertrain {
 
@@ -35,15 +36,14 @@ private:
 	std::string intersectionFileName;
 	int intervalDistance = 1;
 	int dateTimeCreated;
-	int maxSlopePercent = 6;
+	double maxSlopePercent = 6;
 	std::map<int,int> intersectionNumMap;
 	GenericMap<long int, Road*>* roads;
 	GenericMap<int, Intersection*>* intersections;
 	GenericMap<int, Bounds*>* boundsMap;
-	int* reverseTrace(int* trace);
+    std::vector<float>* reverseTrace(std::vector<float>* trace);
 	Road* getConnectingRoad(Intersection* one, Intersection* two);
-	Intersection* addIntersection(Intersection* intersections, Intersection* intersection);
-	std::pair<double*, int>* elevationToSlope(int* elev, int oldElev);
+    std::pair<std::vector<float>*, float>* elevationToSlope(std::vector<float>* elev, float oldElev);
 public:
 	City();
 	City(GenericMap<int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
@@ -53,12 +53,12 @@ public:
 	int getBoundsMapSize();
 	GenericMap<int, Link*>* getNextLinks(Link* link);
 	Intersection* getIntersectionFromLink(Link* link, bool isIntersection);
-    Route* randomPath(Intersection* startInt, Route* initialRoute, int totalLength, int* conditions);
+    Route* randomPath(Intersection* startInt, Route* initialRoute, int totalLength, std::vector<float>* conditions);
 	Intersection* getIntersection(int intersectionNum);
-	Route* getPath(Intersection* start, Intersection* end, int* conditions, int fastest);
-	std::pair<int*, int*>* getRoadData(Link* link);
+    Route* getPath(Intersection* start, Intersection* end, std::vector<float>* conditions, int fastest);
+	std::pair<std::vector<float>*, std::vector<float>*>* getRoadData(Link* link);
 	bool legalRoute(Route* route);
-	std::pair<int*, double*>* routeToData(Route* route, int dist);
+    std::pair<std::vector<float>*, std::vector<float>*>* routeToData(Route* route, int dist);
 	GenericMap<int, Bounds*>* getBoundsMap();
 	GenericMap<long int, Road*>* getRoads();
 	GenericMap<int, Intersection*>* getIntersections();

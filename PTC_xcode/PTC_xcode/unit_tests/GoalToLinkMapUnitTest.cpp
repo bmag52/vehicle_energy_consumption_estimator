@@ -8,6 +8,7 @@
 #include "../route_prediction/GoalToLinkMap.h"
 #include "UnitTests.h"
 #include <iostream>
+#include <vector>
 #include <assert.h>
 
 using namespace PredictivePowertrain;
@@ -22,11 +23,11 @@ void goalToLinkMap_ut() {
 		links[i] = &newLink;
 	}
 
-	int bins1[] = {2};
-	int bins2[] = {3, 4};
-	Goal goal1(1, bins1);
-	Goal goal2(2, bins2);
-	Goal goal3(3, bins1);
+    std::vector<float> bins1 = {2};
+    std::vector<float> bins2 = {3, 4};
+	Goal goal1(1, &bins1);
+	Goal goal2(2, &bins2);
+	Goal goal3(3, &bins1);
 
 	// Test 1: adding links to a single goal
 	GoalToLinkMap map1;

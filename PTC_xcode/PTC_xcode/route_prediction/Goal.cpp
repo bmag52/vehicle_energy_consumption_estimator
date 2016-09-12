@@ -14,33 +14,31 @@ Goal::Goal(int destination)
 	this->destination = destination;
 }
 
-Goal::Goal(int destination, int bin[], int size)
+Goal::Goal(int destination, std::vector<float>* bins)
 {
 	this->destination = destination;
-	this->bins = bin;
-	this->size = size;
+	this->bins = bins;
 	this->numSeen = 1;
 }
 
 Goal::Goal(Goal * other)
 {
 	this->destination = other->destination;
-	this->size = other->size;
-	this->bins = new int[size];
-	for (int i = 0; i < size; i++)
+    this->bins = new std::vector<float>(other->getBins()->size());
+	for (int i = 0; i < this->bins->size(); i++)
     {
-		this->bins[i] = (*other).bins[i];
+        this->bins->at(i) = other->bins->at(i);
 	}
-	this->numSeen = (*other).numSeen;
+	this->numSeen = other->numSeen;
 }
 
 bool Goal::isSimilar(Goal * other)
 {
-	if (this->size == other->size)
+	if (this->bins->size() == other->getBins()->size())
     {
-		for (int i = 0; i < size; i++)
+		for (int i = 0; i < this->bins->size(); i++)
         {
-			if (this->bins[i] != other->bins[i])
+			if (this->bins->at(i) != other->bins->at(i))
             {
 				return false;
 			}
@@ -60,22 +58,15 @@ int Goal::getHash() const
 {
 	int hash = this->destination;
 	int bits;
-	for (int i = 0; i < size; i++) {
-        bits = (int) std::log2(bins[i]);
+	for (int i = 0; i < this->bins->size(); i++) {
+        bits = (int) std::log2(this->bins->at(i));
         hash = hash << bits;
-        hash += bins[i];
+        hash += this->bins->at(i);
 	}
 	return hash;
 }
 
 Goal::Goal() {
-}
-
-Goal::Goal(int destination, int* bin)
-{
-	this->destination = destination;
-	this->bins = bin;
-	this->size = sizeof(bin) / sizeof(int);
 }
 
 void Goal::incrementNumSeen()
@@ -88,7 +79,7 @@ void Goal::setNumSeen(int numSeen)
 	this->numSeen = numSeen;
 }
 
-int* Goal::getBins()
+std::vector<float>* Goal::getBins()
 {
 	return this->bins;
 }

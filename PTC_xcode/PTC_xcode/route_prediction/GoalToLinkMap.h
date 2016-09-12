@@ -11,6 +11,7 @@
 #include "GoalMapEntry.h"
 #include "../driver_prediction/Link.h"
 #include "Goal.h"
+#include <vector>
 
 
 
@@ -25,9 +26,9 @@ public:
 	GoalToLinkMap(GoalToLinkMap &other);
 	int linkTraversed(Link* link, Goal* goal);
     GenericMap<int, GoalMapEntry<int, int>*>* getGoalMap();
-	double** probabilityOfGoalsGivenLink(Link * link, Goal * goal, bool isSimilar);
-	double probabilityOfGoalGivenLink(Link* link, Goal* goal, bool isSimilar);
-	GenericMap<int, int> * probabilityOfGoalsGivenLinkMap(Link * link, Goal * goal, bool isSimilar);
+	std::vector<std::vector<float>*>* probabilityOfGoalsGivenLink(Link* link, Goal* goal, bool isSimilar);
+	float probabilityOfGoalGivenLink(Link* link, Goal* goal, bool isSimilar);
+	GenericMap<float, float> * probabilityOfGoalsGivenLinkMap(Link * link, Goal * goal, bool isSimilar);
 	virtual ~GoalToLinkMap();
 };
 

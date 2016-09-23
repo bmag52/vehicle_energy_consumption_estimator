@@ -21,7 +21,7 @@ Intersection::Intersection(GenericMap<long int, Road*>* roads, double lat, doubl
 }
 
 Intersection::~Intersection() {
-    free(this->roads);
+    delete(this->roads);
 }
 
 Intersection::Intersection() {
@@ -74,11 +74,13 @@ GenericMap<int, Link*>* Intersection::getOutgoingLinks() {
 	while(nextRoad != NULL)
 	{
 		Link* newLink = this->link->linkFromRoad(nextRoad->value, this);
-		outGoingLinks->addEntry(linkCount++, newLink);
+		outGoingLinks->addEntry(linkCount, newLink);
+        linkCount++;
+        
 		nextRoad = this->roads->nextEntry();
 
 	}
-	free(nextRoad);
+	delete(nextRoad);
 	return outGoingLinks;
 }
 
@@ -95,16 +97,16 @@ Intersection* Intersection::getNextIntersection(Road* road) {
 		{
 			if(this->id == nextRoad->value->getStartIntersection()->getIntersectionID())
 			{
-				free(nextRoad);
+				delete(nextRoad);
 				return nextRoad->value->getEndIntersection();
 			} else {
-				free(nextRoad);
+				delete(nextRoad);
 				return nextRoad->value->getStartIntersection();
 			}
 		}
 		nextRoad = this->roads->nextEntry();
 	}
-	free(nextRoad);
+	delete(nextRoad);
 	return NULL;
 }
 

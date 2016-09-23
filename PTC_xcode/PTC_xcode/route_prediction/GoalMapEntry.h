@@ -57,8 +57,8 @@ void GoalMapEntry<K, V>::initialize()
 template<class K, class V>
 GoalMapEntry<K, V>::~GoalMapEntry()
 {
-    free(this->goal);
-    free(this->map);
+    delete(this->goal);
+    delete(this->map);
 }
 
 template<class K, class V>

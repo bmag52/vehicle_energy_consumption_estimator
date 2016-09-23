@@ -32,12 +32,9 @@ namespace PredictivePowertrain {
 class City {
 private:
 	Link* link;
-	std::string roadFileName;
-	std::string intersectionFileName;
 	int intervalDistance = 1;
 	int dateTimeCreated;
 	double maxSlopePercent = 6;
-	std::map<int,int> intersectionNumMap;
 	GenericMap<long int, Road*>* roads;
 	GenericMap<int, Intersection*>* intersections;
 	GenericMap<int, Bounds*>* boundsMap;
@@ -47,7 +44,7 @@ private:
 public:
 	City();
 	City(GenericMap<int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
-    ~City();
+    virtual ~City();
 	int getRoadMapSize();
 	int getInstersectionMapSize();
 	int getBoundsMapSize();

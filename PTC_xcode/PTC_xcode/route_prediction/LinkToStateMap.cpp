@@ -68,7 +68,7 @@ LinkToStateMap::LinkToStateMap(LinkToStateMap& other)
 
 LinkToStateMap::~LinkToStateMap()
 {
-    free(this->goalMap);
+    delete(this->goalMap);
 }
 
 GenericMap<int, GoalMapEntry<int, LinkToStateMapEntry*>*>* LinkToStateMap::getGoalMap()

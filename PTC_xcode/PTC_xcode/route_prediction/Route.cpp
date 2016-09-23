@@ -11,7 +11,8 @@ namespace PredictivePowertrain {
     
 Route::~Route()
 {
-    free(this->links);
+    delete(this->links);
+    delete(this->intersection);
 }
 
 Route::Route()
@@ -40,23 +41,17 @@ bool Route::isEqual(Route * other)
 {
 	if(this->getLinkSize() == other->getLinkSize()) {
 		GenericMap<int, Link*>* otherLinks = other->getLinks();
-        
-		this->links->initializeCounter();
-        otherLinks->initializeCounter();
-        
-		GenericEntry<int, Link*>* nextLink = this->links->nextEntry();
-        GenericEntry<int, Link*>* nextOtherLink = this->links->nextEntry();
-		while(nextLink != NULL && nextOtherLink != NULL)
-		{
-			if(!nextLink->value->isEqual(nextOtherLink->value)) {
-				return false;
-			}
-			nextLink = this->links->nextEntry();
-            nextOtherLink = otherLinks->nextEntry();
-		}
-        
-        free(nextLink);
-        free(nextOtherLink);
+
+        for(int i = 0; i < this->getLinkSize(); i++)
+        {
+            Link* thisLink = this->links->getEntry(i);
+            Link* otherLink = otherLinks->getEntry(i);
+            
+            if(!thisLink->isEqual(otherLink))
+            {
+                return false;
+            }
+        }
         
 		return true;
 	} else {
@@ -124,19 +119,23 @@ Link* Route::getEntry(int index) {
 void Route::removeFirstLink() {
 	if(this->links->getSize() > 0)
 	{
-		this->links->erase(1);
-		GenericMap<int, Link*>* newLinks = new GenericMap<int, Link*>();
-
-		this->links->initializeCounter();
-		GenericEntry<int, Link*>* nextLink = this->links->nextEntry();
-		while(nextLink != NULL)
-		{
-			newLinks->addEntry(nextLink->key-1, nextLink->value);
-			nextLink = this->links->nextEntry();
-		}
-		free(this->links);
-		this->links = newLinks;
+        this->links->indexErase(0);
 	}
+    this->linkCount--;
+}
+    
+void Route::printLinks()
+{
+    this->links->initializeCounter();
+    GenericEntry<int, Link*>* nextLink = this->links->nextEntry();
+    while(nextLink != NULL)
+    {
+        std::cout << nextLink->value->getNumber() << " | ";
+        nextLink = this->links->nextEntry();
+    }
+    std::cout << std::endl;
+    
+    delete(nextLink);
 }
 
 }

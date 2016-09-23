@@ -23,8 +23,8 @@ RoutePrediction::RoutePrediction(City* city)
     
 void RoutePrediction::initialize()
 {
-    Link* unknownLink = new Link(-1, -1);
-    Link* overLink = new Link(1,1);
+    Link* unknownLink = new Link(-2, -2);
+    Link* overLink = new Link(-3,-3);
     Goal* unknownGoal = new Goal(-1);
     Goal* overGoal = new Goal(1);
     
@@ -52,22 +52,22 @@ void RoutePrediction::initialize()
     
 RoutePrediction::~RoutePrediction()
 {
-    free(this->unknownRoute);
-    free(this->overRoute);
-    free(this->linkToState);
-    free(this->goalToLink);
-    free(this->links);
-    free(this->goals);
-    free(this->states);
-    free(this->predictedRoute);
-    free(this->currentRoute);
-    free(this->predictedGoal);
+    delete(this->unknownRoute);
+    delete(this->overRoute);
+    delete(this->linkToState);
+    delete(this->goalToLink);
+    delete(this->links);
+    delete(this->goals);
+    delete(this->states);
+    delete(this->predictedRoute);
+    delete(this->currentRoute);
+    delete(this->predictedGoal);
     
 }
 
 Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::vector<float>* currentCondition)
 {
-    free(this->predictedGoal);
+    delete(this->predictedGoal);
 	this->predictedGoal = new Goal(1, currentCondition);
 
 	GenericMap<int, Link*>* nextLinks = currentIntersection->getOutgoingLinks();
@@ -101,10 +101,10 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::
             
 			nextLink = nextLinks->nextEntry();
 		}
-		free(nextLink);
+		delete(nextLink);
 		nextGoal = this->goals->nextEntry();
 	}
-	free(nextGoal);
+	delete(nextGoal);
 
 	// normalize probabilities
 	int sum = 0;
@@ -122,7 +122,7 @@ Route* RoutePrediction::predict(Link* linkTaken)
 	if(this->currentRoute->isIntersection())
 	{
 		legalLinks = this->currentRoute->getIntersection()->getOutgoingLinks();
-		free(this->currentRoute);
+		this->currentRoute = new Route();
 	} else {
 		assert(!linkTaken->isFinalLink());
 		legalLinks = this->city->getNextLinks(this->currentRoute->getLastLink());
@@ -139,7 +139,9 @@ Route* RoutePrediction::predict(Link* linkTaken)
 			error = false;
 			break;
 		}
+        nextLegalLink = legalLinks->nextEntry();
 	}
+    delete(nextLegalLink);
 
 	// there is an error and the current route is known (ie, wasnt an error before)
     // if not not legal, stop and return an error value
@@ -211,7 +213,7 @@ void RoutePrediction::updateStates(Link* chosenLink)
 					minProbability = this->minInitialProbability / this->goals->getSize();
 					pGl = this->goalToLink->probabilityOfGoalGivenLink(li, gi, 0);
 					pLs = this->linkToState->getProbability(li, chosenLink, gj, false);
-                    pSi += std::max(minProbability,  this->probabilities->at(j)) * std::max(minProbability,pLs) * std::max(minProbability,pGl);
+                    pSi += std::max(minProbability,this->probabilities->at(j)) * std::max(minProbability,pLs) * std::max(minProbability,pGl);
 				}
 			}
             // add new state to new states
@@ -226,36 +228,24 @@ void RoutePrediction::updateStates(Link* chosenLink)
 	}
 
 	// normalize probabilities
-	int sum = 0;
+	float sum = 0;
 	for(int i = 0; i < newProbabilities->size(); i++) { sum += newProbabilities->at(i); }
 	for(int i = 0; i < newProbabilities->size(); i++) { newProbabilities->at(i) /= sum; }
 
 	// update probabilities and states
-	free(this->probabilities); free(this->states);
+	delete(this->probabilities); delete(this->states);
 	this->probabilities = newProbabilities;
 	this->states = newStates;
 }
 
 Route* RoutePrediction::predictPrivate(Route* currentRoute)
 {
-	// check for uninitialized probability values
-    // get most probable state
-    float maxProbability = -1;
-    int nextStateIndex = -1;
-    int negCount = 0;
+	// find max prob
+    float maxProbability = 0;
+    int nextStateIndex = 0;
     
 	for(int i = 0; i < this->probabilities->size(); i++)
     {
-        // check curr probability
-        float currProb = this->probabilities->at(i);
-        
-        if(currProb < 0)
-        {
-            negCount++;
-            continue;
-        }
-        
-        // find max prob
         if(this->probabilities->at(i) > maxProbability)
         {
             maxProbability = this->probabilities->at(i);
@@ -263,7 +253,8 @@ Route* RoutePrediction::predictPrivate(Route* currentRoute)
         }
 	}
     
-    if(negCount == this->probabilities->size())
+    // return unknown route if no probability associated with next goal in route
+    if(maxProbability == 0)
     {
         return this->unknownRoute;
     }
@@ -291,16 +282,16 @@ Route* RoutePrediction::createRoute()
 
 Route* RoutePrediction::createRouteConditions(std::vector<float>* currentConditions)
 {
-	int lastLinkIndex = this->predictedRoute->getLinkSize() - 1;
+    int lastLinkIndex = std::max(this->predictedRoute->getLinkSize() - 2, 0);
 	return createRouteIntersection(this->city->getIntersectionFromLink(this->predictedRoute->getEntry(lastLinkIndex), true), currentConditions);
 }
 
 Route* RoutePrediction::createRouteIntersection(Intersection* intersection, std::vector<float>* currentConditions)
 {
-	free(this->predictedGoal);
+	delete(this->predictedGoal);
 	this->predictedGoal = new Goal(intersection->getIntersectionID(), currentConditions);
-	Route route(this->predictedRoute->getLinks(), this->predictedGoal);
-	return &route;
+	Route* route = new Route(this->predictedRoute->getLinks(), this->predictedGoal);
+	return route;
 }
 
 void RoutePrediction::parseRoute(Route* route)

@@ -92,29 +92,29 @@ void routePrediction_UT()
     }
     
     // build city
-    City city(intersections, roads, new GenericMap<int, Bounds*>());
+    City* city = new City(intersections, roads, new GenericMap<int, Bounds*>());
     Link* links = makeLinks(5);
     std::vector<float> conditions = {1, 2};
     Goal goal(1, &conditions);
     
     // add routes to route prediction
-    RoutePrediction routePrediction(&city);
+    RoutePrediction routePrediction(city);
     Link link = links[0];
     int routeLength = 10;
-    Intersection* startIntersection = city.getIntersectionFromLink(&link, false);
+    Intersection* startIntersection = city->getIntersectionFromLink(&link, false);
     
     // generate random actual route
     Route startRoute;
     startRoute.addLink(&link);
     startRoute.assignGoal(&goal);
-    Route* route = city.randomPath(startIntersection, &startRoute, routeLength, &conditions);
+    Route* actualRoute = city->randomPath(startIntersection, &startRoute, routeLength, &conditions);
     
     // add trainging iterations here (simulates driving over the route multiple times)
-    routePrediction.parseRoute(route);
-    routePrediction.parseRoute(route);
-    routePrediction.parseRoute(route);
-    routePrediction.parseRoute(route);
-    routePrediction.parseRoute(route);
+    routePrediction.parseRoute(actualRoute);
+//    routePrediction.parseRoute(actualRoute);
+//    routePrediction.parseRoute(actualRoute);
+//    routePrediction.parseRoute(actualRoute);
+//    routePrediction.parseRoute(actualRoute);
     
     // create number of random routes to include in test set
     int num_rand_routes = 4;
@@ -122,11 +122,10 @@ void routePrediction_UT()
     for(int i = 1; i <= num_rand_routes; i++)
     {
         // create random route
-        Route* randomRoute = city.randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), &conditions);
-        while(randomRoute->isEqual(route))
+        Route* randomRoute = city->randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), &conditions);
+        while(randomRoute->isEqual(actualRoute))
         {
-            randomRoute = city.randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), &conditions);
-            std::cout << "remake random route" << std::endl;
+            randomRoute = city->randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), &conditions);
         }
         
         // add random route to test set
@@ -134,23 +133,35 @@ void routePrediction_UT()
     }
     
     // predict actual route as it is 'driven' over
+    int predIter = 1;
     Route* predRoute = routePrediction.startPrediction(startIntersection, &conditions);
-    for(int i = 1; i <= route->getLinkSize(); i++)
+    while(actualRoute->getLinkSize() > 1)
     {
+        std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
+        
         // predict route
-        predRoute = routePrediction.predict(route->getLinks()->getEntry(0));
+        predRoute = routePrediction.predict(actualRoute->getLinks()->getEntry(0));
+        
+        // update actual route as it's 'driven' over
+        actualRoute->removeFirstLink();
+        
+        // print actual route
+        actualRoute->printLinks();
+        
+        // print predicted route
+        predRoute->printLinks();
         
         // check if predicted route is actual route
-        if(route->isEqual(predRoute))
+        if(actualRoute->isEqual(predRoute))
         {
             std::cout << "predicted routed before reaching end destination!" << std::endl;
-            std::cout << "Links traversed: " << i << endl;
-            std::cout << "Links in route: " << route->getLinkSize() << std::endl;
+            std::cout << "Links traversed: " << predIter << endl;
+            std::cout << "Links in route: " << actualRoute->getLinkSize() << std::endl;
             break;
         }
+        
+        predIter++;
     
-        // update actual route as it's 'driven' over
-        route->removeFirstLink();
     }
 
 }

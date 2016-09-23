@@ -86,7 +86,7 @@ private:
     
 public:
     BuildCity();
-    ~BuildCity();
+    virtual ~BuildCity();
     void updateGridDataXMLSpline();
     void updateGridDataXMLAdj();
     void updateGridDataPNG();

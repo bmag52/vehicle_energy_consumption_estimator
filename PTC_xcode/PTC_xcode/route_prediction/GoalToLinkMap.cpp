@@ -50,19 +50,12 @@ std::vector<std::vector<float>*>* GoalToLinkMap::probabilityOfGoalsGivenLink(Lin
     
 	while(goalEntry != NULL) {
         prob->at(probCount) = new std::vector<float>(2);
-		int linkCount;
+		int linkCount = 0;
         
-		if(goal->isSimilar(goalEntry->value->getGoal()))
+		if(goal->isSimilar(goalEntry->value->getGoal()) && goalEntry->value->getMap()->hasEntry(link->getHash()))
         {
-            if(goalEntry->value->getMap()->hasEntry(link->getHash()))
-            {
-                linkCount = goalEntry->value->getMapEntry(link->getHash());
-                totalLinkCount += linkCount;
-            } else {
-                linkCount = -1;
-            }
-		} else {
-			linkCount = 0;
+            linkCount = goalEntry->value->getMapEntry(link->getHash());
+            totalLinkCount += linkCount;
 		}
 		int goalHash = goalEntry->value->getGoal()->getHash();
 
@@ -79,6 +72,18 @@ std::vector<std::vector<float>*>* GoalToLinkMap::probabilityOfGoalsGivenLink(Lin
 	}
 	return prob;
 }
+    
+GenericMap<float, float>* GoalToLinkMap::probabilityOfGoalsGivenLinkMap(Link * link, Goal * goal, bool isSimilar)
+{
+    std::vector<std::vector<float>*>* matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
+    GenericMap<float, float>* result = new GenericMap<float, float>();
+    size_t matrixLength = matrix->size();
+    for(int i = 0; i < matrixLength; i++)
+    {
+        result->addEntry(matrix->at(i)->at(0), matrix->at(i)->at(1));
+    }
+    return result;
+}
 
 float GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal * goal, bool isSimilar)
 {
@@ -88,7 +93,7 @@ float GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal * goal, bool i
 	for(int i = 0; i < matrixLength; i++) {
 		if(matrix->at(i)->at(0) == goalHash) {
             float probability = matrix->at(i)->at(1);
-            free(matrix);
+            delete(matrix);
 			return probability;
 		}
 	}
@@ -99,22 +104,10 @@ GenericMap<int, GoalMapEntry<int, int>*>* GoalToLinkMap::getGoalMap()
 {
     return this->goalMap;
 }
-    
-GenericMap<float, float>* GoalToLinkMap::probabilityOfGoalsGivenLinkMap(Link * link, Goal * goal, bool isSimilar)
-{
-    std::vector<std::vector<float>*>* matrix = this->probabilityOfGoalsGivenLink(link, goal, isSimilar);
-	GenericMap<float, float>* result = new GenericMap<float, float>();
-	size_t matrixLength = matrix->size();
-	for(int i = 0; i < matrixLength; i++)
-    {
-		result->addEntry(matrix->at(i)->at(0), matrix->at(i)->at(1));
-	}
-	return result;
-}
 
 GoalToLinkMap::~GoalToLinkMap()
 {
-    free(this->goalMap);
+    delete(this->goalMap);
 }
 
 } /* namespace PredictivePowertrain */

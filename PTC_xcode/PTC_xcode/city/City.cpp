@@ -25,9 +25,9 @@ City::City(GenericMap<int, Intersection*>* intersections, GenericMap<long int, R
     
 City::~City()
 {
-    free(this->roads);
-    free(this->intersections);
-    free(this->boundsMap);
+    delete(this->roads);
+    delete(this->intersections);
+    delete(this->boundsMap);
 }
 
 int City::getRoadMapSize() {
@@ -59,7 +59,7 @@ GenericMap<int, Link*>* City::getNextLinks(Link* otherLink) {
 		}
 		nextRoad = connectingRoads->nextEntry();
 	}
-    free(nextRoad);
+    delete(nextRoad);
 	nextLinks->addEntry(count, this->link->finalLink());
 	return nextLinks;
 }
@@ -156,7 +156,7 @@ std::vector<float>* City::reverseTrace(std::vector<float>* trace)
 	{
 		newTrace->at(i) = trace->at(trace->size() - i);
 	}
-	free(trace);
+	delete(trace);
 	return newTrace;
 }
 
@@ -196,7 +196,21 @@ Road* City::getConnectingRoad(Intersection* one, Intersection* two) {
 }
 
 Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLength, std::vector<float>* conditions) {
-	GenericMap<int, Link*>* links = startInt->getOutgoingLinks()->copy();
+    
+	GenericMap<int, Link*>* startLinks = startInt->getOutgoingLinks();
+    GenericMap<int, Link*>* links = new GenericMap<int, Link*>();
+    
+    // copy outgoing links to prevent mutilation
+    startLinks->initializeCounter();
+    GenericEntry<int, Link*>* nextLinkEntry = startLinks->nextEntry();
+    while(nextLinkEntry != NULL)
+    {
+        Link* outLink = nextLinkEntry->value;
+        links->addEntry(nextLinkEntry->key, new Link(outLink->getDirection(), outLink->getNumber()));
+        nextLinkEntry = startLinks->nextEntry();
+    }
+    delete(nextLinkEntry);
+    
 	GenericMap<int, Link*>* path = new GenericMap<int, Link*>();
 	GenericMap<int, Intersection*> passedInts;
 	passedInts.addEntry(startInt->getIntersectionID(), startInt);
@@ -217,7 +231,7 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
 				}
 				nextLinkEntry = links->nextEntry();
 			}
-            free(nextLinkEntry);
+            delete(nextLinkEntry);
 		}
         
 		if(nextLink == NULL)
@@ -240,13 +254,15 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
 						}
 						nextPassedInt = passedInts.nextEntry();
 					}
-                    free(nextPassedInt);
+                    delete(nextPassedInt);
 				}
                 nextLinkEntry = links->nextEntry();
             }
-            free(nextLinkEntry);
+            delete(nextLinkEntry);
             
+            // break of no next link
             if(links->getSize() == 1) { break; }
+            
             int randIdx = std::floor((float)std::rand() / RAND_MAX * links->getSize());
             nextLink = links->getEntry(randIdx);
 		}
@@ -260,11 +276,14 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
 		Intersection* newPassedInt = getIntersectionFromLink(nextLink, true);
 		passedInts.addEntry(newPassedInt->getIntersectionID(), newPassedInt);
 		path->addEntry(i, nextLink);
+        
+        delete(links);
 		links = getNextLinks(nextLink);
 	}
-	path->addEntry(totalLength, this->link->finalLink());
+	path->addEntry(path->getSize(), this->link->finalLink());
 	Goal* goal = new Goal(getIntersectionFromLink(path->getEntry(path->getSize()-2),true)->getIntersectionID(), conditions);
 	Route *route = new Route(path, goal);
+    
 	return route;
 }
 
@@ -353,7 +372,7 @@ std::pair<std::vector<float>*, std::vector<float>*>* City::routeToData(Route* ro
             data->first = speedData;
             data->second = slopeData->first;
             lastElev = slopeData->second;
-            free(slopeData);
+            delete(slopeData);
             
 			firstLink = false;
 		} else {
@@ -367,7 +386,7 @@ std::pair<std::vector<float>*, std::vector<float>*>* City::routeToData(Route* ro
             std::vector<float>* newSpeed = new std::vector<float>(allSpeedDataSize + currSpeedDataSize);
             for(int i = 0; i < allSpeedDataSize; i++) { newSpeed->push_back(data->first->at(i)); }
             for(int i = 0; i < currSpeedDataSize; i++) { newSpeed->push_back(speedData->at(i)); }
-            free(data->first);
+            delete(data->first);
             data->first = newSpeed;
 
 			// concatenate slopes
@@ -376,10 +395,10 @@ std::pair<std::vector<float>*, std::vector<float>*>* City::routeToData(Route* ro
             std::vector<float>* newSlope = new std::vector<float>(allSlopeDataSize + currSlopeDataSize);
             for(int i = 0; i < allSlopeDataSize; i++) { newSlope->push_back(data->second->at(i)); }
             for(int i = 0; i < currSlopeDataSize; i++) { newSlope->push_back(slopeData->first->at(i)); }
-            free(data->second);
+            delete(data->second);
             data->second = newSlope;
             
-            free(slopeData);
+            delete(slopeData);
 		}
 		nextLink = route->getLinks()->nextEntry();
 	}

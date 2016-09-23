@@ -26,7 +26,7 @@ int LinkToStateMapEntry::addEntry(Link* li) {
 }
 
 LinkToStateMapEntry::~LinkToStateMapEntry() {
-    free(this->entries);
+    delete(this->entries);
 }
 
 LinkToStateMapEntry::LinkToStateMapEntry(LinkToStateMapEntry& other) {

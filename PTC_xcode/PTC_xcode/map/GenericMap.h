@@ -72,7 +72,7 @@ GenericMap<K, V>* GenericMap<K, V>::copy()
 		newMap->addEntry(nextEntry->key, nextEntry->value);
 		nextEntry = this->nextEntry();
 	}
-	free(nextEntry);
+	delete(nextEntry);
 	return newMap;
 }
 
@@ -89,7 +89,6 @@ void GenericMap<K, V>::initializeCounter()
 template<class K, class V>
 GenericEntry<K,V>* GenericMap<K, V>::nextEntry()
 {
-
 	GenericEntry<K,V>* entry = NULL;
 	if(this->hasNextEntry) {
 		entry = new GenericEntry<K,V>(this->iter->first,this->iter->second);
@@ -160,6 +159,11 @@ bool GenericMap<K, V>::indexErase(K key)
             V entry = this->getEntry(iter->first);
             this->addEntry(iter->first - 1, entry);
             iter = this->map.erase(iter);
+        }
+        
+        if(this->hasNextEntry)
+        {
+            this->iter = this->map.find(std::max(key-1, 0));
         }
         
         return true;

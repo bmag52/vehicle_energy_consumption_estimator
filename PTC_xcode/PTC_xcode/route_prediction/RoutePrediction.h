@@ -54,7 +54,7 @@ private:
 public:
 	RoutePrediction();
 	RoutePrediction(City* city);
-    ~RoutePrediction();
+    virtual ~RoutePrediction();
     Route* startPrediction(Intersection* currentIntersection, std::vector<float>* currentCondition);
 	Route* predict(Link* linkTaken);
 	void parseRoute(Route* route);

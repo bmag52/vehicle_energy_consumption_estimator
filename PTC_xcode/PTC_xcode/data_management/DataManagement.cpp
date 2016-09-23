@@ -346,7 +346,7 @@ City* DataManagement::getCityData() {
 
 							nodes->addEntry(i, new Node(nodeLats->getEntry(i), nodeLons->getEntry(i), nodeEles->getEntry(i), nodeIDs->getEntry(i)));
 						}
-						free(nodeLats); free(nodeLons); free(nodeEles); free(nodeIDs);
+						delete(nodeLats); delete(nodeLons); delete(nodeEles); delete(nodeIDs);
 
 						roadIntersections->addEntry(roadID, new std::pair<int, int>(startNodeID, endNodeID));
 						roads->addEntry(roadID, new Road(roadType, roadID, nodes));
@@ -421,7 +421,7 @@ City* DataManagement::getCityData() {
 			nextRoadInts = roadIntersections->nextEntry();
 		}
 
-		free(roadIntersections);
+		delete(roadIntersections);
 		return new City(intersections, roads, bounds);
 	} catch (std::exception& e) {
 		std::cout << e.what() << std::endl;
@@ -491,12 +491,12 @@ GenericMap<long int, std::pair<double, double>*>* DataManagement::getMostRecentT
 				nextLat = nextLatLonSet->key->nextEntry();
 				nextLon = nextLatLonSet->value->nextEntry();
 			}
-			free(nextLat);
-			free(nextLon);
+			delete(nextLat);
+			delete(nextLon);
 			nextLatLonSet = rawRecentTripData->nextEntry();
 		}
-		free(nextLatLonSet);
-		free(rawRecentTripData);
+		delete(nextLatLonSet);
+		delete(rawRecentTripData);
 
 		return recentTripData;
 	} catch(const std::exception& e) {

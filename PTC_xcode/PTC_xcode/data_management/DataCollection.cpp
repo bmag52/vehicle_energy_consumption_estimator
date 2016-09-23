@@ -555,7 +555,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
             }
 			nextWayNodeID = way->getNodeIDs()->nextEntry();
 		}
-		free(nextWayNodeID);
+		delete(nextWayNodeID);
 
 		// make a raw road if enough nodes exist
 		if(nodes->getSize() > 2)
@@ -590,7 +590,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 					nextNode = nodes->nextEntry();
 					latLonCount++;
 				}
-				free(nextNode);
+				delete(nextNode);
 
 				// fit first order spline spline
 				typedef Eigen::Spline<double, 2> spline2f;
@@ -641,7 +641,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 		}
 		nextWay = this->wayMap.nextEntry();
 	}
-	free(nextWay);
+	delete(nextWay);
 
     fclose(csv);
 	return rawRoads;

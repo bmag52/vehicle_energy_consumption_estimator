@@ -14,7 +14,7 @@ BuildCity::BuildCity() {
     
 BuildCity::~BuildCity()
 {
-    free(this->rawRoads);
+    delete(this->rawRoads);
 }
 
 std::pair<GenericMap<int, Intersection*> *, GenericMap<long int, Road*>*>* BuildCity::parseAdjMat() {
@@ -107,22 +107,22 @@ void BuildCity::updateGridDataXMLSpline()
                             Intersection* newInt = new Intersection(intRoads, latLon->first, latLon->second, 0, 0);
                             this->newInts->addEntry(intCount, newInt);
                             
-                            free(latLon);
+                            delete(latLon);
                             roadPairIntCount++;
                             intCount++;
                         }
-                        free(nextA_xy);
+                        delete(nextA_xy);
                         nextA_xy = nextB_xy;
                     }
-                    free(currA_xy);
+                    delete(currA_xy);
                     currA_xy = currB_xy;
                 }
                 nextOtherRawRoad = rawRoadsCopy->nextEntry();
             }
-            free(nextOtherRawRoad);
+            delete(nextOtherRawRoad);
             nextRawRoad = this->rawRoads->nextEntry();
         }
-        free(nextRawRoad);
+        delete(nextRawRoad);
     }
 }
 
@@ -138,7 +138,7 @@ void BuildCity::printIntersections()
             printf("%.12f,%.12f\n", nextInt->value->getLat(), nextInt->value->getLon());
             nextInt = this->newInts->nextEntry();
         }
-        free(nextInt);
+        delete(nextInt);
     }
 }
 
@@ -196,7 +196,7 @@ void BuildCity::updateGridDataXMLAdj() {
                     }
                     nextNode = nodes->nextEntry();
                 }
-                free(nextNode);
+                delete(nextNode);
                 
                 // hop out of for loop if all nodes have been iterated over
                 if(nodes->getSize() == 0) { break; }
@@ -305,12 +305,12 @@ void BuildCity::connectifyAjdMat() {
             currIdx = nextIdx;
             nextIdx = currIndicies->nextEntry();
         }
-        free(currIdx);
-        free(nextIdx);
+        delete(currIdx);
+        delete(nextIdx);
         
         nextRawRoad = this->rawRoads->nextEntry();
     }
-    free(nextRawRoad);
+    delete(nextRawRoad);
 }
 
 bool BuildCity::isAdj(GenericEntry<int, std::pair<int, int>*>* idx1, GenericEntry<int, std::pair<int, int>*>* idx2) {
@@ -574,7 +574,7 @@ GenericMap<int, cv::Point*>* BuildCity::getIntersectionPointsFromMapPNG(cv::Mat 
                         rawIntersectionPoints.addEntry(hashCoords(intersectPnt->x, intersectPnt->y), intersectPnt);
                         
                     } else {
-                        free(intersectPnt);
+                        delete(intersectPnt);
                     }
                 }
             }
@@ -812,7 +812,7 @@ bool BuildCity::hasNewBounds() {
                 nextBounds = bounds->nextEntry();
             }
             nextTripLatLon = tripLatLon->nextEntry();
-            free(nextBounds);
+            delete(nextBounds);
         }
     } else {
         // no bounds data
@@ -827,7 +827,7 @@ bool BuildCity::hasNewBounds() {
             nextTripLatLon = tripLatLon->nextEntry();
         }
     }
-    free(nextTripLatLon);
+    delete(nextTripLatLon);
     
     return this->newBounds;
 }

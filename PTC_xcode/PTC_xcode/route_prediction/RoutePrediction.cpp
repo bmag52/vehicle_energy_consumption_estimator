@@ -107,7 +107,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::
 	delete(nextGoal);
 
 	// normalize probabilities
-	int sum = 0;
+	float sum = 0;
 	for(int i = 0; i < this->probabilities->size(); i++) { sum += this->probabilities->at(i); }
 	for(int i = 0; i < this->probabilities->size(); i++) { this->probabilities->at(i) /= sum; }
 

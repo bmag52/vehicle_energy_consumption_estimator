@@ -5,14 +5,14 @@ namespace PredictivePowertrain {
 
 class Probability{
 private:
-	int numerator;
-	int denominator;
+	float numerator;
+	float denominator;
 
 public:
 	Probability();
-	void addNumerator(int);
-	void addDenominator(int);
-	double getProbability();
+	void addNumerator(float addition);
+	void addDenominator(float addition);
+	float getProbability();
 };
 
 }

@@ -33,7 +33,7 @@ private:
 	GoalToLinkMap* goalToLink;
 	GenericMap<int, Link*>* links;
 	GenericMap<int, Goal*>* goals;
-	GenericMap<int, pair<Link*,Goal*>*>* states;
+    GenericMap<int, std::pair<Link*,Goal*>*>* states;
 	Route* predictedRoute;
 	Route* currentRoute;
     std::vector<float>* probabilities;
@@ -44,8 +44,8 @@ private:
 	Route* overRoute;
 	Link link;
 
-	void updateStates(Link* chosenLink);
-	Route* predictPrivate(Route* currentRoute);
+	std::pair<GenericMap<int, std::pair<Link*,Goal*>*>*, std::vector<float>*>* updateStates(Link* chosenLink, GenericMap<int, std::pair<Link*,Goal*>*>* oldStates, std::vector<float>* oldProbabilites);
+	Route* predictPrivate(Route* currentRoute, GenericMap<int, std::pair<Link*,Goal*>*>* currentStates, std::vector<float>* currentProbabilities);
 	Route* createRoute();
     Route* createRouteConditions(std::vector<float>* currentCondition);
     Route* createRouteIntersection(Intersection* intersection, std::vector<float>* currentCondition);

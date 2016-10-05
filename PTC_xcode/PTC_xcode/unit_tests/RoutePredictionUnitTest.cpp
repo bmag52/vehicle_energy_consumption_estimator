@@ -111,10 +111,10 @@ void routePrediction_UT()
     
     // add trainging iterations here (simulates driving over the route multiple times)
     routePrediction.parseRoute(actualRoute);
-//    routePrediction.parseRoute(actualRoute);
-//    routePrediction.parseRoute(actualRoute);
-//    routePrediction.parseRoute(actualRoute);
-//    routePrediction.parseRoute(actualRoute);
+    routePrediction.parseRoute(actualRoute);
+    routePrediction.parseRoute(actualRoute);
+    routePrediction.parseRoute(actualRoute);
+    routePrediction.parseRoute(actualRoute);
     
     // create number of random routes to include in test set
     int num_rand_routes = 4;

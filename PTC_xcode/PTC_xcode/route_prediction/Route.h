@@ -20,7 +20,7 @@ private:
 	Goal* goal;
 	Link* error;
 	Intersection* intersection;
-	bool goalIsIntersection;
+	bool routeIsIntersection;
 	int linkCount;
 public:
 	Route();
@@ -34,6 +34,7 @@ public:
     void assignGoal(Goal* goal);
 	Link* getEntry(int index);
 	void setToIntersection(Intersection* other);
+    void setToRoute();
 	bool isIntersection();
 	bool isEmpty();
 	Goal* getGoal();

@@ -28,31 +28,31 @@ int LinkToStateMap::incrementTransition(Link* lj, Goal* gj, Link* li)
 	return goalEntry->getMapEntry(linkHash)->addEntry(li);
 }
 
-double LinkToStateMap::getProbability(Link* li, Link* lj, Goal* gj, bool isSimilar)
+float LinkToStateMap::getProbability(Link* li, Link* lj, Goal* gj, bool isSimilar)
 {
-	Probability p_g;
-	Probability p_l_lg;
+	Probability pg;
+	Probability pllg;
 	this->goalMap->initializeCounter();
-	GenericEntry<int, GoalMapEntry<int, LinkToStateMapEntry*>*>* next = this->goalMap->nextEntry();
-	while(next != NULL) { // next->key != 1
-		Goal* g = next->value->getGoal();
+	GenericEntry<int, GoalMapEntry<int, LinkToStateMapEntry*>*>* nextGoalMapEntry = this->goalMap->nextEntry();
+	while(nextGoalMapEntry != NULL) { // next->key != 1
+		Goal* g = nextGoalMapEntry->value->getGoal();
 		if(gj->isEqual(g) || isSimilar) {
-			LinkToStateMapEntry* l2Entry = next->value->getMapEntry(lj->getHash());
+			LinkToStateMapEntry* l2Entry = nextGoalMapEntry->value->getMapEntry(lj->getHash());
 			if(l2Entry != NULL)
 			{
-				p_l_lg.addDenominator(l2Entry->getTotalM());
-				p_l_lg.addNumerator(l2Entry->getM(li));
+				pllg.addDenominator(l2Entry->getTotalM());
+				pllg.addNumerator(l2Entry->getM(li));
 			}
 
 		}
-		p_g.addDenominator(next->value->getM());
+		pg.addDenominator(nextGoalMapEntry->value->getM());
 		if(g->isEqual(gj)) {
-			p_g.addNumerator(next->value->getM());
+			pg.addNumerator(nextGoalMapEntry->value->getM());
 		}
-		next = this->goalMap->nextEntry();
+		nextGoalMapEntry = this->goalMap->nextEntry();
 	}
-	double pl = p_l_lg.getProbability();
-	//double plg = pl * p_g.getProbability();
+	float pl = pllg.getProbability();
+	//float pllg = pl * pg.getProbability();
 	return pl;
 }
 

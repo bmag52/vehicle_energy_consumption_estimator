@@ -764,8 +764,8 @@
 			children = (
 				D3FABC681CE524A400892002 /* Link.cpp */,
 				D3FABC691CE524A400892002 /* Link.h */,
-				D3FABC6A1CE524A400892002 /* Probability.cpp */,
 				D3FABC6B1CE524A400892002 /* Probability.h */,
+				D3FABC6A1CE524A400892002 /* Probability.cpp */,
 			);
 			name = driver_prediction;
 			sourceTree = "<group>";

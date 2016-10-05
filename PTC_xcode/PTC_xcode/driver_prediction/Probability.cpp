@@ -3,23 +3,30 @@
 
 namespace PredictivePowertrain {
 
-Probability::Probability() {
+Probability::Probability()
+{
 	this->numerator = 0;
 	this->denominator = 0;
 }
 
-void Probability::addNumerator(int addition){
+void Probability::addNumerator(float addition)
+{
 	this->numerator = this->numerator + addition;
 }
 
-void Probability::addDenominator(int addition){
+void Probability::addDenominator(float addition)
+{
 	this->denominator = this->denominator + addition;
 }
 
-double Probability::getProbability(){
+float Probability::getProbability()
+{
 	if(this->denominator == 0)
+    {
 		return 0.0;
-	return (double)this->numerator/this->denominator;
+    }
+    
+	return this->numerator/this->denominator;
 }
 
 }

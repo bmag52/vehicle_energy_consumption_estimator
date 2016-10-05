@@ -89,11 +89,16 @@ GenericMap<int, Link*>* Route::getLinks() {
 
 void Route::setToIntersection(Intersection* other) {
 	this->intersection = other;
-	this->goalIsIntersection = true;
+	this->routeIsIntersection = true;
+}
+    
+void Route::setToRoute() {
+    this->intersection = NULL;
+    this->routeIsIntersection = false;
 }
 
 bool Route::isIntersection() {
-	return this->goalIsIntersection;
+	return this->routeIsIntersection;
 }
 
 Intersection* Route::getIntersection() {

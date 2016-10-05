@@ -32,8 +32,16 @@ int GoalToLinkMap::linkTraversed(Link* link, Goal* goal)
 	goalEntry->incrementCount();
     
 	int linkHash = link->getHash();
-	int count = 1 + goalEntry->getMapEntry(linkHash);
-	this->goalMap->getEntry(goalHash)->addMapEntry(linkHash, count);
+    int count = 1;
+    if(goalEntry->getMap()->hasEntry(linkHash))
+    {
+        count += goalEntry->getMapEntry(linkHash);
+        goalEntry->getMap()->updateEntry(linkHash, count);
+    }
+    else
+    {
+        goalEntry->addMapEntry(linkHash, count);
+    }
 	return count;
 }
 
@@ -67,7 +75,7 @@ std::vector<std::vector<float>*>* GoalToLinkMap::probabilityOfGoalsGivenLink(Lin
 	}
     
 	for (int i = 0; i < probLength; i++) {
-        double prob_i = prob->at(i)->at(1) / (double)( (totalLinkCount > 0 ) * totalLinkCount + (totalLinkCount <= 0));
+        float prob_i = prob->at(i)->at(1) / ((totalLinkCount > 0 ) * totalLinkCount + (totalLinkCount <= 0));
         prob->at(i)->at(1) = prob_i;
 	}
 	return prob;

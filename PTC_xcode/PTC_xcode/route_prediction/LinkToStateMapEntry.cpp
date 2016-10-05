@@ -16,12 +16,12 @@ LinkToStateMapEntry::LinkToStateMapEntry() {
 int LinkToStateMapEntry::addEntry(Link* li) {
 	int linkHash = li->getHash();
 	if (this->entries->hasEntry(linkHash)){
-		int existingM = this->entries->getEntry(linkHash);
-		this->entries->updateEntry(linkHash, existingM + 1);
-        return 1;
+		int incrementedM = this->entries->getEntry(linkHash) + 1;
+		this->entries->updateEntry(linkHash, incrementedM);
+        return incrementedM;
 	} else {
 		this->entries->addEntry(linkHash, 1);
-        return -1;
+        return 1;
 	}
 }
 
@@ -43,12 +43,15 @@ int LinkToStateMapEntry::getM(Link* li) {
 }
 
 int LinkToStateMapEntry::getTotalM() {
-	int sum = 0;
-	if (this->entries->getSize() == 0){
+	if (this->entries->getSize() == 0)
+    {
 		return 0;
-
-	} else {
-		for (auto it = this->entries->begin(); it != this->entries->end(); ++it){
+	}
+    else
+    {
+        int sum = 0;
+		for (auto it = this->entries->begin(); it != this->entries->end(); ++it)
+        {
 			sum += it->second;
 		}
 		return sum;

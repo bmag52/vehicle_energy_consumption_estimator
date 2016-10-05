@@ -29,7 +29,7 @@ public:
     GenericMap<int, LinkToStateMapEntry*>* getLinkMap();
     GenericMap<int, GoalMapEntry<int, LinkToStateMapEntry*>*>* getGoalMap();
 	int incrementTransition(Link* lj, Goal* gj, Link* li);
-	double getProbability(Link* li, Link* lj, Goal* gj, bool isSimilar);
+	float getProbability(Link* li, Link* lj, Goal* gj, bool isSimilar);
 	LinkToStateMap();
 	LinkToStateMap(LinkToStateMap& other);
 	virtual ~LinkToStateMap();

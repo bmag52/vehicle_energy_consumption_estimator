@@ -16,17 +16,17 @@ namespace PredictivePowertrain {
 
 class Goal {
 private:
-	int destination;
+	long destination;
     std::vector<float>* bins;
 	int numSeen;
 public:
 	Goal();
-	Goal(int destination);
-    Goal(int destination, std::vector<float>* bins);
+	Goal(long int destination);
+    Goal(long int destination, std::vector<float>* bins);
 	Goal(Goal * other);
 	bool isSimilar(Goal * other);
 	bool isEqual(Goal * other);
-	int getHash() const;
+	long int getHash() const;
 	int getNumSeen();
 	void setNumSeen(int numSeen);
 	void incrementNumSeen();

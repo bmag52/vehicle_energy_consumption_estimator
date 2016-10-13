@@ -59,7 +59,8 @@ private:
     bool newBounds = false;
     
     // for spline shit using osm 
-    double splineStep = 0.025;
+    double splineStep = 0.025; // s-value
+    double evalIntervalLength = 5.0; // meters
     double adjMatPrecFromSplines = 0.00001;
     double gpsTolerance = 0.0001;
             

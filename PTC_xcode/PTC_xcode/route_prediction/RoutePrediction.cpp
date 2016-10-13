@@ -35,8 +35,8 @@ void RoutePrediction::initialize()
     
     this->linkToState = new LinkToStateMap();
     this->goalToLink = new GoalToLinkMap();
-    this->links = new GenericMap<int, Link*>();
-    this->goals = new GenericMap<int, Goal*>();
+    this->links = new GenericMap<long int, Link*>();
+    this->goals = new GenericMap<long int, Goal*>();
     this->states = new GenericMap<int, std::pair<Link*, Goal*>*>();
     this->predictedRoute = new Route();
     this->currentRoute = new Route();
@@ -75,7 +75,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::
 	// creating the probability of each goal based on its relation to the conditions
 	int counter = 0;
 	this->goals->initializeCounter();
-	GenericEntry<int, Goal*>* nextGoal = this->goals->nextEntry();
+	GenericEntry<long int, Goal*>* nextGoal = this->goals->nextEntry();
 	while(nextGoal != NULL)
 	{
 		nextLinks->initializeCounter();
@@ -219,7 +219,7 @@ RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, std::pair<Link*,
 	while(nextLink != NULL)
 	{
 		this->goals->initializeCounter();
-		GenericEntry<int, Goal*>* nextGoal = this->goals->nextEntry();
+		GenericEntry<long int, Goal*>* nextGoal = this->goals->nextEntry();
         li = nextLink->value;
 		while(nextGoal != NULL)
 		{
@@ -326,7 +326,7 @@ Route* RoutePrediction::createRouteIntersection(Intersection* intersection, std:
 void RoutePrediction::parseRoute(Route* route)
 {
 	// get hash of route goal and add it to goals if nonexistent
-	int goalHash = route->getGoalHash();
+	long int goalHash = route->getGoalHash();
 	if(this->goals->hasEntry(goalHash))
 	{
 		this->goals->getEntry(goalHash)->incrementNumSeen();

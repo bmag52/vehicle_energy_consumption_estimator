@@ -29,7 +29,7 @@ public:
     virtual ~Route();
     void addLink(Link* link);
 	bool isEqual(Route* other);
-	int getGoalHash();
+	long int getGoalHash();
 	int getLinkSize();
     void assignGoal(Goal* goal);
 	Link* getEntry(int index);

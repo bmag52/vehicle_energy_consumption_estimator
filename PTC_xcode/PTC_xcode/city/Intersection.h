@@ -22,7 +22,7 @@ private:
 //	Road* roads;
 	GenericMap<long int, Road*>* roads;
 //	IntersectionTypes interSectionType;
-	int id;
+	long int ID;
 	double elevation;
 	double lat;
 	double lon;
@@ -31,13 +31,13 @@ private:
 
 public:
 	Intersection();
-	Intersection(GenericMap<long int, Road*>* roads, double lat, double lon, int elev, int intersectNum);
-	void setBoundsID(int id);
+	Intersection(GenericMap<long int, Road*>* roads, double lat, double lon, int elev, long int intersectNum);
+	void setBoundsID(int ID);
 	virtual ~Intersection();
 	void addRoad(Road* road, int roadDir);
 	GenericMap<int, Link*>* getOutgoingLinks();
 	int getRoadCount();
-	int getIntersectionID();
+	long int getIntersectionID();
 	double getElevation();
 	double getLat();
 	double getLon();
@@ -45,7 +45,7 @@ public:
 	GenericMap<int, Intersection*>* getAdjacentIntersection();
 	Intersection* getNextIntersection(Road* road);
 	int getBoudsID();
-    void assignID(int ID);
+    void assignID(long int ID);
 };
 
 } /* namespace PredictivePowertrain */

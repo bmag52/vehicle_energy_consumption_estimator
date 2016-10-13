@@ -599,15 +599,35 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                 std::cout << "******** 1st order spline " << "********" << std::endl;
                 spline2f rawRoadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
                 
-                // evaluate spline and save points to cvs for viewing
+                // evaluate spline and save points to csv for viewing
                 Eigen::Spline<double,2>::PointType pt = rawRoadSpline(0);
                 double prev_lat = pt(0,0);
                 double prev_lon = pt(1,0);
                 float dist = 0.0;
                 
+                // get distance of spline to set evaluation distance correctly
                 for(double u = 0; u <= 1; u += 0.025)
                 {
-                    Eigen::Spline<double,2>::PointType pt = rawRoadSpline(u);
+                    pt = rawRoadSpline(u);
+                    double curr_lat = pt(0,0);
+                    double curr_lon = pt(1,0);
+                    
+                    // get distance of eval point along spline
+                    dist += converter.deltaLatLonToXY(prev_lat, prev_lon, curr_lat, curr_lon);
+                    
+                    prev_lat = curr_lat;
+                    prev_lon = curr_lon;
+                }
+                
+                double evalStepSize = 5.0 / dist;
+                pt = rawRoadSpline(0);
+                prev_lat = pt(0,0);
+                prev_lon = pt(1,0);
+                dist = 0.0;
+                
+                for(double u = 0; u <= 1; u += evalStepSize)
+                {
+                    pt = rawRoadSpline(u);
                     double curr_lat = pt(0,0);
                     double curr_lon = pt(1,0);
                     
@@ -618,10 +638,11 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
                     dist += converter.deltaLatLonToXY(prev_lat, prev_lon, curr_lat, curr_lon);
                     
                     // to csv
-                    fprintf(csv, "%d,", way->getID());
-                    fprintf(csv, "Way ID: %d | ", way->getID());
+                    fprintf(csv, "%ld,", way->getID());
+                    fprintf(csv, "Way ID: %ld | ", way->getID());
                     fprintf(csv, "Way Type: %s | ", way->getWayType().c_str());
                     fprintf(csv, "Way Speed: %d | ", way->getWaySpeed());
+                    fprintf(csv, "Lat & Lon: %.12f %.12f | ", curr_lat, curr_lon);
                     fprintf(csv, "Distance: %.2f,", dist);
                     fprintf(csv, "red,");
                     fprintf(csv, "%.12f,%.12f\n", curr_lat, curr_lon);
@@ -632,6 +653,7 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 
                 newRoad->assignSplineLength(dist);
 				newRoad->assignSpline(rawRoadSpline);
+                newRoad->setMinMaxLatLon();
 
 			} catch(const std::exception& e) {
 				std::cout << e.what() << std::endl;

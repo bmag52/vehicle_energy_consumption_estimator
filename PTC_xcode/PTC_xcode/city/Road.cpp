@@ -10,7 +10,6 @@
 namespace PredictivePowertrain {
 
 Road::Road() {
-//	this-> = new RoadTypes("default");
 	this->roadID = 0;
 }
 
@@ -45,6 +44,26 @@ long int Road::getRoadID() {
 }
 
 Road::~Road() {
+}
+    
+double Road::getMaxLat()
+{
+    return this->maxLat;
+}
+
+double Road::getMinLat()
+{
+    return this->minLat;
+}
+
+double Road::getMaxLon()
+{
+    return this->maxLon;
+}
+
+double Road::getMinLon()
+{
+    return this->minLon;
 }
 
 std::vector<float>* Road::getSpeedData() {
@@ -101,6 +120,12 @@ GenericMap<int, std::pair<int, int>*>* Road::getAdjMatIndicies() {
 
 std::pair<double, double>* Road::getMidLatLon()
 {
+    this->setMinMaxLatLon();
+    return new std::pair<double, double>(this->maxLat - this->minLat, this->maxLon - this->minLon);
+}
+    
+void Road::setMinMaxLatLon()
+{
     double DBL_MAX = std::numeric_limits<double>::max();
     
     double minLat = DBL_MAX;
@@ -117,26 +142,24 @@ std::pair<double, double>* Road::getMidLatLon()
         
         if(lat < minLat)
         {
-            minLat = lat;
+            this->minLat = lat;
         }
         
         if(lat > maxLat)
         {
-            maxLat = lat;
+            this->maxLat = lat;
         }
         
         if(lon < minLon)
         {
-            minLon = lon;
+            this->minLon = lon;
         }
         
         if(lon > maxLon)
         {
-            maxLon = lon;
+            this->maxLon = lon;
         }
     }
-    
-    return new std::pair<double, double>(maxLat - minLat, maxLon - minLon);
 }
 
 } /* namespace PredictivePowertrain */

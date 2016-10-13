@@ -11,7 +11,7 @@ namespace PredictivePowertrain {
 
 GoalToLinkMap::GoalToLinkMap()
 {
-    this->goalMap = new GenericMap<int, GoalMapEntry<int, int>*>();
+    this->goalMap = new GenericMap<long int, GoalMapEntry<long int, int>*>();
 }
 
 GoalToLinkMap::GoalToLinkMap(GoalToLinkMap& other)
@@ -21,17 +21,17 @@ GoalToLinkMap::GoalToLinkMap(GoalToLinkMap& other)
 
 int GoalToLinkMap::linkTraversed(Link* link, Goal* goal)
 {
-	int goalHash = goal->getHash();
-	GoalMapEntry<int, int>* goalEntry;
+	long int goalHash = goal->getHash();
+	GoalMapEntry<long int, int>* goalEntry;
 	if(!this->goalMap->hasEntry(goalHash)) {
-		goalEntry = new GoalMapEntry<int, int>(goal);
+		goalEntry = new GoalMapEntry<long int, int>(goal);
 		this->goalMap->addEntry(goalHash, goalEntry);
 	} else {
 		goalEntry = this->goalMap->getEntry(goalHash);
 	}
 	goalEntry->incrementCount();
     
-	int linkHash = link->getHash();
+	long int linkHash = link->getHash();
     int count = 1;
     if(goalEntry->getMap()->hasEntry(linkHash))
     {
@@ -48,7 +48,7 @@ int GoalToLinkMap::linkTraversed(Link* link, Goal* goal)
 std::vector<std::vector<float>*>* GoalToLinkMap::probabilityOfGoalsGivenLink(Link* link, Goal* goal, bool isSimilar)
 {
 	this->goalMap->initializeCounter();
-	GenericEntry<int, GoalMapEntry<int, int>*>* goalEntry = this->goalMap->nextEntry();
+	GenericEntry<long int, GoalMapEntry<long int, int>*>* goalEntry = this->goalMap->nextEntry();
     
     int probLength = this->goalMap->getSize();
     std::vector<std::vector<float>*>* prob = new std::vector<std::vector<float>*>(probLength);
@@ -65,7 +65,7 @@ std::vector<std::vector<float>*>* GoalToLinkMap::probabilityOfGoalsGivenLink(Lin
             linkCount = goalEntry->value->getMapEntry(link->getHash());
             totalLinkCount += linkCount;
 		}
-		int goalHash = goalEntry->value->getGoal()->getHash();
+		long int goalHash = goalEntry->value->getGoal()->getHash();
 
 		prob->at(probCount)->at(0) = goalHash;
 		prob->at(probCount)->at(1) = linkCount;
@@ -108,7 +108,7 @@ float GoalToLinkMap::probabilityOfGoalGivenLink(Link * link, Goal * goal, bool i
 	return 0;
 }
     
-GenericMap<int, GoalMapEntry<int, int>*>* GoalToLinkMap::getGoalMap()
+GenericMap<long int, GoalMapEntry<long int, int>*>* GoalToLinkMap::getGoalMap()
 {
     return this->goalMap;
 }

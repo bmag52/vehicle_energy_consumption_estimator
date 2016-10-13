@@ -11,12 +11,12 @@ namespace PredictivePowertrain {
 
 City::City() {
     this->roads = new GenericMap<long int, Road*>();
-    this->intersections = new GenericMap<int, Intersection*>();
+    this->intersections = new GenericMap<long int, Intersection*>();
     this->boundsMap = new GenericMap<int, Bounds*>();
     std::srand(std::time(0));
 }
 
-City::City(GenericMap<int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) {
+City::City(GenericMap<long int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) {
 	this->roads = roads;
 	this->intersections = intersections;
 	this->boundsMap = boundsMap;
@@ -417,7 +417,7 @@ int City::getBoundsMapSize() {
 	return this->boundsMap->getSize();
 }
 
-GenericMap<int, Intersection*>* City::getIntersections() {
+GenericMap<long int, Intersection*>* City::getIntersections() {
 	return this->intersections;
 }
 

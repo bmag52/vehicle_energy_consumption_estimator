@@ -11,17 +11,17 @@ namespace PredictivePowertrain {
 
 int LinkToStateMap::incrementTransition(Link* lj, Goal* gj, Link* li)
 {
-	int goalHash = gj->getHash();
-	GoalMapEntry<int, LinkToStateMapEntry*>* goalEntry;
+	long int goalHash = gj->getHash();
+	GoalMapEntry<long int, LinkToStateMapEntry*>* goalEntry;
 	if(!(this->goalMap->hasEntry(goalHash))) {
-		goalEntry = new GoalMapEntry<int, LinkToStateMapEntry*>(gj);
+		goalEntry = new GoalMapEntry<long int, LinkToStateMapEntry*>(gj);
 		this->goalMap->addEntry(goalHash, goalEntry);
 	} else {
 		goalEntry = this->goalMap->getEntry(goalHash);
 	}
     goalEntry->incrementCount();
     
-	int linkHash = lj->getHash();
+	long int linkHash = lj->getHash();
 	if(!goalEntry->getMap()->hasEntry(linkHash)) {
 		goalEntry->addMapEntry(linkHash, new LinkToStateMapEntry);
 	}
@@ -33,7 +33,7 @@ float LinkToStateMap::getProbability(Link* li, Link* lj, Goal* gj, bool isSimila
 	Probability pg;
 	Probability pllg;
 	this->goalMap->initializeCounter();
-	GenericEntry<int, GoalMapEntry<int, LinkToStateMapEntry*>*>* nextGoalMapEntry = this->goalMap->nextEntry();
+	GenericEntry<long int, GoalMapEntry<long int, LinkToStateMapEntry*>*>* nextGoalMapEntry = this->goalMap->nextEntry();
 	while(nextGoalMapEntry != NULL) { // next->key != 1
 		Goal* g = nextGoalMapEntry->value->getGoal();
 		if(gj->isEqual(g) || isSimilar) {
@@ -58,7 +58,7 @@ float LinkToStateMap::getProbability(Link* li, Link* lj, Goal* gj, bool isSimila
 
 LinkToStateMap::LinkToStateMap()
 {
-    this->goalMap = new GenericMap<int, GoalMapEntry<int, LinkToStateMapEntry*>*>();
+    this->goalMap = new GenericMap<long int, GoalMapEntry<long int, LinkToStateMapEntry*>*>();
 }
 
 LinkToStateMap::LinkToStateMap(LinkToStateMap& other)
@@ -71,7 +71,7 @@ LinkToStateMap::~LinkToStateMap()
     delete(this->goalMap);
 }
 
-GenericMap<int, GoalMapEntry<int, LinkToStateMapEntry*>*>* LinkToStateMap::getGoalMap()
+GenericMap<long int, GoalMapEntry<long int, LinkToStateMapEntry*>*>* LinkToStateMap::getGoalMap()
 {
     return this->goalMap;
 }

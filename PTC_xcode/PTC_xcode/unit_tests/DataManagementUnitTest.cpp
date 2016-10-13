@@ -82,7 +82,7 @@ void dataManagement_ut() {
 	Intersection* intersection4 = new Intersection(roads, 42.3, -122.4, 44, 456);
 	intersection4->setBoundsID(2);
 
-	GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
+	GenericMap<long int, Intersection*>* intersections = new GenericMap<long int, Intersection*>();
 	intersections->addEntry(intersection1->getIntersectionID(), intersection1);
 	intersections->addEntry(intersection2->getIntersectionID(), intersection2);
 	intersections->addEntry(intersection3->getIntersectionID(), intersection3);
@@ -112,10 +112,10 @@ void dataManagement_ut() {
 	}
 	assert(hasAllRoads);
 
-	GenericMap<int, Intersection*>* storedInts = storedCity->getIntersections();
+	GenericMap<long int, Intersection*>* storedInts = storedCity->getIntersections();
 	bool hasAllInts = true;
 	storedInts->initializeCounter();
-	GenericEntry<int, Intersection*>* nextStoredInt = storedInts->nextEntry();
+	GenericEntry<long int, Intersection*>* nextStoredInt = storedInts->nextEntry();
 	while(nextStoredInt != NULL)
 	{
 		if(!intersections->hasEntry(nextStoredInt->key))

@@ -28,6 +28,9 @@ void BuildCity::updateGridDataXMLSpline()
     {
         std::cout << "identifying intersections from XML splines" << std::endl;
         
+        // container of raw intersections
+        GenericMap<long int, Intersection*> rawInts;;
+        
         // get map data
         std::pair<DataCollection*, Bounds*>* newMapData = this->setupDataCollection();
         DataCollection* dc = newMapData->first;
@@ -37,92 +40,209 @@ void BuildCity::updateGridDataXMLSpline()
         dc->pullDataXML(this->latCenter, this->lonCenter);
         this->rawRoads = dc->makeRawRoads();
         
-        // iterate through each road and check every other road for intersection
-        int intCount = 1;
-        this->rawRoads->initializeCounter();
-        GenericEntry<long int, Road*>* nextRawRoad = this->rawRoads->nextEntry();
+        // gps converter for finding spline ends with close proximity
         GPS converter(this->latCenter, this->lonCenter);
         
+        // container of new intersections identified
         this->newInts = new GenericMap<long int, Intersection*>();
+        
+        // copy of raw roads
         GenericMap<long int, Road*>* rawRoadsCopy = this->rawRoads->copy();
+        
+        // iterate through each road and check every other road for intersection
+        this->rawRoads->initializeCounter();
+        GenericEntry<long int, Road*>* nextRawRoad = this->rawRoads->nextEntry();
         while(nextRawRoad != NULL)
         {
+            std::cout << "***" << nextRawRoad->key << "***" << std::endl;
+            
             // spline of current road
             Eigen::Spline<double,2> currSpline = nextRawRoad->value->getSpline();
+            float nextEvalStepSize = this->evalIntervalLength / nextRawRoad->value->getSplineLength();
             
-            // loop through all other roads
-            rawRoadsCopy->initializeCounter();
-            GenericEntry<long int, Road*>* nextOtherRawRoad = rawRoadsCopy->nextEntry();
-            while(nextOtherRawRoad != NULL)
+            // start at a given evaluation point of the next spline and look for nearest other points in the map
+            for(double u = 0; u <= 1.0; u += nextEvalStepSize)
             {
-                // don't look at the same roads
-                if(nextRawRoad->key == nextOtherRawRoad->key)
+                // create a container of close intersections and store values that are within range
+                GenericMap<int, std::pair<long int, std::pair<double, double>>*> closeSplineEvals;
+                
+                // get current evaluation point of current spline
+                Eigen::Spline<double,2>::PointType currPt = currSpline(u);
+                
+                // create a count of interesections to given point
+                int intersectNum = 0;
+                
+                // loop through all other roads
+                rawRoadsCopy->initializeCounter();
+                GenericEntry<long int, Road*>* nextOtherRawRoad = rawRoadsCopy->nextEntry();
+                while(nextOtherRawRoad != NULL)
                 {
-                    nextOtherRawRoad = rawRoadsCopy->nextEntry();
-                    continue;
-                }
-                
-                // count number of times the roads intersect.
-                int roadPairIntCount = 0;
-                
-                // get other road spline
-                Eigen::Spline<double,2> nextSpline = nextOtherRawRoad->value->getSpline();
-                
-                // iteratate through road splines
-                Eigen::Spline<double,2>::PointType currPtA = currSpline(0);
-                std::pair<double, double>* currA_xy = converter.convertLatLonToXY(currPtA(0,0), currPtA(1,0));
-                for(double u = this->splineStep; u <= 1; u += this->splineStep)
-                {
-                    Eigen::Spline<double,2>::PointType currPtB = currSpline(u);
-                    std::pair<double, double>* currB_xy = converter.convertLatLonToXY(currPtB(0,0), currPtB(1,0));
-                    
-                    // iterate through other spline
-                    Eigen::Spline<double,2>::PointType nextPtA = nextSpline(0);
-                    std::pair<double, double>* nextA_xy = converter.convertLatLonToXY(nextPtA(0,0), nextPtA(1,0));
-                    for(double s = this->splineStep; s <= 1; s += this->splineStep)
+                    // don't look at the same roads
+                    if(nextRawRoad->key == nextOtherRawRoad->key)
                     {
-                        Eigen::Spline<double,2>::PointType nextPtB = nextSpline(s);
-                        std::pair<double, double>* nextB_xy = converter.convertLatLonToXY(nextPtB(0,0), nextPtB(1,0));
-
-                        
-//                        if(nextRawRoad->key == 6438214 && nextOtherRawRoad->key == 35171644 && u > .15 && s > .2)
-//                        {
-//                            int test = 2; found intersecting splines
-//                        }
-                        
-                        cv::Point_<double> currA(currA_xy->first, currA_xy->second);
-                        cv::Point_<double> currB(currB_xy->first, currB_xy->second);
-                        cv::Point_<double> nextA(nextA_xy->first, nextA_xy->second);
-                        cv::Point_<double> nextB(nextB_xy->first, nextB_xy->second);
-                        cv::Point_<double> intersect;
-                        
-                        // get intersection and expect roads to only intersect once (take for int)
-                        if(this->getIntersectionPoint(currA, currB, nextA, nextB, intersect) && roadPairIntCount < 1)
-                        {
-                            GenericMap<long int, Road*>* intRoads = new GenericMap<long int, Road*>();
-                            intRoads->addEntry(nextRawRoad->key, nextRawRoad->value);
-                            intRoads->addEntry(nextOtherRawRoad->key, nextOtherRawRoad->value);
-                            
-                            std::pair<double, double>* latLon = converter.convertXYToLatLon(intersect.x, intersect.y);
-                            Intersection* newInt = new Intersection(intRoads, latLon->first, latLon->second, 0, 0);
-                            this->newInts->addEntry(intCount, newInt);
-                            
-                            delete(latLon);
-                            roadPairIntCount++;
-                            intCount++;
-                        }
-                        delete(nextA_xy);
-                        nextA_xy = nextB_xy;
+                        nextOtherRawRoad = rawRoadsCopy->nextEntry();
+                        continue;
                     }
-                    delete(currA_xy);
-                    currA_xy = currB_xy;
+                    
+                    // spline of other road
+                    Eigen::Spline<double,2> otherSpline = nextOtherRawRoad->value->getSpline();
+                    double nextOtherEvalStepSize = this->evalIntervalLength / nextOtherRawRoad->value->getSplineLength();
+                
+                    // check for close proximity evaluation points
+                    for(double v = 0; v <= 1.0; v += nextOtherEvalStepSize)
+                    {
+                        Eigen::Spline<double,2>::PointType otherPt = otherSpline(v);
+                        
+                        float evalDist = converter.deltaLatLonToXY(currPt(0,0), currPt(1,0), otherPt(0,0), otherPt(1,0));
+                        
+                        if(evalDist < this->evalIntervalLength + 2.0)
+                        {
+                            std::cout << nextOtherRawRoad->key << std::endl;
+                            
+                            std::pair<double, double> otherInt;
+                            otherInt.first = otherPt(0,0);
+                            otherInt.second = otherPt(1,0);
+                            
+                            closeSplineEvals.addEntry(intersectNum, new std::pair<long int, std::pair<double, double>>(nextOtherRawRoad->key, otherInt));
+                            intersectNum++;
+                        }
+                    }
+                    
+                    nextOtherRawRoad = rawRoadsCopy->nextEntry();
                 }
-                nextOtherRawRoad = rawRoadsCopy->nextEntry();
+                delete(nextOtherRawRoad);
+                
+                if(closeSplineEvals.getSize() > 0)
+                {
+                    double avgLat = currPt(0,0);
+                    double avgLon = currPt(1,0);
+                    
+                    GenericMap<long int, Road*>* connectingRoads = new GenericMap<long int, Road*>();
+                    connectingRoads->addEntry(nextRawRoad->key, this->rawRoads->getEntry(nextRawRoad->key));
+                    
+                    long int intID = nextRawRoad->key;
+                    
+                    closeSplineEvals.initializeCounter();
+                    GenericEntry<int, std::pair<long int, std::pair<double, double>>*>* nextLatLon = closeSplineEvals.nextEntry();
+                    while(nextLatLon != NULL)
+                    {
+                        avgLat += nextLatLon->value->second.first;
+                        avgLon += nextLatLon->value->second.second;
+                        
+                        if(!connectingRoads->hasEntry(nextLatLon->value->first))
+                        {
+                            connectingRoads->addEntry(nextLatLon->value->first, this->rawRoads->getEntry(nextLatLon->key));
+                            intID += nextLatLon->value->first;
+                        }
+                        
+                        delete(nextLatLon->value);
+                        nextLatLon = closeSplineEvals.nextEntry();
+                    }
+                    delete(nextLatLon);
+                    
+                    if(!rawInts.hasEntry(intID))
+                    {
+                        float cses = closeSplineEvals.getSize() + 1.0;
+                        rawInts.addEntry(intID, new Intersection(connectingRoads, avgLat/cses, avgLon/cses, 0, intID));
+                    }
+                        
+                }
             }
-            delete(nextOtherRawRoad);
             nextRawRoad = this->rawRoads->nextEntry();
         }
         delete(nextRawRoad);
+        
+        // cluster intersections
+        std::cout << "clustering raw intersections" << std::endl;
+        GenericMap<int, Intersection*>* clusteredInts = new GenericMap<int, Intersection*>();
+        
+        while(rawInts.getSize() != 0)
+        {
+            Intersection* rawInt = rawInts.getFirstEntry();
+            
+            GenericMap<long int, Intersection*> closeInts;
+            closeInts.addEntry(rawInt->getIntersectionID(), rawInt);
+            
+            // iterate through all raw interestcions and find other intersections in close proximity
+            rawInts.initializeCounter();
+            GenericEntry<long int, Intersection*>* nextRawInt = rawInts.nextEntry();
+            while(nextRawInt != NULL)
+            {
+                // get other intersection
+                Intersection* otherRawInt = nextRawInt->value;
+                
+                // don't look at the same raw intersection
+                if(closeInts.hasEntry(otherRawInt->getIntersectionID()))
+                {
+                    nextRawInt = rawInts.nextEntry();
+                    continue;
+                }
+                
+                // iterate through close intersections to see if other raw int is in close proximity to cluster
+                closeInts.initializeCounter();
+                GenericEntry<long int, Intersection*>* nextCloseInt = closeInts.nextEntry();
+                while(nextCloseInt != NULL)
+                {
+                    float dist = converter.deltaLatLonToXY(nextCloseInt->value->getLat(), nextCloseInt->value->getLon(), otherRawInt->getLat(), otherRawInt->getLon());
+                    
+                    // tuned for NE greenlake
+                    if(dist < 13.0 && !closeInts.hasEntry(otherRawInt->getIntersectionID()))
+                    {
+                        closeInts.addEntry(otherRawInt->getIntersectionID(), otherRawInt);
+                    }
+                    
+                    nextCloseInt = closeInts.nextEntry();
+                }
+                delete(nextCloseInt);
+                
+                nextRawInt = rawInts.nextEntry();
+            }
+            delete(nextRawInt);
+            
+            // iterate through cluster of close ints and average lat / lon and create list of all connecting roads
+            double avgLat = 0;
+            double avgLon = 0;
+            
+            GenericMap<long int, Road*>* connectingRoads = new GenericMap<long int, Road*>();
+            int intersectionID = 0;
+            
+            closeInts.initializeCounter();
+            GenericEntry<long int, Intersection*>* nextCloseInt = closeInts.nextEntry();
+            while(nextCloseInt != NULL)
+            {
+                // average lat / lon
+                avgLat += nextCloseInt->value->getLat();
+                avgLon += nextCloseInt->value->getLon();
+                intersectionID += nextCloseInt->value->getIntersectionID();
+                
+                // add connecting roads to list of all connecting roads
+                GenericMap<long int, Road*>* closeIntConnectingRoads = nextCloseInt->value->getRoads();
+                
+                closeIntConnectingRoads->initializeCounter();
+                GenericEntry<long int, Road*>* nextCloseIntConectingRoad = closeIntConnectingRoads->nextEntry();
+                while(nextCloseIntConectingRoad != NULL)
+                {
+                    if(!connectingRoads->hasEntry(nextCloseIntConectingRoad->key))
+                    {
+                        connectingRoads->addEntry(nextCloseIntConectingRoad->key, nextCloseIntConectingRoad->value);
+                    }
+                    nextCloseIntConectingRoad = closeIntConnectingRoads->nextEntry();
+                }
+                delete(nextCloseIntConectingRoad);
+                
+                // remove close intersections from raw intersections
+                rawInts.erase(nextCloseInt->key);
+                
+                nextCloseInt = closeInts.nextEntry();
+            }
+            delete(nextCloseInt);
+            
+            // create new intersection with average lat / lon and new connecting road
+            float cis = closeInts.getSize();
+            this->newInts->addEntry(intersectionID, new Intersection(connectingRoads, avgLat/cis, avgLon/cis, 0, intersectionID));
+        }
+        
+        // trim road sections
     }
 }
 
@@ -130,15 +250,51 @@ void BuildCity::printIntersections()
 {
     if(this->newInts->getSize() > 0)
     {
+        // csv name
+        std::string csvName = "/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/intersectionData.csv";
+        
+        // delete existing csv if found
+        std::string rm = "rm " + csvName;
+        system(rm.c_str());
+        
+        // create new csv
+        FILE* csv;
+        csv = std::fopen(csvName.c_str(), "w");
+        
+        // add header to csv
+        fprintf(csv, "name, description, color, latitude, longitude\n");
+        
         std::cout << "**** printing intersection lat/lon ****" << std::endl;
         this->newInts->initializeCounter();
         GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
         while(nextInt != NULL)
         {
+            // print intersection lat/lon to console
             printf("%.12f,%.12f\n", nextInt->value->getLat(), nextInt->value->getLon());
+            
+            fprintf(csv, "%ld,", nextInt->value->getIntersectionID());
+            fprintf(csv, "Int ID: %ld | ", nextInt->value->getIntersectionID());
+            fprintf(csv, "Lat & Lon: %.12f %.12f | ", nextInt->value->getLat(), nextInt->value->getLon());
+            fprintf(csv, "Connecting Roads: ");
+            
+            nextInt->value->getRoads()->initializeCounter();
+            GenericEntry<long int, Road*>* nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
+            while(nextConnectingRoad != NULL)
+            {
+                fprintf(csv, "%ld ", nextConnectingRoad->key);
+                nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
+            }
+            delete(nextConnectingRoad);
+            
+            fprintf(csv, ",");
+            fprintf(csv, "red,");
+            fprintf(csv, "%.12f,%.12f\n", nextInt->value->getLat(), nextInt->value->getLon());
+            
+            
             nextInt = this->newInts->nextEntry();
         }
         delete(nextInt);
+        fclose(csv);
     }
 }
 

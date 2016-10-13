@@ -45,15 +45,15 @@ void routePrediction_UT()
     Intersection inters[numInters];
     
     GenericMap<long int, Road*>* roads = new GenericMap<long int, Road*>();
-    GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
+    GenericMap<long int, Intersection*>* intersections = new GenericMap<long int, Intersection*>();
     
     // fence post addage of the first intersection
     inters[0].assignID(1);
     intersections->addEntry(inters[0].getIntersectionID(), &inters[0]);
     
     // make all grid connections
-    int horzCount = 0;
-    int vertCount = (gridSideDim - 1) * gridSideDim;
+    long int horzCount = 0;
+    long int vertCount = (gridSideDim - 1) * gridSideDim;
     for(int i = 1; i < numInters; i++)
     {
         int interID = i + 1;

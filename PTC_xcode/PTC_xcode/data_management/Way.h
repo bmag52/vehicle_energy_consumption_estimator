@@ -19,7 +19,7 @@ private:
 	GenericMap<int, long int>* nodeIDs;
 	std::string wayType;
 	int waySpeed;
-	long int id;
+	long int ID;
 
 public:
 	Way();

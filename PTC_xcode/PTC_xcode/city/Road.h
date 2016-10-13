@@ -33,6 +33,10 @@ private:
 	Intersection* endNode;
 	long int roadID;
 	int boundsID;
+    double maxLat;
+    double minLat;
+    double maxLon;
+    double minLon;
 
 public:
 	Road();
@@ -58,6 +62,11 @@ public:
 	void assignAdjMatIndicies(GenericMap<int, std::pair<int, int>*>* adjMatIndicies);
 	GenericMap<int, std::pair<int, int>*>* getAdjMatIndicies();
     std::pair<double, double>* getMidLatLon();
+    void setMinMaxLatLon();
+    double getMaxLat();
+    double getMinLat();
+    double getMaxLon();
+    double getMinLon();
 };
 
 } /* namespace PredictivePowertrain */

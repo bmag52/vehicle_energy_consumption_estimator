@@ -9,12 +9,12 @@
 
 namespace PredictivePowertrain {
 
-Goal::Goal(int destination)
+Goal::Goal(long int destination)
 {
 	this->destination = destination;
 }
 
-Goal::Goal(int destination, std::vector<float>* bins)
+Goal::Goal(long int destination, std::vector<float>* bins)
 {
 	this->destination = destination;
 	this->bins = bins;
@@ -54,9 +54,9 @@ bool Goal::isEqual(Goal * other)
 	return isSimilar(other) && this->destination == other->destination;
 }
 
-int Goal::getHash() const
+long int Goal::getHash() const
 {
-	int hash = this->destination;
+	long int hash = this->destination;
 	int bits;
 	for (int i = 0; i < this->bins->size(); i++) {
         bits = (int) std::log2(this->bins->at(i));

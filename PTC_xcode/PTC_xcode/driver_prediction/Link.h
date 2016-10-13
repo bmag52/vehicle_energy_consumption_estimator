@@ -17,19 +17,19 @@ class Intersection; // forward declaration
 
 class Link {
 public:
-	int link_number;
+	long int link_number;
 	int link_direction;
 
 	Link();
-	Link(int, int);
+	Link(int, long int);
 	virtual ~Link();
-	Link* copy(int, int);
-	int getHash();
+	Link* copy(int, long int);
+	long int getHash();
 	bool isEqual(Link* other);
     bool isFinalLink();
-	int getNumber();
+	long int getNumber();
 	int getDirection();
-	static Link* newLinkFromHash(int);
+	static Link* newLinkFromHash(long int);
 	static Link* finalLink();
 	Link* linkFromRoad(Road* road, Intersection* intersection);
 };

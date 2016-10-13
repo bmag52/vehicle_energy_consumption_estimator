@@ -66,7 +66,7 @@ Route* Route::copy() {
 	return route;
 }
 
-int Route::getGoalHash() {
+long int Route::getGoalHash() {
 	return this->goal->getHash();
 }
 

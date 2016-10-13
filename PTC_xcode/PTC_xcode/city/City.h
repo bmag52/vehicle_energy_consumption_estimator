@@ -36,14 +36,14 @@ private:
 	int dateTimeCreated;
 	double maxSlopePercent = 6;
 	GenericMap<long int, Road*>* roads;
-	GenericMap<int, Intersection*>* intersections;
+	GenericMap<long int, Intersection*>* intersections;
 	GenericMap<int, Bounds*>* boundsMap;
     std::vector<float>* reverseTrace(std::vector<float>* trace);
 	Road* getConnectingRoad(Intersection* one, Intersection* two);
     std::pair<std::vector<float>*, float>* elevationToSlope(std::vector<float>* elev, float oldElev);
 public:
 	City();
-	City(GenericMap<int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
+	City(GenericMap<long int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
     virtual ~City();
 	int getRoadMapSize();
 	int getInstersectionMapSize();
@@ -58,7 +58,7 @@ public:
     std::pair<std::vector<float>*, std::vector<float>*>* routeToData(Route* route, int dist);
 	GenericMap<int, Bounds*>* getBoundsMap();
 	GenericMap<long int, Road*>* getRoads();
-	GenericMap<int, Intersection*>* getIntersections();
+	GenericMap<long int, Intersection*>* getIntersections();
 
 };
 

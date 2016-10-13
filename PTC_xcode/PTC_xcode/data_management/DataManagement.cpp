@@ -74,7 +74,7 @@ void DataManagement::addRouteData(Route* route) {
 
 void DataManagement::addCityData(City* city) {
 	GenericMap<long int, Road*>* roadMap = city->getRoads();
-	GenericMap<int, Intersection*>* intersectionMap = city->getIntersections();
+	GenericMap<long int, Intersection*>* intersectionMap = city->getIntersections();
 	GenericMap<int, Bounds*>* boundsMap = city->getBoundsMap();
 	GenericMap<int, Bounds*>* newBoundsMap = new GenericMap<int, Bounds*>();
 
@@ -162,7 +162,7 @@ void DataManagement::addCityData(City* city) {
 			}
 
 			intersectionMap->initializeCounter();
-			GenericEntry<int, Intersection*>* nextIntersection = intersectionMap->nextEntry();
+			GenericEntry<long int, Intersection*>* nextIntersection = intersectionMap->nextEntry();
 			while(nextIntersection != NULL)
 			{
 				if(nextIntersection->value->getBoudsID() == nextBounds->key)
@@ -286,7 +286,7 @@ City* DataManagement::getCityData() {
 	try {
 		read_json(this->cityData, cityLogs);
 		GenericMap<long int, Road*>* roads = new GenericMap<long int, Road*>();
-		GenericMap<int, Intersection*>* intersections = new GenericMap<int, Intersection*>();
+		GenericMap<long int, Intersection*>* intersections = new GenericMap<long int, Intersection*>();
 		GenericMap<int, Bounds*>* bounds = new GenericMap<int, Bounds*>();
 		GenericMap<long int, std::pair<int, int>*>* roadIntersections = new GenericMap<long int, std::pair<int, int>*>(); // <roadID, <startID, endID>>
 

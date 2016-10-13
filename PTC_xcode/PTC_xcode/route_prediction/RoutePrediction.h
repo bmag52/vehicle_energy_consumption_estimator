@@ -31,8 +31,8 @@ class RoutePrediction {
 private:
 	LinkToStateMap* linkToState;
 	GoalToLinkMap* goalToLink;
-	GenericMap<int, Link*>* links;
-	GenericMap<int, Goal*>* goals;
+	GenericMap<long int, Link*>* links;
+	GenericMap<long int, Goal*>* goals;
     GenericMap<int, std::pair<Link*,Goal*>*>* states;
 	Route* predictedRoute;
 	Route* currentRoute;

@@ -11,13 +11,13 @@
 
 namespace PredictivePowertrain {
 
-Intersection::Intersection(GenericMap<long int, Road*>* roads, double lat, double lon, int elev, int intersectNum) {
+Intersection::Intersection(GenericMap<long int, Road*>* roads, double lat, double lon, int elev, long int intersectNum) {
 	this->roads = roads;
 //	this->interSectionType = IntersectionTypes(intersectType);
 	this->lat = lat;
 	this->lon = lon;
 	this->elevation = elev;
-	this->id = intersectNum;
+	this->ID = intersectNum;
 }
 
 Intersection::~Intersection() {
@@ -28,13 +28,13 @@ Intersection::Intersection() {
     this->roads = new GenericMap<long int, Road*>();
 }
     
-void Intersection::assignID(int ID)
+void Intersection::assignID(long int ID)
 {
-    this->id = ID;
+    this->ID = ID;
 }
 
-int Intersection::getIntersectionID() {
-	return this->id;
+long int Intersection::getIntersectionID() {
+	return this->ID;
 }
 
 double Intersection::getElevation() {
@@ -95,7 +95,7 @@ Intersection* Intersection::getNextIntersection(Road* road) {
 	{
 		if(road->getRoadID() == nextRoad->value->getRoadID())
 		{
-			if(this->id == nextRoad->value->getStartIntersection()->getIntersectionID())
+			if(this->ID == nextRoad->value->getStartIntersection()->getIntersectionID())
 			{
 				delete(nextRoad);
 				return nextRoad->value->getEndIntersection();
@@ -142,8 +142,8 @@ GenericMap<int, Intersection*>* Intersection::getAdjacentIntersection() {
 	return adjInts;
 }
 
-void Intersection::setBoundsID(int id) {
-	this->boundsID = id;
+void Intersection::setBoundsID(int ID) {
+	this->boundsID = ID;
 }
 
 int Intersection::getBoudsID() {

@@ -14,7 +14,7 @@ Way::Way() {
 
 Way::Way(GenericMap<int, long int>* nodeIDs, long int id, std::string wayType, int waySpeed) {
 	this->nodeIDs = nodeIDs;
-	this->id = id;
+	this->ID = id;
 	this->wayType = wayType;
 	this->waySpeed = waySpeed;
 }
@@ -24,7 +24,7 @@ GenericMap<int, long int>* Way::getNodeIDs() {
 }
 
 long int Way::getID() {
-	return this->id;
+	return this->ID;
 }
 
 std::string Way::getWayType() {

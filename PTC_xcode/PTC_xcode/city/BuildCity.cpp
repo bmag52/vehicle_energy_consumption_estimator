@@ -49,7 +49,7 @@ void BuildCity::updateGridDataXMLSpline()
         // copy of raw roads
         GenericMap<long int, Road*>* rawRoadsCopy = this->rawRoads->copy();
         
-        // iterate through each road and check every other road for intersection
+        // ******** FIND SPLINE EVALUATIONS IN CLOSE PROXIMITY ********
         this->rawRoads->initializeCounter();
         GenericEntry<long int, Road*>* nextRawRoad = this->rawRoads->nextEntry();
         while(nextRawRoad != NULL)
@@ -64,7 +64,7 @@ void BuildCity::updateGridDataXMLSpline()
             for(double u = 0; u <= 1.0; u += nextEvalStepSize)
             {
                 // create a container of close intersections and store values that are within range
-                GenericMap<int, std::pair<long int, std::pair<double, double>>*> closeSplineEvals;
+                GenericMap<long int, std::pair<double, double>*> closeSplineEvals;
                 
                 // get current evaluation point of current spline
                 Eigen::Spline<double,2>::PointType currPt = currSpline(u);
@@ -98,13 +98,7 @@ void BuildCity::updateGridDataXMLSpline()
                         if(evalDist < this->evalIntervalLength + 2.0)
                         {
                             std::cout << nextOtherRawRoad->key << std::endl;
-                            
-                            std::pair<double, double> otherInt;
-                            otherInt.first = otherPt(0,0);
-                            otherInt.second = otherPt(1,0);
-                            
-                            closeSplineEvals.addEntry(intersectNum, new std::pair<long int, std::pair<double, double>>(nextOtherRawRoad->key, otherInt));
-                            intersectNum++;
+                            closeSplineEvals.addEntry(nextOtherRawRoad->key, new std::pair<double, double>(otherPt(0,0), otherPt(1,0)));
                         }
                     }
                     
@@ -123,16 +117,16 @@ void BuildCity::updateGridDataXMLSpline()
                     long int intID = nextRawRoad->key;
                     
                     closeSplineEvals.initializeCounter();
-                    GenericEntry<int, std::pair<long int, std::pair<double, double>>*>* nextLatLon = closeSplineEvals.nextEntry();
+                    GenericEntry<long int, std::pair<double, double>*>* nextLatLon = closeSplineEvals.nextEntry();
                     while(nextLatLon != NULL)
                     {
-                        avgLat += nextLatLon->value->second.first;
-                        avgLon += nextLatLon->value->second.second;
+                        avgLat += nextLatLon->value->first;
+                        avgLon += nextLatLon->value->second;
                         
-                        if(!connectingRoads->hasEntry(nextLatLon->value->first))
+                        if(!connectingRoads->hasEntry(nextLatLon->key))
                         {
-                            connectingRoads->addEntry(nextLatLon->value->first, this->rawRoads->getEntry(nextLatLon->key));
-                            intID += nextLatLon->value->first;
+                            connectingRoads->addEntry(nextLatLon->key, this->rawRoads->getEntry(nextLatLon->key));
+                            intID += nextLatLon->key;
                         }
                         
                         delete(nextLatLon->value);
@@ -152,9 +146,9 @@ void BuildCity::updateGridDataXMLSpline()
         }
         delete(nextRawRoad);
         
-        // cluster intersections
+        // ******** CLUSTER INTERSECTIONS ********
         std::cout << "clustering raw intersections" << std::endl;
-        GenericMap<int, Intersection*>* clusteredInts = new GenericMap<int, Intersection*>();
+        GenericMap<long int, Intersection*> refinedInts;
         
         while(rawInts.getSize() != 0)
         {
@@ -186,9 +180,16 @@ void BuildCity::updateGridDataXMLSpline()
                     float dist = converter.deltaLatLonToXY(nextCloseInt->value->getLat(), nextCloseInt->value->getLon(), otherRawInt->getLat(), otherRawInt->getLon());
                     
                     // tuned for NE greenlake
-                    if(dist < 13.0 && !closeInts.hasEntry(otherRawInt->getIntersectionID()))
+                    if(dist < 13.0)
                     {
+                        // add close proximity intersection to cluster
                         closeInts.addEntry(otherRawInt->getIntersectionID(), otherRawInt);
+                        
+                        // re-init iterator to assess cluster against whole set of raw ints
+                        rawInts.initializeCounter();
+                        
+                        // break out since intersection was found to be in cluster
+                        break;
                     }
                     
                     nextCloseInt = closeInts.nextEntry();
@@ -239,19 +240,247 @@ void BuildCity::updateGridDataXMLSpline()
             
             // create new intersection with average lat / lon and new connecting road
             float cis = closeInts.getSize();
-            this->newInts->addEntry(intersectionID, new Intersection(connectingRoads, avgLat/cis, avgLon/cis, 0, intersectionID));
+            refinedInts.addEntry(intersectionID, new Intersection(connectingRoads, avgLat/cis, avgLon/cis, 0, intersectionID));
         }
         
-        // trim road sections
+        // ******** TRIM ROAD SECTIONS ********
+        GenericMap<long int, Intersection*>* refinedIntsCopy = refinedInts.copy();
+        
+        refinedInts.initializeCounter();
+        GenericEntry<long int, Intersection*>* nextInt = refinedInts.nextEntry();
+        while(nextInt != NULL)
+        {
+            if(nextInt->key == 605401377)
+            {
+                int test = 2;
+            }
+            
+            // get connecting roads of intersection
+            GenericMap<long int, Road*>* intConnectingRoads = nextInt->value->getRoads();
+            
+            // create a container of new atomic roads
+            GenericMap<long int, Road*>* newConnectingRoads = new GenericMap<long int, Road*>();
+            
+            // iterate through all connecting roads to find atomic road segments between 2 intersections
+            intConnectingRoads->initializeCounter();
+            GenericEntry<long int, Road*>* nextConnectingRoad = intConnectingRoads->nextEntry();
+            while(nextConnectingRoad != NULL)
+            {
+                // iterate along connecting road spline to find intersections in close proximity
+                Eigen::Spline<double,2> spline = nextConnectingRoad->value->getSpline();
+                double evalStepSize = this->evalIntervalLength / nextConnectingRoad->value->getSplineLength();
+
+                // create a container of control points for road
+                GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
+                long int splineStartIntID = -1;
+                long int splineEndIntID = -1;
+                int evalCount = 0;
+                
+                // iterate along each connecting road until another intersection is found in close proximity
+                for(double u = 0; u <= 1.0; u += evalStepSize)
+                {
+                    Eigen::Spline<double,2>::PointType pt = spline(u);
+                    
+                    // find where ends of spline meet intersection
+                    refinedIntsCopy->initializeCounter();
+                    GenericEntry<long int, Intersection*>* nextOtherInt = refinedIntsCopy->nextEntry();
+                    while(nextOtherInt != NULL)
+                    {
+                        float dist = converter.deltaLatLonToXY(pt(0,0), pt(1,0), nextOtherInt->value->getLat(), nextOtherInt->value->getLon());
+                        
+                        if(dist < this->evalIntervalLength + 2)
+                        {
+                            // check to see if intersection already exists on path
+                            bool hasInt = false;
+                            nodes->initializeCounter();
+                            GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
+                            while(nextNode != NULL)
+                            {
+                                if(nextNode->value->getID() == nextOtherInt->key)
+                                {
+                                    hasInt = true;
+                                    break;
+                                }
+                                nextNode = nodes->nextEntry();
+                            }
+                            delete(nextNode);
+                            
+                            if(hasInt) { break; }
+                            
+                            // add intersection
+                            if(splineStartIntID == -1)
+                            {
+                                splineStartIntID = nextOtherInt->value->getIntersectionID();
+                            }
+                            
+                            else
+                            {
+                                splineEndIntID = nextOtherInt->value->getIntersectionID();
+                            }
+                            
+                            nodes->addEntry(evalCount, new Node(nextOtherInt->value->getLat(), nextOtherInt->value->getLon(), 0, nextOtherInt->value->getIntersectionID()));
+                            evalCount++;
+                            
+                            break;
+                        }
+                        
+                        nextOtherInt = refinedIntsCopy->nextEntry();
+                    }
+                    delete(nextOtherInt);
+                    
+                    // take measurement of spline evaluation between intersections
+                    if(splineStartIntID != -1 && splineEndIntID == -1)
+                    {
+                        nodes->addEntry(evalCount, new Node(pt(0,0), pt(1,0), 0, nextConnectingRoad->key));
+                        evalCount++;
+                    }
+                    
+                    // found road segment between intersection
+                    else if (splineStartIntID != -1 && splineEndIntID != -1)
+                    {
+                        // ensure start or end intersection is nextInt
+                        bool startIntIsNextInt = splineStartIntID == nextInt->key;
+                        bool endIntIsNextInt = splineEndIntID == nextInt->key;
+                        if(!(startIntIsNextInt || endIntIsNextInt))
+                        {
+                            splineStartIntID = -1;
+                            splineEndIntID = -1;
+                            
+                            delete(nodes);
+                            nodes = new GenericMap<long int, Node*>();
+                            
+                            evalCount = 0;
+                            continue;
+                        }
+                        
+                        Road* newRoad;
+                        
+                        // check for unique atomic road segmenet
+                        long int adjacentIntID;
+                        if(startIntIsNextInt)
+                        {
+                            adjacentIntID = splineEndIntID;
+                        }
+                        else if(endIntIsNextInt)
+                        {
+                            adjacentIntID = splineStartIntID;
+                        }
+                        
+                        bool foundUniqueRoad = true;
+                        GenericMap<long int, Road*>* adjacentIntConnectingRoads = refinedInts.getEntry(adjacentIntID)->getRoads();
+                        
+                        adjacentIntConnectingRoads->initializeCounter();
+                        GenericEntry<long int, Road*>* nextAdjacentIntConnectingRoad = adjacentIntConnectingRoads->nextEntry();
+                        while(nextAdjacentIntConnectingRoad != NULL)
+                        {
+                            Intersection* connectingRoadStartInt = nextAdjacentIntConnectingRoad->value->getStartIntersection();
+                            Intersection* connectingRoadEndInt = nextAdjacentIntConnectingRoad->value->getEndIntersection();
+                            
+                            if(connectingRoadStartInt == NULL || connectingRoadEndInt == NULL)
+                            {
+                                nextAdjacentIntConnectingRoad = adjacentIntConnectingRoads->nextEntry();
+                                continue;
+                            }
+                            
+                            bool hasStartInt = connectingRoadStartInt->getIntersectionID() == splineStartIntID || connectingRoadEndInt->getIntersectionID() == splineStartIntID;
+                            bool hasEndInt = connectingRoadStartInt->getIntersectionID() == splineEndIntID || connectingRoadEndInt->getIntersectionID() == splineEndIntID;
+                            
+                            if(hasStartInt && hasEndInt)
+                            {
+                                newRoad = nextAdjacentIntConnectingRoad->value;
+                                foundUniqueRoad = false;
+                                break;
+                            }
+                            
+                            nextAdjacentIntConnectingRoad = adjacentIntConnectingRoads->nextEntry();
+                        }
+                        delete(nextAdjacentIntConnectingRoad);
+                        
+                        // create new road with shorted spline if road is unique
+                        if(foundUniqueRoad)
+                        {
+                            // create a container of control points to fit spline to
+                            Eigen::MatrixXd points(2, nodes->getSize());
+                            int latLonCount = 0;
+                            
+                            // get first segement evaluation to calculate a distance
+                            Node* firstNode = nodes->getFirstEntry();
+                            double prevLat = firstNode->getLat();
+                            double prevLon = firstNode->getLon();
+                            double currLat = 0;
+                            double currLon = 0;
+                            float dist = 0;
+                            
+                            // iterate along nodes to fit new shortened spline between interesections
+                            nodes->initializeCounter();
+                            GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
+                            while(nextNode != NULL)
+                            {
+                                currLat = nextNode->value->getLat();
+                                currLon = nextNode->value->getLon();
+                                
+                                // update spline container
+                                points(0, latLonCount) = currLat;
+                                points(1, latLonCount) = currLon;
+                                latLonCount++;
+                                
+                                // update distance
+                                dist += converter.deltaLatLonToXY(prevLat, prevLon, currLat, currLon);
+                                
+                                prevLat = currLat;
+                                prevLon = currLon;
+                                
+                                nextNode = nodes->nextEntry();
+                            }
+                            delete(nextNode);
+                            
+                            // fit first order spline spline
+                            typedef Eigen::Spline<double, 2> spline2f;
+                            
+                            // fit spline
+                            spline2f atomicRoadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
+                            
+                            // make new road
+                            newRoad = new Road(nextConnectingRoad->value->getRoadType(), splineStartIntID + splineEndIntID, nodes);
+                            newRoad->assignSpline(atomicRoadSpline);
+                            newRoad->assignSplineLength(dist);
+                            newRoad->setMinMaxLatLon();
+                            newRoad->setStartIntersection(refinedInts.getEntry(splineStartIntID));
+                            newRoad->setEndIntersection(refinedInts.getEntry(splineEndIntID));
+                            
+                            // add new road to adjacent int
+                            refinedInts.getEntry(adjacentIntID)->addRoad(newRoad, 1);
+                        }
+                        
+                        newConnectingRoads->addEntry(newRoad->getRoadID(), newRoad);
+                        
+                        // attempt to grab another connecting road from the same raw road
+                        splineStartIntID = -1;
+                        splineEndIntID = -1;
+                        nodes = new GenericMap<long int, Node*>();
+                        evalCount = 0;
+                    }
+                }
+                
+                nextConnectingRoad = intConnectingRoads->nextEntry();
+            }
+            delete(nextConnectingRoad);
+            
+            nextInt->value->replaceRoads(newConnectingRoads);
+            
+            this->newInts->addEntry(nextInt->key, nextInt->value);
+            nextInt = refinedInts.nextEntry();
+        }
+        delete(nextInt);
     }
 }
 
-void BuildCity::printIntersections()
+void BuildCity::printNewIntersectionsAndRoads()
 {
     if(this->newInts->getSize() > 0)
     {
         // csv name
-        std::string csvName = "/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/intersectionData.csv";
+        std::string csvName = "/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/parsedMapData.csv";
         
         // delete existing csv if found
         std::string rm = "rm " + csvName;
@@ -262,7 +491,7 @@ void BuildCity::printIntersections()
         csv = std::fopen(csvName.c_str(), "w");
         
         // add header to csv
-        fprintf(csv, "name, description, color, latitude, longitude\n");
+        fprintf(csv, "name,icon,description,color,latitude,longitude\n");
         
         std::cout << "**** printing intersection lat/lon ****" << std::endl;
         this->newInts->initializeCounter();
@@ -272,7 +501,9 @@ void BuildCity::printIntersections()
             // print intersection lat/lon to console
             printf("%.12f,%.12f\n", nextInt->value->getLat(), nextInt->value->getLon());
             
+            // print intersection lat/lon to csv
             fprintf(csv, "%ld,", nextInt->value->getIntersectionID());
+            fprintf(csv, "googlemini,");
             fprintf(csv, "Int ID: %ld | ", nextInt->value->getIntersectionID());
             fprintf(csv, "Lat & Lon: %.12f %.12f | ", nextInt->value->getLat(), nextInt->value->getLon());
             fprintf(csv, "Connecting Roads: ");
@@ -290,6 +521,32 @@ void BuildCity::printIntersections()
             fprintf(csv, "red,");
             fprintf(csv, "%.12f,%.12f\n", nextInt->value->getLat(), nextInt->value->getLon());
             
+            // print road spline to csv
+            nextInt->value->getRoads()->initializeCounter();
+            nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
+            while(nextConnectingRoad != NULL)
+            {
+                // iterate along connecting road spline to find intersections in close proximity
+                Eigen::Spline<double,2> spline = nextConnectingRoad->value->getSpline();
+                double evalStepSize = this->evalIntervalLength / nextConnectingRoad->value->getSplineLength();
+                
+                for(double u = evalStepSize; u <= 1.0 - evalStepSize; u += evalStepSize)
+                {
+                    Eigen::Spline<double,2>::PointType pt = spline(u);
+                    
+                    fprintf(csv, "%ld,", nextConnectingRoad->value->getRoadID());
+                    fprintf(csv, "cirlce,");
+                    fprintf(csv, "Road ID: %ld | ", nextConnectingRoad->value->getRoadID());
+                    fprintf(csv, "Start Int ID: %ld | ", nextConnectingRoad->value->getStartIntersection()->getIntersectionID());
+                    fprintf(csv, "End Int ID: %ld | ", nextConnectingRoad->value->getEndIntersection()->getIntersectionID());
+                    fprintf(csv, "Lat & Lon: %.12f %.12f,", pt(0,0), pt(1,0));
+                    fprintf(csv, "blue,");
+                    fprintf(csv, "%.12f,%.12f\n", pt(0,0), pt(1,0));
+                }
+                
+                nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
+            }
+            delete(nextConnectingRoad);
             
             nextInt = this->newInts->nextEntry();
         }

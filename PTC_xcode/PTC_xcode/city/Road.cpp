@@ -11,12 +11,21 @@ namespace PredictivePowertrain {
 
 Road::Road() {
 	this->roadID = 0;
+    this->initialize();
 }
 
 Road::Road(std::string roadType, long int roadID, GenericMap<long int, Node*>* nodes) {
 	this->roadType = roadType;
 	this->roadID = roadID;
 	this->nodes = nodes;
+    this->initialize();
+}
+    
+void Road::initialize()
+{
+    this->startNode = NULL;
+    this->endNode = NULL;
+    this->splineLength = -1;
 }
 
 void Road::setStartIntersection(Intersection* startNode) {

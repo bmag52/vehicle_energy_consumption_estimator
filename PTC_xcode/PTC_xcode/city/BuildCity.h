@@ -14,6 +14,9 @@
 #include "../data_management/DataManagement.h"
 #include "../data_management/DataCollection.h"
 #include "../map/GenericMap.h"
+#include "../data_management/Node.h"
+#include "Road.h"
+#include "Intersection.h"
 
 #include "limits.h"
 #include <eigen3/Eigen/Core>
@@ -92,7 +95,7 @@ public:
     void updateGridDataXMLAdj();
     void updateGridDataPNG();
     void printAdjMats();
-    void printIntersections();
+    void printNewIntersectionsAndRoads();
     bool hasNewBounds();
 };
     

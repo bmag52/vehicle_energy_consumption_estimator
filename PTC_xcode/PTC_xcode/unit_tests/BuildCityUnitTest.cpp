@@ -37,5 +37,5 @@ void buildCity_ut() {
     BuildCity bc;
 //    bc.updateGridDataPNG();
     bc.updateGridDataXMLSpline();
-    bc.printIntersections();
+    bc.printNewIntersectionsAndRoads();
 }

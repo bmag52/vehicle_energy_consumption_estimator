@@ -46,6 +46,7 @@ public:
 	Intersection* getNextIntersection(Road* road);
 	int getBoudsID();
     void assignID(long int ID);
+    void replaceRoads(GenericMap<long int, Road*>* roads);
 };
 
 } /* namespace PredictivePowertrain */

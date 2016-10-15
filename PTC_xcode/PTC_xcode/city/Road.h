@@ -37,6 +37,7 @@ private:
     double minLat;
     double maxLon;
     double minLon;
+    void initialize();
 
 public:
 	Road();

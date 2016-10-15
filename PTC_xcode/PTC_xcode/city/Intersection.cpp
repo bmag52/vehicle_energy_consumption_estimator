@@ -63,7 +63,12 @@ void Intersection::addRoad(Road* road, int roadDir) {
 
 	this->roads->addEntry(road->getRoadID(), road);
 }
-
+    
+void Intersection::replaceRoads(GenericMap<long int, Road*>* roads)
+{
+    delete(this->roads);
+    this->roads = roads;
+}
 
 GenericMap<int, Link*>* Intersection::getOutgoingLinks() {
 	GenericMap<int, Link*>* outGoingLinks = new GenericMap<int, Link*>();

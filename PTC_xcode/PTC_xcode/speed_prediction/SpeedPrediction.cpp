@@ -96,6 +96,11 @@ void SpeedPrediction::initParams()
     std::srand(std::time(0));
 }
 
+int SpeedPrediction::getNumLayers()
+{
+    return this->lastLayer+2;
+}
+
 // feed-forward prediction
 // assumes spd_in is historical data
 void SpeedPrediction::predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_out)
@@ -236,7 +241,6 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 }
 
 // send address of weights
-// TODO have a copy function
 std::list<Eigen::MatrixXd*>* SpeedPrediction::getVals()
 {
 	std::list<Eigen::MatrixXd*>* returnList = new std::list<Eigen::MatrixXd*>();

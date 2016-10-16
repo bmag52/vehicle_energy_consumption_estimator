@@ -88,14 +88,23 @@ void dataManagement_ut() {
 	intersections->addEntry(intersection3->getIntersectionID(), intersection3);
 	intersections->addEntry(intersection4->getIntersectionID(), intersection4);
 
+    // store city
 	City* city = new City(intersections, roads, boundsMap);
 	testDM.addCityData(city);
+    
+    // add route prediction data
+    RoutePrediction* rp = routePrediction_UT();
+    testDM.addRoutePredictionData(rp);
 
+    // retrieve stored data
 	City* storedCity = testDM.getCityData();
+    
+    // check sizes
 	assert(city->getInstersectionMapSize() == storedCity->getInstersectionMapSize());
 	assert(city->getRoadMapSize() == storedCity->getRoadMapSize());
 	assert(city->getBoundsMapSize() == storedCity->getBoundsMapSize());
 
+    // check roads
 	GenericMap<long int, Road*>* storedRoads = storedCity->getRoads();
 	bool hasAllRoads = true;
 	storedRoads->initializeCounter();
@@ -112,6 +121,7 @@ void dataManagement_ut() {
 	}
 	assert(hasAllRoads);
 
+    // check ints
 	GenericMap<long int, Intersection*>* storedInts = storedCity->getIntersections();
 	bool hasAllInts = true;
 	storedInts->initializeCounter();
@@ -139,6 +149,7 @@ void dataManagement_ut() {
 	}
 	assert(hasAllInts);
 
+    // check bounds
 	GenericMap<int, Bounds*>* storedBounds = storedCity->getBoundsMap();
 	bool hasAllBounds = true;
 	storedBounds->initializeCounter();
@@ -152,7 +163,7 @@ void dataManagement_ut() {
 		nextStoredBounds = storedBounds->nextEntry();
 	}
 	assert(hasAllBounds);
-
-
+    
+    
 }
 

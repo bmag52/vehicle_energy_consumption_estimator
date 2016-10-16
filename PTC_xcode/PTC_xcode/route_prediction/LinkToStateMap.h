@@ -8,21 +8,22 @@
 #ifndef ROUTE_PREDICTION_LINKTOSTATEMAP_H_
 #define ROUTE_PREDICTION_LINKTOSTATEMAP_H_
 
-#include "../driver_prediction/Probability.h"
+
 
 #include "../map/GenericMap.h"
 #include "../map/GenericEntry.h"
 
+#include "../driver_prediction/Link.h"
+
 #include "GoalMapEntry.h"
 #include "Goal.h"
 #include "LinkToStateMapEntry.h"
-#include "../driver_prediction/Link.h"
+#include "Probability.h"
 
 namespace PredictivePowertrain {
 
 class LinkToStateMap {
 private:
-	GenericMap<long int, LinkToStateMapEntry*>* linkMap;
 	GenericMap<long int, GoalMapEntry<long int, LinkToStateMapEntry*>*>* goalMap;
 
 public:

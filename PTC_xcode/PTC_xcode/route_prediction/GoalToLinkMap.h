@@ -20,6 +20,7 @@ namespace PredictivePowertrain {
 class GoalToLinkMap {
 private:
 	GenericMap<long int, GoalMapEntry<long int, int>*>* goalMap;
+    
 public:
 	int maps_size;
 	GoalToLinkMap();

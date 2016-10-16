@@ -16,7 +16,7 @@ namespace PredictivePowertrain {
 
 class Goal {
 private:
-	long destination;
+	long int destination;
     std::vector<float>* bins;
 	int numSeen;
 public:
@@ -32,6 +32,7 @@ public:
 	void incrementNumSeen();
     std::vector<float>* getBins();
 	virtual ~Goal();
+    long int getDestination();
 };
 
 } /* namespace PredictivePowertrain */

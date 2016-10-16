@@ -45,6 +45,7 @@ public:
 	void formatOutData(Eigen::MatrixXd * output);
     void scaleTrainingSpeed(Eigen::MatrixXd * input);
     void unscaleTrainingSpeed(Eigen::MatrixXd * output);
+    int getNumLayers();
 };
 
 }

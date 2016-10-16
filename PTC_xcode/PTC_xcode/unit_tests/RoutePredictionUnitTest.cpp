@@ -34,7 +34,7 @@ Link* makeLinks(int numberOfLinks)
     return links;
 }
 
-void routePrediction_UT()
+RoutePrediction* routePrediction_UT()
 {
     // seed random generator
     std::srand(std::time(0));
@@ -98,7 +98,7 @@ void routePrediction_UT()
     Goal goal(1, &conditions);
     
     // add routes to route prediction
-    RoutePrediction routePrediction(city);
+    RoutePrediction* rp = new RoutePrediction(city);
     Link link = links[0];
     int routeLength = 10;
     Intersection* startIntersection = city->getIntersectionFromLink(&link, false);
@@ -110,11 +110,11 @@ void routePrediction_UT()
     Route* actualRoute = city->randomPath(startIntersection, &startRoute, routeLength, &conditions);
     
     // add trainging iterations here (simulates driving over the route multiple times)
-    routePrediction.parseRoute(actualRoute);
-    routePrediction.parseRoute(actualRoute);
-    routePrediction.parseRoute(actualRoute);
-    routePrediction.parseRoute(actualRoute);
-    routePrediction.parseRoute(actualRoute);
+    rp->parseRoute(actualRoute);
+    rp->parseRoute(actualRoute);
+    rp->parseRoute(actualRoute);
+    rp->parseRoute(actualRoute);
+    rp->parseRoute(actualRoute);
     
     // create number of random routes to include in test set
     int num_rand_routes = 4;
@@ -129,18 +129,18 @@ void routePrediction_UT()
         }
         
         // add random route to test set
-        routePrediction.parseRoute(randomRoute);
+        rp->parseRoute(randomRoute);
     }
     
     // predict actual route as it is 'driven' over
     int predIter = 1;
-    Route* predRoute = routePrediction.startPrediction(startIntersection, &conditions);
+    Route* predRoute = rp->startPrediction(startIntersection, &conditions);
     while(actualRoute->getLinkSize() > 1)
     {
         std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
         
         // predict route
-        predRoute = routePrediction.predict(actualRoute->getLinks()->getEntry(0));
+        predRoute = rp->predict(actualRoute->getLinks()->getEntry(0));
         
         // update actual route as it's 'driven' over
         actualRoute->removeFirstLink();
@@ -163,5 +163,7 @@ void routePrediction_UT()
         predIter++;
     
     }
+    
+    return rp;
 
 }

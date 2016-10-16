@@ -4,7 +4,7 @@
  *  Created on: Apr 5, 2016
  *      Author: vagrant
  */
-#include "../driver_prediction/Probability.h"
+#include "../route_prediction/Probability.h"
 #include <iostream>
 #include <assert.h>
 #include "UnitTests.h"

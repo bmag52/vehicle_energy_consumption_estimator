@@ -13,7 +13,7 @@ using boost::lexical_cast;
 namespace PredictivePowertrain {
 
 DataManagement::DataManagement() {
-	std::string fileRay[3] = {this->routeData, this->cityData, this->tripData};
+	std::string fileRay[3] = {this->routePredictionData, this->cityData, this->tripData};
 	for(int i = 0; i < 3; i++)
 	{
 		std::ifstream dataFile(fileRay[i].c_str());
@@ -26,50 +26,221 @@ DataManagement::DataManagement() {
 	}
 }
 
-void DataManagement::addRouteData(Route* route) {
-	GenericMap<int, Link*> * links = route->getLinks();
-	// go through links map, get NN value from link
-	// get 3 matricies which are JSONified to make them appear correctly
-	Goal * goal = route->getGoal();
-
-	ptree routeLogs;
-
-	int routeID = 0;
-	try {
-		read_json(this->routeData, routeLogs);
-		BOOST_FOREACH(ptree::value_type& v, routeLogs) {
-			routeID = lexical_cast<int>(v.first.data());
-		}
-	} catch (const std::exception& e) {
-		std::cout << e.what() << std::endl;
-	}
-
-	ptree newRoute, newLinks;
-	links->initializeCounter();
-	GenericEntry<int, Link*> * next = links->nextEntry();
-	while (next != NULL) {
-		ptree link;
-		int num = next->key;
-		Link * nextLink = next->value;
-
-
-		link.put("", next->value);
-		newLinks.push_back(std::make_pair(lexical_cast<std::string>(num), link));
-	}
-
-	newRoute.push_back(std::make_pair("links", newLinks));
-
-	ptree newGoal, numSeenTree;
-	// do we need all this info about goals/do we need more?
-	int numSeen = goal->getNumSeen();
-	numSeenTree.put("", numSeen);
-	newGoal.push_back(std::make_pair("numSeen", numSeenTree));
-
-	newRoute.push_back(std::make_pair("goal", newGoal));
-
-	routeID++;
-	routeLogs.add_child(lexical_cast<std::string>(routeID), newRoute);
-	write_json(this->routeData, routeLogs);
+void DataManagement::addRoutePredictionData(RoutePrediction* rp)
+{
+    
+    // links
+    ptree links_ptree;
+    rp->getLinks()->initializeCounter();
+    GenericEntry<long int, Link*>* nextLink = rp->getLinks()->nextEntry();
+    while(nextLink != NULL)
+    {
+        ptree link_ptree;
+        
+        // print NN weights and activations
+        int numNNLayers = nextLink->value->getNumNNLayers();
+        
+        if(numNNLayers > 0)
+        {
+            // get list
+            std::list<Eigen::MatrixXd*>* nnAData = nextLink->value->getWeights(1);
+            Eigen::MatrixXd* wtsA = nnAData->front(); nnAData->pop_front();
+            Eigen::MatrixXd* yHidA = nnAData->front(); nnAData->pop_front();
+            Eigen::MatrixXd* yInHidA = nnAData->front(); nnAData->pop_front();
+            
+            std::list<Eigen::MatrixXd*>* nnBData = nextLink->value->getWeights(0);
+            Eigen::MatrixXd* wtsB = nnBData->front(); nnBData->pop_front();
+            Eigen::MatrixXd* yHidB = nnBData->front(); nnBData->pop_front();
+            Eigen::MatrixXd* yInHidB = nnBData->front(); nnBData->pop_front();
+            
+            ptree wtsA_ptree, wtsB_ptree, yHidA_ptree, yHidB_ptree, yInHidA_ptree, yInHidB_ptree;
+            
+            // jsonify nn weights and activation layers
+            for(int i = 0; i < numNNLayers; i++)
+            {
+                std::string index = lexical_cast<std::string>(i);
+                
+                // sub-trees
+                ptree wtsAi_ptree, wtsBi_ptree, yHidAi_ptree, yHidBi_ptree, yInHidAi_ptree, yInHidBi_ptree;
+                
+                // wts
+                for(int row = 0; row < wtsA[i].rows(); row++)
+                {
+                    ptree wtsAiRow_ptree, wtsBiRow_ptree;
+                    for(int col = 0; col < wtsA[i].cols(); col++)
+                    {
+                        wtsAiRow_ptree.put(lexical_cast<std::string>(col), wtsA[i](row, col));
+                        wtsBiRow_ptree.put(lexical_cast<std::string>(col), wtsB[i](row, col));
+                    }
+                    wtsAi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), wtsAiRow_ptree));
+                    wtsBi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), wtsBiRow_ptree));
+                }
+                wtsA_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), wtsAi_ptree));
+                wtsB_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), wtsBi_ptree));
+                
+                // yHid activation layer
+                for(int row = 0; row < yHidA[i].rows(); row++)
+                {
+                    ptree yHidAiRow_ptree, yHidBiRow_ptree;
+                    for(int col = 0; col < yHidA[i].cols(); col++)
+                    {
+                        yHidAiRow_ptree.put(lexical_cast<std::string>(col), yHidA[i](row, col));
+                        yHidBiRow_ptree.put(lexical_cast<std::string>(col), yHidB[i](row, col));
+                    }
+                    yHidAi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), yHidAiRow_ptree));
+                    yHidBi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), yHidBiRow_ptree));
+                }
+                yHidA_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), yHidAi_ptree));
+                yHidB_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), yHidBi_ptree));
+                
+                // yInHid activation layer
+                for(int row = 0; row < yInHidA[i].rows(); row++)
+                {
+                    ptree yInHidAiRow_ptree, yInHidBiRow_ptree;
+                    for(int col = 0; col < yInHidA[i].cols(); col++)
+                    {
+                        yInHidAiRow_ptree.put(lexical_cast<std::string>(col), yInHidA[i](row, col));
+                        yInHidBiRow_ptree.put(lexical_cast<std::string>(col), yInHidB[i](row, col));
+                    }
+                    yInHidAi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), yInHidAiRow_ptree));
+                    yInHidBi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), yInHidBiRow_ptree));
+                }
+                yInHidA_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), yInHidAi_ptree));
+                yInHidB_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), yInHidBi_ptree));
+            }
+            
+            link_ptree.push_back(std::make_pair("wtsA", wtsA_ptree));
+            link_ptree.push_back(std::make_pair("yHidA", yHidA_ptree));
+            link_ptree.push_back(std::make_pair("yInHidA", yInHidA_ptree));
+            
+            link_ptree.push_back(std::make_pair("wtsB", wtsB_ptree));
+            link_ptree.push_back(std::make_pair("yHidB", yHidB_ptree));
+            link_ptree.push_back(std::make_pair("yInHidB", yInHidB_ptree));
+        }
+        
+        link_ptree.put("DIRECTION", nextLink->value->getDirection());
+        
+        links_ptree.push_back(std::make_pair(lexical_cast<std::string>(nextLink->value->getNumber()),link_ptree));
+        
+        nextLink = rp->getLinks()->nextEntry();
+    }
+    delete(nextLink);
+    
+    // goals
+    ptree goals_ptree;
+    rp->getGoals()->initializeCounter();
+    GenericEntry<long int, Goal*>* nextGoal = rp->getGoals()->nextEntry();
+    while(nextGoal != NULL)
+    {
+        ptree goal_ptree, bins_ptree, numSeen_ptree;
+        
+        // add conditions
+        for(int i = 0; i < nextGoal->value->getBins()->size(); i++)
+        {
+            ptree bin_ptree;
+            bin_ptree.put("", nextGoal->value->getBins()->at(i));
+            bins_ptree.push_back(std::make_pair(boost::lexical_cast<std::string>(i), bin_ptree));
+        }
+        
+        // add num seen
+        numSeen_ptree.put("", nextGoal->value->getNumSeen());
+        
+        // add conditions
+        goal_ptree.push_back(std::make_pair("conditions", bins_ptree));
+        
+        // add number of times goal is seen
+        goal_ptree.push_back(std::make_pair("numSeen", numSeen_ptree));
+        
+        // add goal to tree of goal
+        goals_ptree.push_back(std::make_pair(boost::lexical_cast<std::string>(nextGoal->value->getDestination()), goal_ptree));
+        
+        nextGoal = rp->getGoals()->nextEntry();
+    }
+    delete(nextGoal);
+    
+    // link to state map
+    ptree linkToStateMap_ptree;
+    
+    rp->getLinkToState()->getGoalMap()->initializeCounter();
+    GenericEntry<long int, GoalMapEntry<long int, LinkToStateMapEntry*>*>* nextGoalMapEntryL2S = rp->getLinkToState()->getGoalMap()->nextEntry();
+    while(nextGoalMapEntryL2S != NULL)
+    {
+        ptree nextGoalMapEntryL2S_ptree;
+        
+        nextGoalMapEntryL2S->value->getMap()->initializeCounter();
+        GenericEntry<long int, LinkToStateMapEntry*>* nextLinkToStateMap = nextGoalMapEntryL2S->value->getMap()->nextEntry();
+        while(nextLinkToStateMap != NULL)      {
+            ptree nextLinkToStateMap_ptree;
+            
+            nextLinkToStateMap->value->getEntries()->initializeCounter();
+            GenericEntry<long int, int>* nextLinkToStateEntry = nextLinkToStateMap->value->getEntries()->nextEntry();
+            while(nextLinkToStateEntry != NULL)
+            {
+                ptree nextLinkToStateMapEntry_ptree;
+                
+                nextLinkToStateMapEntry_ptree.put("", nextLinkToStateEntry->value);
+                
+                // add entry to linkToStateMap Entry
+                nextLinkToStateMap_ptree.push_back(std::make_pair(lexical_cast<std::string>(nextLinkToStateEntry->key), nextLinkToStateMapEntry_ptree));
+                
+                nextLinkToStateEntry = nextLinkToStateMap->value->getEntries()->nextEntry();
+            }
+            delete(nextLinkToStateEntry);
+            
+            // add linkToStateMap to goalMapEntry
+            nextGoalMapEntryL2S_ptree.push_back(std::make_pair(lexical_cast<std::string>(nextLinkToStateMap->key), nextLinkToStateMap_ptree));
+            
+            nextLinkToStateMap = nextGoalMapEntryL2S->value->getMap()->nextEntry();
+        }
+        delete(nextLinkToStateMap);
+        
+        // add next goal map entry to link to state map
+        linkToStateMap_ptree.push_back(std::make_pair(boost::lexical_cast<std::string>(nextGoalMapEntryL2S->key), nextGoalMapEntryL2S_ptree));
+        
+        nextGoalMapEntryL2S = rp->getLinkToState()->getGoalMap()->nextEntry();
+    }
+    delete(nextGoalMapEntryL2S);
+    
+    // goal to link map
+    ptree goalToLinkMap_ptree;
+    
+    rp->getGoalToLink()->getGoalMap()->initializeCounter();
+    GenericEntry<long int, GoalMapEntry<long int, int>*>* nextGoalMapEntryG2L = rp->getGoalToLink()->getGoalMap()->nextEntry();
+    while(nextGoalMapEntryG2L != NULL)
+    {
+        ptree nextGoalMapEntryG2L_ptree;
+        
+        nextGoalMapEntryG2L->value->getMap()->initializeCounter();
+        GenericEntry<long int, int>* nextGoalToLinkEntry = nextGoalMapEntryG2L->value->getMap()->nextEntry();
+        while(nextGoalToLinkEntry != NULL)
+        {
+            ptree nextGoalToLinkEntry_ptree;
+            
+            nextGoalToLinkEntry_ptree.put("", nextGoalToLinkEntry->value);
+            
+            // add goal to link association to goal to link map
+            nextGoalMapEntryG2L_ptree.push_back(std::make_pair(lexical_cast<std::string>(nextGoalToLinkEntry->key), nextGoalToLinkEntry_ptree));
+            
+            nextGoalToLinkEntry = nextGoalMapEntryG2L->value->getMap()->nextEntry();
+        }
+        delete(nextGoalToLinkEntry);
+        
+        // add goal to link map entry to tree of all map entries
+        goalToLinkMap_ptree.push_back(std::make_pair(boost::lexical_cast<std::string>(nextGoalMapEntryG2L->key), nextGoalMapEntryG2L_ptree));
+        
+        nextGoalMapEntryG2L = rp->getGoalToLink()->getGoalMap()->nextEntry();
+    }
+    delete(nextGoalMapEntryG2L);
+    
+    // add all tree to route prediction json tree
+    ptree rp_ptree;
+    rp_ptree.push_back(std::make_pair("LINKS", links_ptree));
+    rp_ptree.push_back(std::make_pair("GOALS", goals_ptree));
+    rp_ptree.push_back(std::make_pair("LINK2STATE", linkToStateMap_ptree));
+    rp_ptree.push_back(std::make_pair("GOAL2LINK", goalToLinkMap_ptree));
+    
+    write_json(this->routePredictionData, rp_ptree);
+    
 }
 
 void DataManagement::addCityData(City* city) {
@@ -87,17 +258,17 @@ void DataManagement::addCityData(City* city) {
 		GenericEntry<int, Bounds*>* nextBounds = boundsMap->nextEntry();
 		while(nextBounds != NULL)
 		{
-			bool boundsNotLogged = true;
+			bool boundsLogged = false;
 			BOOST_FOREACH(ptree::value_type& v, cityLogs)
 			{
 				int boundsID = lexical_cast<int>(v.first.data());
 				if(boundsID == nextBounds->key)
 				{
-					boundsNotLogged = false;
+					boundsLogged = true;
 					break;
 				}
 			}
-			if(boundsNotLogged) {
+			if(!boundsLogged) {
 				newBounds = true;
 				newBoundsMap->addEntry(nextBounds->key, NULL);
 			}
@@ -111,6 +282,7 @@ void DataManagement::addCityData(City* city) {
 
 	if(newBounds)
 	{
+        // add road data
 		newBoundsMap->initializeCounter();
 		GenericEntry<int, Bounds*>* nextBounds = newBoundsMap->nextEntry();
 		while(nextBounds != NULL)
@@ -161,6 +333,7 @@ void DataManagement::addCityData(City* city) {
 				nextRoad = roadMap->nextEntry();
 			}
 
+            // add intersecion data
 			intersectionMap->initializeCounter();
 			GenericEntry<long int, Intersection*>* nextIntersection = intersectionMap->nextEntry();
 			while(nextIntersection != NULL)
@@ -258,12 +431,12 @@ void DataManagement::addTripData(GenericMap<long int, std::pair<double, double>*
 }
 
 
-GenericMap<int, Route*>* DataManagement::getRoutes() {
+RoutePrediction* DataManagement::getRoutePredictionData() {
 	// what do i do with cityclusternum???
 
 	ptree routeLogs;
 	try {
-		read_json(this->routeData, routeLogs);
+		read_json(this->routePredictionData, routeLogs);
 		BOOST_FOREACH(ptree::value_type &v, routeLogs)
 		{
 			GenericMap<int, Link*> * links = new GenericMap<int, Link*>();

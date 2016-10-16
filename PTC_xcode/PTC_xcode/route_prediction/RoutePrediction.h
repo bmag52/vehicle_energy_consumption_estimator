@@ -10,13 +10,17 @@
 
 #include "LinkToStateMap.h"
 #include "GoalToLinkMap.h"
-#include "../map/GenericEntry.h"
-#include "Route.h"
-#include "../driver_prediction/Link.h"
-#include "../city/City.h"
 #include "Goal.h"
-#include "../city/Intersection.h"
+#include "Route.h"
+#include "Probability.h"
+
 #include "../map/GenericMap.h"
+#include "../map/GenericEntry.h"
+
+#include "../driver_prediction/Link.h"
+
+#include "../city/City.h"
+#include "../city/Intersection.h"
 
 #include <algorithm>
 #include <assert.h>
@@ -58,6 +62,10 @@ public:
     Route* startPrediction(Intersection* currentIntersection, std::vector<float>* currentCondition);
 	Route* predict(Link* linkTaken);
 	void parseRoute(Route* route);
+    GenericMap<long int, Link*>* getLinks();
+    GenericMap<long int, Goal*>* getGoals();
+    LinkToStateMap* getLinkToState();
+    GoalToLinkMap* getGoalToLink();
 };
 
 

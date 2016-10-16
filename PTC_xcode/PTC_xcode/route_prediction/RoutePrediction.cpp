@@ -63,6 +63,26 @@ RoutePrediction::~RoutePrediction()
     delete(this->currentRoute);
     delete(this->predictedGoal);
 }
+    
+GenericMap<long int, Link*>* RoutePrediction::getLinks()
+{
+    return this->links;
+}
+
+GenericMap<long int, Goal*>* RoutePrediction::getGoals()
+{
+    return this->goals;
+}
+
+LinkToStateMap* RoutePrediction::getLinkToState()
+{
+    return this->linkToState;
+}
+
+GoalToLinkMap* RoutePrediction::getGoalToLink()
+{
+    return this->goalToLink;
+}
 
 Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::vector<float>* currentCondition)
 {

@@ -16,7 +16,7 @@ namespace PredictivePowertrain {
 
 class LinkToStateMapEntry {
 private:
-	GenericMap<int,int>* entries;
+	GenericMap<long int,int>* entries;
 public:
 	LinkToStateMapEntry();
 	LinkToStateMapEntry(LinkToStateMapEntry &other);
@@ -25,6 +25,7 @@ public:
 	int getTotalM();
 	virtual ~LinkToStateMapEntry();
 	static int totalM(LinkToStateMapEntry* linkToStateMapEntry);
+    GenericMap<long int, int>* getEntries();
 };
 
 } /* namespace PredictivePowertrain */

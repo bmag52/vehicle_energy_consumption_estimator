@@ -73,6 +73,11 @@ void Goal::incrementNumSeen()
 {
 	this->numSeen++;
 }
+    
+long int Goal::getDestination()
+{
+    return this->destination;
+}
 
 void Goal::setNumSeen(int numSeen)
 {

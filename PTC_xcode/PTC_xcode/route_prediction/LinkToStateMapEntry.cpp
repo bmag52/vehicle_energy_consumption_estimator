@@ -10,7 +10,7 @@
 namespace PredictivePowertrain {
 
 LinkToStateMapEntry::LinkToStateMapEntry() {
-    this->entries = new GenericMap<int, int>();
+    this->entries = new GenericMap<long int, int>();
 }
 
 int LinkToStateMapEntry::addEntry(Link* li) {
@@ -56,6 +56,11 @@ int LinkToStateMapEntry::getTotalM() {
 		}
 		return sum;
 	}
+}
+    
+GenericMap<long int, int>* LinkToStateMapEntry::getEntries()
+{
+    return this->entries;
 }
 
 int LinkToStateMapEntry::totalM(LinkToStateMapEntry* linkToStateMapEntry) {

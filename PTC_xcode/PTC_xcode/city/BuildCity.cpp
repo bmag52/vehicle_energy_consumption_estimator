@@ -250,11 +250,6 @@ void BuildCity::updateGridDataXMLSpline()
         GenericEntry<long int, Intersection*>* nextInt = refinedInts.nextEntry();
         while(nextInt != NULL)
         {
-            if(nextInt->key == 605401377)
-            {
-                int test = 2;
-            }
-            
             // get connecting roads of intersection
             GenericMap<long int, Road*>* intConnectingRoads = nextInt->value->getRoads();
             

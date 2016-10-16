@@ -11,15 +11,32 @@
 #include "../city/Road.h"
 #include "../city/Intersection.h"
 
+#include <eigen3/Eigen/Dense>
+#include <list>
+
 namespace PredictivePowertrain {
 
 class Intersection; // forward declaration
 
 class Link {
+private:
+    long int link_number;
+    int link_direction;
+    
+    // input weights on A-end of link
+    Eigen::MatrixXd * WtsA;		// matrix of weights
+    Eigen::MatrixXd * yHidA;	// hidden layer outputs
+    Eigen::MatrixXd * yInHidA;	// hidden layer inputs
+    
+    // input weights on B-end of link
+    Eigen::MatrixXd * WtsB;		// matrix of weights
+    Eigen::MatrixXd * yHidB;	// hidden layer outputs
+    Eigen::MatrixXd * yInHidB;	// hidden layer inputs
+    
+    int numNNLayers;
+    void initialize();
+    
 public:
-	long int link_number;
-	int link_direction;
-
 	Link();
 	Link(int, long int);
 	virtual ~Link();
@@ -32,6 +49,10 @@ public:
 	static Link* newLinkFromHash(long int);
 	static Link* finalLink();
 	Link* linkFromRoad(Road* road, Intersection* intersection);
+    void setWeights(Eigen::MatrixXd* wts, Eigen::MatrixXd* yHid, Eigen::MatrixXd* yInHid, int direction);
+    std::list<Eigen::MatrixXd*>* getWeights(int direction);
+    void setNumNNLayers(int num);
+    int getNumNNLayers();
 };
 
 } /* namespace PredictivePowertrain */

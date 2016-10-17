@@ -28,7 +28,6 @@ DataManagement::DataManagement() {
 
 void DataManagement::addRoutePredictionData(RoutePrediction* rp)
 {
-    
     // links
     ptree links_ptree;
     rp->getLinks()->initializeCounter();
@@ -42,84 +41,68 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
         
         if(numNNLayers > 0)
         {
-            // get list
-            std::list<Eigen::MatrixXd*>* nnAData = nextLink->value->getWeights(1);
-            Eigen::MatrixXd* wtsA = nnAData->front(); nnAData->pop_front();
-            Eigen::MatrixXd* yHidA = nnAData->front(); nnAData->pop_front();
-            Eigen::MatrixXd* yInHidA = nnAData->front(); nnAData->pop_front();
+            // get NN data
+            std::vector<std::vector<Eigen::MatrixXd*>*>* nnAData = nextLink->value->getWeights(1);
+            std::vector<std::vector<Eigen::MatrixXd*>*>* nnBData = nextLink->value->getWeights(0);
             
-            std::list<Eigen::MatrixXd*>* nnBData = nextLink->value->getWeights(0);
-            Eigen::MatrixXd* wtsB = nnBData->front(); nnBData->pop_front();
-            Eigen::MatrixXd* yHidB = nnBData->front(); nnBData->pop_front();
-            Eigen::MatrixXd* yInHidB = nnBData->front(); nnBData->pop_front();
-            
-            ptree wtsA_ptree, wtsB_ptree, yHidA_ptree, yHidB_ptree, yInHidA_ptree, yInHidB_ptree;
-            
-            // jsonify nn weights and activation layers
-            for(int i = 0; i < numNNLayers; i++)
+            for(int i = 0; i < nnAData->size(); i++)
             {
-                std::string index = lexical_cast<std::string>(i);
+                ptree typeA_ptree, typeB_ptree;
                 
-                // sub-trees
-                ptree wtsAi_ptree, wtsBi_ptree, yHidAi_ptree, yHidBi_ptree, yInHidAi_ptree, yInHidBi_ptree;
+                typeA_ptree.put("SIZE", nnAData->at(i)->size());
+                typeB_ptree.put("SIZE", nnBData->at(i)->size());
                 
-                // wts
-                for(int row = 0; row < wtsA[i].rows(); row++)
+                for(int j = 0; j < nnAData->at(i)->size(); j++)
                 {
-                    ptree wtsAiRow_ptree, wtsBiRow_ptree;
-                    for(int col = 0; col < wtsA[i].cols(); col++)
+                    ptree typeAi_ptree, typeBi_ptree;
+                    
+                    typeAi_ptree.put("ROWS", nnAData->at(i)->at(j)->rows());
+                    typeAi_ptree.put("COLS", nnAData->at(i)->at(j)->cols());
+                    
+                    typeBi_ptree.put("ROWS", nnBData->at(i)->at(j)->rows());
+                    typeBi_ptree.put("COLS", nnBData->at(i)->at(j)->cols());
+                    
+                    for(int row = 0; row < nnAData->at(i)->at(j)->rows(); row++)
                     {
-                        wtsAiRow_ptree.put(lexical_cast<std::string>(col), wtsA[i](row, col));
-                        wtsBiRow_ptree.put(lexical_cast<std::string>(col), wtsB[i](row, col));
+                        ptree typeAiRow_ptree, typeBiRow_ptree;
+                        
+                        for(int col = 0; col < nnAData->at(i)->at(j)->cols(); col++)
+                        {
+                            
+                            typeAiRow_ptree.put(lexical_cast<std::string>(col), nnAData->at(i)->at(j)->coeffRef(row, col));
+                            typeBiRow_ptree.put(lexical_cast<std::string>(col), nnBData->at(i)->at(j)->coeffRef(row, col));
+                            
+                        }
+                        
+                        typeAi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), typeAiRow_ptree));
+                        typeBi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), typeBiRow_ptree));
+                        
                     }
-                    wtsAi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), wtsAiRow_ptree));
-                    wtsBi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), wtsBiRow_ptree));
+                    
+                    typeA_ptree.push_back(std::make_pair(lexical_cast<std::string>(j), typeAi_ptree));
+                    typeB_ptree.push_back(std::make_pair(lexical_cast<std::string>(j), typeBi_ptree));
+                    
                 }
-                wtsA_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), wtsAi_ptree));
-                wtsB_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), wtsBi_ptree));
                 
-                // yHid activation layer
-                for(int row = 0; row < yHidA[i].rows(); row++)
+                std::string type = "wts";
+                if(i == 1)
                 {
-                    ptree yHidAiRow_ptree, yHidBiRow_ptree;
-                    for(int col = 0; col < yHidA[i].cols(); col++)
-                    {
-                        yHidAiRow_ptree.put(lexical_cast<std::string>(col), yHidA[i](row, col));
-                        yHidBiRow_ptree.put(lexical_cast<std::string>(col), yHidB[i](row, col));
-                    }
-                    yHidAi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), yHidAiRow_ptree));
-                    yHidBi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), yHidBiRow_ptree));
+                    type = "yHid";
                 }
-                yHidA_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), yHidAi_ptree));
-                yHidB_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), yHidBi_ptree));
                 
-                // yInHid activation layer
-                for(int row = 0; row < yInHidA[i].rows(); row++)
+                else if(i == 2)
                 {
-                    ptree yInHidAiRow_ptree, yInHidBiRow_ptree;
-                    for(int col = 0; col < yInHidA[i].cols(); col++)
-                    {
-                        yInHidAiRow_ptree.put(lexical_cast<std::string>(col), yInHidA[i](row, col));
-                        yInHidBiRow_ptree.put(lexical_cast<std::string>(col), yInHidB[i](row, col));
-                    }
-                    yInHidAi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), yInHidAiRow_ptree));
-                    yInHidBi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), yInHidBiRow_ptree));
+                    type = "yInHid";
                 }
-                yInHidA_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), yInHidAi_ptree));
-                yInHidB_ptree.push_back(std::make_pair(lexical_cast<std::string>(i), yInHidBi_ptree));
+                
+                link_ptree.push_back(std::make_pair(type + "A", typeA_ptree));
+                link_ptree.push_back(std::make_pair(type + "B", typeB_ptree));
+                
             }
             
-            link_ptree.push_back(std::make_pair("wtsA", wtsA_ptree));
-            link_ptree.push_back(std::make_pair("yHidA", yHidA_ptree));
-            link_ptree.push_back(std::make_pair("yInHidA", yInHidA_ptree));
-            
-            link_ptree.push_back(std::make_pair("wtsB", wtsB_ptree));
-            link_ptree.push_back(std::make_pair("yHidB", yHidB_ptree));
-            link_ptree.push_back(std::make_pair("yInHidB", yInHidB_ptree));
         }
         
         link_ptree.put("DIRECTION", nextLink->value->getDirection());
-        
         links_ptree.push_back(std::make_pair(lexical_cast<std::string>(nextLink->value->getNumber()),link_ptree));
         
         nextLink = rp->getLinks()->nextEntry();
@@ -432,24 +415,286 @@ void DataManagement::addTripData(GenericMap<long int, std::pair<double, double>*
 
 
 RoutePrediction* DataManagement::getRoutePredictionData() {
-	// what do i do with cityclusternum???
-
-	ptree routeLogs;
 	try {
-		read_json(this->routePredictionData, routeLogs);
-		BOOST_FOREACH(ptree::value_type &v, routeLogs)
+        
+        ptree rpLogs;
+        GenericMap<long int, Link*>* links = new GenericMap<long int, Link*>();
+        GenericMap<long int, Goal*>* goals = new GenericMap<long int, Goal*>();
+        LinkToStateMap* linkToState = new LinkToStateMap();
+        GoalToLinkMap* goalToLink = new GoalToLinkMap();
+        
+		read_json(this->routePredictionData, rpLogs);
+		BOOST_FOREACH(ptree::value_type &v, rpLogs)
 		{
-			GenericMap<int, Link*> * links = new GenericMap<int, Link*>();
+            std::string rpData = v.first.data();
+            
+            // LINKS
+            if(!rpData.compare("LINKS"))
+            {
+                BOOST_FOREACH(ptree::value_type &u, v.second)
+                {
+                    long int linkNumber = lexical_cast<long int>(u.first.data());
+                    int linkDirection;
+                    
+                    std::vector<Eigen::MatrixXd*>* wtsA;
+                    std::vector<Eigen::MatrixXd*>* wtsB;
+                    std::vector<Eigen::MatrixXd*>* yHidA;
+                    std::vector<Eigen::MatrixXd*>* yHidB;
+                    std::vector<Eigen::MatrixXd*>* yInHidA;
+                    std::vector<Eigen::MatrixXd*>* yInHidB;
+                    
+                    BOOST_FOREACH(ptree::value_type &s, u.second)
+                    {
+                        std::string linkDataType = s.first.data();
+                        
+                        // read direction
+                        if(!linkDataType.compare("DIRECTION"))
+                        {
+                            linkDirection = lexical_cast<int>(s.second.data());
+                        }
+                        
+                        // read one of the NN matrices
+                        else
+                        {
+                            // get matrix array size
+                            int matRaySize;
+                            BOOST_FOREACH(ptree::value_type &t, s.second)
+                            {
+                                std::string matFeatureRayType = t.first.data();
+                                
+                                if(!matFeatureRayType.compare("SIZE"))
+                                {
+                                    matRaySize = lexical_cast<int>(t.second.data());
+                                    break;
+                                }
+                            }
+                            
+                            // iterate through matrix array to
+                            std::vector<Eigen::MatrixXd*>* newMatRay = new std::vector<Eigen::MatrixXd*>(matRaySize);
+                            BOOST_FOREACH(ptree::value_type &t, s.second)
+                            {
+                                std::string matFeatureRayType = t.first.data();
+                                
+                                if(matFeatureRayType.compare("SIZE"))
+                                {
+                                    int matRayIndex = lexical_cast<int>(matFeatureRayType);
+                                    int rows = -1;
+                                    int cols = -1;
+                                    
+                                    // iterate through matrix data to get size
+                                    BOOST_FOREACH(ptree::value_type &x, t.second)
+                                    {
+                                        std::string matFeatureType = x.first.data();
+                                        if(!matFeatureType.compare("ROWS"))
+                                        {
+                                            rows = lexical_cast<int>(x.second.data());
+                                        }
 
-			/*
-			 *
-			 *
-			 */
+                                        else if(!matFeatureType.compare("COLS"))
+                                        {
+                                            cols = lexical_cast<int>(x.second.data());
+                                        }
+                                        
+                                        if(rows != -1 && cols != -1)
+                                        {
+                                            break;
+                                        }
+                                    }
+                                    
+                                    // iterate thorugh matrix to populate data
+                                    newMatRay->at(matRayIndex) = new Eigen::MatrixXd(rows, cols);
+                                    BOOST_FOREACH(ptree::value_type &x, t.second)
+                                    {
+                                        std::string matFeatureType = x.first.data();
+                                        if(matFeatureType.compare("ROWS") && matFeatureType.compare("COLS"))
+                                        {
+                                            int row = lexical_cast<int>(matFeatureType);
+                                            
+                                            // iterate along matrix row
+                                            BOOST_FOREACH(ptree::value_type &y, x.second)
+                                            {
+                                                int col = lexical_cast<int>(y.first.data());
+                                                newMatRay->at(matRayIndex)->coeffRef(row, col) = lexical_cast<double>(y.second.data());
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            if(!linkDataType.compare("wtsA"))
+                            {
+                                wtsA = newMatRay;
+                            }
+                            
+                            else if(!linkDataType.compare("wtsB"))
+                            {
+                                wtsB = newMatRay;
+                            }
+                            
+                            else if(!linkDataType.compare("yHidA"))
+                            {
+                                yHidA = newMatRay;
+                            }
+                            
+                            else if(!linkDataType.compare("yHidB"))
+                            {
+                                yHidB = newMatRay;
+                            }
+                            
+                            else if(!linkDataType.compare("yInHidA"))
+                            {
+                                yInHidA = newMatRay;
+                            }
+                            
+                            else if(!linkDataType.compare("yInHidB"))
+                            {
+                                yInHidB = newMatRay;
+                            }
+                        }
+                    }
+                    
+                    Link* newLink = new Link(linkDirection, linkNumber);
+                    newLink->setWeights(wtsA, yHidA, yInHidA, 1);
+                    newLink->setWeights(wtsB, yHidB, yInHidB, 0);
+                    newLink->setNumNNLayers((int)wtsA->size());
+                    
+                    links->addEntry(newLink->getHash(), newLink);
+                }
+            }
+            
+            // GOALS
+            else if(!rpData.compare("GOALS"))
+            {
+                BOOST_FOREACH(ptree::value_type &u, v.second)
+                {
+                    long int destinationNum = lexical_cast<long int>(u.first.data());
+                    std::vector<float>* conditionsVec;
+                    int numSeen;
+                    
+                    // get conditions and numseen
+                    BOOST_FOREACH(ptree::value_type &t, u.second)
+                    {
+                        std::string goalFeature = t.first.data();
+                        
+                        if(!goalFeature.compare("conditions"))
+                        {
+                            // get conditions from json
+                            GenericMap<int, float> conditionsMap;
+                            BOOST_FOREACH(ptree::value_type &s, t.second)
+                            {
+                                int index = lexical_cast<int>(s.first.data());
+                                float condition = lexical_cast<float>(s.second.data());
+                                
+                                conditionsMap.addEntry(index, condition);
+                            }
+                            
+                            // add conditions to vector
+                            conditionsVec = new std::vector<float>(conditionsMap.getSize());
+                            
+                            conditionsMap.initializeCounter();
+                            GenericEntry<int, float>* nextCondition = conditionsMap.nextEntry();
+                            while(nextCondition != NULL)
+                            {
+                                conditionsVec->at(nextCondition->key) = nextCondition->value;
+                                nextCondition = conditionsMap.nextEntry();
+                            }
+                            delete(nextCondition);
+                        } else if(!goalFeature.compare("numSeen"))
+                        {
+                            numSeen = lexical_cast<int>(t.second.data());
+                        }
+                    }
+                    
+                    Goal* newGoal = new Goal(destinationNum, conditionsVec);
+                    newGoal->setNumSeen(numSeen);
+                    
+                    goals->addEntry(newGoal->getHash(), newGoal);
+                }
+            }
+            
+            // LINK2STATE
+            else if(!rpData.compare("LINK2STATE"))
+            {
+                BOOST_FOREACH(ptree::value_type &u, v.second)
+                {
+                    // iterate through each goal map entry
+                    long int goalHash = lexical_cast<long int>(u.first.data());
+                    assert(goals->hasEntry(goalHash));
+                    
+                    BOOST_FOREACH(ptree::value_type &s, u.second)
+                    {
+                        // grab all link assocations for a particular goal
+                        long int fromLinkHash = lexical_cast<long int>(s.first.data());
+                        assert(links->hasEntry(fromLinkHash));
+                        
+                        GenericMap<long int, int> toLinkAssociations;
+                        BOOST_FOREACH(ptree::value_type &t, s.second)
+                        {
+                            long int toLinkHash = lexical_cast<long int>(t.first.data());
+                            int numAssociated = lexical_cast<int>(t.second.data());
+                            toLinkAssociations.addEntry(toLinkHash, numAssociated);
+                        }
+                        
+                        // populate link to state map using known associations
+                        toLinkAssociations.initializeCounter();
+                        GenericEntry<long int, int>* nextToLinkAssociation = toLinkAssociations.nextEntry();
+                        while(nextToLinkAssociation != NULL)
+                        {
+                            assert(links->hasEntry(nextToLinkAssociation->key));
+                            
+                            Link* fromLink = links->getEntry(fromLinkHash);
+                            Link* toLink = links->getEntry(nextToLinkAssociation->key);
+                            Goal* toGoal = goals->getEntry(goalHash);
+                            
+                            // make number of associations specified
+                            for(int i = 0; i < nextToLinkAssociation->value; i++)
+                            {
+                                linkToState->incrementTransition(fromLink, toGoal, toLink);
+                            }
+                            
+                            nextToLinkAssociation = toLinkAssociations.nextEntry();
+                        }
+                        delete(nextToLinkAssociation);
+                    }
+                }
+            }
+            
+            // GOAL2LINK
+            else if(!rpData.compare("GOAL2LINK"))
+            {
+                BOOST_FOREACH(ptree::value_type &u, v.second)
+                {
+                    long int goalHash = lexical_cast<long int>(u.first.data());
+                    assert(goals->hasEntry(goalHash));
+                    
+                    // grab all link assocations to given goal
+                    BOOST_FOREACH(ptree::value_type &t, u.second)
+                    {
+                        long int linkHash = lexical_cast<long int>(t.first.data());
+                        assert(links->hasEntry(linkHash));
+                        
+                        // impress assocations on goal2link map
+                        int numAssociations = lexical_cast<int>(t.second.data());
+                        for(int i = 0; i < numAssociations; i++)
+                        {
+                            Link* linki = links->getEntry(linkHash);
+                            Goal* goali = goals->getEntry(goalHash);
+                            
+                            goalToLink->linkTraversed(linki, goali);
+                        }
+                    }
+                }
+            }
 		}
+        
+        RoutePrediction* rp = new RoutePrediction();
+        rp->addPredictionElements(links, goals, goalToLink, linkToState);
+        
+        return rp;
 	} catch(const std::exception& e) {
 		std::cout << e.what() << std::endl;
 	}
-    // TODO
+    
     return NULL;
 }
 

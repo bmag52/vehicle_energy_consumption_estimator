@@ -22,7 +22,7 @@ private:
 	GenericMap<long int, GoalMapEntry<long int, int>*>* goalMap;
     
 public:
-	int maps_size;
+
 	GoalToLinkMap();
 	GoalToLinkMap(GoalToLinkMap &other);
 	int linkTraversed(Link* link, Goal* goal);

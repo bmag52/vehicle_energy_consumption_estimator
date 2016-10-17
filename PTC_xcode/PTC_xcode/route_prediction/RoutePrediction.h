@@ -66,6 +66,11 @@ public:
     GenericMap<long int, Goal*>* getGoals();
     LinkToStateMap* getLinkToState();
     GoalToLinkMap* getGoalToLink();
+    void addPredictionElements(GenericMap<long int, Link*>* newLinks,
+                               GenericMap<long int, Goal*>* newGoals,
+                               GoalToLinkMap* newGoalToLink,
+                               LinkToStateMap* newLinkToState);
+    void addCity(City* newCity);
 };
 
 

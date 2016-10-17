@@ -34,7 +34,7 @@ Link* makeLinks(int numberOfLinks)
     return links;
 }
 
-RoutePrediction* routePrediction_UT()
+RoutePrediction* routePrediction_ut()
 {
     // seed random generator
     std::srand(std::time(0));
@@ -94,8 +94,10 @@ RoutePrediction* routePrediction_UT()
     // build city
     City* city = new City(intersections, roads, new GenericMap<int, Bounds*>());
     Link* links = makeLinks(5);
-    std::vector<float> conditions = {1, 2};
-    Goal goal(1, &conditions);
+    std::vector<float>* conditions = new std::vector<float>(2);
+    conditions->at(0) = 1;
+    conditions->at(1) = 2;
+    Goal goal(1, conditions);
     
     // add routes to route prediction
     RoutePrediction* rp = new RoutePrediction(city);
@@ -107,7 +109,7 @@ RoutePrediction* routePrediction_UT()
     Route startRoute;
     startRoute.addLink(&link);
     startRoute.assignGoal(&goal);
-    Route* actualRoute = city->randomPath(startIntersection, &startRoute, routeLength, &conditions);
+    Route* actualRoute = city->randomPath(startIntersection, &startRoute, routeLength, conditions);
     
     // add trainging iterations here (simulates driving over the route multiple times)
     rp->parseRoute(actualRoute);
@@ -122,10 +124,10 @@ RoutePrediction* routePrediction_UT()
     for(int i = 1; i <= num_rand_routes; i++)
     {
         // create random route
-        Route* randomRoute = city->randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), &conditions);
+        Route* randomRoute = city->randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), conditions);
         while(randomRoute->isEqual(actualRoute))
         {
-            randomRoute = city->randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), &conditions);
+            randomRoute = city->randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), conditions);
         }
         
         // add random route to test set
@@ -134,7 +136,7 @@ RoutePrediction* routePrediction_UT()
     
     // predict actual route as it is 'driven' over
     int predIter = 1;
-    Route* predRoute = rp->startPrediction(startIntersection, &conditions);
+    Route* predRoute = rp->startPrediction(startIntersection, conditions);
     while(actualRoute->getLinkSize() > 1)
     {
         std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;

@@ -373,5 +373,29 @@ void RoutePrediction::parseRoute(Route* route)
 		this->links->addEntry(lj->getHash(), lj);
 	}
 }
+    
+void RoutePrediction::addPredictionElements(GenericMap<long int, Link*>* newLinks,
+                                            GenericMap<long int, Goal*>* newGoals,
+                                            GoalToLinkMap* newGoalToLink,
+                                            LinkToStateMap* newLinkToState)
+{
+    delete(this->links);
+    this->links = newLinks;
+    
+    delete(this->goals);
+    this->goals = newGoals;
+    
+    delete(this->goalToLink);
+    this->goalToLink = newGoalToLink;
+    
+    delete(this->linkToState);
+    this->linkToState = newLinkToState;
+}
+void RoutePrediction::addCity(City* newCity)
+{
+
+    delete(this->city);
+    this->city = newCity;
+}
 
 } /* namespace PredictivePowertrain */

@@ -81,7 +81,7 @@ Link* Link::linkFromRoad(Road* road, Intersection* intersection) {
 	return link;
 }
     
-void Link::setWeights(Eigen::MatrixXd* wts, Eigen::MatrixXd* yHid, Eigen::MatrixXd* yInHid, int direction)
+void Link::setWeights(std::vector<Eigen::MatrixXd*>* wts, std::vector<Eigen::MatrixXd*>* yHid, std::vector<Eigen::MatrixXd*>* yInHid, int direction)
 {
     if(direction == 1)
     {
@@ -97,20 +97,20 @@ void Link::setWeights(Eigen::MatrixXd* wts, Eigen::MatrixXd* yHid, Eigen::Matrix
     }
 }
     
-std::list<Eigen::MatrixXd*>* Link::getWeights(int direction)
+std::vector<std::vector<Eigen::MatrixXd*>*>* Link::getWeights(int direction)
 {
-    std::list<Eigen::MatrixXd*>* returnList = new std::list<Eigen::MatrixXd*>();
+    std::vector<std::vector<Eigen::MatrixXd*>*>* returnList = new std::vector<std::vector<Eigen::MatrixXd*>*>(3);
     if(direction == 1)
     {
-        returnList->push_front(this->WtsA);
-        returnList->push_front(this->yHidA);
-        returnList->push_front(this->yInHidA);
+        returnList->at(0) = this->WtsA;
+        returnList->at(1) = this->yHidA;
+        returnList->at(2) = this->yInHidA;
     }
     else
     {
-        returnList->push_front(this->WtsB);
-        returnList->push_front(this->yHidB);
-        returnList->push_front(this->yInHidB);
+        returnList->at(0) = this->WtsB;
+        returnList->at(1) = this->yHidB;
+        returnList->at(2) = this->yInHidB;
     }
     return returnList;
 }

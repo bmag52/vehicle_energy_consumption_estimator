@@ -9,6 +9,7 @@
 #define UNIT_TESTS_UNITTESTS_H_
 
 #include "../route_prediction/RoutePrediction.h"
+#include "../speed_prediction/SpeedPrediction.h"
 
 void buildCity_ut();
 void citySection_ut();
@@ -24,8 +25,8 @@ void linkToStateMapEntry_ut();
 void linkToStateMap_ut();
 void node_ut();
 void route_ut();
-PredictivePowertrain::RoutePrediction* routePrediction_UT();
+PredictivePowertrain::RoutePrediction* routePrediction_ut();
+PredictivePowertrain::SpeedPrediction* speedPrediction_ut();
 void roadTypes_ut();
-void speedPrediction_ut();
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

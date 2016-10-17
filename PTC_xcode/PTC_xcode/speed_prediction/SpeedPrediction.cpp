@@ -7,8 +7,6 @@
 
 #include "SpeedPrediction.h"
 
-using Eigen::MatrixXd;
-
 namespace PredictivePowertrain {
 
 SpeedPrediction::SpeedPrediction()
@@ -16,40 +14,40 @@ SpeedPrediction::SpeedPrediction()
 	initParams();
 
 	// initialize weights of NN
-	this->Wts = new Eigen::MatrixXd[this->lastLayer + 1];
+    this->Wts = new std::vector<Eigen::MatrixXd*>(this->lastLayer + 1);
 	for(int i = 0; i < this->lastLayer + 1; i++)
 	{
 		int L1 = this->totalLayers[i];
 		int L2 = this->totalLayers[i+1];
 
-		this->Wts[i] = Eigen::MatrixXd::Zero(L2,L1+1);
+		this->Wts->at(i) = new Eigen::MatrixXd(L2,L1+1);
 
 		for(int j = 0; j <= L1; j++)
 		{
 			for(int k = 0; k < L2; k++)
 			{
-                this->Wts[i](k,j) = -.01 + .02 * (double) std::rand() / RAND_MAX;
+                this->Wts->at(i)->coeffRef(k, j) = -.01 + .02 * (double) std::rand() / RAND_MAX;
 			}
 		}
 	}
 
 	// initialize hidden layer outputs
-	this->yHid = new Eigen::MatrixXd[this->lastLayer];
+    this->yHid = new std::vector<Eigen::MatrixXd*>(this->lastLayer);
 	for(int i = 0; i < this->lastLayer; i++)
 	{
-		this->yHid[i] = Eigen::MatrixXd::Zero(1,this->HN[i]+1);
+		this->yHid->at(i) = new Eigen::MatrixXd(1, this->HN[i] + 1);
 	}
 
 	// initialize hidden layer inputs
-	this->yInHid = new Eigen::MatrixXd[this->lastLayer+1];
+    this->yInHid = new std::vector<Eigen::MatrixXd*>(this->lastLayer + 1);
 	for(int i = 0; i < this->lastLayer+1; i++)
 	{
-		this->yInHid[i] = Eigen::MatrixXd::Zero(1,this->totalLayers[i+1]);
+		this->yInHid->at(i) = new Eigen::MatrixXd(1,this->totalLayers[i+1]);
 	}
 }
 
 // create NN using inputted weights and activations
-SpeedPrediction::SpeedPrediction(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid)
+SpeedPrediction::SpeedPrediction(std::vector<Eigen::MatrixXd*>* Wts, std::vector<Eigen::MatrixXd*>* yHid, std::vector<Eigen::MatrixXd*>* yInHid)
 {
     
     // must assert NN geometry matches geometr of input
@@ -111,33 +109,33 @@ void SpeedPrediction::predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_ou
 	// **input to hidden layers
 	for(int i = 0; i < this->HN[0]; i++)
 	{
-		Eigen::MatrixXd tempWts = this->Wts[0].row(i);        
+        Eigen::MatrixXd tempWts = this->Wts->at(0)->row(i);
 		double act = (x*tempWts.transpose())(0);
-		this->yInHid[0](0,i) = act;
-		this->yHid[0](0,i) = 1 / (1 + exp(-act));
+        this->yInHid->at(0)->coeffRef(0,i) = act;
+        this->yHid->at(0)->coeffRef(0,i) = 1 / (1 + std::exp(-act));
 	}
-	this->yHid[0](0,this->HN[0]) = 1;
+    this->yHid->at(0)->coeffRef(0,this->HN[0]) = 1;
 
 	// **through hidden layers
 	for(int i = 1; i <= this->HL; i++)
 	{
 		for(int j = 0; j < this->HN[i]; j++)
 		{
-			Eigen::MatrixXd tempWts = this->Wts[i].row(j);
-			double act = (this->yHid[i-1]*tempWts.transpose())(0);
-			this->yInHid[i](0,j) = act;
-			this->yHid[i](0,j) = 1 / (1 + exp(-act));
+            Eigen::MatrixXd tempWts = this->Wts->at(i)->row(j);
+			double act = ((*this->yHid->at(i-1))*tempWts.transpose())(0);
+            this->yInHid->at(i)->coeffRef(0,j) = act;
+            this->yHid->at(i)->coeffRef(0,j) = 1 / (1 + std::exp(-act));
 		}
-		this->yHid[i](0,this->HN[i]) = 1;
+        this->yHid->at(i)->coeffRef(0,this->HN[i]) = 1;
 	}
 
 	// **hidden to output layers
 	for(int i = 0; i < this->O; i++)
 	{
-		Eigen::MatrixXd tempWts = this->Wts[this->lastLayer].row(i);
-		double act = (this->yHid[this->lastLayer-1]*tempWts.transpose())(0);
-		yInHid[this->lastLayer](0,i) = act;
-		(*spd_out)(0,i) = 1 / (1 + exp(-act));
+        Eigen::MatrixXd tempWts = this->Wts->at(this->lastLayer)->row(i);
+		double act = ((*this->yHid->at(this->lastLayer-1))*tempWts.transpose())(0);
+        this->yInHid->at(this->lastLayer)->coeffRef(0,i) = act;
+        (*spd_out)(0,i) = 1 / (1 + std::exp(-act));
 	}
 }
 
@@ -153,10 +151,10 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 	{
 		double outError = (*spd_act)(0,j) - (*spd_pred)(0,j);
 		double outDelta = outError*(*spd_pred)(0,j)*(1-(*spd_pred)(0,j));
-		Eigen::MatrixXd tempWts = this->Wts[this->lastLayer].row(j);
+        Eigen::MatrixXd tempWts = this->Wts->at(this->lastLayer)->row(j);
 
 		abc.row(j) = tempWts*outDelta;
-		this->Wts[this->lastLayer].row(j) = tempWts+this->alpha*this->yHid[this->lastLayer-1]*outDelta;
+		this->Wts->at(this->lastLayer)->row(j) = tempWts+this->alpha*(*this->yHid->at(this->lastLayer-1))*outDelta;
 	}
 
 	// **propagate output through all hidden layers
@@ -165,7 +163,7 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 	for(int i = this->lastLayer-1; i > 0; i--)
 	{
 		// create some dimension dependent locals
-		Eigen::MatrixXd yHidTemp = this->yHid[i];
+        Eigen::MatrixXd yHidTemp = (*this->yHid->at(i));
 		Eigen::MatrixXd hidDelta = abc.transpose();
 		Eigen::MatrixXd ones = Eigen::MatrixXd::Ones(1,yHidTemp.cols());
 
@@ -176,8 +174,8 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 		}
 
 		// update weights on the hidden layer neurons and include input bias
-		Eigen::MatrixXd yHtemp = this->yHid[i-1];
-		Eigen::MatrixXd tempWts = this->Wts[i];
+        Eigen::MatrixXd yHtemp = (*this->yHid->at(i-1));
+        Eigen::MatrixXd tempWts = (*this->Wts->at(i));
 
 		// before updating weights, calculate the delta abc without bias term
 		abc = Eigen::MatrixXd::Zero(this->O,this->totalLayers[i]+1);
@@ -200,7 +198,7 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 
 		for(int j = 0; j < this->HN[this->HL-index]; j++)
 		{
-			this->Wts[i].row(j) = tempWts.col(j);
+			this->Wts->at(i)->row(j) = tempWts.col(j);
 		}
 
 		index++;
@@ -208,7 +206,7 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 	}
 
 	// **propagate from hidden to input layer
-	Eigen::MatrixXd yHidTemp = this->yHid[this->HL-index];
+    Eigen::MatrixXd yHidTemp = (*this->yHid->at(this->HL-index));
 	Eigen::MatrixXd hidDelta = abc.transpose();
 	Eigen::MatrixXd ones = Eigen::MatrixXd::Ones(1,yHidTemp.cols());
 
@@ -219,7 +217,7 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 	}
 
 	// update weights on the hidden layer neurons
-	Eigen::MatrixXd tempWts = this->Wts[0];
+    Eigen::MatrixXd tempWts = (*this->Wts->at(0));
 	Eigen::MatrixXd yHtemp = Eigen::MatrixXd::Zero(1,this->I+1);
 	yHtemp = x;
 	yHtemp(0,this->I) = 1;
@@ -236,17 +234,17 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 
 	for(int j = 0; j < this->HN[0]; j++)
 	{
-		this->Wts[0].row(j) = tempWts.col(j);
+		this->Wts->at(0)->row(j) = tempWts.col(j);
 	}
 }
 
 // send address of weights
-std::list<Eigen::MatrixXd*>* SpeedPrediction::getVals()
+std::vector<std::vector<Eigen::MatrixXd*>*>* SpeedPrediction::getVals()
 {
-	std::list<Eigen::MatrixXd*>* returnList = new std::list<Eigen::MatrixXd*>();
-	returnList->push_front(this->Wts);
-	returnList->push_front(this->yHid);
-	returnList->push_front(this->yInHid);
+    std::vector<std::vector<Eigen::MatrixXd*>*>* returnList = new std::vector<std::vector<Eigen::MatrixXd*>*>(3);
+	returnList->at(0) = this->Wts;
+	returnList->at(1) = this->yHid;
+	returnList->at(2) = this->yInHid;
 	return returnList;
 }
 
@@ -299,21 +297,21 @@ void SpeedPrediction::printAll()
 	std::cout << "Wts" << std::endl;
 	for(int i = 0; i < this->lastLayer + 1; i++)
 	{
-		std::cout << this->Wts[i] << std::endl << std::endl;
+		std::cout << (*this->Wts->at(i)) << std::endl << std::endl;
 	}
 
 	// yHid
 	std::cout << "yHid" << std::endl;
 	for(int i = 0; i < this->lastLayer; i++)
 	{
-		std::cout << this->yHid[i] << std::endl << std::endl;
+		std::cout << (*this->yHid->at(i)) << std::endl << std::endl;
 	}
 
 	// yInHid
 	std::cout << "yInHid" << std::endl;
 	for(int i = 0; i < this->lastLayer+1; i++)
 	{
-		std::cout << this->yInHid[i] << std::endl << std::endl;
+		std::cout << (*this->yInHid->at(i)) << std::endl << std::endl;
 	}
 
 	// last layer

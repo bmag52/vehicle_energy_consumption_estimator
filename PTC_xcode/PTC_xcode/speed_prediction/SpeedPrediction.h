@@ -13,6 +13,7 @@
 #include <assert.h>
 #include <list>
 #include <ctime>
+#include <vector>
 
 namespace PredictivePowertrain {
 
@@ -27,18 +28,18 @@ private:
 	int *totalLayers;			// total number of layers
 	double lb_offset;			// lower bound offset
 	double alpha; 				// learning rate
-	Eigen::MatrixXd * Wts;		// matrix of weights
-	Eigen::MatrixXd * yHid;		// hidden layer outputs
-	Eigen::MatrixXd * yInHid;	// hidden layer inputs
+    std::vector<Eigen::MatrixXd*>* Wts;         // matrix of weights
+    std::vector<Eigen::MatrixXd*>* yHid;		// hidden layer outputs
+    std::vector<Eigen::MatrixXd*>* yInHid;      // hidden layer inputs
 
 	void initParams();
 	void printAll();
 public:
 	SpeedPrediction();
-	SpeedPrediction(Eigen::MatrixXd * Wts, Eigen::MatrixXd * yHid, Eigen::MatrixXd * yInHid);
+	SpeedPrediction(std::vector<Eigen::MatrixXd*>* Wts, std::vector<Eigen::MatrixXd*>* yHid, std::vector<Eigen::MatrixXd*>* yInHid);
 	void predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_out);
 	void train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd * spd_act, Eigen::MatrixXd * spd_in);
-	std::list<Eigen::MatrixXd*>* getVals();
+	std::vector<std::vector<Eigen::MatrixXd*>*>* getVals();
 	int getI();
 	int getO();
 	void formatInData(Eigen::MatrixXd * input);

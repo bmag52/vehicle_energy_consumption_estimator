@@ -33,17 +33,17 @@ using namespace PredictivePowertrain;
 
 
 // unit test for the SpeedPrediction class
-void speedPrediction_ut(){
+SpeedPrediction* speedPrediction_ut(){
     
     int testEpochs = 100; // number of calls
     int refreshRate = 1; // call every one unit of input
     
-    SpeedPrediction sp;
+    SpeedPrediction* sp = new SpeedPrediction();
     
     std::ofstream myfile("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/speedPredictionResults.csv");
     std::ifstream input("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/spd.csv");
-    int I = sp.getI();
-    int O = sp.getO();
+    int I = sp->getI();
+    int O = sp->getO();
     
     Eigen::MatrixXd spd_in = Eigen::MatrixXd::Zero(1,10000);
     Eigen::MatrixXd spd_temp = Eigen::MatrixXd::Random(1,10000)*150;
@@ -74,18 +74,18 @@ void speedPrediction_ut(){
         Eigen::MatrixXd temp_pred = Eigen::MatrixXd::Zero(1,O);
         
         // Format input data
-        sp.formatInData(&temp_in);
-        sp.scaleTrainingSpeed(&temp_act);
+        sp->formatInData(&temp_in);
+        sp->scaleTrainingSpeed(&temp_act);
         
         // predict with historical data
-        sp.predict(&temp_in, &temp_pred);
+        sp->predict(&temp_in, &temp_pred);
         
         // train the model
-        sp.train(&temp_pred, &temp_act, &temp_in);
+        sp->train(&temp_pred, &temp_act, &temp_in);
         
         // format output data
-        sp.formatOutData(&temp_pred);
-        sp.unscaleTrainingSpeed(&temp_act);
+        sp->formatOutData(&temp_pred);
+        sp->unscaleTrainingSpeed(&temp_act);
         
         // concatenate predicted and actual data
         int index = k-(I+1);
@@ -107,4 +107,6 @@ void speedPrediction_ut(){
         myfile << spd_pred(0,i);
         myfile << "\n";
     }
+    
+    return sp;
 }

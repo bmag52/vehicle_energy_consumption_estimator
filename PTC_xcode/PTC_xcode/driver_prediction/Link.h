@@ -13,6 +13,7 @@
 
 #include <eigen3/Eigen/Dense>
 #include <list>
+#include <vector>
 
 namespace PredictivePowertrain {
 
@@ -24,14 +25,14 @@ private:
     int link_direction;
     
     // input weights on A-end of link
-    Eigen::MatrixXd * WtsA;		// matrix of weights
-    Eigen::MatrixXd * yHidA;	// hidden layer outputs
-    Eigen::MatrixXd * yInHidA;	// hidden layer inputs
+    std::vector<Eigen::MatrixXd*>* WtsA;		// matrix of weights
+    std::vector<Eigen::MatrixXd*>* yHidA;	// hidden layer outputs
+    std::vector<Eigen::MatrixXd*>* yInHidA;	// hidden layer inputs
     
     // input weights on B-end of link
-    Eigen::MatrixXd * WtsB;		// matrix of weights
-    Eigen::MatrixXd * yHidB;	// hidden layer outputs
-    Eigen::MatrixXd * yInHidB;	// hidden layer inputs
+    std::vector<Eigen::MatrixXd*>* WtsB;		// matrix of weights
+    std::vector<Eigen::MatrixXd*>* yHidB;	// hidden layer outputs
+    std::vector<Eigen::MatrixXd*>* yInHidB;	// hidden layer inputs
     
     int numNNLayers;
     void initialize();
@@ -49,8 +50,8 @@ public:
 	static Link* newLinkFromHash(long int);
 	static Link* finalLink();
 	Link* linkFromRoad(Road* road, Intersection* intersection);
-    void setWeights(Eigen::MatrixXd* wts, Eigen::MatrixXd* yHid, Eigen::MatrixXd* yInHid, int direction);
-    std::list<Eigen::MatrixXd*>* getWeights(int direction);
+    void setWeights(std::vector<Eigen::MatrixXd*>* wts, std::vector<Eigen::MatrixXd*>* yHid, std::vector<Eigen::MatrixXd*>* yInHid, int direction);
+    std::vector<std::vector<Eigen::MatrixXd*>*>* getWeights(int direction);
     void setNumNNLayers(int num);
     int getNumNNLayers();
 };

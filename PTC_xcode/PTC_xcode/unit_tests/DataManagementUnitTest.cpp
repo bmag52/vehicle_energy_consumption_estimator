@@ -92,11 +92,29 @@ void dataManagement_ut() {
 	City* city = new City(intersections, roads, boundsMap);
 	testDM.addCityData(city);
     
-    // add route prediction data
-    RoutePrediction* rp = routePrediction_UT();
+    // add prediction data
+    SpeedPrediction* sp = speedPrediction_ut();
+    RoutePrediction* rp = routePrediction_ut();
+    
+    rp->getLinks()->initializeCounter();
+    GenericEntry<long int, Link*>* nextLink = rp->getLinks()->nextEntry();
+    while(nextLink != NULL)
+    {
+        std::vector<std::vector<Eigen::MatrixXd*>*>* nnData = sp->getVals();
+        std::vector<Eigen::MatrixXd*>* wts = nnData->at(0); 
+        std::vector<Eigen::MatrixXd*>* yHid = nnData->at(1);
+        std::vector<Eigen::MatrixXd*>* yInHid = nnData->at(2);
+        
+        nextLink->value->setWeights(wts, yHid, yInHid, 1);
+        nextLink->value->setWeights(wts, yHid, yInHid, 0);
+        nextLink->value->setNumNNLayers(sp->getNumLayers());
+        
+        nextLink = rp->getLinks()->nextEntry();
+    }
+    
     testDM.addRoutePredictionData(rp);
 
-    // retrieve stored data
+    // retrieve stored city data
 	City* storedCity = testDM.getCityData();
     
     // check sizes
@@ -164,6 +182,12 @@ void dataManagement_ut() {
 	}
 	assert(hasAllBounds);
     
+    // retrieve stored route prediction data
+    RoutePrediction* storedrp = testDM.getRoutePredictionData();
+//    LinkToStateMap* storedLink2State = storedrp->getLinkToState();
+//    GoalToLinkMap* storeGoal2Link = storedrp->getGoalToLink();
+//    GenericMap<long int, Link*>* storedLinks = storedrp->getLinks();
+//    GenericMap<long int, Goal*>* storedGoals = storedrp->getGoals();
     
 }
 

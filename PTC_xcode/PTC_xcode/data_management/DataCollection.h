@@ -17,6 +17,7 @@
 #include "boost/foreach.hpp"
 #include "boost/property_tree/ptree.hpp"
 #include "boost/property_tree/xml_parser.hpp"
+#include <boost/property_tree/json_parser.hpp>
 
 // query
 #include "boost/lexical_cast.hpp"
@@ -25,8 +26,10 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/unsupported/Eigen/Splines>
 
+#include <chrono>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string>
@@ -89,6 +92,7 @@ public:
 	std::string getDataFolder();
 	std::string getMapPNGName();
 	int getElevation(double lat, double lon);
+    void updateElevationData(GenericMap<long int, Road*>* roads);
 
 };
 

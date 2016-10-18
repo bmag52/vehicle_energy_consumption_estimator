@@ -12,7 +12,7 @@ namespace PredictivePowertrain {
 Node::Node() {
 }
 
-Node::Node(double lat, double lon, int ele, long int id) {
+Node::Node(double lat, double lon, float ele, long int id) {
 	this->lat = lat;
 	this->lon = lon;
 	this->ele = ele;
@@ -33,6 +33,11 @@ long int Node::getID() {
 
 int Node::getEle() {
 	return this->ele;
+}
+    
+void Node::setEle(float newEle)
+{
+    this->ele = newEle;
 }
 
 }

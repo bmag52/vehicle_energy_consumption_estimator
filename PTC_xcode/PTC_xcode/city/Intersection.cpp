@@ -11,7 +11,7 @@
 
 namespace PredictivePowertrain {
 
-Intersection::Intersection(GenericMap<long int, Road*>* roads, double lat, double lon, int elev, long int intersectNum) {
+Intersection::Intersection(GenericMap<long int, Road*>* roads, double lat, double lon, float elev, long int intersectNum) {
 	this->roads = roads;
 //	this->interSectionType = IntersectionTypes(intersectType);
 	this->lat = lat;
@@ -153,6 +153,11 @@ void Intersection::setBoundsID(int ID) {
 
 int Intersection::getBoudsID() {
 	return this->boundsID;
+}
+    
+void Intersection::setElev(float newElev)
+{
+    this->elevation = newElev;
 }
 
 } /* namespace PredictivePowertrain */

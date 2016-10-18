@@ -137,7 +137,7 @@ void BuildCity::updateGridDataXMLSpline()
                     if(!rawInts.hasEntry(intID))
                     {
                         float cses = closeSplineEvals.getSize() + 1.0;
-                        rawInts.addEntry(intID, new Intersection(connectingRoads, avgLat/cses, avgLon/cses, 0, intID));
+                        rawInts.addEntry(intID, new Intersection(connectingRoads, avgLat/cses, avgLon/cses, -1000, intID));
                     }
                         
                 }
@@ -240,7 +240,7 @@ void BuildCity::updateGridDataXMLSpline()
             
             // create new intersection with average lat / lon and new connecting road
             float cis = closeInts.getSize();
-            refinedInts.addEntry(intersectionID, new Intersection(connectingRoads, avgLat/cis, avgLon/cis, 0, intersectionID));
+            refinedInts.addEntry(intersectionID, new Intersection(connectingRoads, avgLat/cis, avgLon/cis, -1000, intersectionID));
         }
         
         // ******** TRIM ROAD SECTIONS ********
@@ -313,7 +313,11 @@ void BuildCity::updateGridDataXMLSpline()
                                 splineEndIntID = nextOtherInt->value->getIntersectionID();
                             }
                             
-                            nodes->addEntry(evalCount, new Node(nextOtherInt->value->getLat(), nextOtherInt->value->getLon(), 0, nextOtherInt->value->getIntersectionID()));
+                            double intLat = nextOtherInt->value->getLat();
+                            double intLon = nextOtherInt->value->getLon();
+                            long int intID = nextOtherInt->value->getIntersectionID();
+                            
+                            nodes->addEntry(evalCount, new Node(intLat, intLon, -1000, intID));
                             evalCount++;
                             
                             break;
@@ -326,7 +330,7 @@ void BuildCity::updateGridDataXMLSpline()
                     // take measurement of spline evaluation between intersections
                     if(splineStartIntID != -1 && splineEndIntID == -1)
                     {
-                        nodes->addEntry(evalCount, new Node(pt(0,0), pt(1,0), 0, nextConnectingRoad->key));
+                        nodes->addEntry(evalCount, new Node(pt(0,0), pt(1,0), -1000, nextConnectingRoad->key));
                         evalCount++;
                     }
                     
@@ -467,6 +471,16 @@ void BuildCity::updateGridDataXMLSpline()
             nextInt = refinedInts.nextEntry();
         }
         delete(nextInt);
+        
+        // add elevation
+        this->newInts->initializeCounter();
+        GenericEntry<long int, Intersection*>* nextNewInt = this->newInts->nextEntry();
+        while(nextNewInt != NULL)
+        {
+            dc->updateElevationData(nextNewInt->value->getRoads());
+            nextNewInt = this->newInts->nextEntry();
+        }
+        delete(nextNewInt);
     }
 }
 

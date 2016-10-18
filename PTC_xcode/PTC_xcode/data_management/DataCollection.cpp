@@ -10,6 +10,7 @@
 using namespace boost::asio;
 using boost::asio::ip::tcp;
 using boost::lexical_cast;
+using boost::property_tree::ptree;
 
 using namespace boost::property_tree;
 
@@ -307,6 +308,140 @@ std::string DataCollection::getBin(double hi, double lo, int bins, double latLon
 		out = lexical_cast<std::string>(bin);
 	}
 	return out;
+}
+    
+void DataCollection::updateElevationData(GenericMap<long int, Road*>* roads)
+{
+    const char* latPrint = "\"lat\"";
+    const char* lonPrint = "\"lon\"";
+    const char* shapePrint = "\"shape\"";
+    
+    std::string server = "elevation.mapzen.com";
+    std::string command = "/height?json=";
+    std::string apiKey = "&api_key=mapzen-4mUVq1A";
+    std::string elevFile = this->dataFolder + "/newRoadElevation.txt";
+
+    roads->initializeCounter();
+    GenericEntry<long int, Road*>* nextRoad = roads->nextEntry();
+    while(nextRoad != NULL)
+    {
+        std::stringstream json;
+        json << "{" << shapePrint << ":[";
+        
+        // iterate through nodes and add them to string to be concatenated yo
+        bool alreadyAssignedElevation = false;
+        nextRoad->value->getNodes()->initializeCounter();
+        GenericEntry<long int, Node*>* nextNode = nextRoad->value->getNodes()->nextEntry();
+        
+        json << "{" << latPrint << ":";
+        json << boost::lexical_cast<std::string>(nextNode->value->getLat());
+        json << "," << lonPrint << ":";
+        json << boost::lexical_cast<std::string>(nextNode->value->getLon());
+        json << "}";
+        
+        while(true)
+        {
+            nextNode = nextRoad->value->getNodes()->nextEntry();
+            if(nextNode == NULL) { break; }
+            
+            if(nextNode->value->getEle() > -500)
+            {
+                alreadyAssignedElevation = true;
+                break;
+            }
+            
+            std::cout << "shit" << std::endl;
+            
+            json << ",{" << latPrint << ":";
+            json << boost::lexical_cast<std::string>(nextNode->value->getLat());
+            json << "," << lonPrint << ":";
+            json << boost::lexical_cast<std::string>(nextNode->value->getLon());
+            json << "}";
+        }
+        delete(nextNode);
+        
+        if(alreadyAssignedElevation)
+        {
+            nextRoad = roads->nextEntry();
+            continue;
+        }
+        
+        // check start and end ints if they have elevation
+        bool startIntHasElevation = nextRoad->value->getStartIntersection()->getElevation() > -500;
+        bool endIntHasElevation = nextRoad->value->getEndIntersection()->getElevation() > -500;
+        
+        if(!startIntHasElevation)
+        {
+            json << ",{" << latPrint << ":";
+            json << boost::lexical_cast<std::string>(nextRoad->value->getStartIntersection()->getLat());
+            json << "," << lonPrint << ":";
+            json << boost::lexical_cast<std::string>(nextRoad->value->getStartIntersection()->getLon());
+            json << "}";
+        }
+
+        if(!endIntHasElevation)
+        {
+            json << ",{" << latPrint << ":";
+            json << boost::lexical_cast<std::string>(nextRoad->value->getEndIntersection()->getLat());
+            json << "," << lonPrint << ":";
+            json << boost::lexical_cast<std::string>(nextRoad->value->getEndIntersection()->getLon());
+            json << "}";
+        }
+        
+        // make query
+        json << "]}";
+        std::string newCommand = command + json.str() + apiKey;
+        this->queryFile(server, newCommand, elevFile);
+        
+        auto start = std::chrono::system_clock::now();
+        while(1)
+        {
+            auto end = std::chrono::system_clock::now();
+            std::chrono::duration<double> diff = end - start;
+            
+            if(diff.count() > 1.0) { break; }
+        }
+        
+        // read query output
+        ptree elevData;
+        read_json(elevFile, elevData);
+        BOOST_FOREACH(ptree::value_type &u, elevData)
+        {
+            std::string elevFeature = u.first.data();
+            if(!elevFeature.compare("height"))
+            {
+                long int elevCount = 0;
+                // iterate through heigts and add them to road
+                BOOST_FOREACH(ptree::value_type &v, u.second)
+                {
+                    float elev = lexical_cast<float>(v.second.data());
+                    std::cout << elev << std::endl;
+                    
+                    if(elevCount < nextRoad->value->getNodes()->getSize())
+                    {
+                        nextRoad->value->getNodes()->getEntry(elevCount)->setEle(elev);
+                    }
+                    else if(elevCount == nextRoad->value->getNodes()->getSize() && !startIntHasElevation)
+                    {
+                        nextRoad->value->getStartIntersection()->setElev(elev);
+                    }
+                    else if(elevCount == nextRoad->value->getNodes()->getSize() && startIntHasElevation && !endIntHasElevation)
+                    {
+                        nextRoad->value->getEndIntersection()->setElev(elev);
+                    }
+                    else if(elevCount == nextRoad->value->getNodes()->getSize() + 1 && !startIntHasElevation && !endIntHasElevation)
+                    {
+                        nextRoad->value->getEndIntersection()->setElev(elev);
+                    }
+                    
+                    elevCount++;
+                }
+            }
+        }
+
+        nextRoad = roads->nextEntry();
+    }
+    delete(nextRoad);
 }
 
 void DataCollection::queryFile(std::string serverName, std::string getCommand, std::string fileName) {

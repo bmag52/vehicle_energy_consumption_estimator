@@ -28,5 +28,6 @@ void route_ut();
 PredictivePowertrain::RoutePrediction* routePrediction_ut();
 PredictivePowertrain::SpeedPrediction* speedPrediction_ut();
 void roadTypes_ut();
+void kinematics_ut();
 
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

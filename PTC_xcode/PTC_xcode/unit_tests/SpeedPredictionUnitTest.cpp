@@ -27,10 +27,7 @@
 
 #define PI 3.14159265
 
-
-using namespace std;
 using namespace PredictivePowertrain;
-
 
 // unit test for the SpeedPrediction class
 SpeedPrediction* speedPrediction_ut(){
@@ -50,12 +47,12 @@ SpeedPrediction* speedPrediction_ut(){
     Eigen::MatrixXd spd_act = Eigen::MatrixXd::Zero(1, 9986);
     Eigen::MatrixXd spd_pred = Eigen::MatrixXd::Zero(1, 9986);
     
-    string num;
+    std::string num;
     
     // read in speed from csv
     for (int i = 0; i<10000; i++){
-        getline(input, num, ',');
-        stringstream fs(num);
+        std::getline(input, num, ',');
+        std::stringstream fs(num);
         double f = 0.0;
         fs >> f;
         spd_in(0, i) = f;

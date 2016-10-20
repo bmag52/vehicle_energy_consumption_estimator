@@ -18,9 +18,7 @@ void GPS_ut() {
     while(i < 10)
     {
         std::pair<double, double> latLon = test.readGPS();
-        
         printf("%.6f,%.6f\n", latLon.first, latLon.second);
-        
         i++;
     }
     

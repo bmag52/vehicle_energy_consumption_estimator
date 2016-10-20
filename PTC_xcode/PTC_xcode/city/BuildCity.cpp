@@ -244,8 +244,29 @@ void BuildCity::updateGridDataXMLSpline()
         }
         
         // ******** TRIM ROAD SECTIONS ********
-        GenericMap<long int, Intersection*>* refinedIntsCopy = refinedInts.copy();
+
+        // pool new raw intersections and existing intersections
+        GenericMap<long int, Intersection*> allInts;
         
+        this->city->getIntersections()->initializeCounter(); // existing intersections
+        GenericEntry<long int, Intersection*>* nextCityInt = this->city->getIntersections()->nextEntry();
+        while(nextCityInt != NULL)
+        {
+            allInts.addEntry(nextCityInt->key, nextCityInt->value);
+            nextCityInt = this->city->getIntersections()->nextEntry();
+        }
+        delete(nextCityInt);
+        
+        refinedInts.initializeCounter(); // new intersections
+        GenericEntry<long int, Intersection*>* nextRefInt = refinedInts.nextEntry();
+        while(nextRefInt != NULL)
+        {
+            allInts.addEntry(nextRefInt->key, nextRefInt->value);
+            nextRefInt = refinedInts.nextEntry();
+        }
+        delete(nextRefInt);
+        
+        // iterate through refined ints to make road connections
         refinedInts.initializeCounter();
         GenericEntry<long int, Intersection*>* nextInt = refinedInts.nextEntry();
         while(nextInt != NULL)
@@ -276,16 +297,16 @@ void BuildCity::updateGridDataXMLSpline()
                 {
                     Eigen::Spline<double,2>::PointType pt = spline(u);
                     
-                    // find where ends of spline meet intersection
-                    refinedIntsCopy->initializeCounter();
-                    GenericEntry<long int, Intersection*>* nextOtherInt = refinedIntsCopy->nextEntry();
+                    // find where ends of spline meet intersection <---- mix existing intersection in here!
+                    allInts.initializeCounter();
+                    GenericEntry<long int, Intersection*>* nextOtherInt = allInts.nextEntry();
                     while(nextOtherInt != NULL)
                     {
                         float dist = converter.deltaLatLonToXY(pt(0,0), pt(1,0), nextOtherInt->value->getLat(), nextOtherInt->value->getLon());
                         
                         if(dist < this->evalIntervalLength + 2)
                         {
-                            // check to see if intersection already exists on path
+                            // check to see if intersection already exists on path incase the intersection has 2 close points near spline evaluation pt
                             bool hasInt = false;
                             nodes->initializeCounter();
                             GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
@@ -300,6 +321,7 @@ void BuildCity::updateGridDataXMLSpline()
                             }
                             delete(nextNode);
                             
+                            // break if repeated close int if found near same eval pt
                             if(hasInt) { break; }
                             
                             // add intersection
@@ -323,7 +345,7 @@ void BuildCity::updateGridDataXMLSpline()
                             break;
                         }
                         
-                        nextOtherInt = refinedIntsCopy->nextEntry();
+                        nextOtherInt = allInts.nextEntry();
                     }
                     delete(nextOtherInt);
                     
@@ -435,8 +457,6 @@ void BuildCity::updateGridDataXMLSpline()
                             
                             // fit first order spline spline
                             typedef Eigen::Spline<double, 2> spline2f;
-                            
-                            // fit spline
                             spline2f atomicRoadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
                             
                             // make new road
@@ -473,6 +493,7 @@ void BuildCity::updateGridDataXMLSpline()
         delete(nextInt);
         
         // add elevation
+        std::cout << "adding elevations to spline control points" << std::endl;
         this->newInts->initializeCounter();
         GenericEntry<long int, Intersection*>* nextNewInt = this->newInts->nextEntry();
         while(nextNewInt != NULL)
@@ -514,6 +535,7 @@ void BuildCity::printNewIntersectionsAndRoads()
             fprintf(csv, "%ld,", nextInt->value->getIntersectionID());
             fprintf(csv, "googlemini,");
             fprintf(csv, "Int ID: %ld | ", nextInt->value->getIntersectionID());
+            fprintf(csv, "Int Ele: %f | ", nextInt->value->getElevation());
             fprintf(csv, "Lat & Lon: %.12f %.12f | ", nextInt->value->getLat(), nextInt->value->getLon());
             fprintf(csv, "Connecting Roads: ");
             
@@ -535,23 +557,30 @@ void BuildCity::printNewIntersectionsAndRoads()
             nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
             while(nextConnectingRoad != NULL)
             {
-                // iterate along connecting road spline to find intersections in close proximity
-                Eigen::Spline<double,2> spline = nextConnectingRoad->value->getSpline();
-                double evalStepSize = this->evalIntervalLength / nextConnectingRoad->value->getSplineLength();
+                // iterate along connecting road spline control points
+                nextConnectingRoad->value->getNodes()->initializeCounter();
+                GenericEntry<long int, Node*>* nextNode = nextConnectingRoad->value->getNodes()->nextEntry();
                 
-                for(double u = evalStepSize; u <= 1.0 - evalStepSize; u += evalStepSize)
+                // burn a node so they are not superimposed on intersection
+                nextNode = nextConnectingRoad->value->getNodes()->nextEntry();
+                
+                int iterCount = 1;
+                while(iterCount < nextConnectingRoad->value->getNodes()->getSize() - 1)
                 {
-                    Eigen::Spline<double,2>::PointType pt = spline(u);
-                    
                     fprintf(csv, "%ld,", nextConnectingRoad->value->getRoadID());
                     fprintf(csv, "cirlce,");
                     fprintf(csv, "Road ID: %ld | ", nextConnectingRoad->value->getRoadID());
                     fprintf(csv, "Start Int ID: %ld | ", nextConnectingRoad->value->getStartIntersection()->getIntersectionID());
+                    fprintf(csv, "Node Ele: %f | ", nextNode->value->getEle());
                     fprintf(csv, "End Int ID: %ld | ", nextConnectingRoad->value->getEndIntersection()->getIntersectionID());
-                    fprintf(csv, "Lat & Lon: %.12f %.12f,", pt(0,0), pt(1,0));
+                    fprintf(csv, "Lat & Lon: %.12f %.12f,", nextNode->value->getLat(), nextNode->value->getLon());
                     fprintf(csv, "blue,");
-                    fprintf(csv, "%.12f,%.12f\n", pt(0,0), pt(1,0));
+                    fprintf(csv, "%.12f,%.12f\n", nextNode->value->getLat(), nextNode->value->getLon());
+                    
+                    nextNode = nextConnectingRoad->value->getNodes()->nextEntry();
+                    iterCount++;
                 }
+                delete(nextNode);
                 
                 nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
             }
@@ -1200,7 +1229,7 @@ std::pair<DataCollection*, Bounds*>* BuildCity::setupDataCollection() {
 bool BuildCity::hasNewBounds() {
     DataManagement dm;
     GenericMap<long int, std::pair<double, double>*>* tripLatLon = dm.getMostRecentTripData();
-    City* city = dm.getCityData();
+    this->city = dm.getCityData();
     
     this->maxLat = -DBL_MAX;
     this->maxLon = -DBL_MAX;
@@ -1209,10 +1238,10 @@ bool BuildCity::hasNewBounds() {
     
     tripLatLon->initializeCounter();
     GenericEntry<long int, std::pair<double, double>*>* nextTripLatLon = tripLatLon->nextEntry();
-    if(city != NULL)
+    if(this->city != NULL)
     {
         // bounds data already exists
-        GenericMap<int, Bounds*>* bounds = city->getBoundsMap();
+        GenericMap<int, Bounds*>* bounds = this->city->getBoundsMap();
         while(nextTripLatLon != NULL)
         {
             bounds->initializeCounter();

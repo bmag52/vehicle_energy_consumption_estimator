@@ -34,7 +34,7 @@ namespace PredictivePowertrain {
 class BuildCity {
 private:
     // functional
-    City city;
+    City* city;
     GenericMap<long int, Road*>* rawRoads;
     GenericMap<long int, Intersection*>* newInts;
     Eigen::MatrixXd adjMatFromSplines;

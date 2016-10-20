@@ -325,6 +325,8 @@ void DataCollection::updateElevationData(GenericMap<long int, Road*>* roads)
     GenericEntry<long int, Road*>* nextRoad = roads->nextEntry();
     while(nextRoad != NULL)
     {
+        std::cout << nextRoad->key << std::endl;
+        
         std::stringstream json;
         json << "{" << shapePrint << ":[";
         
@@ -349,8 +351,6 @@ void DataCollection::updateElevationData(GenericMap<long int, Road*>* roads)
                 alreadyAssignedElevation = true;
                 break;
             }
-            
-            std::cout << "shit" << std::endl;
             
             json << ",{" << latPrint << ":";
             json << boost::lexical_cast<std::string>(nextNode->value->getLat());
@@ -415,7 +415,6 @@ void DataCollection::updateElevationData(GenericMap<long int, Road*>* roads)
                 BOOST_FOREACH(ptree::value_type &v, u.second)
                 {
                     float elev = lexical_cast<float>(v.second.data());
-                    std::cout << elev << std::endl;
                     
                     if(elevCount < nextRoad->value->getNodes()->getSize())
                     {

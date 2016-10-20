@@ -38,7 +38,7 @@ public:
 	GenericMap<int, Link*>* getOutgoingLinks();
 	int getRoadCount();
 	long int getIntersectionID();
-	double getElevation();
+	float getElevation();
 	double getLat();
 	double getLon();
 	GenericMap<long int, Road*>* getRoads();

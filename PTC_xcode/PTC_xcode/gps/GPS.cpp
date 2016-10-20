@@ -12,6 +12,7 @@ namespace PredictivePowertrain {
 GPS::GPS() {
 	this->tripCount = 0;
     this->fd = -1;
+    this->deltaXYTolerance = 10.0;
 }
     
 GPS::GPS(double refLat, double refLon)
@@ -20,6 +21,7 @@ GPS::GPS(double refLat, double refLon)
     this->refLon = refLon;
     this->tripCount = 0;
     this->fd = -1;
+    this->deltaXYTolerance = 10.0;
 }
     
 GPS::~GPS()
@@ -27,21 +29,11 @@ GPS::~GPS()
     close(this->fd);
 }
 
-std::pair<double, double>* GPS::getLatLon() {
-	double lat, lon;
-
-
-	return new std::pair<double, double>(lat, lon);
-}
-
-bool GPS::isOnRoad(Road* road) {
-    // TODO
-    return NULL;
-}
-
 void GPS::updateTripLog() {
-	std::pair<double, double>* latLon = this->getLatLon();
-	this->tripLog.addEntry(this->tripCount++, latLon);
+	std::pair<double, double> latLonRef = this->readGPS();
+    std::pair<double, double>* latLonPtr = new std::pair<double, double>(latLonRef.first, latLonRef.second);
+	this->tripLog.addEntry(this->tripCount, latLonPtr);
+    this->tripCount++;
 }
 
 GenericMap<long int, std::pair<double, double>*>* GPS::getTripLog() {
@@ -111,7 +103,7 @@ void GPS::initializeGPSReader()
     
 std::pair<double, double> GPS::readGPS()
 {
-    if(this->fd == -1)
+    if(this->fd < 0)
     {
         this->initializeGPSReader();
     }
@@ -155,6 +147,45 @@ std::pair<double, double> GPS::readGPS()
                 }
             }
         }
+    }
+}
+    
+std::pair<bool, std::pair<double, double>> GPS::isOnRoad(Road* road)
+{
+    std::pair<double, double> latLon = this->readGPS();
+    
+    road->getNodes()->initializeCounter();
+    GenericEntry<long int, Node*>* nextNode = road->getNodes()->nextEntry();
+    while(nextNode != NULL)
+    {
+        if(this->deltaLatLonToXY(latLon.first, latLon.second, nextNode->value->getLat(), nextNode->value->getLon()) < this->deltaXYTolerance)
+        {
+            std::pair<bool, std::pair<double, double>> truePosition(true, latLon);
+            return truePosition;
+        }
+        nextNode = road->getNodes()->nextEntry();
+    }
+    delete(nextNode);
+    
+    std::pair<bool, std::pair<double, double>> falsePosistion(false, latLon);
+    return falsePosistion;
+
+}
+
+std::pair<bool, std::pair<double, double>> GPS::isAtIntersection(Intersection* intersection)
+{
+    std::pair<double, double> latLon = this->readGPS();
+    
+    if(this->deltaLatLonToXY(latLon.first, latLon.second, intersection->getLat(), intersection->getLon()) < this->deltaXYTolerance)
+    {
+        std::pair<bool, std::pair<double, double>> truePosition(true, latLon);
+        return truePosition;
+    }
+    
+    else
+    {
+        std::pair<bool, std::pair<double, double>> falsePosistion(false, latLon);
+        return falsePosistion;
     }
 }
     

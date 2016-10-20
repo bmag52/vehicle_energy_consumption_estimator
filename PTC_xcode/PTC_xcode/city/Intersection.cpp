@@ -37,7 +37,7 @@ long int Intersection::getIntersectionID() {
 	return this->ID;
 }
 
-double Intersection::getElevation() {
+float Intersection::getElevation() {
 	return this->elevation;
 }
 

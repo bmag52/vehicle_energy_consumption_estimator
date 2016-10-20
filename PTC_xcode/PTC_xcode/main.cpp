@@ -14,11 +14,11 @@ int main() {
     
 //    dataManagement_ut();
 //    dataCollection_ut();
-//    buildCity_ut();
+    buildCity_ut();
 //    speedPrediction_ut();
 //    routePrediction_ut();
 //    kinematics_ut();
-    GPS_ut();
+//    GPS_ut();
     
     
 

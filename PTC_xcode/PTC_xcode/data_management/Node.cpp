@@ -31,7 +31,7 @@ long int Node::getID() {
 	return this->id;
 }
 
-int Node::getEle() {
+float Node::getEle() {
 	return this->ele;
 }
     

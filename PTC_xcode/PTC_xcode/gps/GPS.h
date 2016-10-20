@@ -24,6 +24,7 @@
 #include <sys/ioctl.h>
 
 #include "../city/Road.h"
+#include "../city/Intersection.h"
 
 #define EARTH_RADIUS 6371000.0
 
@@ -33,6 +34,7 @@ class GPS {
 private:
 	GenericMap<long int, std::pair<double, double>*> tripLog;
 	long int tripCount;
+    double deltaXYTolerance;
     double toRadians(double degrees);
     double toDegrees(double radians);
     double refLat;
@@ -45,14 +47,15 @@ public:
 	GPS();
     GPS(double refLat, double refLon);
     ~GPS();
-	static std::pair<double, double>* getLatLon();
-	static bool isOnRoad(Road* road);
+    
 	void updateTripLog();
 	GenericMap<long int, std::pair<double, double>*>* getTripLog();
     float deltaLatLonToXY(double lat1, double lon1, double lat2, double lon2);
     std::pair<double, double>* convertLatLonToXY(double lat, double lon);
     std::pair<double, double>* convertXYToLatLon(double x, double y);
     std::pair<double, double> readGPS();
+    std::pair<bool, std::pair<double, double>> isOnRoad(Road* road);
+    std::pair<bool, std::pair<double, double>> isAtIntersection(Intersection* intersection);
 };
 
 }

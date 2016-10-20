@@ -23,7 +23,7 @@ public:
 	double getLat();
 	double getLon();
 	long int getID();
-	int getEle();
+	float getEle();
     void setEle(float newEle);
 };
 

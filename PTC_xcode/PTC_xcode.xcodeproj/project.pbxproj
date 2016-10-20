@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		D339C82E1DB7F73100FA4229 /* Kinematics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C82C1DB7F73100FA4229 /* Kinematics.cpp */; };
 		D339C8301DB82E4F00FA4229 /* KinematicsUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C82F1DB82E4F00FA4229 /* KinematicsUnitTest.cpp */; };
+		D339C8321DB9299200FA4229 /* GPSUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C8311DB9299200FA4229 /* GPSUnitTest.cpp */; };
 		D39E82E71DB2BFFF00B859A9 /* Probability.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D39E82E51DB2BFFF00B859A9 /* Probability.cpp */; };
 		D3B9107F1CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910481CE3EABC00B419B9 /* libopencv_videostab.2.4.11.dylib */; };
 		D3B910801CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D3B910491CE3EABC00B419B9 /* libopencv_calib3d.2.4.11.dylib */; };
@@ -209,6 +210,7 @@
 		D339C82C1DB7F73100FA4229 /* Kinematics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Kinematics.cpp; sourceTree = "<group>"; };
 		D339C82D1DB7F73100FA4229 /* Kinematics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kinematics.h; sourceTree = "<group>"; };
 		D339C82F1DB82E4F00FA4229 /* KinematicsUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KinematicsUnitTest.cpp; path = PTC_xcode/unit_tests/KinematicsUnitTest.cpp; sourceTree = "<group>"; };
+		D339C8311DB9299200FA4229 /* GPSUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPSUnitTest.cpp; path = PTC_xcode/unit_tests/GPSUnitTest.cpp; sourceTree = "<group>"; };
 		D39E82E51DB2BFFF00B859A9 /* Probability.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Probability.cpp; path = PTC_xcode/route_prediction/Probability.cpp; sourceTree = "<group>"; };
 		D39E82E61DB2BFFF00B859A9 /* Probability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Probability.h; path = PTC_xcode/route_prediction/Probability.h; sourceTree = "<group>"; };
 		D3B910291CE3C83B00B419B9 /* PTC_xcode */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PTC_xcode; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -716,6 +718,7 @@
 				D3FABC411CE524A400892002 /* DataManagementUnitTest.cpp */,
 				D3FABC421CE524A400892002 /* ElevationTypesUnitTest.cpp */,
 				D3FABC431CE524A400892002 /* GoalToLinkMapUnitTest.cpp */,
+				D339C8311DB9299200FA4229 /* GPSUnitTest.cpp */,
 				D3FABC441CE524A400892002 /* IntersectionTypesUnitTest.cpp */,
 				D3FABC451CE524A400892002 /* IntersectionUnitTest.cpp */,
 				D339C82F1DB82E4F00FA4229 /* KinematicsUnitTest.cpp */,
@@ -899,6 +902,7 @@
 				D3FABC8D1CE524A400892002 /* DataCollectionUnitTest.cpp in Sources */,
 				D3FABC8E1CE524A400892002 /* RouteUnitTest.cpp in Sources */,
 				D3FABC8F1CE524A400892002 /* CitySectionUnitTest.cpp in Sources */,
+				D339C8321DB9299200FA4229 /* GPSUnitTest.cpp in Sources */,
 				D3FABC901CE524A400892002 /* DataManagementUnitTest.cpp in Sources */,
 				D3FABC911CE524A400892002 /* ElevationTypesUnitTest.cpp in Sources */,
 				D3FABC921CE524A400892002 /* GoalToLinkMapUnitTest.cpp in Sources */,

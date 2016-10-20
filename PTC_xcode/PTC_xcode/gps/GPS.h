@@ -11,6 +11,18 @@
 #include <utility>
 #include <cmath>
 #include <math.h>
+
+#include <iostream>
+#include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <termios.h>
+#include <sys/ioctl.h>
+
 #include "../city/Road.h"
 
 #define EARTH_RADIUS 6371000.0
@@ -25,10 +37,14 @@ private:
     double toDegrees(double radians);
     double refLat;
     double refLon;
+    int fd;
+    
+    void initializeGPSReader();
 
 public:
 	GPS();
     GPS(double refLat, double refLon);
+    ~GPS();
 	static std::pair<double, double>* getLatLon();
 	static bool isOnRoad(Road* road);
 	void updateTripLog();
@@ -36,6 +52,7 @@ public:
     float deltaLatLonToXY(double lat1, double lon1, double lat2, double lon2);
     std::pair<double, double>* convertLatLonToXY(double lat, double lon);
     std::pair<double, double>* convertXYToLatLon(double x, double y);
+    std::pair<double, double> readGPS();
 };
 
 }

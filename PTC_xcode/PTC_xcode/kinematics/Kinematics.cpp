@@ -15,7 +15,7 @@ Kinematics::Kinematics()
 {
     this->distLookAhead = 28;
     this->distInterval = 5;
-    this->vehicleMass = 2000;
+    this->vehicleMass = 1508.195;
     this->airDensity = 0.3;
     this->frontSurfaceArea = 3;
     this->dragCoefficient = .3;
@@ -30,8 +30,8 @@ float Kinematics::runKinematics(std::vector<float> predictedSpeed,
 {
     // calculate tractive energy usage over look ahead distance
     float tractiveEnergy = 0.0;
-    for (int i = 0; i < this->distLookAhead; i++) {
-        
+    for (int i = 0; i < this->distLookAhead; i++)
+    {
         // acceleration
         float va = predictedSpeed.at(i);
         float vb = predictedSpeed.at(i + 1);

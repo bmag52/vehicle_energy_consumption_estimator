@@ -11,12 +11,20 @@ namespace PredictivePowertrain {
 
 GPS::GPS() {
 	this->tripCount = 0;
+    this->fd = -1;
 }
     
 GPS::GPS(double refLat, double refLon)
 {
     this->refLat = refLat;
     this->refLon = refLon;
+    this->tripCount = 0;
+    this->fd = -1;
+}
+    
+GPS::~GPS()
+{
+    close(this->fd);
 }
 
 std::pair<double, double>* GPS::getLatLon() {
@@ -78,6 +86,76 @@ double GPS::toDegrees(double radians)
 double GPS::toRadians(double degrees)
 {
     return degrees / 180.0 * M_PI;
+}
+    
+void GPS::initializeGPSReader()
+{
+    this->fd = open("/dev/tty.usbmodemFA131", O_RDONLY | O_NONBLOCK);
+    if(this->fd < 0)
+    {
+        std::cout << "Unable to open /dev/tty." << std::endl;
+    }
+    
+    struct termios theTermios;
+    
+    memset(&theTermios, 0, sizeof(struct termios));
+    cfmakeraw(&theTermios);
+    cfsetspeed(&theTermios, 115200);
+    
+    theTermios.c_cflag = CREAD | CLOCAL;     // turn on READ
+    theTermios.c_cflag |= CS8;
+    theTermios.c_cc[VMIN] = 0;
+    theTermios.c_cc[VTIME] = 10;     // 1 sec timeout
+    ioctl(this->fd, TIOCSETA, &theTermios);
+}
+    
+std::pair<double, double> GPS::readGPS()
+{
+    if(this->fd == -1)
+    {
+        this->initializeGPSReader();
+    }
+    
+    // define vars
+    char buf[255];
+    size_t res;
+    
+    while(true) // wait for read
+    {
+        res = read(this->fd,buf,255);
+        
+        if(res > 0)
+        {
+            buf[res]=0;
+            
+            std::string nmeaMsg(buf);
+            std::stringstream ss(nmeaMsg);
+            
+            std::string token;
+            while(std::getline(ss, token, ','))
+            {
+                if(!token.compare("$GNGLL"))
+                {
+                    std::string latString;
+                    std::string lonString;
+                    std::getline(ss, latString, ',');
+                    std::getline(ss, token, ',');
+                    std::getline(ss, lonString, ',');
+                    
+                    double lat = std::stod(latString) / 100;
+                    double lon = - std::stod(lonString) / 100;
+                    
+                    //printf("%.6f,%.6f\n", lat, lon);
+                    std::pair<double, double> latLon(lat, lon);
+                    return latLon;
+                    break;
+                }
+                else{
+                    break;
+                }
+            }
+        }
+    }
 }
     
 }

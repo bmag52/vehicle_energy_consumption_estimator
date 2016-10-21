@@ -53,9 +53,9 @@ public:
     Route* randomPath(Intersection* startInt, Route* initialRoute, int totalLength, std::vector<float>* conditions);
 	Intersection* getIntersection(int intersectionNum);
     Route* getPath(Intersection* start, Intersection* end, std::vector<float>* conditions, int fastest);
-	std::pair<std::vector<float>*, std::vector<float>*>* getRoadData(Link* link);
+    std::vector<float>* getElevData(Link* link);
 	bool legalRoute(Route* route);
-    std::pair<std::vector<float>*, std::vector<float>*>* routeToData(Route* route, int dist);
+    std::vector<float>* routeToElevData(Route* route, int dist);
 	GenericMap<int, Bounds*>* getBoundsMap();
 	GenericMap<long int, Road*>* getRoads();
 	GenericMap<long int, Intersection*>* getIntersections();

@@ -160,24 +160,20 @@ std::vector<float>* City::reverseTrace(std::vector<float>* trace)
 	return newTrace;
 }
 
-std::pair<std::vector<float>*, std::vector<float>*>* City::getRoadData(Link* link) {
-
-    std::pair<std::vector<float>*, std::vector<float>*>* roadData = new std::pair<std::vector<float>*, std::vector<float>*>();
-
-	if(link->getNumber() > getRoadMapSize() || link->isFinalLink())
+std::vector<float>* City::getElevData(Link* link)
+{
+	if(link->isFinalLink() || !this->roads->hasEntry(link->getNumber()))
 	{
-		return roadData;
+		return NULL;
 	}
-
-	roadData->first = this->roads->getEntry(link->getNumber())->getSpeedData();
-	roadData->second = this->roads->getEntry(link->getNumber())->getElevData();
+    
+    std::vector<float>* elevData = this->roads->getEntry(link->getNumber())->getSpeedData();
 
 	if(link->getDirection())
 	{
-		roadData->first = reverseTrace(roadData->first);
-		roadData->second = reverseTrace(roadData->second);
+		elevData = reverseTrace(elevData);
 	}
-	return roadData;
+	return elevData;
 }
 
 Road* City::getConnectingRoad(Intersection* one, Intersection* two) {
@@ -335,74 +331,44 @@ std::pair<std::vector<float>*, float>* City::elevationToSlope(std::vector<float>
 	return data;
 }
 
-std::pair<std::vector<float>*, std::vector<float>*>* City::routeToData(Route* route, int dist) {
+std::vector<float>* City::routeToElevData(Route* route, int distIndex) {
 
-	int lastElev;
-    std::vector<float>* speedData;
-    std::vector<float>* elevData;
-
-    std::pair<std::vector<float>*, std::vector<float>*>* data = new std::pair<std::vector<float>*, std::vector<float>*>();
+    std::vector<float>* elevData = new std::vector<float>(0);
     
-	dist = dist / this->intervalDistance;
-	bool firstLink = true;
+	distIndex = distIndex / this->intervalDistance;
 
+    bool isFirstLink = true;
 	route->getLinks()->initializeCounter();
 	GenericEntry<int, Link*>* nextLink = route->getLinks()->nextEntry();
 	while(nextLink->value->isFinalLink())
 	{
-        std::pair<std::vector<float>*, std::vector<float>*>* roadData = getRoadData(nextLink->value);
-		speedData = roadData->first;
-		elevData = roadData->second;
+        
+        std::vector<float>* elevData_i = this->getElevData(nextLink->value);
+        
+        if(isFirstLink)
+        {
+            std::vector<float>::iterator itrElev = elevData_i->begin();
 
-		if(firstLink)
-		{
-			assert(dist <= speedData->size());
-
-			dist = (int)std::max(dist, 1);
-            
-            std::vector<float>::iterator itr_elev = elevData->begin();
-            std::vector<float>::iterator itr_spd = speedData->begin();
-            while(itr_elev - elevData->begin() < dist && itr_spd - speedData->begin() < dist)
+            while(itrElev - elevData->begin() < distIndex)
             {
-                itr_elev = elevData->erase(itr_elev);
-                itr_spd = speedData->erase(itr_spd);
+                itrElev = elevData->erase(itrElev);
             }
-
-            std::pair<std::vector<float>*, float>* slopeData = elevationToSlope(elevData, 2*elevData->at(0) - elevData->at(1));
-            data->first = speedData;
-            data->second = slopeData->first;
-            lastElev = slopeData->second;
-            delete(slopeData);
             
-			firstLink = false;
-		} else {
-            std::pair<std::vector<float>*, float>* slopeData = elevationToSlope(elevData, lastElev);
-            std::vector<float> *slope = slopeData->first;
-			lastElev = slopeData->second;
+            isFirstLink = false;
+        }
 
-			// concatenate speed
-            size_t allSpeedDataSize = data->first->size();
-            size_t currSpeedDataSize = speedData->size();
-            std::vector<float>* newSpeed = new std::vector<float>(allSpeedDataSize + currSpeedDataSize);
-            for(int i = 0; i < allSpeedDataSize; i++) { newSpeed->push_back(data->first->at(i)); }
-            for(int i = 0; i < currSpeedDataSize; i++) { newSpeed->push_back(speedData->at(i)); }
-            delete(data->first);
-            data->first = newSpeed;
-
-			// concatenate slopes
-            size_t allSlopeDataSize = data->second->size();
-            size_t currSlopeDataSize = slopeData->first->size();
-            std::vector<float>* newSlope = new std::vector<float>(allSlopeDataSize + currSlopeDataSize);
-            for(int i = 0; i < allSlopeDataSize; i++) { newSlope->push_back(data->second->at(i)); }
-            for(int i = 0; i < currSlopeDataSize; i++) { newSlope->push_back(slopeData->first->at(i)); }
-            delete(data->second);
-            data->second = newSlope;
-            
-            delete(slopeData);
-		}
+        // concatenate slopes
+        std::vector<float>* newElevData = new std::vector<float>(elevData->size() + elevData_i->size());
+        for(int i = 0; i < elevData->size() ; i++) { newElevData->push_back(elevData->at(i)); }
+        for(int i = 0; i < elevData_i->size(); i++) { newElevData->push_back(elevData_i->at(i)); }
+        delete(elevData);
+        
+        elevData = newElevData;
+		
 		nextLink = route->getLinks()->nextEntry();
 	}
-	return data;
+    delete(nextLink);
+	return elevData;
 }
 
 GenericMap<int, Bounds*>* City::getBoundsMap() {

@@ -81,8 +81,22 @@ std::vector<float>* Road::getSpeedData() {
 }
 
 std::vector<float>* Road::getElevData() {
-    // TODO
-    return NULL;
+
+    std::vector<float>* elevData = new std::vector<float>(this->nodes->getSize());
+    int elevCount = 0;
+    
+    this->nodes->initializeCounter();
+    GenericEntry<long int, Node*>* nextNode = this->nodes->nextEntry();
+    while(nextNode != NULL)
+    {
+        elevData->at(elevCount) = nextNode->value->getEle();
+        elevCount++;
+        
+        nextNode = this->nodes->nextEntry();
+    }
+    delete(nextNode);
+    
+    return elevData;
 }
 
 int Road::getBoundsID() {

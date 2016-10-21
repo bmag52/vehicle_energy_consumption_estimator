@@ -71,6 +71,7 @@ public:
                                GoalToLinkMap* newGoalToLink,
                                LinkToStateMap* newLinkToState);
     void addCity(City* newCity);
+    Route* getPredictedRoute();
 };
 
 

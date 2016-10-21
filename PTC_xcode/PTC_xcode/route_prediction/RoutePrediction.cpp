@@ -397,5 +397,10 @@ void RoutePrediction::addCity(City* newCity)
     delete(this->city);
     this->city = newCity;
 }
+    
+Route* RoutePrediction::getPredictedRoute()
+{
+    return this->predictedRoute;
+}
 
 } /* namespace PredictivePowertrain */

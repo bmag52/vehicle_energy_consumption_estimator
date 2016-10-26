@@ -42,7 +42,7 @@ public:
 	double getLat();
 	double getLon();
 	GenericMap<long int, Road*>* getRoads();
-	GenericMap<int, Intersection*>* getAdjacentIntersection();
+	GenericMap<long int, Intersection*>* getAdjacentIntersections();
 	Intersection* getNextIntersection(Road* road);
 	int getBoudsID();
     void assignID(long int ID);

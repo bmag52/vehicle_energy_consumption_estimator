@@ -18,24 +18,28 @@ DriverPrediction::DriverPrediction(City* city)
 }
 
 // assumes vehicle speed is zero
-std::pair<Eigen::MatrixXd*, std::vector<float>*> DriverPrediction::startPrediction(Link* currentLink,
+std::pair<std::vector<float>*, std::vector<float>*> DriverPrediction::startPrediction(Link* currentLink,
+                                                                Eigen::MatrixXd* spd,
                                                                 std::vector<float> currentConditions,
                                                                 int distanceIndexAlongLink)
 {
     this->currLink = currentLink;
-    Route* predRoute = this->rp->startPrediction(this->city->getIntersectionFromLink(currentLink, false), &currentConditions);
-    std::vector<float>* predElevData = this->city->routeToElevData(predRoute, distanceIndexAlongLink);
-    Eigen::MatrixXd* predSpdData = this->predictSpeed(predRoute);
     
-    std::pair<Eigen::MatrixXd*, std::vector<float>*> prediction(predSpdData, predElevData);
-    return prediction;
+    Route* predRoute = this->rp->startPrediction(this->city->getIntersectionFromLink(currentLink, false), &currentConditions);
+    
+    std::pair<std::vector<float>*, std::vector<float>*> predData = this->city->routeToData(predRoute,
+                                                                                           distanceIndexAlongLink,
+                                                                                           this->sp,
+                                                                                           spd);
+    
+    return predData;
     
     
 }
 
-std::pair<Eigen::MatrixXd*, std::vector<float>*> DriverPrediction::nextPrediction(Link* currentLink,
-                                                               Eigen::MatrixXd* spd,
-                                                               int distanceIndexAlongLink)
+std::pair<std::vector<float>*, std::vector<float>*> DriverPrediction::nextPrediction(Link* currentLink,
+                                                                Eigen::MatrixXd* spd,
+                                                                int distanceIndexAlongLink)
 {
     Route* predRoute;
     
@@ -55,16 +59,15 @@ std::pair<Eigen::MatrixXd*, std::vector<float>*> DriverPrediction::nextPredictio
     // use existing predicted route
     else
     {
-        GenericMap<int, Link*>* predictedLinks = this->rp->getPredictedRoute()->getLinks();
-        Goal* predictedGoal = this->rp->getPredictedRoute()->getGoal();
-        predRoute = new Route(predictedLinks, predictedGoal);
+        predRoute = this->rp->getPredictedRoute();
     }
     
-    std::vector<float>* predElevData = this->city->routeToElevData(predRoute, distanceIndexAlongLink);
-    Eigen::MatrixXd* predSpdData = this->predictSpeed(predRoute);
-    
-    std::pair<Eigen::MatrixXd*, std::vector<float>*> prediction(predSpdData, predElevData);
-    return prediction;
+    std::pair<std::vector<float>*, std::vector<float>*> predData = this->city->routeToData(predRoute,
+                                                                                           distanceIndexAlongLink,
+                                                                                           this->sp,
+                                                                                           spd);
+
+    return predData;
 }
 
 void DriverPrediction::parseRoute(Route* currRoute, Eigen::MatrixXd* spd)
@@ -72,15 +75,6 @@ void DriverPrediction::parseRoute(Route* currRoute, Eigen::MatrixXd* spd)
     
 }
 
-int DriverPrediction::getSpdPredictionInterval()
-{
-    return this->spdPredictionInterval;
-}
-    
-Eigen::MatrixXd* DriverPrediction::predictSpeed(Route* predRoute)
-{
-    return NULL;
-    
-}
+
     
 } /* namespace PredictivePowertrain */

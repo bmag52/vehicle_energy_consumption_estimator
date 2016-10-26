@@ -17,6 +17,7 @@
 #include "../map/GenericMap.h"
 #include "../driver_prediction/Link.h"
 #include "../route_prediction/Route.h"
+#include "../speed_prediction/SpeedPrediction.h"
 #include "../data_management/Bounds.h"
 
 #include <assert.h>
@@ -26,6 +27,7 @@
 #include <math.h>
 #include <ctime>
 #include <vector>
+#include <float.h>
 
 namespace PredictivePowertrain {
 
@@ -41,6 +43,8 @@ private:
     std::vector<float>* reverseTrace(std::vector<float>* trace);
 	Road* getConnectingRoad(Intersection* one, Intersection* two);
     std::pair<std::vector<float>*, float>* elevationToSlope(std::vector<float>* elev, float oldElev);
+    bool trimSpeedTrace(Road* road, float distAlongRoad, float dt, std::vector<float>* spdOut);
+    
 public:
 	City();
 	City(GenericMap<long int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
@@ -51,14 +55,14 @@ public:
 	GenericMap<int, Link*>* getNextLinks(Link* link);
 	Intersection* getIntersectionFromLink(Link* link, bool isIntersection);
     Route* randomPath(Intersection* startInt, Route* initialRoute, int totalLength, std::vector<float>* conditions);
-	Intersection* getIntersection(int intersectionNum);
+	Intersection* getIntersection(long int intersectionNum);
     Route* getPath(Intersection* start, Intersection* end, std::vector<float>* conditions, int fastest);
-    std::vector<float>* getElevData(Link* link);
-	bool legalRoute(Route* route);
-    std::vector<float>* routeToElevData(Route* route, int dist);
+    std::pair<std::vector<float>*, std::vector<float>*> getData(Link* link, SpeedPrediction* sp, Eigen::MatrixXd* spdIn);
+    std::pair<std::vector<float>*, std::vector<float>*> routeToData(Route* route, int distIndex, SpeedPrediction* sp, Eigen::MatrixXd* spdIn);
 	GenericMap<int, Bounds*>* getBoundsMap();
 	GenericMap<long int, Road*>* getRoads();
 	GenericMap<long int, Intersection*>* getIntersections();
+    bool legalRoute(Route* route);
 
 };
 

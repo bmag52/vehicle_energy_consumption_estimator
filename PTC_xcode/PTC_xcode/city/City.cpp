@@ -76,50 +76,48 @@ Intersection* City::getIntersectionFromLink(Link* link, bool isIntersection) {
 	}
 }
 
-Intersection* City::getIntersection(int intersectionNum) {
+Intersection* City::getIntersection(long int intersectionNum) {
 	assert(getInstersectionMapSize() < intersectionNum || intersectionNum < 1); // || this->intersections[intersectionNum] == NULL
 	return this->intersections->getEntry(intersectionNum);
 }
 
 Route* City::getPath(Intersection* start, Intersection* end, std::vector<float>* conditions, int fastest) {
-	GenericMap<int, int> dist;
-	GenericMap<int, int> prev;
-	GenericMap<int, int> unvisitedNodes;
+	GenericMap<long int, float> dist;
+	GenericMap<long int, long int> prev;
+	GenericMap<long int, float> unvisitedNodes;
 
-	Intersection* startInt = getIntersection(start->getIntersectionID());
-	Intersection* endInt = getIntersection(end->getIntersectionID());
-	GenericMap<int, Intersection*>* adjInts = start->getAdjacentIntersection();
-
-	dist.addEntry(start->getIntersectionID(), 0);
-	prev.addEntry(start->getIntersectionID(), 0);
+	GenericMap<long int, Intersection*>* adjInts = start->getAdjacentIntersections();
 
 	adjInts->initializeCounter();
-	GenericEntry<int, Intersection*>* nextIntersection = adjInts->nextEntry();
+	GenericEntry<long int, Intersection*>* nextIntersection = adjInts->nextEntry();
 	while(nextIntersection != NULL)
 	{
-		int intNum = nextIntersection->value->getIntersectionID();
-		dist.addEntry(intNum, INT_MAX);
+		long int intNum = nextIntersection->value->getIntersectionID();
+		dist.addEntry(intNum, FLT_MAX);
 		prev.addEntry(intNum, -1);
 		nextIntersection = adjInts->nextEntry();
 	}
+    delete(nextIntersection);
+    
+    dist.addEntry(start->getIntersectionID(), 0);
 
-	int closestIntNum = start->getIntersectionID();
-	int distance = 0;
-	while(distance != INT_MAX)
+	long int closestIntNum = start->getIntersectionID();
+	long int distance = 0;
+	while(distance != FLT_MAX)
 	{
-		unvisitedNodes.addEntry(closestIntNum, INT_MAX);
-		GenericMap<int, Intersection*>* neighbors = getIntersection(closestIntNum)->getAdjacentIntersection();
+		unvisitedNodes.addEntry(closestIntNum, FLT_MAX);
+		GenericMap<long int, Intersection*>* neighbors = getIntersection(closestIntNum)->getAdjacentIntersections();
+        
 		neighbors->initializeCounter();
-		GenericEntry<int, Intersection*>* nextNeighbor = neighbors->nextEntry();
+		GenericEntry<long int, Intersection*>* nextNeighbor = neighbors->nextEntry();
 		while(nextNeighbor != NULL)
 		{
-			int neighborNum = nextNeighbor->value->getIntersectionID();
-            std::vector<float>* speedData = getConnectingRoad(getIntersection(closestIntNum), getIntersection(neighborNum))->getSpeedData();
-			int spdAvg;
-			size_t spdCount = speedData->size();
-			for(size_t j = 0; j < spdCount; j++) { spdAvg += speedData->at(j); } spdAvg /= spdCount;
-			int alt = dist.getEntry(closestIntNum) + spdCount / (fastest*spdAvg);
-			if(dist.getEntry(neighborNum) > alt || unvisitedNodes.getEntry(neighborNum) == 0)
+			long int neighborNum = nextNeighbor->value->getIntersectionID();
+            
+            Road* connectingRoad = getConnectingRoad(getIntersection(closestIntNum), nextNeighbor->value);
+            
+			float alt = dist.getEntry(neighborNum) + connectingRoad->getSplineLength();
+			if(dist.getEntry(neighborNum) > alt || !unvisitedNodes.hasEntry(neighborNum))
 			{
 				dist.addEntry(neighborNum, alt);
 				prev.addEntry(neighborNum, closestIntNum);
@@ -128,9 +126,9 @@ Route* City::getPath(Intersection* start, Intersection* end, std::vector<float>*
 			nextNeighbor = neighbors->nextEntry();
 		}
 
-		GenericEntry<int, int>* closestIntPair = unvisitedNodes.getMinEntry();
-		distance = closestIntPair->key;
-		closestIntNum = closestIntPair->value;
+		GenericEntry<long int, float>* closestIntPair = unvisitedNodes.getMinEntry();
+		distance = closestIntPair->value;
+		closestIntNum = closestIntPair->key;
 	}
 
 	int linkCount = 0;
@@ -160,20 +158,52 @@ std::vector<float>* City::reverseTrace(std::vector<float>* trace)
 	return newTrace;
 }
 
-std::vector<float>* City::getElevData(Link* link)
+std::pair<std::vector<float>*, std::vector<float>*> City::getData(Link* link, SpeedPrediction* sp, Eigen::MatrixXd* spdIn)
 {
-	if(link->isFinalLink() || !this->roads->hasEntry(link->getNumber()))
-	{
-		return NULL;
-	}
+    assert(!link->isFinalLink() && this->roads->hasEntry(link->getNumber()));
     
-    std::vector<float>* elevData = this->roads->getEntry(link->getNumber())->getSpeedData();
+    Road* roadFromLink = this->roads->getEntry(link->getNumber());
+    
+    // get speed Data
+    std::vector<float>* spdOut = new std::vector<float>();
+    
+    float spdDist = 0.0;
+    sp->setVals(link->getWeights(link->getDirection()));
+    
+    Eigen::MatrixXd spdOut_i(1, sp->getO());
+    Eigen::MatrixXd spdIn_i(*spdIn);
+    
+    while(spdDist < roadFromLink->getSplineLength())
+    {
+        // predict speed
+        sp->predict(&spdIn_i, &spdOut_i);
+        
+        float spdDist = 0.0;
+        float prevSpd = spdOut_i.coeffRef(0, 0);
+        
+        for(int i = 1; i < spdOut_i.size(); i++)
+        {
+            float currSpd = spdOut_i.coeffRef(0, i);
+            float accel_i = (currSpd - prevSpd) / sp->getDT();
+            float dist_i = prevSpd + 0.5 * accel_i * std::pow(sp->getDT(),2);
+            
+            spdOut->push_back(spdOut_i.coeffRef(0, i));
+            
+            spdDist += dist_i;
+        }
+        
+        // assume out is always greater than in and update speed input from output
+        spdIn_i = spdOut_i.block(0, spdOut_i.cols() - 1 - sp->getI(), 1, sp->getI());
+    }
+    
+    // get elevation Data
+    std::vector<float>* elevData = roadFromLink->getSpeedData();
 
 	if(link->getDirection())
 	{
 		elevData = reverseTrace(elevData);
 	}
-	return elevData;
+    return std::pair<std::vector<float>*, std::vector<float>*>(spdOut, elevData);
 }
 
 Road* City::getConnectingRoad(Intersection* one, Intersection* two) {
@@ -208,7 +238,7 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
     delete(nextLinkEntry);
     
 	GenericMap<int, Link*>* path = new GenericMap<int, Link*>();
-	GenericMap<int, Intersection*> passedInts;
+	GenericMap<long int, Intersection*> passedInts;
 	passedInts.addEntry(startInt->getIntersectionID(), startInt);
     
 	for(int i = 0; i < totalLength; i++)
@@ -241,7 +271,7 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
 					Intersection* intersection = getIntersectionFromLink(nextLinkEntry->value, true);
 
 					passedInts.initializeCounter();
-					GenericEntry<int, Intersection*>* nextPassedInt = passedInts.nextEntry();
+					GenericEntry<long int, Intersection*>* nextPassedInt = passedInts.nextEntry();
 					while(nextPassedInt != NULL)
 					{
 						if(intersection->getIntersectionID() == nextPassedInt->value->getIntersectionID())
@@ -330,25 +360,64 @@ std::pair<std::vector<float>*, float>* City::elevationToSlope(std::vector<float>
 	data->second = endElev;
 	return data;
 }
-
-std::vector<float>* City::routeToElevData(Route* route, int distIndex) {
-
-    std::vector<float>* elevData = new std::vector<float>(0);
     
-	distIndex = distIndex / this->intervalDistance;
+bool City::trimSpeedTrace(Road* road, float distAlongRoad, float dt, std::vector<float>* spdOut)
+{
+    float roadDist = road->getSplineLength();
+    
+    float spdDist = 0.0;
+    float prevSpd = spdOut->at(0);
+    for(int i = 1; i < spdOut->size(); i++)
+    {
+        float currSpd = spdOut->at(i);
+        float accel_i = (currSpd - prevSpd) / dt;
+        float dist_i = prevSpd + 0.5 * accel_i * std::pow(dt,2);
+        
+        spdDist += dist_i;
+        
+        if(spdDist < distAlongRoad)
+        {
+            spdOut->erase(spdOut->begin());
+        }
+        
+        else if(spdDist > roadDist)
+        {
+            for(int j = i; j < spdOut->size(); j++)
+            {
+                spdOut->pop_back();
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+std::pair<std::vector<float>*, std::vector<float>*> City::routeToData(Route* route, int distIndex, SpeedPrediction* sp, Eigen::MatrixXd* spdIn) {
+
+    std::vector<float>* elevData = new std::vector<float>();
+    std::vector<float>* spdData = new std::vector<float>();
+    
+    Eigen::MatrixXd spdIn_i(*spdIn);
 
     bool isFirstLink = true;
 	route->getLinks()->initializeCounter();
 	GenericEntry<int, Link*>* nextLink = route->getLinks()->nextEntry();
 	while(nextLink->value->isFinalLink())
 	{
+        // get data
+        Road* roadFromLink = this->roads->getEntry(nextLink->value->getNumber());
         
-        std::vector<float>* elevData_i = this->getElevData(nextLink->value);
-        
+        // get spd and elevation data
+        std::pair<std::vector<float>*, std::vector<float>*> linkData = this->getData(nextLink->value, sp, &spdIn_i);
+        std::vector<float>* spdOut_i = linkData.first;
+        std::vector<float>* elevData_i = linkData.second;
+
         if(isFirstLink)
         {
+            float distAlongRoad = (float) distIndex / roadFromLink->getNodes()->getSize() * roadFromLink->getSplineLength();
+            this->trimSpeedTrace(roadFromLink, distAlongRoad, sp->getDT(), spdOut_i);
+            
             std::vector<float>::iterator itrElev = elevData_i->begin();
-
             while(itrElev - elevData->begin() < distIndex)
             {
                 itrElev = elevData->erase(itrElev);
@@ -356,19 +425,21 @@ std::vector<float>* City::routeToElevData(Route* route, int distIndex) {
             
             isFirstLink = false;
         }
+        else
+        {
+            this->trimSpeedTrace(roadFromLink, 0.0, sp->getDT(), spdOut_i);
+        }
 
-        // concatenate slopes
-        std::vector<float>* newElevData = new std::vector<float>(elevData->size() + elevData_i->size());
-        for(int i = 0; i < elevData->size() ; i++) { newElevData->push_back(elevData->at(i)); }
-        for(int i = 0; i < elevData_i->size(); i++) { newElevData->push_back(elevData_i->at(i)); }
-        delete(elevData);
+        // concatenate data
+        for(int i = 0; i < spdOut_i->size(); i++) { spdData->push_back(spdOut_i->at(i)); }
+        for(int i = 0; i < elevData_i->size(); i++) { elevData->push_back(elevData_i->at(i)); }
+        delete(spdOut_i);
+        delete(elevData_i);
         
-        elevData = newElevData;
-		
 		nextLink = route->getLinks()->nextEntry();
 	}
     delete(nextLink);
-	return elevData;
+    return std::pair<std::vector<float>*, std::vector<float>*>(spdData, elevData);
 }
 
 GenericMap<int, Bounds*>* City::getBoundsMap() {

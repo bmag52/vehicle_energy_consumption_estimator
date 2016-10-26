@@ -14,6 +14,7 @@
 #include <list>
 #include <ctime>
 #include <vector>
+#include "../route_prediction/Route.h"
 
 namespace PredictivePowertrain {
 
@@ -26,20 +27,23 @@ private:
 	int maxSpeed;				// max vehicle speed
 	int *HN;					// number of neurons in each hidden layer
 	int *totalLayers;			// total number of layers
-	double lb_offset;			// lower bound offset
-	double alpha; 				// learning rate
+	float lb_offset;			// lower bound offset
+	float alpha; 				// learning rate
+    float dt;                  // time delta between predicted values
     std::vector<Eigen::MatrixXd*>* Wts;         // matrix of weights
     std::vector<Eigen::MatrixXd*>* yHid;		// hidden layer outputs
     std::vector<Eigen::MatrixXd*>* yInHid;      // hidden layer inputs
 
 	void initParams();
 	void printAll();
+    
 public:
 	SpeedPrediction();
 	SpeedPrediction(std::vector<Eigen::MatrixXd*>* Wts, std::vector<Eigen::MatrixXd*>* yHid, std::vector<Eigen::MatrixXd*>* yInHid);
 	void predict(Eigen::MatrixXd * spd_in, Eigen::MatrixXd * spd_out);
 	void train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd * spd_act, Eigen::MatrixXd * spd_in);
 	std::vector<std::vector<Eigen::MatrixXd*>*>* getVals();
+    void setVals(std::vector<std::vector<Eigen::MatrixXd*>*>* vals);
 	int getI();
 	int getO();
 	void formatInData(Eigen::MatrixXd * input);
@@ -47,6 +51,7 @@ public:
     void scaleTrainingSpeed(Eigen::MatrixXd * input);
     void unscaleTrainingSpeed(Eigen::MatrixXd * output);
     int getNumLayers();
+    float getDT();
 };
 
 }

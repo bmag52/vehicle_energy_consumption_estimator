@@ -115,8 +115,8 @@ Intersection* Intersection::getNextIntersection(Road* road) {
 	return NULL;
 }
 
-GenericMap<int, Intersection*>* Intersection::getAdjacentIntersection() {
-	GenericMap<int, Intersection*>* adjInts = new GenericMap<int, Intersection*>();
+GenericMap<long int, Intersection*>* Intersection::getAdjacentIntersections() {
+	GenericMap<long int, Intersection*>* adjInts = new GenericMap<long int, Intersection*>();
 	int adjIntCount = 0;
 
 	this->roads->initializeCounter();
@@ -127,7 +127,7 @@ GenericMap<int, Intersection*>* Intersection::getAdjacentIntersection() {
 		bool alreadyCounted = false;
 
 		adjInts->initializeCounter();
-		GenericEntry<int, Intersection*>* nextInt = adjInts->nextEntry();
+		GenericEntry<long int, Intersection*>* nextInt = adjInts->nextEntry();
 		while(nextInt != NULL)
 		{
 			if(nextInt->value->getIntersectionID() == adjInt->getIntersectionID())
@@ -137,6 +137,7 @@ GenericMap<int, Intersection*>* Intersection::getAdjacentIntersection() {
 			}
 			nextInt = adjInts->nextEntry();
 		}
+        delete(nextInt);
 
 		if(!alreadyCounted)
 		{

@@ -16,8 +16,10 @@
 namespace PredictivePowertrain {
 
 class Link; // forward declaration
+class Road; // forward declaration
 
 class Intersection {
+    
 private:
 //	Road* roads;
 	GenericMap<long int, Road*>* roads;

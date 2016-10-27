@@ -18,6 +18,7 @@
 namespace PredictivePowertrain {
 
 class Intersection; // forward declaration
+class Road;         // forward declaration
 
 class Link {
 private:

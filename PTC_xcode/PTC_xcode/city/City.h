@@ -40,10 +40,7 @@ private:
 	GenericMap<long int, Road*>* roads;
 	GenericMap<long int, Intersection*>* intersections;
 	GenericMap<int, Bounds*>* boundsMap;
-    std::vector<float>* reverseTrace(std::vector<float>* trace);
 	Road* getConnectingRoad(Intersection* one, Intersection* two);
-    std::pair<std::vector<float>*, float>* elevationToSlope(std::vector<float>* elev, float oldElev);
-    bool trimSpeedTrace(Road* road, float distAlongRoad, float dt, std::vector<float>* spdOut);
     
 public:
 	City();
@@ -57,8 +54,8 @@ public:
     Route* randomPath(Intersection* startInt, Route* initialRoute, int totalLength, std::vector<float>* conditions);
 	Intersection* getIntersection(long int intersectionNum);
     Route* getPath(Intersection* start, Intersection* end, std::vector<float>* conditions, int fastest);
-    std::pair<std::vector<float>*, std::vector<float>*> getData(Link* link, SpeedPrediction* sp, Eigen::MatrixXd* spdIn);
-    std::pair<std::vector<float>*, std::vector<float>*> routeToData(Route* route, int distIndex, SpeedPrediction* sp, Eigen::MatrixXd* spdIn);
+    std::pair<std::vector<float>, std::vector<float>> getData(Road* road, int direction, SpeedPrediction* sp, Eigen::MatrixXd* spdIn, float dist);
+    std::pair<std::vector<float>, std::vector<float>> routeToData(Route* route, float dist, SpeedPrediction* sp, Eigen::MatrixXd* spdIn);
 	GenericMap<int, Bounds*>* getBoundsMap();
 	GenericMap<long int, Road*>* getRoads();
 	GenericMap<long int, Intersection*>* getIntersections();

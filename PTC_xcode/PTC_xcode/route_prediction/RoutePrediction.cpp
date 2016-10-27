@@ -403,4 +403,9 @@ Route* RoutePrediction::getPredictedRoute()
     return this->predictedRoute;
 }
 
+City* RoutePrediction::getCity()
+{
+    return this->city;
+}
+    
 } /* namespace PredictivePowertrain */

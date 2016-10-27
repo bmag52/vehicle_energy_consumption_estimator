@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D3309D3F1DC148F500BB860D /* DriverPredictionUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3309D3E1DC148F500BB860D /* DriverPredictionUnitTest.cpp */; };
 		D339C82E1DB7F73100FA4229 /* Kinematics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C82C1DB7F73100FA4229 /* Kinematics.cpp */; };
 		D339C8301DB82E4F00FA4229 /* KinematicsUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C82F1DB82E4F00FA4229 /* KinematicsUnitTest.cpp */; };
 		D339C8321DB9299200FA4229 /* GPSUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C8311DB9299200FA4229 /* GPSUnitTest.cpp */; };
@@ -208,6 +209,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D3309D3E1DC148F500BB860D /* DriverPredictionUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DriverPredictionUnitTest.cpp; path = PTC_xcode/unit_tests/DriverPredictionUnitTest.cpp; sourceTree = "<group>"; };
 		D339C82C1DB7F73100FA4229 /* Kinematics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Kinematics.cpp; sourceTree = "<group>"; };
 		D339C82D1DB7F73100FA4229 /* Kinematics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kinematics.h; sourceTree = "<group>"; };
 		D339C82F1DB82E4F00FA4229 /* KinematicsUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KinematicsUnitTest.cpp; path = PTC_xcode/unit_tests/KinematicsUnitTest.cpp; sourceTree = "<group>"; };
@@ -715,28 +717,29 @@
 			isa = PBXGroup;
 			children = (
 				D3FABC3D1CE524A400892002 /* BuildCityUnitTest.cpp */,
-				D3FABC3E1CE524A400892002 /* DataCollectionUnitTest.cpp */,
-				D3FABC3F1CE524A400892002 /* RouteUnitTest.cpp */,
 				D3FABC401CE524A400892002 /* CitySectionUnitTest.cpp */,
+				D3FABC3E1CE524A400892002 /* DataCollectionUnitTest.cpp */,
+				D3309D3E1DC148F500BB860D /* DriverPredictionUnitTest.cpp */,
 				D3FABC411CE524A400892002 /* DataManagementUnitTest.cpp */,
 				D3FABC421CE524A400892002 /* ElevationTypesUnitTest.cpp */,
+				D3FABC4C1CE524A400892002 /* GoalMapEntryUnitTest.cpp */,
 				D3FABC431CE524A400892002 /* GoalToLinkMapUnitTest.cpp */,
+				D3FABC4D1CE524A400892002 /* GoalUnitTest.cpp */,
 				D339C8311DB9299200FA4229 /* GPSUnitTest.cpp */,
 				D3FABC441CE524A400892002 /* IntersectionTypesUnitTest.cpp */,
 				D3FABC451CE524A400892002 /* IntersectionUnitTest.cpp */,
 				D339C82F1DB82E4F00FA4229 /* KinematicsUnitTest.cpp */,
+				D3FABC4E1CE524A400892002 /* LinkToStateMapEntryUnitTest.cpp */,
 				D3FABC461CE524A400892002 /* LinkToStateMapUnitTest.cpp */,
 				D3FABC471CE524A400892002 /* LinkUnitTest.cpp */,
 				D3FABC481CE524A400892002 /* NodeUnitTest.cpp */,
-				D3FABC491CE524A400892002 /* RoadTypesUnitTest.cpp */,
-				D3FABC4A1CE524A400892002 /* UnitTests.h */,
-				D3FABC4B1CE524A400892002 /* RoadUnitTest.cpp */,
-				D3FABC4C1CE524A400892002 /* GoalMapEntryUnitTest.cpp */,
-				D3FABC4D1CE524A400892002 /* GoalUnitTest.cpp */,
-				D3FABC4E1CE524A400892002 /* LinkToStateMapEntryUnitTest.cpp */,
 				D3FABC4F1CE524A400892002 /* ProbabilityUnitTest.cpp */,
+				D3FABC491CE524A400892002 /* RoadTypesUnitTest.cpp */,
 				D3FABC501CE524A400892002 /* RoutePredictionUnitTest.cpp */,
+				D3FABC4B1CE524A400892002 /* RoadUnitTest.cpp */,
+				D3FABC3F1CE524A400892002 /* RouteUnitTest.cpp */,
 				D3F7F4421D57E0E300F682C4 /* SpeedPredictionUnitTest.cpp */,
+				D3FABC4A1CE524A400892002 /* UnitTests.h */,
 			);
 			name = unit_tests;
 			sourceTree = "<group>";
@@ -897,6 +900,7 @@
 				D3FABC831CE524A400892002 /* ElevationTypes.cpp in Sources */,
 				D3FABC841CE524A400892002 /* ElevationTypes.h in Sources */,
 				D3FABC851CE524A400892002 /* Intersection.cpp in Sources */,
+				D3309D3F1DC148F500BB860D /* DriverPredictionUnitTest.cpp in Sources */,
 				D3FABC861CE524A400892002 /* Intersection.h in Sources */,
 				D3FABC871CE524A400892002 /* IntersectionTypes.cpp in Sources */,
 				D3FABC881CE524A400892002 /* IntersectionTypes.h in Sources */,

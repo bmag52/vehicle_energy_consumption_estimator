@@ -147,63 +147,89 @@ Route* City::getPath(Intersection* start, Intersection* end, std::vector<float>*
 	return route;
 }
 
-std::vector<float>* City::reverseTrace(std::vector<float>* trace)
+std::pair<std::vector<float>, std::vector<float>> City::getData(Road* road, int direction, SpeedPrediction* sp, Eigen::MatrixXd* spdIn, float distAlongRoad)
 {
-    std::vector<float>* newTrace = new std::vector<float>(trace->size());
-	for(int i = 0; i < trace->size(); i++)
-	{
-		newTrace->at(i) = trace->at(trace->size() - i);
-	}
-	delete(trace);
-	return newTrace;
-}
+    // get elevation Data
+    std::vector<float> elevData;
+    std::vector<float> elevDistData;
+    road->getElevData(&elevData, &elevDistData);
+    
+    if(direction)
+    {
+        for(int i = 0; i < elevData.size(); i++)
+        {
+            elevData.at(i) = elevData.at(elevData.size() - i - 1);
+            elevDistData.at(i) = road->getSplineLength() - elevDistData.at(i);
+        }
+    }
+    assert(elevDistData.size() > 2);
+    int nextElevMeasIdx = 1;
 
-std::pair<std::vector<float>*, std::vector<float>*> City::getData(Link* link, SpeedPrediction* sp, Eigen::MatrixXd* spdIn)
-{
-    assert(!link->isFinalLink() && this->roads->hasEntry(link->getNumber()));
+    // set output values
+    std::vector<float> spdOut;
+    std::vector<float> elevDataInterp;
     
-    Road* roadFromLink = this->roads->getEntry(link->getNumber());
-    
-    // get speed Data
-    std::vector<float>* spdOut = new std::vector<float>();
-    
+    // iterate along speed trace to interpolate elevation trace
     float spdDist = 0.0;
     sp->setVals(link->getWeights(link->getDirection()));
     
     Eigen::MatrixXd spdOut_i(1, sp->getO());
     Eigen::MatrixXd spdIn_i(*spdIn);
     
-    while(spdDist < roadFromLink->getSplineLength())
+    while(spdDist < road->getSplineLength())
     {
         // predict speed
         sp->predict(&spdIn_i, &spdOut_i);
         
-        float spdDist = 0.0;
         float prevSpd = spdOut_i.coeffRef(0, 0);
-        
         for(int i = 1; i < spdOut_i.size(); i++)
         {
             float currSpd = spdOut_i.coeffRef(0, i);
             float accel_i = (currSpd - prevSpd) / sp->getDT();
             float dist_i = prevSpd + 0.5 * accel_i * std::pow(sp->getDT(),2);
             
-            spdOut->push_back(spdOut_i.coeffRef(0, i));
-            
             spdDist += dist_i;
+            
+            if(spdDist > distAlongRoad && spdDist < road->getSplineLength())
+            {
+                spdOut.push_back(currSpd);
+                
+                // interpolate elevation data
+                for(int j = nextElevMeasIdx; j < elevDistData.size(); j++)
+                {
+                    if(spdDist > elevDistData.at(j))
+                    {
+                        nextElevMeasIdx = j;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                
+                // get delta in elevation from previous to next elevation measurement
+                float prev2NextElevDelta = elevData.at(nextElevMeasIdx) - elevData.at(nextElevMeasIdx - 1);
+                
+                // get delta in distnce from previous to next elevation measurement
+                float prev2NextElevDist = elevDistData.at(nextElevMeasIdx) - elevDistData.at(nextElevMeasIdx - 1);
+                
+                // get delta in distance from previous elevation measurement to current speed distance
+                float prevElev2SpdDist = spdDist - elevDistData.at(nextElevMeasIdx - 1);
+                
+                // derive interpolation factor as a function prev 2 next elevation meas and speed distance after prev elev meas
+                float interpFactor = prevElev2SpdDist / prev2NextElevDist;
+                
+                elevDataInterp.push_back(elevData.at(nextElevMeasIdx - 1) + interpFactor * prev2NextElevDelta);
+            }
+            
+            prevSpd = currSpd;
         }
         
-        // assume out is always greater than in and update speed input from output
-        spdIn_i = spdOut_i.block(0, spdOut_i.cols() - 1 - sp->getI(), 1, sp->getI());
+        // place output into input and repeat if needed
+        sp->output2Input(&spdIn_i, &spdOut_i);
     }
     
-    // get elevation Data
-    std::vector<float>* elevData = roadFromLink->getSpeedData();
-
-	if(link->getDirection())
-	{
-		elevData = reverseTrace(elevData);
-	}
-    return std::pair<std::vector<float>*, std::vector<float>*>(spdOut, elevData);
+    return std::pair<std::vector<float>, std::vector<float>>(spdOut, elevDataInterp);
 }
 
 Road* City::getConnectingRoad(Intersection* one, Intersection* two) {
@@ -338,64 +364,10 @@ bool City::legalRoute(Route* route) {
 	return true;
 }
 
-std::pair<std::vector<float>*, float>* City::elevationToSlope(std::vector<float>* elev, float oldElev)
-{
-	size_t elevSize = elev->size();
-    std::vector<float>* slope = new std::vector<float>(elevSize);
+std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route, float dist, SpeedPrediction* sp, Eigen::MatrixXd* spdIn) {
 
-	slope->at(0) = (elev->at(0) - oldElev) / this->intervalDistance;
-	for(int i = 1; i < elevSize; i++) { slope->at(i) = (elev->at(i) - elev->at(i-1)) / this->intervalDistance; }
-	for(int i = 0; i < elevSize; i++)
-	{
-		if(this->maxSlopePercent / 100 < slope->at(i))
-		{
-			slope->at(i) = this->maxSlopePercent / 100;
-		}
-        slope->at(i) = std::atan(slope->at(i));
-	}
-    float endElev = elev->at(elevSize - 1);
-
-    std::pair<std::vector<float>*, float>* data;
-	data->first = slope;
-	data->second = endElev;
-	return data;
-}
-    
-bool City::trimSpeedTrace(Road* road, float distAlongRoad, float dt, std::vector<float>* spdOut)
-{
-    float roadDist = road->getSplineLength();
-    
-    float spdDist = 0.0;
-    float prevSpd = spdOut->at(0);
-    for(int i = 1; i < spdOut->size(); i++)
-    {
-        float currSpd = spdOut->at(i);
-        float accel_i = (currSpd - prevSpd) / dt;
-        float dist_i = prevSpd + 0.5 * accel_i * std::pow(dt,2);
-        
-        spdDist += dist_i;
-        
-        if(spdDist < distAlongRoad)
-        {
-            spdOut->erase(spdOut->begin());
-        }
-        
-        else if(spdDist > roadDist)
-        {
-            for(int j = i; j < spdOut->size(); j++)
-            {
-                spdOut->pop_back();
-            }
-            return true;
-        }
-    }
-    return false;
-}
-
-std::pair<std::vector<float>*, std::vector<float>*> City::routeToData(Route* route, int distIndex, SpeedPrediction* sp, Eigen::MatrixXd* spdIn) {
-
-    std::vector<float>* elevData = new std::vector<float>();
-    std::vector<float>* spdData = new std::vector<float>();
+    std::vector<float> elevData;
+    std::vector<float> spdData;
     
     Eigen::MatrixXd spdIn_i(*spdIn);
 
@@ -404,42 +376,31 @@ std::pair<std::vector<float>*, std::vector<float>*> City::routeToData(Route* rou
 	GenericEntry<int, Link*>* nextLink = route->getLinks()->nextEntry();
 	while(nextLink->value->isFinalLink())
 	{
-        // get data
+        // get road from link
+        assert(!link->isFinalLink() && this->roads->hasEntry(link->getNumber()));
         Road* roadFromLink = this->roads->getEntry(nextLink->value->getNumber());
-        
-        // get spd and elevation data
-        std::pair<std::vector<float>*, std::vector<float>*> linkData = this->getData(nextLink->value, sp, &spdIn_i);
-        std::vector<float>* spdOut_i = linkData.first;
-        std::vector<float>* elevData_i = linkData.second;
-
+    
+        float distAlongLink = 0.0;
         if(isFirstLink)
         {
-            float distAlongRoad = (float) distIndex / roadFromLink->getNodes()->getSize() * roadFromLink->getSplineLength();
-            this->trimSpeedTrace(roadFromLink, distAlongRoad, sp->getDT(), spdOut_i);
-            
-            std::vector<float>::iterator itrElev = elevData_i->begin();
-            while(itrElev - elevData->begin() < distIndex)
-            {
-                itrElev = elevData->erase(itrElev);
-            }
-            
+            distAlongLink = dist;
             isFirstLink = false;
         }
-        else
-        {
-            this->trimSpeedTrace(roadFromLink, 0.0, sp->getDT(), spdOut_i);
-        }
+        
+        // get spd and elevation data
+        std::pair<std::vector<float>, std::vector<float>> linkData = this->getData(roadFromLink, nextLink->value->getDirection(), sp, &spdIn_i, distAlongLink);
+        std::vector<float> spdOut_i = linkData.first;
+        std::vector<float> elevData_i = linkData.second;
+
 
         // concatenate data
-        for(int i = 0; i < spdOut_i->size(); i++) { spdData->push_back(spdOut_i->at(i)); }
-        for(int i = 0; i < elevData_i->size(); i++) { elevData->push_back(elevData_i->at(i)); }
-        delete(spdOut_i);
-        delete(elevData_i);
+        for(int i = 0; i < spdOut_i.size(); i++) { spdData.push_back(spdOut_i.at(i)); }
+        for(int i = 0; i < elevData_i.size(); i++) { elevData.push_back(elevData_i.at(i)); }
         
 		nextLink = route->getLinks()->nextEntry();
 	}
     delete(nextLink);
-    return std::pair<std::vector<float>*, std::vector<float>*>(spdData, elevData);
+    return std::pair<std::vector<float>, std::vector<float>>(spdData, elevData);
 }
 
 GenericMap<int, Bounds*>* City::getBoundsMap() {

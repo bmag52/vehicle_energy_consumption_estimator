@@ -13,28 +13,30 @@
 #include "../city/City.h"
 #include "Link.h"
 
+#include <queue> 
+#include <vector>
+
 namespace PredictivePowertrain {
     
     class DriverPrediction {
     private:
+        std::vector<float> linkSpds;
+        std::queue<float> lastSpds;
         RoutePrediction* rp;
         SpeedPrediction* sp;
         Link* currLink;
         City* city;
         
+        Eigen::MatrixXd getSpeedPredInpunt(float spd);
+        void trainSpeedPredictionOverLastLink();
+        
     public:
+        typedef std::pair<std::vector<float>, std::vector<float>> PredData;
+        
         DriverPrediction(City* city);
-        
-        std::pair<std::vector<float>*, std::vector<float>*> startPrediction(Link* currentLink,
-                                                                        Eigen::MatrixXd* spd,
-                                                                        std::vector<float> currentConditions,
-                                                                        int distanceIndexAlongLink);
-        
-        std::pair<std::vector<float>*, std::vector<float>*> nextPrediction(Link* currentLink,
-                                                                        Eigen::MatrixXd* spd,
-                                                                        int distanceIndexAlongLink);
-        
-        void parseRoute(Route* currRoute, Eigen::MatrixXd* spd);
+        PredData startPrediction(Link* currentLink, float spd, std::vector<float> currentConditions, float distAlongLink);
+        PredData nextPrediction(Link* currentLink, float spd, float distAlongLink);
+        void parseRoute(Route* currRoute);
         
         
     };

@@ -72,6 +72,7 @@ public:
                                LinkToStateMap* newLinkToState);
     void addCity(City* newCity);
     Route* getPredictedRoute();
+    City* getCity();
 };
 
 

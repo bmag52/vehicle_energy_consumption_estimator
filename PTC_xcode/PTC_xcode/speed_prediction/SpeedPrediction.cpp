@@ -61,7 +61,7 @@ SpeedPrediction::SpeedPrediction(std::vector<Eigen::MatrixXd*>* Wts, std::vector
 void SpeedPrediction::initParams()
 {
 	// NN architectural params
-	this->I = 100;						// input neurons
+	this->I = 10;						// input neurons
 	this->O = 30;						// output neurons
 	int HN[] = {80, 65, 50, 35, 20};	// hidden layer neurons
 
@@ -69,7 +69,7 @@ void SpeedPrediction::initParams()
 	this->alpha = 10.0;					// learning rate
 	this->maxSpeed = 200;				// max vehicle speed
 	this->lb_offset = .1;				// lower bound offset
-    this->dt = 2.0;
+    this->dt = 1.0;
 
 	// index vars
 	this->HL = sizeof(HN)/4-1;			// last hidden layer
@@ -334,6 +334,44 @@ void SpeedPrediction::setVals(std::vector<std::vector<Eigen::MatrixXd*>*>* vals)
 float SpeedPrediction::getDT()
 {
     return this->dt;
+}
+    
+void SpeedPrediction::output2Input(Eigen::MatrixXd* spdIn, Eigen::MatrixXd* spdOut)
+{
+    if(spdIn->cols() > spdOut->cols())
+    {
+        // left shift spd In columns
+        int deltaCols = spdIn->cols() - spdOut->cols();
+        for(int i = 0; i < deltaCols; i++)
+        {
+            spdIn->coeffRef(0, i) = spdIn->coeffRef(0, i+deltaCols);
+        }
+        
+        // add in output data
+        for(int i = 0; i < spdOut->cols(); i++)
+        {
+            spdIn->coeffRef(0, i+deltaCols) = spdOut->coeffRef(0, i);
+        }
+    }
+    
+    else if(spdIn->cols() < spdOut->cols())
+    {
+        // take the last of the outputted speed and place it into input speed
+        int deltaCols = spdOut->cols() - spdIn->cols();
+        for(int i = 0; i < spdIn->cols(); i++)
+        {
+            spdIn->coeffRef(0, i) = spdOut->coeffRef(0, i+deltaCols);
+        }
+    }
+    
+    else
+    {
+        // columns numbers are equal
+        for(int i = 0; i < spdIn->cols(); i++)
+        {
+            spdIn->coeffRef(0, i) = spdOut->coeffRef(0, i);
+        }
+    }
 }
 
 }

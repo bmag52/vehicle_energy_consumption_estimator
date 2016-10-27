@@ -10,6 +10,7 @@
 
 #include "../map/GenericMap.h"
 #include "../data_management/Node.h"
+#include "../gps/GPS.h"
 
 #include <string>
 #include <limits.h>
@@ -50,7 +51,7 @@ public:
 	Intersection* getStartIntersection();
 	Intersection* getEndIntersection();
 	long int getRoadID();
-    std::vector<float>* getElevData();
+    void getElevData(std::vector<float>* elev, std::vector<float>* dist);
     std::vector<float>* getSpeedData();
 	int getBoundsID();
 	void setBoundsID(int id);

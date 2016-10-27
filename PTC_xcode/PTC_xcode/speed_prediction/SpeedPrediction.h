@@ -52,6 +52,7 @@ public:
     void unscaleTrainingSpeed(Eigen::MatrixXd * output);
     int getNumLayers();
     float getDT();
+    void output2Input(Eigen::MatrixXd* spdIn, Eigen::MatrixXd* spdOut);
 };
 
 }

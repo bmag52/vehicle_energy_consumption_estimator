@@ -29,6 +29,9 @@
 #define EARTH_RADIUS 6371000.0
 
 namespace PredictivePowertrain {
+    
+class Road;             // forward declaration
+class Intersection;     // forward declaration
 
 class GPS {
 private:

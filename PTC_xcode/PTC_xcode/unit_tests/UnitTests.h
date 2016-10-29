@@ -30,5 +30,5 @@ PredictivePowertrain::SpeedPrediction* speedPrediction_ut();
 void roadTypes_ut();
 void kinematics_ut();
 void GPS_ut();
-
+void driverPrediction_ut();
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

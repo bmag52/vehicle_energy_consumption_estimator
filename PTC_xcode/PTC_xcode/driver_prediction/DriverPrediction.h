@@ -33,8 +33,8 @@ namespace PredictivePowertrain {
     public:
         typedef std::pair<std::vector<float>, std::vector<float>> PredData;
         
-        DriverPrediction(City* city);
-        PredData startPrediction(Link* currentLink, float spd, std::vector<float> currentConditions, float distAlongLink);
+        DriverPrediction(RoutePrediction* newRP);
+        PredData startPrediction(Link* currentLink, float spd, std::vector<float>* currentConditions, float distAlongLink);
         PredData nextPrediction(Link* currentLink, float spd, float distAlongLink);
         void parseRoute(Route* currRoute);
         

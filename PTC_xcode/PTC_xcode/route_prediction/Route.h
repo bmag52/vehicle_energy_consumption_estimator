@@ -16,7 +16,7 @@ namespace PredictivePowertrain {
 
 class Route {
 private:
-	GenericMap<int, Link*>* links;
+	GenericMap<long int, Link*>* links;
 	Goal* goal;
 	Link* error;
 	Intersection* intersection;
@@ -24,7 +24,7 @@ private:
 	int linkCount;
 public:
 	Route();
-	Route(GenericMap<int, Link*>* links, Goal* goal);
+	Route(GenericMap<long int, Link*>* links, Goal* goal);
     void printLinks();
     virtual ~Route();
     void addLink(Link* link);
@@ -38,7 +38,7 @@ public:
 	bool isIntersection();
 	bool isEmpty();
 	Goal* getGoal();
-	GenericMap<int, Link*>* getLinks();
+	GenericMap<long int, Link*>* getLinks();
 	Intersection* getIntersection();
 	Link* getLastLink();;
 	Route* copy();

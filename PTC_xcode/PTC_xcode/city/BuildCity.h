@@ -37,6 +37,7 @@ private:
     City* city;
     GenericMap<long int, Road*>* rawRoads;
     GenericMap<long int, Intersection*>* newInts;
+    Bounds* newBounds;
     Eigen::MatrixXd adjMatFromSplines;
     double maxLat;
     double maxLon;
@@ -59,7 +60,7 @@ private:
     
     int boundsID = 0;
     double idScalar = 10000.0;
-    bool newBounds = false;
+    bool newBoundsFound = false;
     
     // for spline shit using osm 
     double splineStep = 0.025; // s-value
@@ -97,6 +98,9 @@ public:
     void printAdjMats();
     void printNewIntersectionsAndRoads();
     bool hasNewBounds();
+    GenericMap<long int, Intersection*>* getNewIntersections();
+    GenericMap<long int, Road*>* getNewRoads();
+    Bounds* getNewBounds();
 };
     
 }

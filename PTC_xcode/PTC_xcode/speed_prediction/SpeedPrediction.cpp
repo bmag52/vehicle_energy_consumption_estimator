@@ -69,7 +69,7 @@ void SpeedPrediction::initParams()
 	this->alpha = 10.0;					// learning rate
 	this->maxSpeed = 200;				// max vehicle speed
 	this->lb_offset = .1;				// lower bound offset
-    this->dt = 1.0;
+    this->dt = 2.0;
 
 	// index vars
 	this->HL = sizeof(HN)/4-1;			// last hidden layer
@@ -354,22 +354,11 @@ void SpeedPrediction::output2Input(Eigen::MatrixXd* spdIn, Eigen::MatrixXd* spdO
         }
     }
     
-    else if(spdIn->cols() < spdOut->cols())
-    {
-        // take the last of the outputted speed and place it into input speed
-        int deltaCols = spdOut->cols() - spdIn->cols();
-        for(int i = 0; i < spdIn->cols(); i++)
-        {
-            spdIn->coeffRef(0, i) = spdOut->coeffRef(0, i+deltaCols);
-        }
-    }
-    
     else
     {
-        // columns numbers are equal
         for(int i = 0; i < spdIn->cols(); i++)
         {
-            spdIn->coeffRef(0, i) = spdOut->coeffRef(0, i);
+            spdIn->coeffRef(0, spdIn->cols()-1-i) = spdOut->coeffRef(0, spdOut->cols()-1-i);
         }
     }
 }

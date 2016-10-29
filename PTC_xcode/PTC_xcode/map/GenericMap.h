@@ -31,6 +31,7 @@ public:
 	bool hasEntry(K key);
 	V getEntry(K key);
     V getFirstEntry();
+    V getLastEntry();
 	typename std::map<K,V>::iterator iterator();
 	typename std::map<K,V>::iterator begin();
 	typename std::map<K,V>::iterator end();
@@ -163,7 +164,13 @@ bool GenericMap<K, V>::indexErase(K key)
         
         if(this->hasNextEntry)
         {
-            this->iter = this->map.find(std::max(key-1, 0));
+            K searchKey = key;
+            if(searchKey != 0)
+            {
+                searchKey -= 1;
+            }
+            
+            this->iter = this->map.find(searchKey);
         }
         
         return true;
@@ -196,15 +203,26 @@ V GenericMap<K, V>::getFirstEntry()
 }
     
 template<class K, class V>
+V GenericMap<K, V>::getLastEntry()
+{
+    
+    if (this->getSize() > 0) {
+        return this->map.rbegin()->second;
+    } else {
+        return NULL;
+    }
+}
+    
+template<class K, class V>
 typename std::map<K, V>::iterator GenericMap<K, V>::begin()
 {
-	return map.begin();
+	return this->map.begin();
 }
 
 template<class K, class V>
 typename std::map<K, V>::iterator GenericMap<K, V>::end()
 {
-	return map.end();
+	return this->map.end();
 }
 
 template<class K, class V>

@@ -26,6 +26,24 @@ DataManagement::DataManagement() {
 	}
 }
 
+int DataManagement::countFileLine(std::string fileLoc)
+{
+    int numLines = 0;
+    std::string line;
+    std::ifstream file(fileLoc.c_str());
+    
+    if(file.is_open()){
+        while(!file.eof())
+        {
+            std::getline(file,line);
+            numLines++;
+        }
+        file.close();
+    }
+    
+    return numLines;
+}
+
 void DataManagement::addRoutePredictionData(RoutePrediction* rp)
 {
     // links
@@ -226,43 +244,52 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
     
 }
 
-void DataManagement::addCityData(City* city) {
+void DataManagement::addCityData(City* city)
+{
 	GenericMap<long int, Road*>* roadMap = city->getRoads();
 	GenericMap<long int, Intersection*>* intersectionMap = city->getIntersections();
 	GenericMap<int, Bounds*>* boundsMap = city->getBoundsMap();
 	GenericMap<int, Bounds*>* newBoundsMap = new GenericMap<int, Bounds*>();
 
+    ptree cityLogs;
 	bool newBounds = false;
-	ptree cityLogs;
-	try {
-		read_json(this->cityData, cityLogs);
+    if(this->countFileLine(this->cityData) == 0)
+    {
+        newBounds = true;
+        delete(newBoundsMap);
+        newBoundsMap = boundsMap;
+    }
+    else
+    {
+        try {
+            read_json(this->cityData, cityLogs);
 
-		boundsMap->initializeCounter();
-		GenericEntry<int, Bounds*>* nextBounds = boundsMap->nextEntry();
-		while(nextBounds != NULL)
-		{
-			bool boundsLogged = false;
-			BOOST_FOREACH(ptree::value_type& v, cityLogs)
-			{
-				int boundsID = lexical_cast<int>(v.first.data());
-				if(boundsID == nextBounds->key)
-				{
-					boundsLogged = true;
-					break;
-				}
-			}
-			if(!boundsLogged) {
-				newBounds = true;
-				newBoundsMap->addEntry(nextBounds->key, NULL);
-			}
-			nextBounds = boundsMap->nextEntry();
-		}
-	} catch(std::exception& e) {
-		std::cout << e.what() << std::endl;
-		newBoundsMap = boundsMap;
-		newBounds = true;
-	}
-
+            boundsMap->initializeCounter();
+            GenericEntry<int, Bounds*>* nextBounds = boundsMap->nextEntry();
+            while(nextBounds != NULL)
+            {
+                bool boundsLogged = false;
+                BOOST_FOREACH(ptree::value_type& v, cityLogs)
+                {
+                    int boundsID = lexical_cast<int>(v.first.data());
+                    if(boundsID == nextBounds->key)
+                    {
+                        boundsLogged = true;
+                        break;
+                    }
+                }
+                if(!boundsLogged) {
+                    newBounds = true;
+                    newBoundsMap->addEntry(nextBounds->key, NULL);
+                }
+                nextBounds = boundsMap->nextEntry();
+            }
+        } catch(std::exception& e) {
+            std::cout << e.what() << std::endl;
+            newBoundsMap = boundsMap;
+            newBounds = true;
+        }
+    }
 	if(newBounds)
 	{
         // add road data
@@ -275,12 +302,13 @@ void DataManagement::addCityData(City* city) {
 			GenericEntry<long int, Road*>* nextRoad = roadMap->nextEntry();
 			while(nextRoad != NULL)
 			{
-				if(nextRoad->value->getBoundsID() == nextBounds->key)
+				if(nextRoad->value->getBoundsID() == nextBounds->value->getID())
 				{
-					ptree road, startNode, endNode, roadType, nodes;
+					ptree road, startNode, endNode, roadType, nodes, splineLength;
 					startNode.put("", nextRoad->value->getStartIntersection()->getIntersectionID());
 					endNode.put("", nextRoad->value->getEndIntersection()->getIntersectionID());
 					roadType.put("", nextRoad->value->getRoadType());
+                    splineLength.put("", nextRoad->value->getSplineLength());
 
 					ptree lats, lons, nodeElevations, nodeIDs;
 					nextRoad->value->getNodes()->initializeCounter();
@@ -309,12 +337,14 @@ void DataManagement::addCityData(City* city) {
 					road.push_back(std::make_pair("startNodeID", startNode));
 					road.push_back(std::make_pair("endNodeID", endNode));
 					road.push_back(std::make_pair("roadType", roadType));
+                    road.push_back(std::make_pair("splineLength", splineLength));
 					road.push_back(std::make_pair("nodes", nodes));
 
 					roads_ptree.add_child(lexical_cast<std::string>(nextRoad->value->getRoadID()), road);
 				}
 				nextRoad = roadMap->nextEntry();
 			}
+            delete(nextRoad);
 
             // add intersecion data
 			intersectionMap->initializeCounter();
@@ -351,6 +381,7 @@ void DataManagement::addCityData(City* city) {
 				}
 				nextIntersection = intersectionMap->nextEntry();
 			}
+            delete(nextIntersection);
 
 			ptree bounds, maxLat, maxLon, minLat, minLon;
 			maxLat.put("", boundsMap->getEntry(nextBounds->key)->getMaxLat());
@@ -379,17 +410,24 @@ void DataManagement::addTripData(GenericMap<long int, std::pair<double, double>*
 	int tripID = 0;
 	ptree tripLogs;
 
-	// check for existing trips
-	try {
-		read_json(this->tripData, tripLogs);
-		BOOST_FOREACH(ptree::value_type &v, tripLogs)
-		{
-			tripID = lexical_cast<int>(v.first.data());
-		}
-	} catch(const std::exception& e) {
-		std::cout << e.what() << std::endl;
-	}
-
+    int numLines = this->countFileLine(this->tripData);
+    if(numLines > 1)
+    {
+        // check for existing trips
+        try
+        {
+            read_json(this->tripData, tripLogs);
+            BOOST_FOREACH(ptree::value_type &v, tripLogs)
+            {
+                tripID = lexical_cast<int>(v.first.data());
+            }
+        }
+        catch(const std::exception& e)
+        {
+            std::cout << e.what() << std::endl;
+        }
+    }
+    
 	// add trip
 	ptree trip, allLat, allLon;
 	latLon->initializeCounter();
@@ -414,8 +452,10 @@ void DataManagement::addTripData(GenericMap<long int, std::pair<double, double>*
 }
 
 
-RoutePrediction* DataManagement::getRoutePredictionData() {
-	try {
+RoutePrediction* DataManagement::getRoutePredictionData()
+{
+	try
+    {
         
         ptree rpLogs;
         GenericMap<long int, Link*>* links = new GenericMap<long int, Link*>();
@@ -698,10 +738,17 @@ RoutePrediction* DataManagement::getRoutePredictionData() {
     return NULL;
 }
 
-City* DataManagement::getCityData() {
+City* DataManagement::getCityData()
+{
 
+    if(this->countFileLine(this->cityData) == 0)
+    {
+        return NULL;
+    }
+    
 	ptree cityLogs;
-	try {
+	try
+    {
 		read_json(this->cityData, cityLogs);
 		GenericMap<long int, Road*>* roads = new GenericMap<long int, Road*>();
 		GenericMap<long int, Intersection*>* intersections = new GenericMap<long int, Intersection*>();
@@ -725,7 +772,8 @@ City* DataManagement::getCityData() {
 						GenericMap<int, long int>* nodeIDs = new GenericMap<int, long int>();
 
 						long int roadID = lexical_cast<long int>(z.first.data());
-						int startNodeID, endNodeID;
+						long int startNodeID, endNodeID;
+                        float splineLength;
 						std::string roadType;
 
 						BOOST_FOREACH(ptree::value_type& a, z.second)
@@ -737,6 +785,8 @@ City* DataManagement::getCityData() {
 								endNodeID = lexical_cast<int>(a.second.data());
 							} else if(!roadFeature.compare("roadType")) {
 								roadType = a.second.data();
+                            }else if(!roadFeature.compare("splineLength")) {
+                                splineLength = lexical_cast<float>(a.second.data());
 							} else if(!roadFeature.compare("nodes")) {
 								int latCount = 0; int lonCount = 0; int eleCount = 0; int idCount = 0;
 								BOOST_FOREACH(ptree::value_type& b, a.second)
@@ -767,7 +817,10 @@ City* DataManagement::getCityData() {
 						delete(nodeLats); delete(nodeLons); delete(nodeEles); delete(nodeIDs);
 
 						roadIntersections->addEntry(roadID, new std::pair<int, int>(startNodeID, endNodeID));
-						roads->addEntry(roadID, new Road(roadType, roadID, nodes));
+                        
+                        Road* road = new Road(roadType, roadID, nodes);
+                        road->assignSplineLength(splineLength);
+						roads->addEntry(roadID, road);
 					}
 				}
 			}
@@ -850,6 +903,11 @@ City* DataManagement::getCityData() {
 GenericMap<long int, std::pair<double, double>*>* DataManagement::getMostRecentTripData() {
     
     std::cout << "getting most recent trip log data" << std::endl;
+    
+    if(this->countFileLine(this->tripData) == 0)
+    {
+        return NULL;
+    }
 
 	ptree tripLog;
 	int dayID = 0;

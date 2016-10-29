@@ -30,7 +30,7 @@
 #include <float.h>
 
 namespace PredictivePowertrain {
-
+    
 class City {
 private:
 	Link* link;
@@ -49,7 +49,7 @@ public:
 	int getRoadMapSize();
 	int getInstersectionMapSize();
 	int getBoundsMapSize();
-	GenericMap<int, Link*>* getNextLinks(Link* link);
+	GenericMap<long int, Link*>* getNextLinks(Link* link);
 	Intersection* getIntersectionFromLink(Link* link, bool isIntersection);
     Route* randomPath(Intersection* startInt, Route* initialRoute, int totalLength, std::vector<float>* conditions);
 	Intersection* getIntersection(long int intersectionNum);

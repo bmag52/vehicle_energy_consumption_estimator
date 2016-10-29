@@ -34,7 +34,7 @@ void BuildCity::updateGridDataXMLSpline()
         // get map data
         std::pair<DataCollection*, Bounds*>* newMapData = this->setupDataCollection();
         DataCollection* dc = newMapData->first;
-        Bounds* newBounds = newMapData->second;
+        this->newBounds = newMapData->second;
         
         // parse new map data to gen raw roads
         dc->pullDataXML(this->latCenter, this->lonCenter);
@@ -248,14 +248,17 @@ void BuildCity::updateGridDataXMLSpline()
         // pool new raw intersections and existing intersections
         GenericMap<long int, Intersection*> allInts;
         
-        this->city->getIntersections()->initializeCounter(); // existing intersections
-        GenericEntry<long int, Intersection*>* nextCityInt = this->city->getIntersections()->nextEntry();
-        while(nextCityInt != NULL)
+        if(this->city != NULL && this->city->getIntersections() != NULL && this->city->getIntersections()->getSize() > 0)
         {
-            allInts.addEntry(nextCityInt->key, nextCityInt->value);
-            nextCityInt = this->city->getIntersections()->nextEntry();
+            this->city->getIntersections()->initializeCounter(); // existing intersections
+            GenericEntry<long int, Intersection*>* nextCityInt = this->city->getIntersections()->nextEntry();
+            while(nextCityInt != NULL)
+            {
+                allInts.addEntry(nextCityInt->key, nextCityInt->value);
+                nextCityInt = this->city->getIntersections()->nextEntry();
+            }
+            delete(nextCityInt);
         }
-        delete(nextCityInt);
         
         refinedInts.initializeCounter(); // new intersections
         GenericEntry<long int, Intersection*>* nextRefInt = refinedInts.nextEntry();
@@ -312,7 +315,7 @@ void BuildCity::updateGridDataXMLSpline()
                             GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
                             while(nextNode != NULL)
                             {
-                                if(nextNode->value->getID() == nextOtherInt->key)
+                                if(nextNode->value->getID() == nextOtherInt->value->getIntersectionID())
                                 {
                                     hasInt = true;
                                     break;
@@ -359,10 +362,15 @@ void BuildCity::updateGridDataXMLSpline()
                     // found road segment between intersection
                     else if (splineStartIntID != -1 && splineEndIntID != -1)
                     {
+                        if(splineStartIntID == splineEndIntID)
+                        {
+                            int test = 2;
+                        }
+                        
                         // ensure start or end intersection is nextInt
-                        bool startIntIsNextInt = splineStartIntID == nextInt->key;
-                        bool endIntIsNextInt = splineEndIntID == nextInt->key;
-                        if(!(startIntIsNextInt || endIntIsNextInt))
+                        bool startIntIsNotNextInt = splineStartIntID != nextInt->key;
+                        bool endIntIsNotNextInt = splineEndIntID != nextInt->key;
+                        if(startIntIsNotNextInt && endIntIsNotNextInt)
                         {
                             splineStartIntID = -1;
                             splineEndIntID = -1;
@@ -378,13 +386,13 @@ void BuildCity::updateGridDataXMLSpline()
                         
                         // check for unique atomic road segmenet
                         long int adjacentIntID;
-                        if(startIntIsNextInt)
-                        {
-                            adjacentIntID = splineEndIntID;
-                        }
-                        else if(endIntIsNextInt)
+                        if(startIntIsNotNextInt)
                         {
                             adjacentIntID = splineStartIntID;
+                        }
+                        else if(endIntIsNotNextInt)
+                        {
+                            adjacentIntID = splineEndIntID;
                         }
                         
                         bool foundUniqueRoad = true;
@@ -466,9 +474,7 @@ void BuildCity::updateGridDataXMLSpline()
                             newRoad->setMinMaxLatLon();
                             newRoad->setStartIntersection(refinedInts.getEntry(splineStartIntID));
                             newRoad->setEndIntersection(refinedInts.getEntry(splineEndIntID));
-                            
-                            // add new road to adjacent int
-                            refinedInts.getEntry(adjacentIntID)->addRoad(newRoad, 1);
+                            newRoad->setBoundsID(this->newBounds->getID());
                         }
                         
                         newConnectingRoads->addEntry(newRoad->getRoadID(), newRoad);
@@ -507,7 +513,7 @@ void BuildCity::updateGridDataXMLSpline()
 
 void BuildCity::printNewIntersectionsAndRoads()
 {
-    if(this->newInts->getSize() > 0)
+    if( this->newBoundsFound && this->newInts->getSize() > 0)
     {
         // csv name
         std::string csvName = "/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/parsedMapData.csv";
@@ -600,7 +606,7 @@ void BuildCity::updateGridDataXMLAdj() {
         std::cout << "identifying intersections from XML Adjacency Matrix" << std::endl;
         std::pair<DataCollection*, Bounds*>* newMapData = this->setupDataCollection();
         DataCollection* dc = newMapData->first;
-        Bounds* newBounds = newMapData->second;
+        this->newBounds = newMapData->second;
         
         dc->pullDataXML(this->latCenter, this->lonCenter);
         this->rawRoads = dc->makeRawRoads();
@@ -787,7 +793,7 @@ void BuildCity::updateGridDataPNG() {
         std::cout << "identifying intersections from PNG" << std::endl;
         std::pair<DataCollection*, Bounds*>* newMapData = this->setupDataCollection();
         DataCollection* dc = newMapData->first;
-        Bounds* newBounds = newMapData->second;
+        this->newBounds = newMapData->second;
         
         std::pair<int, cv::Mat>* newGridData = pullAndFormatMapPNG(dc);
         int zoomIdx = newGridData->first;
@@ -1255,7 +1261,7 @@ bool BuildCity::hasNewBounds() {
                 this->boundsID = bound->getID();
                 if(lat > bound->getMaxLat() || lat < bound->getMinLat() || lon > bound->getMaxLon() || lon < bound->getMinLon())
                 {
-                    this->newBounds = true;
+                    this->newBoundsFound = true;
                     if(lat > this->maxLat) { this->maxLat = lat; } if(lat < this->minLat) { this->minLat = lat; }
                     if(lon > this->maxLon) { this->maxLon = lon; } if(lon < this->minLon) { this->minLon = lon; }
                     
@@ -1267,7 +1273,7 @@ bool BuildCity::hasNewBounds() {
         }
     } else {
         // no bounds data
-        this->newBounds = true;
+        this->newBoundsFound = true;
         while(nextTripLatLon != NULL)
         {
             double lat = nextTripLatLon->value->first;
@@ -1280,6 +1286,46 @@ bool BuildCity::hasNewBounds() {
     }
     delete(nextTripLatLon);
     
+    return this->newBoundsFound;
+}
+    
+GenericMap<long int, Intersection*>* BuildCity::getNewIntersections()
+{
+    return this->newInts;
+}
+    
+GenericMap<long int, Road*>* BuildCity::getNewRoads()
+{
+    GenericMap<long int, Road*>* newRoads = new GenericMap<long int, Road*>();
+    
+    this->newInts->initializeCounter();
+    GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
+    while(nextInt != NULL)
+    {
+        GenericMap<long int, Road*>* connectingRoads = nextInt->value->getRoads();
+        
+        connectingRoads->initializeCounter();
+        GenericEntry<long int, Road*>* nextRoad = connectingRoads->nextEntry();
+        while(nextRoad != NULL)
+        {
+            if(!newRoads->hasEntry(nextRoad->value->getRoadID()))
+            {
+                newRoads->addEntry(nextRoad->value->getRoadID(), nextRoad->value);
+            }
+            nextRoad = connectingRoads->nextEntry();
+        }
+        delete(nextRoad);
+        
+        nextInt = this->newInts->nextEntry();
+    }
+    delete(nextInt);
+    
+    return newRoads;
+}
+    
+Bounds* BuildCity::getNewBounds()
+{
     return this->newBounds;
 }
+    
 } // end of predictivepowertrain

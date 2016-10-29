@@ -23,6 +23,7 @@ Road::Road(std::string roadType, long int roadID, GenericMap<long int, Node*>* n
     
 void Road::initialize()
 {
+    this->boundsID = 0;
     this->startNode = NULL;
     this->endNode = NULL;
     this->splineLength = -1;

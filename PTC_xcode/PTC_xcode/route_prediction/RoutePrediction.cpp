@@ -28,10 +28,10 @@ void RoutePrediction::initialize()
     Goal* unknownGoal = new Goal(-1);
     Goal* overGoal = new Goal(1);
     
-    this->unknownRoute = new Route(new GenericMap<int, Link*>(), unknownGoal);
+    this->unknownRoute = new Route(new GenericMap<long int, Link*>(), unknownGoal);
     this->unknownRoute->addLink(unknownLink);
     
-    this->overRoute = new Route(new GenericMap<int, Link*>(), overGoal);;
+    this->overRoute = new Route(new GenericMap<long int, Link*>(), overGoal);;
     
     this->linkToState = new LinkToStateMap();
     this->goalToLink = new GoalToLinkMap();
@@ -89,7 +89,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::
     delete(this->predictedGoal);
 	this->predictedGoal = new Goal(1, currentCondition);
 
-	GenericMap<int, Link*>* nextLinks = currentIntersection->getOutgoingLinks();
+	GenericMap<long int, Link*>* nextLinks = currentIntersection->getOutgoingLinks();
     this->probabilities = new std::vector<float>(nextLinks->getSize() * this->goals->getSize());
 
 	// creating the probability of each goal based on its relation to the conditions
@@ -99,7 +99,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::
 	while(nextGoal != NULL)
 	{
 		nextLinks->initializeCounter();
-		GenericEntry<int, Link*>* nextLink = nextLinks->nextEntry();
+		GenericEntry<long int, Link*>* nextLink = nextLinks->nextEntry();
 		while(nextLink != NULL)
 		{
 			float goalProbability = this->goalToLink->probabilityOfGoalGivenLink(nextLink->value, nextGoal->value, false);
@@ -143,7 +143,7 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::
 
 Route* RoutePrediction::predict(Link* linkTaken)
 {
-	GenericMap<int, Link*>* legalLinks;
+	GenericMap<long int, Link*>* legalLinks;
 	if(this->currentRoute->isIntersection())
 	{
 		legalLinks = this->currentRoute->getIntersection()->getOutgoingLinks();
@@ -158,7 +158,7 @@ Route* RoutePrediction::predict(Link* linkTaken)
 	// make sure that the link given is legal
 	bool error = true;
 	legalLinks->initializeCounter();
-	GenericEntry<int, Link*>* nextLegalLink = legalLinks->nextEntry();
+	GenericEntry<long int, Link*>* nextLegalLink = legalLinks->nextEntry();
 	while(nextLegalLink != NULL)
 	{
 		if(nextLegalLink->value->isEqual(linkTaken))
@@ -219,7 +219,7 @@ std::pair<GenericMap<int, std::pair<Link*,Goal*>*>*, std::vector<float>*>*
 RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, std::pair<Link*,Goal*>*>* oldStates, std::vector<float>* oldProbabilites)
 {
 	// get next links
-	GenericMap<int, Link*>* nextLinks = this->city->getNextLinks(chosenLink);
+	GenericMap<long int, Link*>* nextLinks = this->city->getNextLinks(chosenLink);
 
 	// generate new data structures
     GenericMap<int, std::pair<Link*, Goal*>*>* newStates = new GenericMap<int, std::pair<Link*, Goal*>*>();
@@ -235,7 +235,7 @@ RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, std::pair<Link*,
 
 	// calculate new states and probabilities
 	nextLinks->initializeCounter();
-	GenericEntry<int, Link*>* nextLink = nextLinks->nextEntry();
+	GenericEntry<long int, Link*>* nextLink = nextLinks->nextEntry();
 	while(nextLink != NULL)
 	{
 		this->goals->initializeCounter();

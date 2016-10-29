@@ -18,11 +18,11 @@ Route::~Route()
 Route::Route()
 {
 	this->linkCount = 0;
-    this->links = new GenericMap<int, Link*>();
+    this->links = new GenericMap<long int, Link*>();
     this->intersection = new Intersection();
 }
 
-Route::Route(GenericMap<int, Link*>* links, Goal* goal) {
+Route::Route(GenericMap<long int, Link*>* links, Goal* goal) {
 	this->links = links;
 	this->goal = goal;
 	this->linkCount = links->getSize();
@@ -40,7 +40,7 @@ void Route::addLink(Link* link) {
 bool Route::isEqual(Route * other)
 {
 	if(this->getLinkSize() == other->getLinkSize()) {
-		GenericMap<int, Link*>* otherLinks = other->getLinks();
+		GenericMap<long int, Link*>* otherLinks = other->getLinks();
 
         for(int i = 0; i < this->getLinkSize(); i++)
         {
@@ -61,7 +61,7 @@ bool Route::isEqual(Route * other)
 
 Route* Route::copy() {
 	Goal* newGoal = new Goal(this->goal);
-	GenericMap<int, Link*>* newLinks = this->links->copy();
+	GenericMap<long int, Link*>* newLinks = this->links->copy();
 	Route* route = new Route(newLinks, newGoal);
 	return route;
 }
@@ -83,7 +83,7 @@ int Route::getLinkSize() {
 	return this->links->getSize();
 }
 
-GenericMap<int, Link*>* Route::getLinks() {
+GenericMap<long int, Link*>* Route::getLinks() {
 	return this->links;
 }
 
@@ -132,7 +132,7 @@ void Route::removeFirstLink() {
 void Route::printLinks()
 {
     this->links->initializeCounter();
-    GenericEntry<int, Link*>* nextLink = this->links->nextEntry();
+    GenericEntry<long int, Link*>* nextLink = this->links->nextEntry();
     while(nextLink != NULL)
     {
         std::cout << nextLink->value->getNumber() << " | ";

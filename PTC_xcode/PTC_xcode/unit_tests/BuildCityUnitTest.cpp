@@ -25,6 +25,7 @@ void buildCity_ut() {
     latLon->addEntry(5, new std::pair<double, double>(47.638, -117.400));
     latLon->addEntry(6, new std::pair<double, double>(47.639, -117.401));
     latLon->addEntry(7, new std::pair<double, double>(47.640, -117.402));
+    latLon->addEntry(8, new std::pair<double, double>(47.650, -117.410));
     
     // down town trip log big
 //    latLon->addEntry(1, new std::pair<double, double>(47.656784, -122.307302));
@@ -35,7 +36,6 @@ void buildCity_ut() {
     dm.addTripData(latLon);
     
     BuildCity bc;
-//    bc.updateGridDataPNG();
     bc.updateGridDataXMLSpline();
     bc.printNewIntersectionsAndRoads();
 }

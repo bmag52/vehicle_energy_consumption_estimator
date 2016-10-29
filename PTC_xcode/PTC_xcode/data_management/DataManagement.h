@@ -38,6 +38,8 @@ private:
 	std::string cityData = saveFolder + "cities.json";
 	std::string tripData = saveFolder + "tripLogs.json";
 
+    int countFileLine(std::string fileLoc);
+    
 public:
 	DataManagement();
 	void addRoutePredictionData(RoutePrediction* rp);

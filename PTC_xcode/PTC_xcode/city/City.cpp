@@ -38,15 +38,15 @@ int City::getInstersectionMapSize() {
 	return this->intersections->getSize();
 }
 
-GenericMap<int, Link*>* City::getNextLinks(Link* otherLink) {
+GenericMap<long int, Link*>* City::getNextLinks(Link* otherLink) {
 	assert(!otherLink->isFinalLink());
 	Road* currentRoad = this->roads->getEntry(otherLink->getNumber());
 	Intersection* nextIntersection = getIntersectionFromLink(otherLink, true);
 
-	GenericMap<int, Link*>* nextLinks = new GenericMap<int, Link*>();
+	GenericMap<long int, Link*>* nextLinks = new GenericMap<long int, Link*>();
 	GenericMap<long int, Road*>* connectingRoads = nextIntersection->getRoads();
 
-	int count = 0;
+	long int count = 0;
 	connectingRoads->initializeCounter();
 	GenericEntry<long int, Road*>* nextRoad = connectingRoads->nextEntry();
 	while(nextRoad != NULL)
@@ -132,8 +132,8 @@ Route* City::getPath(Intersection* start, Intersection* end, std::vector<float>*
 	}
 
 	int linkCount = 0;
-	GenericMap<int, Link*>* links = new GenericMap<int, Link*>();
-	int currentIntNum = end->getIntersectionID();
+	GenericMap<long int, Link*>* links = new GenericMap<long int, Link*>();
+	long int currentIntNum = end->getIntersectionID();
 	while(currentIntNum != start->getIntersectionID())
 	{
 		Intersection* previousInt = getIntersection(prev.getEntry(currentIntNum));
@@ -249,12 +249,12 @@ Road* City::getConnectingRoad(Intersection* one, Intersection* two) {
 
 Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLength, std::vector<float>* conditions) {
     
-	GenericMap<int, Link*>* startLinks = startInt->getOutgoingLinks();
-    GenericMap<int, Link*>* links = new GenericMap<int, Link*>();
+	GenericMap<long int, Link*>* startLinks = startInt->getOutgoingLinks();
+    GenericMap<long int, Link*>* links = new GenericMap<long int, Link*>();
     
     // copy outgoing links to prevent mutilation
     startLinks->initializeCounter();
-    GenericEntry<int, Link*>* nextLinkEntry = startLinks->nextEntry();
+    GenericEntry<long int, Link*>* nextLinkEntry = startLinks->nextEntry();
     while(nextLinkEntry != NULL)
     {
         Link* outLink = nextLinkEntry->value;
@@ -263,7 +263,7 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
     }
     delete(nextLinkEntry);
     
-	GenericMap<int, Link*>* path = new GenericMap<int, Link*>();
+	GenericMap<long int, Link*>* path = new GenericMap<long int, Link*>();
 	GenericMap<long int, Intersection*> passedInts;
 	passedInts.addEntry(startInt->getIntersectionID(), startInt);
     
@@ -273,7 +273,7 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
 		if(initialRoute->getLinkSize() > i)
 		{
 			links->initializeCounter();
-			GenericEntry<int, Link*>* nextLinkEntry = links->nextEntry();
+			GenericEntry<long int, Link*>* nextLinkEntry = links->nextEntry();
 			while(nextLinkEntry != NULL)
 			{
 				if(nextLinkEntry->value->isEqual(initialRoute->getLinks()->getEntry(i)))
@@ -289,7 +289,7 @@ Route* City::randomPath(Intersection* startInt, Route* initialRoute, int totalLe
 		if(nextLink == NULL)
 		{
 			links->initializeCounter();
-			GenericEntry<int, Link*>* nextLinkEntry = links->nextEntry();
+			GenericEntry<long int, Link*>* nextLinkEntry = links->nextEntry();
 			while(nextLinkEntry != NULL)
 			{
 				if(!nextLinkEntry->value->isFinalLink())
@@ -343,9 +343,9 @@ bool City::legalRoute(Route* route) {
 	Route* routeCopy = route->copy();
 	while(routeCopy->getLinkSize() > 1)
 	{
-		GenericMap<int, Link*>* legalLinks = getNextLinks(routeCopy->getLinks()->getEntry(1));
+		GenericMap<long int, Link*>* legalLinks = getNextLinks(routeCopy->getLinks()->getEntry(1));
 		legalLinks->initializeCounter();
-		GenericEntry<int, Link*>* nextLink = legalLinks->nextEntry();
+		GenericEntry<long int, Link*>* nextLink = legalLinks->nextEntry();
 		bool error = true;
 		while(nextLink != NULL)
 		{
@@ -373,7 +373,7 @@ std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route
 
     bool isFirstLink = true;
 	route->getLinks()->initializeCounter();
-	GenericEntry<int, Link*>* nextLink = route->getLinks()->nextEntry();
+	GenericEntry<long int, Link*>* nextLink = route->getLinks()->nextEntry();
 	while(nextLink->value->isFinalLink())
 	{
         // get road from link
@@ -391,7 +391,6 @@ std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route
         std::pair<std::vector<float>, std::vector<float>> linkData = this->getData(roadFromLink, nextLink->value->getDirection(), sp, &spdIn_i, distAlongLink);
         std::vector<float> spdOut_i = linkData.first;
         std::vector<float> elevData_i = linkData.second;
-
 
         // concatenate data
         for(int i = 0; i < spdOut_i.size(); i++) { spdData.push_back(spdOut_i.at(i)); }

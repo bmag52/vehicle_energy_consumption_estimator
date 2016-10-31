@@ -376,8 +376,14 @@ std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route
 	GenericEntry<long int, Link*>* nextLink = route->getLinks()->nextEntry();
 	while(nextLink->value->isFinalLink())
 	{
+        if(nextLink->value->isFinalLink())
+        {
+            delete(nextLink);
+            return std::pair<std::vector<float>, std::vector<float>>(spdData, elevData);
+        }
+        
         // get road from link
-        assert(!link->isFinalLink() && this->roads->hasEntry(link->getNumber()));
+        assert(this->roads->hasEntry(nextLink->value->getNumber()));
         Road* roadFromLink = this->roads->getEntry(nextLink->value->getNumber());
     
         float distAlongLink = 0.0;

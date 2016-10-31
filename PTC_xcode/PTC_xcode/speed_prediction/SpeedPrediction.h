@@ -52,6 +52,8 @@ public:
     void unscaleTrainingSpeed(Eigen::MatrixXd * output);
     int getNumLayers();
     float getDT();
+    int getMaxSpeed();
+    float getSpeedOffset();
     void output2Input(Eigen::MatrixXd* spdIn, Eigen::MatrixXd* spdOut);
 };
 

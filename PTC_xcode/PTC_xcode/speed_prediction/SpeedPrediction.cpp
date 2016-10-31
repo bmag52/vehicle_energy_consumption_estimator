@@ -243,9 +243,30 @@ void SpeedPrediction::train(Eigen::MatrixXd * spd_pred, Eigen::MatrixXd  * spd_a
 std::vector<std::vector<Eigen::MatrixXd*>*>* SpeedPrediction::getVals()
 {
     std::vector<std::vector<Eigen::MatrixXd*>*>* returnList = new std::vector<std::vector<Eigen::MatrixXd*>*>(3);
-	returnList->at(0) = this->Wts;
-	returnList->at(1) = this->yHid;
-	returnList->at(2) = this->yInHid;
+    
+    // Wts
+    std::vector<Eigen::MatrixXd*>* newWtsVec = new std::vector<Eigen::MatrixXd*>(this->Wts->size());
+    for(int i = 0; i < this->Wts->size(); i++)
+    {
+        newWtsVec->at(i) = new Eigen::MatrixXd(*this->Wts->at(i));
+    }
+	returnList->at(0) = newWtsVec;
+    
+    // yHid
+    std::vector<Eigen::MatrixXd*>* newYHidVec = new std::vector<Eigen::MatrixXd*>(this->yHid->size());
+    for(int i = 0; i < this->yHid->size(); i++)
+    {
+        newYHidVec->at(i) = new Eigen::MatrixXd(*this->yHid->at(i));
+    }
+	returnList->at(1) = newYHidVec;
+    
+    // yInHid
+    std::vector<Eigen::MatrixXd*>* newYInHidVec = new std::vector<Eigen::MatrixXd*>(this->yInHid->size());
+    for(int i = 0; i < this->yInHid->size(); i++)
+    {
+        newYInHidVec->at(i) = new Eigen::MatrixXd(*this->yInHid->at(i));
+    }
+	returnList->at(2) = newYInHidVec;
 	return returnList;
 }
 
@@ -361,6 +382,16 @@ void SpeedPrediction::output2Input(Eigen::MatrixXd* spdIn, Eigen::MatrixXd* spdO
             spdIn->coeffRef(0, spdIn->cols()-1-i) = spdOut->coeffRef(0, spdOut->cols()-1-i);
         }
     }
+}
+    
+int SpeedPrediction::getMaxSpeed()
+{
+    return this->maxSpeed;
+}
+
+float SpeedPrediction::getSpeedOffset()
+{
+    return this->lb_offset;
 }
 
 }

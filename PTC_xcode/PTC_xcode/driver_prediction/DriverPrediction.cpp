@@ -90,11 +90,16 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
     // get spd input from first speed logged link speed values
     for(int i = 0; i < this->sp->getI()+1; i++)
     {
-        spdIn.coeffRef(0,i) = this->linkSpds.at(i);
-        this->linkSpds.erase(this->linkSpds.begin());
+        float spd_i = this->lastSpds.front();
+        
+        spdIn.coeffRef(0,i) = spd_i;
+        
+        this->lastSpds.pop();
+        this->lastSpds.push(spd_i);
     }
     
     // prep speed prediction for training
+    sp->formatInData(&spdIn);
     this->sp->setVals(this->currLink->getWeights(this->currLink->getDirection()));
     this->sp->predict(&spdIn, &spdOut);
     
@@ -116,8 +121,13 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
         }
     }
     
-    // perform rolling window speed prediction training
+    // scale training data
+    sp->scaleTrainingSpeed(&spdAct);
+    
+    // taine with existing data
     this->sp->train(&spdOut, &spdAct, &spdIn);
+    
+    // perform rolling window trainging
     while(this->linkSpds.size() > 0)
     {
         // left shift speed input
@@ -132,7 +142,7 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
         {
             spdAct.coeffRef(0, i) = spdAct.coeffRef(0,i+1);
         }
-        spdAct.coeffRef(0, this->sp->getO() - 1) = this->linkSpds.at(0);
+        spdAct.coeffRef(0, this->sp->getO() - 1) = this->linkSpds.at(0) / sp->getMaxSpeed() + sp->getSpeedOffset();
         
         // remove first value from link speed
         this->linkSpds.erase(this->linkSpds.begin());
@@ -150,9 +160,10 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
     for(int i = 0; i < this->sp->getI() + 1; i++)
     {
         float spd_i = this->lastSpds.front();
-        this->lastSpds.pop();
         
         this->linkSpds.push_back(spd_i);
+        
+        this->lastSpds.pop();
         this->lastSpds.push(spd_i);
     }
 }
@@ -174,9 +185,10 @@ Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
     for(size_t i = 0; i < spdIn.cols(); i++)
     {
         float spd_i = this->lastSpds.front();
-        this->lastSpds.pop();
         
         spdIn.coeffRef(0, i) = spd_i;
+        
+        this->lastSpds.pop();
         this->lastSpds.push(spd_i);
     }
     

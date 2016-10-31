@@ -4,6 +4,7 @@
  *  Created on: Apr 14, 2016
  *      Author: vagrant
  */
+
 #include "../route_prediction/Goal.h"
 #include "../route_prediction/Route.h"
 #include "../driver_prediction/DriverPrediction.h"
@@ -290,6 +291,12 @@ void driverPrediction_ut()
     GenericEntry<long int, Link*>* nextLink = actualRoute->getLinks()->nextEntry();
     while(nextLink != NULL)
     {
+        if(nextLink->value->isFinalLink())
+        {
+            std::cout << "Driver Prediction Unit Test Complete" << std::endl;
+            break;
+        }
+        
         Road* road = rpCity->getRoads()->getEntry(nextLink->value->getNumber());
         float roadDist = road->getSplineLength();
         float distAlongLink = 0.0;
@@ -302,7 +309,7 @@ void driverPrediction_ut()
             for(int i = 0; i < removeBeforeIndex; i++)
             {
                 prevSpd = routeSpdsTmp.at(0);
-                routeSpdsTmp.erase(routeSpds.begin());
+                routeSpdsTmp.erase(routeSpdsTmp.begin());
             }
             
             currSpd = routeSpdsTmp.at(0);
@@ -318,7 +325,7 @@ void driverPrediction_ut()
             distAlongLink += dist_i;
             
             currSpd = routeSpdsTmp.at(0);
-            routeSpdsTmp.erase(routeSpds.begin());
+            routeSpdsTmp.erase(routeSpdsTmp.begin());
             
             prevSpd = currSpd;
             

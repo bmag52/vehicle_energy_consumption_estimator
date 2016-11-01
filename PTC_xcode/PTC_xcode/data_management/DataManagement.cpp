@@ -795,23 +795,30 @@ City* DataManagement::getCityData()
 									BOOST_FOREACH(ptree::value_type& c, b.second)
 									{
 										if(!nodeFeature.compare("latitude")) {
-											nodeLats->addEntry(latCount++, lexical_cast<double>(c.second.data()));
+											nodeLats->addEntry(latCount, lexical_cast<double>(c.second.data()));
+                                            latCount++;
 										} else if(!nodeFeature.compare("longitude")) {
-											nodeLons->addEntry(lonCount++, lexical_cast<double>(c.second.data()));
+											nodeLons->addEntry(lonCount, lexical_cast<double>(c.second.data()));
+                                            lonCount++;
 										} else if(!nodeFeature.compare("elevation")) {
-											nodeEles->addEntry(eleCount++, lexical_cast<int>(c.second.data()));
+											nodeEles->addEntry(eleCount, lexical_cast<int>(c.second.data()));
+                                            eleCount++;
 										} else if(!nodeFeature.compare("nodeIDs")) {
-											nodeIDs->addEntry(idCount++, lexical_cast<long int>(c.second.data()));
+											nodeIDs->addEntry(idCount, lexical_cast<long int>(c.second.data()));
+                                            idCount++;
 										}
 									}
 								}
 							}
 						}
+                        
+                        assert(nodeLats->getSize() == nodeLons->getSize());
+                        assert(nodeLons->getSize() == nodeEles->getSize());
+                        assert(nodeEles->getSize() == nodeIDs->getSize());
 
 						GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
-						for(int i = 1; i <= nodeLats->getSize(); i++)
+						for(int i = 0; i < nodeLats->getSize(); i++)
 						{
-
 							nodes->addEntry(i, new Node(nodeLats->getEntry(i), nodeLons->getEntry(i), nodeEles->getEntry(i), nodeIDs->getEntry(i)));
 						}
 						delete(nodeLats); delete(nodeLons); delete(nodeEles); delete(nodeIDs);

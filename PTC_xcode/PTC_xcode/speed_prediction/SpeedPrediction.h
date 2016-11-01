@@ -29,7 +29,7 @@ private:
 	int *totalLayers;			// total number of layers
 	float lb_offset;			// lower bound offset
 	float alpha; 				// learning rate
-    float dt;                  // time delta between predicted values
+    float ds;                  // time delta between predicted values
     std::vector<Eigen::MatrixXd*>* Wts;         // matrix of weights
     std::vector<Eigen::MatrixXd*>* yHid;		// hidden layer outputs
     std::vector<Eigen::MatrixXd*>* yInHid;      // hidden layer inputs
@@ -51,7 +51,7 @@ public:
     void scaleTrainingSpeed(Eigen::MatrixXd * input);
     void unscaleTrainingSpeed(Eigen::MatrixXd * output);
     int getNumLayers();
-    float getDT();
+    float getDS();
     int getMaxSpeed();
     float getSpeedOffset();
     void output2Input(Eigen::MatrixXd* spdIn, Eigen::MatrixXd* spdOut);

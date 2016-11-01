@@ -89,10 +89,14 @@ void Road::getElevData(std::vector<float>* elev, std::vector<float>* dist)
     GenericEntry<long int, Node*>* prevNode = this->nodes->nextEntry();
     GenericEntry<long int, Node*>* nextNode = this->nodes->nextEntry();
     
+    float cumulativeDist = 0.0;
+    
     while(nextNode != NULL)
     {
+        cumulativeDist += converter.deltaLatLonToXY(prevNode->value->getLat(), prevNode->value->getLon(), nextNode->value->getLat(), nextNode->value->getLon());
+        
         elev->push_back(nextNode->value->getEle());
-        dist->push_back(converter.deltaLatLonToXY(prevNode->value->getLat(), prevNode->value->getLon(), nextNode->value->getLat(), nextNode->value->getLon()));
+        dist->push_back(cumulativeDist);
         
         prevNode = nextNode;
         nextNode = this->nodes->nextEntry();

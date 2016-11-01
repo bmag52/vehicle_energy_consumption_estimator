@@ -69,7 +69,7 @@ void SpeedPrediction::initParams()
 	this->alpha = 10.0;					// learning rate
 	this->maxSpeed = 200;				// max vehicle speed
 	this->lb_offset = .1;				// lower bound offset
-    this->dt = 2.0;
+    this->ds = 5.0;
 
 	// index vars
 	this->HL = sizeof(HN)/4-1;			// last hidden layer
@@ -352,9 +352,9 @@ void SpeedPrediction::setVals(std::vector<std::vector<Eigen::MatrixXd*>*>* vals)
     this->yInHid = vals->at(2);
 }
 
-float SpeedPrediction::getDT()
+float SpeedPrediction::getDS()
 {
-    return this->dt;
+    return this->ds;
 }
     
 void SpeedPrediction::output2Input(Eigen::MatrixXd* spdIn, Eigen::MatrixXd* spdOut)

@@ -31,14 +31,18 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
 {
     this->currLink = currentLink;
     
-    Route* predRoute = this->rp->startPrediction(this->city->getIntersectionFromLink(currentLink, false), currentConditions);
+    // prep for route and speed predictions across route
+    Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, false);
+    this->rp->startPrediction(startIntersection, currentConditions);
+    Route* predRoute = this->rp->predict(currentLink)->copy();
+    this->addWeightedLinksToRoute(predRoute);
     
     Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
+    
     PredData predData = this->city->routeToData(predRoute, distAlongLink, this->sp, &spdIn);
+    delete(predRoute);
     
     return predData;
-    
-    
 }
 
 DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
@@ -60,7 +64,7 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
         this->trainSpeedPredictionOverLastLink();
         
         // perform route prediction
-        predRoute = this->rp->predict(currentLink);
+        predRoute = this->rp->predict(currentLink)->copy();
         this->currLink = currentLink;
     }
     
@@ -70,8 +74,11 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
         predRoute = this->rp->getPredictedRoute();
     }
     
+    this->addWeightedLinksToRoute(predRoute);
+    
     Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
     PredData predData = this->city->routeToData(predRoute, distAlongLink, this->sp, &spdIn);
+    delete(predRoute);
 
     return predData;
 }
@@ -111,7 +118,6 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
         {
             spdAct.coeffRef(0,i) = this->linkSpds.at(0);
             this->linkSpds.erase(this->linkSpds.begin());
-            
         }
         
         // otherwise just use the NN output as act and do not penalize NN for wrong predictions
@@ -177,7 +183,6 @@ Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
     this->lastSpds.push(spd);
     this->lastSpds.pop();
 
-    
     // create a matrix of zero input
     Eigen::MatrixXd spdIn = Eigen::MatrixXd::Zero(1, this->sp->getI() + 1);
     
@@ -194,7 +199,36 @@ Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
     
     return spdIn;
 }
+    
+void DriverPrediction::addWeightedLinksToRoute(Route* unweightedRoute)
+{
+    GenericMap<long int, Link*>* weightedRouteLinks = new GenericMap<long int, Link*>();
+    GenericMap<long int, Link*>* unweightedLinks = unweightedRoute->getLinks();
+    
+    unweightedLinks->initializeCounter();
+    GenericEntry<long int, Link*>* nextUnweightedLink = unweightedLinks->nextEntry();
+    while(nextUnweightedLink != NULL)
+    {
+        long int key = nextUnweightedLink->key;
+        Link* nextUnweightedLink_i = nextUnweightedLink->value;
+        
+        weightedRouteLinks->addEntry(key, this->rp->getLinks()->getEntry(nextUnweightedLink_i->getHash()));
+        nextUnweightedLink = unweightedLinks->nextEntry();
+    }
+    delete(nextUnweightedLink);
+    
+    unweightedRoute->replaceLinks(weightedRouteLinks);
+}
 
+RoutePrediction* DriverPrediction::getRP()
+{
+    return this->rp;
+}
+
+SpeedPrediction* DriverPrediction::getSP()
+{
+    return this->sp;
+}
 
     
 } /* namespace PredictivePowertrain */

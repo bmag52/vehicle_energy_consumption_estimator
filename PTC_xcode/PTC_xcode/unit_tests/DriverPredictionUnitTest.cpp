@@ -85,7 +85,6 @@ void setRouteNeuralNetworkVals(Route* route, std::vector<float> spds, float spdD
         sp.formatInData(&spdIn);
         sp.scaleTrainingSpeed(&spdAct);
         
-        
         // make speed prediction
         SpeedPrediction sp;
         for(int i = 0; i < trainIters; i++)
@@ -118,13 +117,12 @@ void setRouteNeuralNetworkVals(Route* route, std::vector<float> spds, float spdD
                 spdIn.coeffRef(0, i+deltaLengths) = roadSpds_i.at(i);
             }
         }
-        
         else
         {
             for(int i = spdIn.cols() - 1; i >= 0; i--)
             {
                 spdIn.coeffRef(0, i) = roadSpds_i.back();
-                roadSpds_i.erase(roadSpds_i.end());
+                roadSpds_i.pop_back();
             }
         }
         
@@ -192,26 +190,16 @@ void driverPrediction_ut()
     std::string num;
     
     std::vector<float> routeSpds;
-    for (int i = 0; i<10000; i++){
+    float routeSpdsDist = 0.0;
+    
+    for (int i = 0; i<17000; i++)
+    {
         std::getline(input, num, ',');
         std::stringstream fs(num);
         float f = 0.0;
         fs >> f;
         routeSpds.push_back(f);
-    }
-    
-    float routeSpdsDist = 0.0;
-    
-    float prevSpd = routeSpds.at(0);
-    for(int i = 1; i < routeSpds.size(); i++)
-    {
-        float currSpd = routeSpds.at(i);
-        float accel_i = (currSpd - prevSpd) / sp.getDT();
-        float dist_i = prevSpd + 0.5 * accel_i * std::pow(sp.getDT(),2);
-        
-        routeSpdsDist += dist_i;
-        
-        prevSpd = currSpd;
+        routeSpdsDist += sp.getDS();
     }
     
     // ----------------------
@@ -250,8 +238,6 @@ void driverPrediction_ut()
     
     // create number of random routes to include in test set
     int num_rand_routes = 4;
-    bool foundIncorrectTestRoute = false;
-    Route* incorrectTestRoute;
     
     for(int i = 1; i <= num_rand_routes; i++)
     {
@@ -260,12 +246,6 @@ void driverPrediction_ut()
         while(randomRoute->isEqual(actualRoute))
         {
             randomRoute = rpCity->randomPath(startIntersection, &startRoute, std::ceil((float)std::rand() / RAND_MAX * routeLength), conditions);
-        }
-        
-        if(!foundIncorrectTestRoute)
-        {
-            incorrectTestRoute = randomRoute;
-            foundIncorrectTestRoute = true;
         }
         
         // add NN vals
@@ -283,51 +263,82 @@ void driverPrediction_ut()
     DriverPrediction::PredData predData;
     
     std::vector<float> routeSpdsTmp(routeSpds);
+    std::ofstream predFile("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/driverPredictionResults.csv");
     
-    float currSpd = 0.0;
     bool isFirstLink = true;
+    int predictionCount = 0;
+    float distanceAlongRoute = 0.0;
     
-    actualRoute->getLinks()->initializeCounter();
-    GenericEntry<long int, Link*>* nextLink = actualRoute->getLinks()->nextEntry();
-    while(nextLink != NULL)
+    // begin driving actual route
+    while(actualRoute->getLinks()->getSize() > 0)
     {
-        if(nextLink->value->isFinalLink())
+        Link* nextLink = actualRoute->getLinks()->getEntry(0);
+        actualRoute->removeFirstLink();
+        
+        // break if final link is found
+        if(nextLink->isFinalLink())
         {
             std::cout << "Driver Prediction Unit Test Complete" << std::endl;
             break;
         }
         
-        Road* road = rpCity->getRoads()->getEntry(nextLink->value->getNumber());
+        // get road data from actual route
+        Road* road = rpCity->getRoads()->getEntry(nextLink->getNumber());
         float roadDist = road->getSplineLength();
         float distAlongLink = 0.0;
         
+        // test handling of starting route partially up first link
         if(isFirstLink)
         {
             distAlongLink = roadDist / 2;
+            distanceAlongRoute += distAlongLink;
             
             float removeBeforeIndex = (float) roadDist / routeSpdsDist * routeSpds.size();
             for(int i = 0; i < removeBeforeIndex; i++)
             {
-                prevSpd = routeSpdsTmp.at(0);
                 routeSpdsTmp.erase(routeSpdsTmp.begin());
             }
+            std::cout << "Starting Driver Prediciton" << std::endl;
+            predData = dp.startPrediction(nextLink, routeSpdsTmp.front(), conditions, distAlongLink);
             
-            currSpd = routeSpdsTmp.at(0);
-            predData = dp.startPrediction(nextLink->value, currSpd, conditions, distAlongLink);
+            // actual route speeds
+            predFile << "Actual Route Speeds\n";
+            for(int i = 0; i < routeSpdsTmp.size(); i++)
+            {
+                predFile << routeSpdsTmp.at(i);
+                predFile << ",";
+            }
+            predFile << "\n";
             
+            routeSpdsTmp.erase(routeSpdsTmp.begin());
             isFirstLink = false;
         }
         
         while(distAlongLink < roadDist)
         {
-            float accel_i = (currSpd - prevSpd) / sp.getDT();
-            float dist_i = prevSpd + 0.5 * accel_i * std::pow(sp.getDT(),2);
-            distAlongLink += dist_i;
+            distAlongLink += sp.getDS();
+            distanceAlongRoute += sp.getDS();
             
-            currSpd = routeSpdsTmp.at(0);
-            routeSpdsTmp.erase(routeSpdsTmp.begin());
+            std::cout << distanceAlongRoute << std::endl;
             
-            prevSpd = currSpd;
+            predFile << "Prediction: " << predictionCount << "\n";
+            predictionCount++;
+            
+            // predicted speed
+            for(int i = 0; i < predData.first.size(); i++)
+            {
+                predFile << predData.first.at(i);
+                predFile << ",";
+            }
+            predFile << "\n";
+            
+            // predicted elevation
+            for(int i = 0; i < predData.second.size(); i++)
+            {
+                predFile << predData.second.at(i);
+                predFile << ",";
+            }
+            predFile << "\n";
             
             if(routeSpdsTmp.size() == 0)
             {
@@ -337,12 +348,16 @@ void driverPrediction_ut()
                 }
             }
             
-            predData = dp.nextPrediction(nextLink->value, currSpd, distAlongLink);
+            predData = dp.nextPrediction(nextLink, routeSpdsTmp.front(), distAlongLink);
+            routeSpdsTmp.erase(routeSpdsTmp.begin());
         }
         
-        nextLink = actualRoute->getLinks()->nextEntry();
+        // print routes
+        std::cout << "---- route prediciton ----" << std::endl;
+        actualRoute->printLinks();
+        dp.getRP()->getPredictedRoute()->printLinks();
+        
+
     }
-    delete(nextLink);
-    
 }
 

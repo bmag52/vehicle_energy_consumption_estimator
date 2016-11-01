@@ -43,6 +43,7 @@ public:
 	Link* getLastLink();;
 	Route* copy();
 	void removeFirstLink();
+    void replaceLinks(GenericMap<long int, Link*>* newLinks);
 };
 
 }

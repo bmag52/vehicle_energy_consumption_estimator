@@ -154,13 +154,13 @@ RoutePrediction* routePrediction_ut()
         predRoute->printLinks();
         
         // check if predicted route is actual route
-        if(actualRoute->isEqual(predRoute))
-        {
-            std::cout << "predicted routed before reaching end destination!" << std::endl;
-            std::cout << "Links traversed: " << predIter << endl;
-            std::cout << "Links in route: " << actualRoute->getLinkSize() << std::endl;
-            break;
-        }
+//        if(actualRoute->isEqual(predRoute))
+//        {
+//            std::cout << "predicted routed before reaching end destination!" << std::endl;
+//            std::cout << "Links traversed: " << predIter << endl;
+//            std::cout << "Links in route: " << actualRoute->getLinkSize() << std::endl;
+//            break;
+//        }
         
         predIter++;
     

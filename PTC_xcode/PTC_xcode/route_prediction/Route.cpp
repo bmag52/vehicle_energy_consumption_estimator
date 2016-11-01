@@ -28,6 +28,7 @@ Route::Route(GenericMap<long int, Link*>* links, Goal* goal) {
 	this->linkCount = links->getSize();
 	Link error(NULL, -1);
 	this->error = &error;
+    this->intersection = new Intersection();
 }
 
 // adds new link to end of route
@@ -141,6 +142,13 @@ void Route::printLinks()
     std::cout << std::endl;
     
     delete(nextLink);
+}
+    
+void Route::replaceLinks(GenericMap<long int, Link*>* newLinks)
+{
+    assert(newLinks->getSize() == this->links->getSize());
+    delete(this->links);
+    this->links = newLinks;
 }
 
 }

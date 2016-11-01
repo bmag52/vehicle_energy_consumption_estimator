@@ -29,6 +29,7 @@ namespace PredictivePowertrain {
         
         Eigen::MatrixXd getSpeedPredInpunt(float spd);
         void trainSpeedPredictionOverLastLink();
+        void addWeightedLinksToRoute(Route* unweightedRoute);
         
     public:
         typedef std::pair<std::vector<float>, std::vector<float>> PredData;
@@ -37,6 +38,8 @@ namespace PredictivePowertrain {
         PredData startPrediction(Link* currentLink, float spd, std::vector<float>* currentConditions, float distAlongLink);
         PredData nextPrediction(Link* currentLink, float spd, float distAlongLink);
         void parseRoute(Route* currRoute);
+        RoutePrediction* getRP();
+        SpeedPrediction* getSP();
         
         
     };

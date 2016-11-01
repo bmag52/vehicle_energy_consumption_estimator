@@ -339,6 +339,7 @@ Route* RoutePrediction::createRouteIntersection(Intersection* intersection, std:
 {
 	delete(this->predictedGoal);
 	this->predictedGoal = new Goal(intersection->getIntersectionID(), currentConditions);
+    this->predictedRoute->assignGoal(predictedGoal);
 	Route* route = new Route(this->predictedRoute->getLinks(), this->predictedGoal);
 	return route;
 }
@@ -400,7 +401,7 @@ void RoutePrediction::addCity(City* newCity)
     
 Route* RoutePrediction::getPredictedRoute()
 {
-    return this->predictedRoute;
+    return this->predictedRoute->copy();
 }
 
 City* RoutePrediction::getCity()

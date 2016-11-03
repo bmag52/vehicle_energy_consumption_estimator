@@ -24,6 +24,7 @@ namespace PredictivePowertrain {
         std::queue<float> lastSpds;
         RoutePrediction* rp;
         SpeedPrediction* sp;
+        Route* predRoute;
         Link* currLink;
         City* city;
         
@@ -34,6 +35,7 @@ namespace PredictivePowertrain {
     public:
         typedef std::pair<std::vector<float>, std::vector<float>> PredData;
         
+        virtual ~DriverPrediction();
         DriverPrediction(RoutePrediction* newRP);
         PredData startPrediction(Link* currentLink, float spd, std::vector<float>* currentConditions, float distAlongLink);
         PredData nextPrediction(Link* currentLink, float spd, float distAlongLink);

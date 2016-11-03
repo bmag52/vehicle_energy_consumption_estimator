@@ -68,7 +68,7 @@ void SpeedPrediction::initParams()
 	// scaling parameters
 	this->alpha = 10.0;					// learning rate
 	this->maxSpeed = 200;				// max vehicle speed
-	this->lb_offset = .1;				// lower bound offset
+	this->lb_offset = .3;				// lower bound offset
     this->ds = 5.0;
 
 	// index vars
@@ -302,7 +302,7 @@ void SpeedPrediction::unscaleTrainingSpeed(Eigen::MatrixXd * output)
     // accept only row vector
     assert((*output).rows() == 1);
     Eigen::MatrixXd offset = Eigen::MatrixXd::Ones(1,(*output).cols()) * this->lb_offset;
-    (*output) = (*output) * this->maxSpeed - offset;
+    (*output) = ((*output) - offset) * this->maxSpeed;
 }
 
 // scale output data
@@ -310,7 +310,7 @@ void SpeedPrediction::formatOutData(Eigen::MatrixXd * output)
 {
 	assert((*output).cols() == this->O);
 	Eigen::MatrixXd offset = Eigen::MatrixXd::Ones(1,this->O) * this->lb_offset;
-	(*output) = (*output) * this->maxSpeed - offset;
+	(*output) = ((*output) - offset) * this->maxSpeed;
 }
 
 void SpeedPrediction::printAll()

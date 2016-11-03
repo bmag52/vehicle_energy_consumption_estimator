@@ -150,5 +150,25 @@ void Route::replaceLinks(GenericMap<long int, Link*>* newLinks)
     delete(this->links);
     this->links = newLinks;
 }
+    
+void Route::addLinkToFront(Link* frontLink)
+{
+    GenericMap<long int, Link*>* newLinks = new GenericMap<long int, Link*>();
+    newLinks->addEntry(0, frontLink);
+    
+    this->links->initializeCounter();
+    GenericEntry<long int, Link*>* nextLink = this->links->nextEntry();
+    while(nextLink != NULL)
+    {
+        newLinks->addEntry(nextLink->key + 1, nextLink->value);
+        nextLink = this->links->nextEntry();
+    }
+    delete(nextLink);
+    
+    delete(this->links);
+    this->links = newLinks;
+    
+    this->linkCount++;
+}
 
 }

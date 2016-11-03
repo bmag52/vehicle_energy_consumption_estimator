@@ -32,7 +32,7 @@ using namespace PredictivePowertrain;
 // unit test for the SpeedPrediction class
 SpeedPrediction* speedPrediction_ut(){
     
-    int testEpochs = 100; // number of calls
+    int testEpochs = 300; // number of calls
     int refreshRate = 1; // call every one unit of input
     
     SpeedPrediction* sp = new SpeedPrediction();

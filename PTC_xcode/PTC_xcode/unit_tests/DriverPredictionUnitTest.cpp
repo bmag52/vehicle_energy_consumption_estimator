@@ -189,9 +189,13 @@ void driverPrediction_ut()
     std::ifstream input("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/spd.csv");
     std::string num;
     
+    // speeds for routes, both actual and random
     std::vector<float> routeSpds;
+    
+    // distance covered by speed predictions
     float routeSpdsDist = 0.0;
     
+    // fill actual speed with EPA drive cycle speed traces
     for (int i = 0; i<17000; i++)
     {
         std::getline(input, num, ',');
@@ -293,7 +297,7 @@ void driverPrediction_ut()
             distAlongLink = roadDist / 2;
             distanceAlongRoute += distAlongLink;
             
-            float removeBeforeIndex = (float) roadDist / routeSpdsDist * routeSpds.size();
+            float removeBeforeIndex = (float) distAlongLink / routeSpdsDist * routeSpds.size();
             for(int i = 0; i < removeBeforeIndex; i++)
             {
                 routeSpdsTmp.erase(routeSpdsTmp.begin());

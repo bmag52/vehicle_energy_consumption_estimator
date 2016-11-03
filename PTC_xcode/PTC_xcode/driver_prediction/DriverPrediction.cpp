@@ -15,12 +15,11 @@ DriverPrediction::DriverPrediction(RoutePrediction* newRP)
     this->city = newRP->getCity();
     this->rp = newRP;
     this->sp = new SpeedPrediction();
+}
     
-    for(int i = 0; i < this->sp->getI()+1; i++)
-    {
-        this->linkSpds.push_back(0.0);
-        this->lastSpds.push(0.0);
-    }
+DriverPrediction::~DriverPrediction()
+{
+    delete(this->sp);
 }
 
 // assumes vehicle speed is zero
@@ -29,18 +28,26 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
                                                                 std::vector<float>* currentConditions,
                                                                 float distAlongLink)
 {
+    // update current link
     this->currLink = currentLink;
     
     // prep for route and speed predictions across route
     Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, false);
     this->rp->startPrediction(startIntersection, currentConditions);
+    
+    // get predicted route and add currentLink to start of route
     Route* predRoute = this->rp->predict(currentLink)->copy();
+    predRoute->addLinkToFront(currentLink);
+    
+    // add NN values to route since route prediction always returns old links
     this->addWeightedLinksToRoute(predRoute);
     
-    Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
+    // update current route
+    this->predRoute = predRoute;
     
-    PredData predData = this->city->routeToData(predRoute, distAlongLink, this->sp, &spdIn);
-    delete(predRoute);
+    // get route speed and elevation data
+    Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
+    PredData predData = this->city->routeToData(this->predRoute, distAlongLink, this->sp, &spdIn);
     
     return predData;
 }
@@ -49,8 +56,6 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
                                                                 float spd,
                                                                 float distAlongLink)
 {
-    Route* predRoute;
-    
     // --- AT END OF PREDICTION ---
     if(currentLink->isFinalLink())
     {
@@ -64,21 +69,20 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
         this->trainSpeedPredictionOverLastLink();
         
         // perform route prediction
-        predRoute = this->rp->predict(currentLink)->copy();
+        Route* newPredRoute = this->rp->predict(currentLink)->copy();
+        
+        // add speed prediction vals to route and attached current link to front
+        newPredRoute->addLinkToFront(currentLink);
+        this->addWeightedLinksToRoute(newPredRoute);
+        
+        // update current link and predicted route
         this->currLink = currentLink;
+        delete(this->predRoute);
+        this->predRoute = newPredRoute;
     }
-    
-    // --- USE PREDICTED ROUTE FOR DATA EXTRACTION ---
-    else
-    {
-        predRoute = this->rp->getPredictedRoute();
-    }
-    
-    this->addWeightedLinksToRoute(predRoute);
     
     Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
-    PredData predData = this->city->routeToData(predRoute, distAlongLink, this->sp, &spdIn);
-    delete(predRoute);
+    PredData predData = this->city->routeToData(this->predRoute, distAlongLink, this->sp, &spdIn);
 
     return predData;
 }
@@ -90,12 +94,13 @@ void DriverPrediction::parseRoute(Route* currRoute)
     
 void DriverPrediction::trainSpeedPredictionOverLastLink()
 {
+    // matrices for speed prediction
     Eigen::MatrixXd spdIn(1,this->sp->getI()+1);
     Eigen::MatrixXd spdOut(1,this->sp->getO());
     Eigen::MatrixXd spdAct(1,this->sp->getO());
     
     // get spd input from first speed logged link speed values
-    for(int i = 0; i < this->sp->getI()+1; i++)
+    for(int i = 0; i < spdIn.cols(); i++)
     {
         float spd_i = this->lastSpds.front();
         
@@ -110,8 +115,8 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
     this->sp->setVals(this->currLink->getWeights(this->currLink->getDirection()));
     this->sp->predict(&spdIn, &spdOut);
     
-    // get actual speed for training from logged link speed
-    for(int i = 0; i < this->sp->getO(); i++)
+    // consume link speed values to train NN
+    for(int i = 0; i < spdAct.cols(); i++)
     {
         // use link speed logs to set actual speed values while log is large enough
         if(this->linkSpds.size() > 0)
@@ -137,18 +142,18 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
     while(this->linkSpds.size() > 0)
     {
         // left shift speed input
-        for(int i = 0; i < this->sp->getI(); i++)
+        for(int i = 0; i < spdIn.cols(); i++)
         {
             spdIn.coeffRef(0,i) = spdIn.coeffRef(0,i+1);
         }
         spdIn.coeffRef(0, this->sp->getI()) = spdAct.coeffRef(0, 0);
         
         // left shift speed act values
-        for(int i = 0; i < this->sp->getO() - 1; i++)
+        for(int i = 0; i < spdAct.cols() - 1; i++)
         {
             spdAct.coeffRef(0, i) = spdAct.coeffRef(0,i+1);
         }
-        spdAct.coeffRef(0, this->sp->getO() - 1) = this->linkSpds.at(0) / sp->getMaxSpeed() + sp->getSpeedOffset();
+        spdAct.coeffRef(0, spdAct.cols() - 1) = this->linkSpds.at(0) / sp->getMaxSpeed() + sp->getSpeedOffset();
         
         // remove first value from link speed
         this->linkSpds.erase(this->linkSpds.begin());
@@ -161,17 +166,6 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
     // update link weights
     std::vector<std::vector<Eigen::MatrixXd*>*>* spVals = this->sp->getVals();
     this->currLink->setWeights(spVals->at(0), spVals->at(1), spVals->at(2), this->currLink->getDirection());
-    
-    // reset link speed log
-    for(int i = 0; i < this->sp->getI() + 1; i++)
-    {
-        float spd_i = this->lastSpds.front();
-        
-        this->linkSpds.push_back(spd_i);
-        
-        this->lastSpds.pop();
-        this->lastSpds.push(spd_i);
-    }
 }
     
 Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
@@ -181,7 +175,10 @@ Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
     
     // update speed FIFO queue
     this->lastSpds.push(spd);
-    this->lastSpds.pop();
+    if(this->lastSpds.size() > this->sp->getI() + 1)
+    {
+        this->lastSpds.pop();
+    }
 
     // create a matrix of zero input
     Eigen::MatrixXd spdIn = Eigen::MatrixXd::Zero(1, this->sp->getI() + 1);
@@ -189,12 +186,20 @@ Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
     // take most recent speed values from link speed and populate end of speed pred input
     for(size_t i = 0; i < spdIn.cols(); i++)
     {
-        float spd_i = this->lastSpds.front();
+        float spd_i;
+        
+        if(i < this->lastSpds.size())
+        {
+            spd_i = this->lastSpds.front();
+            this->lastSpds.pop();
+            this->lastSpds.push(spd_i);
+        }
+        else
+        {
+            spd_i = this->lastSpds.back();
+        }
         
         spdIn.coeffRef(0, i) = spd_i;
-        
-        this->lastSpds.pop();
-        this->lastSpds.push(spd_i);
     }
     
     return spdIn;

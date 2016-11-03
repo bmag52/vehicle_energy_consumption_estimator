@@ -214,7 +214,7 @@ std::pair<std::vector<float>, std::vector<float>> City::getData(Road* road, int 
                 // derive interpolation factor as a function prev 2 next elevation meas and speed distance after prev elev meas
                 float interpFactor = prevElev2SpdDist / next2PrevElevDist;
                 
-                spdOut.push_back(spdOut_i.coeffRef(0, i) * sp->getMaxSpeed() - sp->getSpeedOffset());
+                spdOut.push_back((spdOut_i.coeffRef(0, i) - sp->getSpeedOffset()) * sp->getMaxSpeed());
                 elevDataInterp.push_back(elevData.at(prevElevMeasIdx) + interpFactor * prev2NextElevDelta);
             }
             else if(spdDist > road->getSplineLength())

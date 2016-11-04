@@ -183,11 +183,12 @@ std::pair<std::vector<float>, std::vector<float>> City::getData(Road* road, int 
         // predict speed
         sp->predict(&spdIn_i, &spdOut_i);
         
+        // iterate through spd pred output. skip first val since first val is curr spd
         for(int i = 1; i < spdOut_i.cols(); i++)
         {
             spdDist += sp->getDS();
             
-            if(spdDist > distAlongRoad && spdDist < road->getSplineLength())
+            if(spdDist >= distAlongRoad && spdDist <= road->getSplineLength() + sp->getDS())
             {
                 // interpolate elevation data
                 for(int j = prevElevMeasIdx; j < elevDistData.size() - 1; j++)
@@ -400,6 +401,11 @@ std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route
         std::pair<std::vector<float>, std::vector<float>> linkData = this->getData(roadFromLink, nextLink->value->getDirection(), sp, &spdIn_i, distAlongLink);
         std::vector<float> spdOut_i = linkData.first;
         std::vector<float> elevData_i = linkData.second;
+        
+        // adjust speed input for next link speed prediction
+        Eigen::MatrixXd spdOutMat_i(1, spdOut_i.size());
+        for(int i = 0; i < spdOut_i.size(); i++) { spdOutMat_i.coeffRef(0, i)  = spdOut_i.at(i); }
+        sp->output2Input(&spdIn_i, &spdOutMat_i);
 
         // concatenate data
         for(int i = 0; i < spdOut_i.size(); i++) { spdData.push_back(spdOut_i.at(i)); }

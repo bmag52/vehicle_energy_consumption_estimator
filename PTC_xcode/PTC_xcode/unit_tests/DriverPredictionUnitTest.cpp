@@ -44,7 +44,7 @@ void setRouteNeuralNetworkVals(Route* route, std::vector<float> spds, float spdD
         
         std::vector<float> roadSpds_i;
         
-        // get road speeds from arbitrary trace of continuous speed values
+        // get road speeds from arbitrary trace of continuous speed values.
         for(int i = 0; i < roadSpdIndices_i; i++)
         {
             if(spdsTemp.size() == 0)
@@ -58,6 +58,11 @@ void setRouteNeuralNetworkVals(Route* route, std::vector<float> spds, float spdD
             roadSpds_i.push_back(spdsTemp.at(0));
             spdsTemp.erase(spdsTemp.begin());
         }
+        
+        // train for speed at beginnging of next link
+        roadSpds_i.push_back(spdsTemp.at(0));
+        
+        std::cout << roadSpds_i.size() << std::endl;
         
         dp.setCurrentLink(nextLink->value);
         
@@ -245,6 +250,10 @@ void driverPrediction_ut()
             std::cout << "Starting Driver Prediciton" << std::endl;
             predData = dp.startPrediction(nextLink, routeSpdsTmp.front(), conditions, distAlongLink);
             
+            // udate distance along link
+            distAlongLink += sp.getDS();
+            distanceAlongRoute += sp.getDS();
+            
             // actual route speeds
             predFile << "Actual Route Speeds\n";
             for(int i = 0; i < routeSpdsTmp.size(); i++)
@@ -260,11 +269,6 @@ void driverPrediction_ut()
         
         while(distAlongLink < roadDist_i)
         {
-            distAlongLink += sp.getDS();
-            distanceAlongRoute += sp.getDS();
-            
-            std::cout << distanceAlongRoute << std::endl;
-            
             predFile << "Prediction: " << predictionCount << "\n";
             predictionCount++;
             
@@ -292,7 +296,16 @@ void driverPrediction_ut()
                 }
             }
             
+            // make next prediction
             predData = dp.nextPrediction(nextLink, routeSpdsTmp.front(), distAlongLink);
+            
+            // udate distance along link
+            distAlongLink += sp.getDS();
+            distanceAlongRoute += sp.getDS();
+            
+            std::cout << distanceAlongRoute << std::endl;
+            
+            // update actual speed values along actual route
             routeSpdsTmp.erase(routeSpdsTmp.begin());
         }
         

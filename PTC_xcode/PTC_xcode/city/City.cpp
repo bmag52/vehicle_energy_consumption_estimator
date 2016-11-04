@@ -228,14 +228,6 @@ std::pair<std::vector<float>, std::vector<float>> City::getData(Road* road, int 
         {
             // place output into input and repeat if needed
             sp->output2Input(&spdIn_i, &spdOut_i);
-            
-            // perform quick train to prevent prediction discontinuities
-            Eigen::MatrixXd spdAct_i(spdOut_i);
-            for(int i = 0; i < 5; i++)
-            {
-                sp->predict(&spdIn_i, &spdOut_i);
-                sp->train(&spdOut_i, &spdAct_i, &spdIn_i);
-            }
         }
     }
     

@@ -14,12 +14,29 @@ DriverPrediction::DriverPrediction(RoutePrediction* newRP)
 {
     this->city = newRP->getCity();
     this->rp = newRP;
+
+    this->intitalize();
+}
+    
+
+DriverPrediction::DriverPrediction()
+{
+    this->intitalize();
+}
+    
+void DriverPrediction::intitalize()
+{
     this->sp = new SpeedPrediction();
 }
     
 DriverPrediction::~DriverPrediction()
 {
     delete(this->sp);
+}
+    
+void DriverPrediction::setCurrentLink(Link* currentLink)
+{
+this->currLink = currentLink;
 }
 
 // assumes vehicle speed is zero
@@ -94,26 +111,31 @@ void DriverPrediction::parseRoute(Route* currRoute)
     
 void DriverPrediction::trainSpeedPredictionOverLastLink()
 {
+    int trainIters = 10;
+    
     // matrices for speed prediction
     Eigen::MatrixXd spdIn(1,this->sp->getI()+1);
     Eigen::MatrixXd spdOut(1,this->sp->getO());
     Eigen::MatrixXd spdAct(1,this->sp->getO());
     
-    // get spd input from first speed logged link speed values
+    // get spd input from before line and reset before speed input
     for(int i = 0; i < spdIn.cols(); i++)
     {
-        float spd_i = this->lastSpds.front();
+        spdIn.coeffRef(0,i) = this->beforeLinkSpds.at(i);
         
-        spdIn.coeffRef(0,i) = spd_i;
+        float spd_i = this->lastSpds.front();
+        this->beforeLinkSpds.at(i) = spd_i;
         
         this->lastSpds.pop();
         this->lastSpds.push(spd_i);
     }
     
     // prep speed prediction for training
-    sp->formatInData(&spdIn);
-    this->sp->setVals(this->currLink->getWeights(this->currLink->getDirection()));
-    this->sp->predict(&spdIn, &spdOut);
+    if(this->currLink->linkHasWeights())
+    {
+        std::vector<std::vector<Eigen::MatrixXd*>*>* nnVals = this->currLink->getWeights(this->currLink->getDirection());
+        this->sp->setVals(nnVals);
+    }
     
     // consume link speed values to train NN
     for(int i = 0; i < spdAct.cols(); i++)
@@ -128,16 +150,21 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
         // otherwise just use the NN output as act and do not penalize NN for wrong predictions
         else
         {
-            spdAct.coeffRef(0,i) = spdOut.coeffRef(0,i);
+            spdAct.coeffRef(0,i) = 0.0;
         }
     }
     
     // scale training data
-    sp->scaleTrainingSpeed(&spdAct);
+    this->sp->formatInData(&spdIn);
+    this->sp->scaleTrainingSpeed(&spdAct);
     
-    // taine with existing data
-    this->sp->train(&spdOut, &spdAct, &spdIn);
-    
+    // train
+    for(int i = 0; i < trainIters; i++)
+    {
+        this->sp->predict(&spdIn, &spdOut);
+        this->sp->train(&spdOut, &spdAct, &spdIn);
+    }
+        
     // perform rolling window trainging
     while(this->linkSpds.size() > 0)
     {
@@ -158,9 +185,12 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
         // remove first value from link speed
         this->linkSpds.erase(this->linkSpds.begin());
         
-        // rolling window train
-        this->sp->predict(&spdIn, &spdOut);
-        this->sp->train(&spdOut, &spdAct, &spdIn);
+        // train
+        for(int i = 0; i < trainIters; i++)
+        {
+            this->sp->predict(&spdIn, &spdOut);
+            this->sp->train(&spdOut, &spdAct, &spdIn);
+        }
     }
     
     // update link weights
@@ -170,6 +200,15 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
     
 Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
 {
+    // because before links speeds doesn't exist on startup, use repeated first measurement.
+    if(this->beforeLinkSpds.size() == 0)
+    {
+        for(int i = 0; i < this->sp->getI() + 1; i++)
+        {
+            this->beforeLinkSpds.push_back(spd);
+        }
+    }
+    
     // update link spd trace for training later
     this->linkSpds.push_back(spd);
     

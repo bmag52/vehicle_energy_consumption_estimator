@@ -36,6 +36,7 @@ private:
     std::vector<Eigen::MatrixXd*>* yInHidB;	// hidden layer inputs
     
     int numNNLayers;
+    bool hasWeights;
     void initialize();
     
 public:
@@ -55,6 +56,7 @@ public:
     std::vector<std::vector<Eigen::MatrixXd*>*>* getWeights(int direction);
     void setNumNNLayers(int num);
     int getNumNNLayers();
+    bool linkHasWeights();
 };
 
 } /* namespace PredictivePowertrain */

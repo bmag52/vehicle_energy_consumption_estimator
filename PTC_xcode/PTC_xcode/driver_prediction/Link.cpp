@@ -32,6 +32,7 @@ void Link::initialize()
     this->yInHidB = NULL;
     
     this->numNNLayers = 0;
+    this->hasWeights = false;
 }
 
 Link::~Link() {
@@ -95,6 +96,12 @@ void Link::setWeights(std::vector<Eigen::MatrixXd*>* wts, std::vector<Eigen::Mat
         this->yHidB = yHid;
         this->yInHidB = yInHid;
     }
+    this->hasWeights = true;
+}
+    
+bool Link::linkHasWeights()
+{
+    return this->hasWeights;
 }
     
 std::vector<std::vector<Eigen::MatrixXd*>*>* Link::getWeights(int direction)

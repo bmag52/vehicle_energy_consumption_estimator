@@ -20,6 +20,7 @@ namespace PredictivePowertrain {
     
     class DriverPrediction {
     private:
+        std::vector<float> beforeLinkSpds;
         std::vector<float> linkSpds;
         std::queue<float> lastSpds;
         RoutePrediction* rp;
@@ -28,20 +29,23 @@ namespace PredictivePowertrain {
         Link* currLink;
         City* city;
         
-        Eigen::MatrixXd getSpeedPredInpunt(float spd);
-        void trainSpeedPredictionOverLastLink();
         void addWeightedLinksToRoute(Route* unweightedRoute);
+        void intitalize();
         
     public:
         typedef std::pair<std::vector<float>, std::vector<float>> PredData;
         
         virtual ~DriverPrediction();
         DriverPrediction(RoutePrediction* newRP);
+        DriverPrediction();
+        void setCurrentLink(Link* currentLink);
         PredData startPrediction(Link* currentLink, float spd, std::vector<float>* currentConditions, float distAlongLink);
         PredData nextPrediction(Link* currentLink, float spd, float distAlongLink);
         void parseRoute(Route* currRoute);
         RoutePrediction* getRP();
         SpeedPrediction* getSP();
+        Eigen::MatrixXd getSpeedPredInpunt(float spd);
+        void trainSpeedPredictionOverLastLink();
         
         
     };

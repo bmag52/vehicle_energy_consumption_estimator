@@ -25,22 +25,13 @@ using namespace PredictivePowertrain;
 
 void setRouteNeuralNetworkVals(Route* route, std::vector<float> spds, float spdDist, City* city)
 {
-    SpeedPrediction sp;
-    int trainIters = 10;
+    std::cout << "Driver Prediction Speed Training" << std::endl;
+    DriverPrediction dp;
     
     std::vector<float> spdsTemp(spds);
     
     // add neural net values to route prediction links
     GenericMap<long int, Link*>* links = route->getLinks();
-    
-    Eigen::MatrixXd spdIn(1, sp.getI() + 1);
-    for(int i = 0; i < spdIn.cols(); i++)
-    {
-        spdIn.coeffRef(0, i) = 0;
-    }
-    
-    Eigen::MatrixXd spdOut(1, sp.getO());
-    Eigen::MatrixXd spdAct(1, sp.getO());
     
     links->initializeCounter();
     GenericEntry<long int, Link*>* nextLink = links->nextEntry();
@@ -49,7 +40,8 @@ void setRouteNeuralNetworkVals(Route* route, std::vector<float> spds, float spdD
         // get necessary road data
         Road* road_i = city->getRoads()->getEntry(nextLink->value->getNumber());
         float roadDist_i = road_i->getSplineLength();
-        int roadSpdIndices_i = roadDist_i / spdDist * spds.size();
+        float roadSpdIndices_i = (float) roadDist_i / spdDist * spds.size();
+        
         std::vector<float> roadSpds_i;
         
         // get road speeds from arbitrary trace of continuous speed values
@@ -67,71 +59,19 @@ void setRouteNeuralNetworkVals(Route* route, std::vector<float> spds, float spdD
             spdsTemp.erase(spdsTemp.begin());
         }
         
-        // set actual speed values
-        for(int i = 0; i < spdAct.cols(); i++)
+        dp.setCurrentLink(nextLink->value);
+        
+        while(roadSpds_i.size() > 0)
         {
-            if(i < roadSpds_i.size())
-            {
-                spdAct.coeffRef(0, i) = roadSpds_i.at(i);
-            }
-            
-            else
-            {
-                spdAct.coeffRef(0, i) = 0;
-            }
+            dp.getSpeedPredInpunt(roadSpds_i.front());
+            roadSpds_i.erase(roadSpds_i.begin());
         }
         
-        // Format input data
-        sp.formatInData(&spdIn);
-        sp.scaleTrainingSpeed(&spdAct);
-        
-        // make speed prediction
-        SpeedPrediction sp;
-        for(int i = 0; i < trainIters; i++)
-        {
-            sp.predict(&spdIn, &spdOut);
-            sp.train(&spdOut, &spdAct, &spdIn);
-        }
-        
-        // format output data
-        sp.formatOutData(&spdOut);
-        sp.unscaleTrainingSpeed(&spdAct);
-        
-        // update link NN vals
-        std::vector<std::vector<Eigen::MatrixXd*>*>* nnVals = sp.getVals();
-        nextLink->value->setWeights(nnVals->at(0), nnVals->at(1), nnVals->at(2), nextLink->value->getDirection());
-        
-        // update speed input from road speed suv i values
-        if(spdIn.cols() > roadSpdIndices_i)
-        {
-            // left shift spdIn
-            int deltaLengths = spdIn.cols() - roadSpdIndices_i;
-            for(int i = 0; i < deltaLengths; i++)
-            {
-                spdIn.coeffRef(0, i) = spdIn.coeffRef(0, i+deltaLengths);
-            }
-            
-            // add road spd measurements to speed input
-            for(int i = 0; i < roadSpds_i.size(); i++)
-            {
-                spdIn.coeffRef(0, i+deltaLengths) = roadSpds_i.at(i);
-            }
-        }
-        else
-        {
-            for(int i = spdIn.cols() - 1; i >= 0; i--)
-            {
-                spdIn.coeffRef(0, i) = roadSpds_i.back();
-                roadSpds_i.pop_back();
-            }
-        }
+        dp.trainSpeedPredictionOverLastLink();
         
         nextLink = links->nextEntry();
     }
     delete(nextLink);
-    
-    // get distance of speed measurements
-    
 }
 
 void driverPrediction_ut()
@@ -287,14 +227,14 @@ void driverPrediction_ut()
         }
         
         // get road data from actual route
-        Road* road = rpCity->getRoads()->getEntry(nextLink->getNumber());
-        float roadDist = road->getSplineLength();
+        Road* road_i = rpCity->getRoads()->getEntry(nextLink->getNumber());
+        float roadDist_i = road_i->getSplineLength();
         float distAlongLink = 0.0;
         
         // test handling of starting route partially up first link
         if(isFirstLink)
         {
-            distAlongLink = roadDist / 2;
+            distAlongLink = roadDist_i / 2;
             distanceAlongRoute += distAlongLink;
             
             float removeBeforeIndex = (float) distAlongLink / routeSpdsDist * routeSpds.size();
@@ -318,7 +258,7 @@ void driverPrediction_ut()
             isFirstLink = false;
         }
         
-        while(distAlongLink < roadDist)
+        while(distAlongLink < roadDist_i)
         {
             distAlongLink += sp.getDS();
             distanceAlongRoute += sp.getDS();

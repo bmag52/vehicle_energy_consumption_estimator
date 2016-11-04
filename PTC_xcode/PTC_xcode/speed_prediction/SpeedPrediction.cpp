@@ -61,8 +61,8 @@ SpeedPrediction::SpeedPrediction(std::vector<Eigen::MatrixXd*>* Wts, std::vector
 void SpeedPrediction::initParams()
 {
 	// NN architectural params
-	this->I = 10;						// input neurons
-	this->O = 30;						// output neurons
+	this->I = 20;						// input neurons
+	this->O = 60;						// output neurons
 	int HN[] = {80, 65, 50, 35, 20};	// hidden layer neurons
 
 	// scaling parameters

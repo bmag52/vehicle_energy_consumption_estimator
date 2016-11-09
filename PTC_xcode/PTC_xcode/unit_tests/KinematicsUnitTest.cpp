@@ -60,13 +60,10 @@ void kinematics_ut() {
         eleDownVec.at(i) = f;
     }
     
-    std::vector<float> dt(length);
-    for(int i = 0; i < length; i++) { dt.at(i) = .5; }
-    
-    float negTractiveEnergy = kin.runKinematics(spdDownVec, dt, eleDownVec, false);
+    float negTractiveEnergy = kin.runKinematics(spdDownVec, 5.0, eleDownVec, false);
     assert(negTractiveEnergy < 0.0);
     
-    float posTractiveEnergy = kin.runKinematics(spdUpVec, dt, eleUpVec, false);
+    float posTractiveEnergy = kin.runKinematics(spdUpVec, 5.0, eleUpVec, false);
     assert(posTractiveEnergy > 0.0);
     
 }

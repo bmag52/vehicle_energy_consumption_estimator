@@ -24,7 +24,7 @@ Kinematics::Kinematics()
 }
 
 float Kinematics::runKinematics(std::vector<float> predictedSpeed,
-                                std::vector<float> dt,
+                                float ds,
                                 std::vector<float> predictedElevation,
                                 bool predChange)
 {
@@ -35,7 +35,7 @@ float Kinematics::runKinematics(std::vector<float> predictedSpeed,
         // acceleration
         float va = predictedSpeed.at(i);
         float vb = predictedSpeed.at(i + 1);
-        float vehicleAcceleration_i = (vb - va) / dt.at(i);
+        float vehicleAcceleration_i = (std::pow(vb, 2) - std::pow(va, 2)) / (2 * ds);
         
         // elevation angle
         float ea = predictedElevation.at(i);

@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D3265C6A1DD28794004DCDE8 /* VehicleDiagnostics.h in Sources */ = {isa = PBXBuildFile; fileRef = D3265C691DD2733B004DCDE8 /* VehicleDiagnostics.h */; };
+		D3265C6B1DD2879E004DCDE8 /* VehicleDiagnostics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3265C681DD2733B004DCDE8 /* VehicleDiagnostics.cpp */; };
+		D3265C6C1DD287A6004DCDE8 /* Kinematics.h in Sources */ = {isa = PBXBuildFile; fileRef = D339C82D1DB7F73100FA4229 /* Kinematics.h */; };
+		D3265C6D1DD287AC004DCDE8 /* DriverPrediction.h in Sources */ = {isa = PBXBuildFile; fileRef = D339C8341DBAA40400FA4229 /* DriverPrediction.h */; };
+		D3265C6E1DD287B1004DCDE8 /* Probability.h in Sources */ = {isa = PBXBuildFile; fileRef = D39E82E61DB2BFFF00B859A9 /* Probability.h */; };
 		D3309D3F1DC148F500BB860D /* DriverPredictionUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3309D3E1DC148F500BB860D /* DriverPredictionUnitTest.cpp */; };
 		D339C82E1DB7F73100FA4229 /* Kinematics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C82C1DB7F73100FA4229 /* Kinematics.cpp */; };
 		D339C8301DB82E4F00FA4229 /* KinematicsUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C82F1DB82E4F00FA4229 /* KinematicsUnitTest.cpp */; };
@@ -209,6 +214,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		D3265C681DD2733B004DCDE8 /* VehicleDiagnostics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VehicleDiagnostics.cpp; sourceTree = "<group>"; };
+		D3265C691DD2733B004DCDE8 /* VehicleDiagnostics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VehicleDiagnostics.h; sourceTree = "<group>"; };
 		D3309D3E1DC148F500BB860D /* DriverPredictionUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DriverPredictionUnitTest.cpp; path = PTC_xcode/unit_tests/DriverPredictionUnitTest.cpp; sourceTree = "<group>"; };
 		D339C82C1DB7F73100FA4229 /* Kinematics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Kinematics.cpp; sourceTree = "<group>"; };
 		D339C82D1DB7F73100FA4229 /* Kinematics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kinematics.h; sourceTree = "<group>"; };
@@ -526,6 +533,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D3265C671DD2733B004DCDE8 /* vehicle_diagnistics */ = {
+			isa = PBXGroup;
+			children = (
+				D3265C681DD2733B004DCDE8 /* VehicleDiagnostics.cpp */,
+				D3265C691DD2733B004DCDE8 /* VehicleDiagnostics.h */,
+			);
+			name = vehicle_diagnistics;
+			path = PTC_xcode/vehicle_diagnistics;
+			sourceTree = "<group>";
+		};
 		D339C82B1DB7F73100FA4229 /* kinematics */ = {
 			isa = PBXGroup;
 			children = (
@@ -809,6 +826,7 @@
 			isa = PBXGroup;
 			children = (
 				D3FABC1F1CE524A400892002 /* main.cpp */,
+				D3265C671DD2733B004DCDE8 /* vehicle_diagnistics */,
 				D339C82B1DB7F73100FA4229 /* kinematics */,
 				D3FABCBF1CE524FF00892002 /* city */,
 				D3FABCBE1CE524E100892002 /* data_management */,
@@ -878,6 +896,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D3265C6E1DD287B1004DCDE8 /* Probability.h in Sources */,
+				D3265C6D1DD287AC004DCDE8 /* DriverPrediction.h in Sources */,
+				D3265C6C1DD287A6004DCDE8 /* Kinematics.h in Sources */,
+				D3265C6B1DD2879E004DCDE8 /* VehicleDiagnostics.cpp in Sources */,
+				D3265C6A1DD28794004DCDE8 /* VehicleDiagnostics.h in Sources */,
 				D3FABCC71CE525FB00892002 /* main.cpp in Sources */,
 				D3FABC701CE524A400892002 /* Node.cpp in Sources */,
 				D3FABC711CE524A400892002 /* Way.cpp in Sources */,

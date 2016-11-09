@@ -48,7 +48,8 @@ private:
     double latDelta;
     double lonDelta;
     
-    struct zoomParams {
+    struct zoomParams
+    {
         int kernelSideDim;
         int angleThreshold;
         int pntThreshold;
@@ -101,6 +102,7 @@ public:
     GenericMap<long int, Intersection*>* getNewIntersections();
     GenericMap<long int, Road*>* getNewRoads();
     Bounds* getNewBounds();
+    City* getUpdatedCity();
 };
     
 }

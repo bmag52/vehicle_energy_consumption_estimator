@@ -13,6 +13,7 @@ GPS::GPS() {
 	this->tripCount = 0;
     this->fd = -1;
     this->deltaXYTolerance = 10.0;
+    this->currRoad = NULL;
 }
     
 GPS::GPS(double refLat, double refLon)
@@ -22,6 +23,7 @@ GPS::GPS(double refLat, double refLon)
     this->tripCount = 0;
     this->fd = -1;
     this->deltaXYTolerance = 10.0;
+    this->currRoad = NULL;
 }
     
 GPS::~GPS()
@@ -150,7 +152,7 @@ std::pair<double, double> GPS::readGPS()
     }
 }
     
-std::pair<bool, std::pair<double, double>> GPS::isOnRoad(Road* road)
+bool GPS::isOnRoad(Road* road)
 {
     std::pair<double, double> latLon = this->readGPS();
     
@@ -160,33 +162,92 @@ std::pair<bool, std::pair<double, double>> GPS::isOnRoad(Road* road)
     {
         if(this->deltaLatLonToXY(latLon.first, latLon.second, nextNode->value->getLat(), nextNode->value->getLon()) < this->deltaXYTolerance)
         {
-            std::pair<bool, std::pair<double, double>> truePosition(true, latLon);
-            return truePosition;
+            return true;
         }
         nextNode = road->getNodes()->nextEntry();
     }
     delete(nextNode);
     
-    std::pair<bool, std::pair<double, double>> falsePosistion(false, latLon);
-    return falsePosistion;
+    return false;
 
 }
 
-std::pair<bool, std::pair<double, double>> GPS::isAtIntersection(Intersection* intersection)
+bool GPS::isAtIntersection(Intersection* intersection)
 {
     std::pair<double, double> latLon = this->readGPS();
     
     if(this->deltaLatLonToXY(latLon.first, latLon.second, intersection->getLat(), intersection->getLon()) < this->deltaXYTolerance)
     {
-        std::pair<bool, std::pair<double, double>> truePosition(true, latLon);
-        return truePosition;
+        return true;
+    }
+    return false;
+}
+    
+Road* GPS::getCurrentRoad(City* city)
+{
+    std::pair<double, double> latLon = this->readGPS();
+    
+    GenericMap<long int, Road*>* roads = city->getRoads();
+    Road* closestRoad;
+    float closestDist = MAXFLOAT;
+    
+    roads->initializeCounter();
+    GenericEntry<long int, Road*>* nextRoad = roads->nextEntry();
+    while(nextRoad != NULL)
+    {
+        GenericMap<long int, Node*>* roadNodes = nextRoad->value->getNodes();
+        
+        roadNodes->initializeCounter();
+        GenericEntry<long int, Node*>* nextNode = roadNodes->nextEntry();
+        while(nextNode != NULL)
+        {
+            float currDist = this->deltaLatLonToXY(latLon.first, latLon.second, nextNode->value->getLat(), nextNode->value->getLon());
+            if(currDist < closestDist)
+            {
+                closestDist = currDist;
+                closestRoad = nextRoad->value;
+            }
+            nextNode = roadNodes->nextEntry();
+        }
+        delete(nextNode);
+        
+        nextRoad = roads->nextEntry();
+    }
+    delete(nextRoad);
+    
+    this->currRoad = closestRoad;
+    return closestRoad;
+}
+    
+float GPS::getDistAlongRoad(Road* road)
+{
+    if(this->currRoad == NULL || this->currRoad->getRoadID() != road->getRoadID())
+    {
+        return -1;
     }
     
-    else
+    std::pair<double, double> latLon = this->readGPS();
+    
+    GenericMap<long int, Node*>* nodes = road->getNodes();
+    float dist = 0.0;
+    
+    nodes->initializeCounter();
+    GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
+    while(nextNode != NULL)
     {
-        std::pair<bool, std::pair<double, double>> falsePosistion(false, latLon);
-        return falsePosistion;
+        float dist_i = this->deltaLatLonToXY(latLon.first, latLon.second, nextNode->value->getLat(), nextNode->value->getLon());
+        dist += dist_i;
+        
+        // stop tracking distance once in proximity to current lat / lon
+        if(dist_i < this->deltaXYTolerance)
+        {
+            break;
+        }
+        nextNode = nodes->nextEntry();
     }
+    delete(nextNode);
+    
+    return dist;
 }
     
 }

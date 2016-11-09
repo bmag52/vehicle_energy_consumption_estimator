@@ -154,8 +154,6 @@ std::pair<double, double>* Road::getMidLatLon()
     
 void Road::setMinMaxLatLon()
 {
-    double DBL_MAX = std::numeric_limits<double>::max();
-    
     double minLat = DBL_MAX;
     double maxLat = -DBL_MAX;
     double minLon = DBL_MAX;

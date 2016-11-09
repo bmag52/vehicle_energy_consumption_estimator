@@ -34,7 +34,7 @@ namespace PredictivePowertrain {
     public:
         Kinematics();
         float runKinematics(std::vector<float> predictedSpeed,
-                            std::vector<float> dt,
+                            float ds,
                             std::vector<float> predictedElevation,
                             bool predChange);
     };

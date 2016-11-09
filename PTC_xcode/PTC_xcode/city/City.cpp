@@ -432,5 +432,20 @@ int City::getBoundsMapSize() {
 GenericMap<long int, Intersection*>* City::getIntersections() {
 	return this->intersections;
 }
+    
+void City::addRoad(Road* road)
+{
+    this->roads->addEntry(road->getRoadID(), road);
+}
+    
+void City::addBounds(Bounds* bounds)
+{
+    this->boundsMap->addEntry(bounds->getID(), bounds);
+}
+    
+void City::addIntersection(Intersection* intersection)
+{
+    this->intersections->addEntry(intersection->getIntersectionID(), intersection);
+}
 
 } /* namespace PredictivePowertrain */

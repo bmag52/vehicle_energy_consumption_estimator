@@ -13,8 +13,6 @@
  *      Author: vagrant
  */
 
-
-
 #include "../speed_prediction/SpeedPrediction.h"
 #include "../map/GenericMap.h"
 #include "UnitTests.h"

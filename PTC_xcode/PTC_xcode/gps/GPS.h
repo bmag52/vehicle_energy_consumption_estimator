@@ -23,6 +23,7 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 
+#include "../city/City.h"
 #include "../city/Road.h"
 #include "../city/Intersection.h"
 
@@ -32,10 +33,12 @@ namespace PredictivePowertrain {
     
 class Road;             // forward declaration
 class Intersection;     // forward declaration
+class City;             // forward declaration
 
 class GPS {
 private:
 	GenericMap<long int, std::pair<double, double>*> tripLog;
+    Road* currRoad;
 	long int tripCount;
     double deltaXYTolerance;
     double toRadians(double degrees);
@@ -52,17 +55,17 @@ public:
     ~GPS();
     
 	void updateTripLog();
+    Road* getCurrentRoad(City* city);
 	GenericMap<long int, std::pair<double, double>*>* getTripLog();
     float deltaLatLonToXY(double lat1, double lon1, double lat2, double lon2);
     std::pair<double, double>* convertLatLonToXY(double lat, double lon);
     std::pair<double, double>* convertXYToLatLon(double x, double y);
     std::pair<double, double> readGPS();
-    std::pair<bool, std::pair<double, double>> isOnRoad(Road* road);
-    std::pair<bool, std::pair<double, double>> isAtIntersection(Intersection* intersection);
+    bool isOnRoad(Road* road);
+    bool isAtIntersection(Intersection* intersection);
+    float getDistAlongRoad(Road* road);
 };
 
 }
-
-
 
 #endif /* GPS_GPS_H_ */

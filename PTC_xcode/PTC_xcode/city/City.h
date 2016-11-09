@@ -30,8 +30,13 @@
 #include <float.h>
 
 namespace PredictivePowertrain {
+
+class GPS;              // forward declaration
+class Route;            // forward declaration
+class SpeedPrediction;  // forward declaration
     
 class City {
+    
 private:
 	Link* link;
 	int intervalDistance = 1;
@@ -60,6 +65,9 @@ public:
 	GenericMap<long int, Road*>* getRoads();
 	GenericMap<long int, Intersection*>* getIntersections();
     bool legalRoute(Route* route);
+    void addRoad(Road* road);
+    void addBounds(Bounds* bounds);
+    void addIntersection(Intersection* intersection);
 
 };
 

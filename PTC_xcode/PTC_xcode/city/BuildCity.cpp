@@ -1328,4 +1328,32 @@ Bounds* BuildCity::getNewBounds()
     return this->newBounds;
 }
     
+City* BuildCity::getUpdatedCity()
+{
+    GenericMap<long int, Road*>* newRoads = this->getNewRoads();
+    
+    newRoads->initializeCounter();
+    GenericEntry<long int, Road*>* nextRoad = newRoads->nextEntry();
+    while(nextRoad != NULL)
+    {
+        this->city->addRoad(nextRoad->value);
+        nextRoad = newRoads->nextEntry();
+    }
+    delete(nextRoad);
+    
+    
+    this->newInts->initializeCounter();
+    GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
+    while(nextInt != NULL)
+    {
+        this->city->addIntersection(nextInt->value);
+        nextInt = this->newInts->nextEntry();
+    }
+    delete(nextInt);
+    
+    this->city->addBounds(this->newBounds);
+    
+    return this->city;
+}
+    
 } // end of predictivepowertrain

@@ -27,8 +27,6 @@
 #include "stdlib.h"
 #include <vector>
 
-using namespace std;
-
 namespace PredictivePowertrain {
 
 class RoutePrediction {

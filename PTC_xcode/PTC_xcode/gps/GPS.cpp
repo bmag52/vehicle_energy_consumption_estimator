@@ -13,7 +13,6 @@ GPS::GPS() {
 	this->tripCount = 0;
     this->fd = -1;
     this->deltaXYTolerance = 10.0;
-    this->currRoad = NULL;
 }
     
 GPS::GPS(double refLat, double refLon)
@@ -23,7 +22,6 @@ GPS::GPS(double refLat, double refLon)
     this->tripCount = 0;
     this->fd = -1;
     this->deltaXYTolerance = 10.0;
-    this->currRoad = NULL;
 }
     
 GPS::~GPS()
@@ -31,11 +29,13 @@ GPS::~GPS()
     close(this->fd);
 }
 
-void GPS::updateTripLog() {
+std::pair<double, double>* GPS::updateTripLog()
+{
 	std::pair<double, double> latLonRef = this->readGPS();
     std::pair<double, double>* latLonPtr = new std::pair<double, double>(latLonRef.first, latLonRef.second);
 	this->tripLog.addEntry(this->tripCount, latLonPtr);
     this->tripCount++;
+    return latLonPtr;
 }
 
 GenericMap<long int, std::pair<double, double>*>* GPS::getTripLog() {
@@ -136,11 +136,32 @@ std::pair<double, double> GPS::readGPS()
                     std::getline(ss, token, ',');
                     std::getline(ss, lonString, ',');
                     
-                    double lat = std::stod(latString) / 100;
-                    double lon = - std::stod(lonString) / 100;
+                    // get raw deg / min values
+                    double latRaw = std::stod(latString);
+                    double lonRaw = std::stod(lonString);
+                    
+                    // get minutes w/o minute fractions
+                    double latMin = (int)latRaw % 100;
+                    double lonMin = (int)lonRaw % 100;
+                    
+                    // get degrees x100
+                    double latDeg = ((int)latRaw - latMin);
+                    double lonDeg = ((int)lonRaw - lonMin);
+                    
+                    // add minute fractions to minutes
+                    latMin += latRaw - latDeg - latMin;
+                    lonMin += lonRaw - lonDeg - lonMin;
+                    
+                    // divide lat / lon
+                    latDeg /= 100;
+                    lonDeg /= 100;
+                    
+                    // add minutes converted to degrees to lat / lon degrees
+                    latDeg += latMin / 60;
+                    lonDeg += lonMin / 60;
                     
                     //printf("%.6f,%.6f\n", lat, lon);
-                    std::pair<double, double> latLon(lat, lon);
+                    std::pair<double, double> latLon(latDeg, -lonDeg);
                     return latLon;
                     break;
                 }
@@ -154,6 +175,11 @@ std::pair<double, double> GPS::readGPS()
     
 bool GPS::isOnRoad(Road* road)
 {
+    if(road == NULL)
+    {
+        return false;
+    }
+    
     std::pair<double, double> latLon = this->readGPS();
     
     road->getNodes()->initializeCounter();
@@ -183,12 +209,10 @@ bool GPS::isAtIntersection(Intersection* intersection)
     return false;
 }
     
-Road* GPS::getCurrentRoad(City* city)
+Road* GPS::getCurrentRoad2(City* city, double lat, double lon)
 {
-    std::pair<double, double> latLon = this->readGPS();
-    
     GenericMap<long int, Road*>* roads = city->getRoads();
-    Road* closestRoad;
+    Road* closestRoad = NULL;
     float closestDist = MAXFLOAT;
     
     roads->initializeCounter();
@@ -201,7 +225,7 @@ Road* GPS::getCurrentRoad(City* city)
         GenericEntry<long int, Node*>* nextNode = roadNodes->nextEntry();
         while(nextNode != NULL)
         {
-            float currDist = this->deltaLatLonToXY(latLon.first, latLon.second, nextNode->value->getLat(), nextNode->value->getLon());
+            float currDist = this->deltaLatLonToXY(lat, lon, nextNode->value->getLat(), nextNode->value->getLon());
             if(currDist < closestDist)
             {
                 closestDist = currDist;
@@ -215,39 +239,117 @@ Road* GPS::getCurrentRoad(City* city)
     }
     delete(nextRoad);
     
-    this->currRoad = closestRoad;
     return closestRoad;
 }
     
-float GPS::getDistAlongRoad(Road* road)
+Road* GPS::getCurrentRoad1(City* city)
 {
-    if(this->currRoad == NULL || this->currRoad->getRoadID() != road->getRoadID())
+    std::pair<double, double> latLon = this->readGPS();
+    return this->getCurrentRoad2(city, latLon.first, latLon.second);
+}
+    
+float GPS::getDistAlongRoad(Road* road, bool updateTripLog, bool headingIsStart2End)
+{
+    double lat;
+    double lon;
+    if(updateTripLog)
     {
-        return -1;
+        std::pair<double, double>* latLon = this->updateTripLog();
+        lat = latLon->first;
+        lon = latLon->second;
+    }
+    else
+    {
+        std::pair<double, double> latLon = this->readGPS();
+        lat = latLon.first;
+        lon = latLon.second;
     }
     
-    std::pair<double, double> latLon = this->readGPS();
-    
     GenericMap<long int, Node*>* nodes = road->getNodes();
-    float dist = 0.0;
+    float distAlongRoad = 0.0;
     
     nodes->initializeCounter();
     GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
+    
+    double prevLat = nextNode->value->getLat();
+    double prevLon = nextNode->value->getLon();
+    
+    nextNode = nodes->nextEntry();
+    
     while(nextNode != NULL)
     {
-        float dist_i = this->deltaLatLonToXY(latLon.first, latLon.second, nextNode->value->getLat(), nextNode->value->getLon());
-        dist += dist_i;
+        double currLat = nextNode->value->getLat();
+        double currLon = nextNode->value->getLon();
+        
+        distAlongRoad += this->deltaLatLonToXY(prevLat, prevLon, currLat, currLon);
         
         // stop tracking distance once in proximity to current lat / lon
-        if(dist_i < this->deltaXYTolerance)
+        if(this->deltaLatLonToXY(lat, lon, currLat, currLon) < this->deltaXYTolerance)
         {
             break;
         }
+        
+        prevLat = currLat;
+        prevLon = currLon;
+
         nextNode = nodes->nextEntry();
     }
     delete(nextNode);
     
-    return dist;
+    if(!headingIsStart2End)
+    {
+        distAlongRoad = road->getSplineLength() - distAlongRoad;
+    }
+    
+    return distAlongRoad;
+}
+    
+bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
+{
+    // assume road is current road
+    float distAlongRoad = this->getDistAlongRoad(road, false, true);
+    float evalSVal1 = distAlongRoad / road->getSplineLength();
+    float evalSVal2 = (distAlongRoad + 5.0) / road->getSplineLength();
+    
+    // cap eval2 s-value at 1.0
+    evalSVal2 = std::max((float)1.0, evalSVal2);
+    
+    Eigen::Spline<double,2>::PointType pt1 = road->getSpline()(evalSVal1);
+    Eigen::Spline<double,2>::PointType pt2 = road->getSpline()(evalSVal2);
+    
+    double dLat = pt1(0,0) - pt2(0,0);
+    double dLon = pt1(0,1) - pt2(0,1);
+    
+    double angleSpline = std::atan2(dLat, dLon);
+    if(angleSpline < 0)
+    {
+        angleSpline += M_PI;
+    }
+    
+    double angleHeading = this->getHeadingAngle();
+    
+    if(std::abs(angleHeading - angleSpline) < M_PI / 2)
+    {
+        return true;
+    }
+    return false;
+}
+    
+double GPS::getHeadingAngle()
+{
+    std::pair<double, double> latLon1 = this->readGPS();
+    std::pair<double, double> latLon2 = this->readGPS();
+    
+    double dLat = latLon1.first - latLon2.first;
+    double dLon = latLon1.second - latLon2.second;
+    
+    double angle = std::atan2(dLat, dLon);
+    if(angle < 0)
+    {
+        angle += M_PI;
+    }
+    
+    return angle;
 }
     
 }

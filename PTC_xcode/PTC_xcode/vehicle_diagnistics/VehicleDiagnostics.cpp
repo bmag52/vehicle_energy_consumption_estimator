@@ -9,13 +9,23 @@
 
 namespace PredictivePowertrain {
     
-VehicleDiagnostics::VehicleDiagnostics() {}
+VehicleDiagnostics::VehicleDiagnostics()
+{
+    this->fd =  -1;
+    this->initializeDiagnosticsReader();
+    
+    this->vehicleSpeed = "01 0D\r";
+    this->engineLoad = "01 04\r";
+    this->airFlow = "01 10\r";
+    this->o2Data = "01 24\r";
+}
 
 VehicleDiagnostics::~VehicleDiagnostics() {}
 
 void VehicleDiagnostics::initializeDiagnosticsReader()
 {
-    this->fd = open("/dev/tty.usbmodemFA131", O_RDONLY | O_NONBLOCK);
+    this->fd = open("/dev/cu.wchusbserialfd120", O_RDWR | O_NONBLOCK);
+    
     if(this->fd < 0)
     {
         std::cout << "Unable to open /dev/tty." << std::endl;
@@ -25,22 +35,55 @@ void VehicleDiagnostics::initializeDiagnosticsReader()
     
     memset(&theTermios, 0, sizeof(struct termios));
     cfmakeraw(&theTermios);
-    cfsetspeed(&theTermios, 115200);
+    cfsetspeed(&theTermios, 38400);
     
-    theTermios.c_cflag = CREAD | CLOCAL;     // turn on READ
+    // must stay in this particular order
+    theTermios.c_cflag = CREAD | CLOCAL;      // turn on READ
+    theTermios.c_cflag &= ~PARENB;            // Make 8n1
+    theTermios.c_cflag &= ~CSTOPB;
+    theTermios.c_cflag &= ~CSIZE;
+    theTermios.c_cflag &= ~CRTSCTS;           // no flow control
     theTermios.c_cflag |= CS8;
-    theTermios.c_cc[VMIN] = 0;
-    theTermios.c_cc[VTIME] = 10;     // 1 sec timeout
-    ioctl(this->fd, TIOCSETA, &theTermios);
-}
 
-float VehicleDiagnostics::readDiagnostics()
-{
-    if(this->fd < 0)
+    theTermios.c_cc[VMIN] = 0;
+    theTermios.c_cc[VTIME] = 10;              // 1 sec timeout
+    ioctl(this->fd, TIOCSETA, &theTermios);
+    
+    std::vector<std::string> startup(10);
+    startup.at(0) = "AT D\r";
+    startup.at(1) = "AT D\r";
+    
+    startup.at(2) = "AT I\r";
+    startup.at(3) = "AT E0\r";
+    startup.at(4) = "AT L1\r";
+    startup.at(5) = "AT H0\r";
+    startup.at(6) = "AT S1\r";
+    startup.at(7) = "AT AL\r";
+
+//    startup.at(2) = "AT Z\r";
+//    startup.at(3) = "AT E0\r";
+//    startup.at(4) = "AT L0\r";
+//    startup.at(5) = "AT S0\r";
+//    startup.at(6) = "AT H0\r";
+    
+    startup.at(8) = "AT SP 0\r";
+    startup.at(9) = "0100\r";
+    
+    this->clearRxBuffer();
+    
+    for(int i = 0; i < startup.size() - 1; i++)
     {
-        this->initializeDiagnosticsReader();
+        std::cout << this->getDiagnostsics(startup.at(i), 300) << std::endl;
     }
     
+    // initialize
+    std::cout << this->getDiagnostsics(startup.at(9), 100000) << std::endl;
+    
+    this->clearRxBuffer();
+}
+
+std::string VehicleDiagnostics::readDiagnostics()
+{
     // define vars
     char buf[255];
     size_t res;
@@ -53,47 +96,133 @@ float VehicleDiagnostics::readDiagnostics()
         {
             buf[res]=0;
             
-            std::string nmeaMsg(buf);
-            std::stringstream ss(nmeaMsg);
-            
-            std::string token;
-            while(std::getline(ss, token, ','))
-            {
-                if(!token.compare("$GNGLL"))
-                {
-                    std::string latString;
-                    std::string lonString;
-                    std::getline(ss, latString, ',');
-                    std::getline(ss, token, ',');
-                    std::getline(ss, lonString, ',');
-                    
-                    double lat = std::stod(latString) / 100;
-                    double lon = - std::stod(lonString) / 100;
-                    
-                    return lat;
-                    break;
-                }
-                else{
-                    break;
-                }
-            }
+            std::string newMsg(buf);
+            return newMsg;
+            break;
         }
     }
 }
 
 float VehicleDiagnostics::getSpeed()
 {
-    return 0;
+    std::string vehSpdRaw = this->getDiagnostsics(this->vehicleSpeed, 200);
+    
+    // get val
+    float spdkph = this->hex2Float(vehSpdRaw.substr(6,2));
+    
+    return spdkph / 3.6;
 }
 
 float VehicleDiagnostics::getFuelFlow()
 {
-    return 0;
+    float afr_i = this->readO2();
+    float airFlow_i = this->readMAF();
+    
+    return airFlow_i / afr_i;
+}
+ 
+float VehicleDiagnostics::readMAF()
+{
+    std::string airFlowRaw = this->getDiagnostsics(this->airFlow, 3000);
+    
+    // parse air float
+    float AF_A = this->hex2Float(airFlowRaw.substr(6,2));
+    float AF_B = this->hex2Float(airFlowRaw.substr(9,2));
+    
+    return (256.0 * AF_A + AF_B) / 4;
+}
+    
+float VehicleDiagnostics::readO2()
+{
+    std::string o2DataRaw_i = this->getDiagnostsics(this->o2Data, 3000);
+    
+    float o2Data_A = this->hex2Float(o2DataRaw_i.substr(6,2));
+    float o2Data_B = this->hex2Float(o2DataRaw_i.substr(9,2));
+
+    return 2.0 / 65526.0 * (256.0 * o2Data_A + o2Data_B);
+}
+    
+void VehicleDiagnostics::logFuelFlowParams()
+{
+    
+    std::string engineLoadRaw = this->getDiagnostsics(this->engineLoad, 3000);
+    
+    // parse engine load
+    float engineLoad_A = this->hex2Float(engineLoadRaw.substr(6,2));
+    
+    float airFlow_i = this->readMAF();
+    float engineLoad_i = engineLoad_A / 2.55;
+
+    
+    std::cout << "------ " << this->logCount << " ------" << std::endl;
+    std::cout << "engine load: " << engineLoad_i << std::endl;
+    std::cout << "air flow: " << airFlow_i << std::endl;
+    
+    // add entry
+    std::pair<float, float>* logEnty = new std::pair<float, float>(engineLoad_i, airFlow_i);
+    this->fuelFlowParams.addEntry(this->logCount++, logEnty);
+}
+    
+std::string VehicleDiagnostics::getDiagnostsics(std::string cmd, int timeMultiplier)
+{
+    if(this->fd < 0)
+    {
+        this->initializeDiagnosticsReader();
+    }
+    
+    this->clearRxBuffer();
+    
+    write(this->fd, cmd.c_str(), cmd.length());
+    
+    usleep((25 * cmd.length()) * timeMultiplier);
+    
+    return this->readDiagnostics();
+}
+    
+float VehicleDiagnostics::hex2Float(std::string hex)
+{
+    if(hex.find("0x") == std::string::npos)
+    {
+        hex = "0x" + hex;
+    }
+    
+    float val;
+    std::stringstream ss;
+    ss << std::hex << hex;
+    ss >> val;
+    return val;
+}
+    
+void VehicleDiagnostics::printLog()
+{
+    std::ofstream myfile("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/subaru_gt_fuel_flow_tuning_params.csv");
+    myfile << "Engine Load (%), Air Flow (g/s)\n";
+    
+    this->fuelFlowParams.initializeCounter();
+    GenericEntry<int, std::pair<float, float>*>* nextLogEntry = this->fuelFlowParams.nextEntry();
+    
+    while(nextLogEntry != NULL)
+    {
+        myfile << nextLogEntry->value->first;
+        myfile << ",";
+        myfile << nextLogEntry->value->second;
+        myfile << "\n";
+        
+        nextLogEntry = this->fuelFlowParams.nextEntry();
+    }
+    delete(nextLogEntry);
 }
 
-float VehicleDiagnostics::getFuelPressure()
+void VehicleDiagnostics::clearRxBuffer()
 {
-    return 0;
+    // clear buffer remainder
+    char buf[255];
+    int i = 1;
+    while(i > 0)
+    {
+        i = read(this->fd, buf, 255);
+        std::string msg(buf);
+    }
 }
     
 }

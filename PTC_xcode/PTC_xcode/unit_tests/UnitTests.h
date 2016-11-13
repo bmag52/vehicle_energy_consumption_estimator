@@ -31,4 +31,5 @@ void roadTypes_ut();
 void kinematics_ut();
 void GPS_ut();
 void driverPrediction_ut();
+void vehicleDiagnostics_ut();
 #endif /* UNIT_TESTS_UNITTESTS_H_ */

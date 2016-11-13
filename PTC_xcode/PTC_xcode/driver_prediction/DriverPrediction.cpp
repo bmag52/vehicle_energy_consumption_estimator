@@ -106,7 +106,7 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
 
 void DriverPrediction::parseRoute(Route* currRoute)
 {
-    
+    this->rp->parseRoute(currRoute);
 }
     
 void DriverPrediction::trainSpeedPredictionOverLastLink()

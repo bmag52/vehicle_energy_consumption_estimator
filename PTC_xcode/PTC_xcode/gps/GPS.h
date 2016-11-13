@@ -12,6 +12,7 @@
 #include <cmath>
 #include <math.h>
 
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
@@ -37,8 +38,9 @@ class City;             // forward declaration
 
 class GPS {
 private:
+    
 	GenericMap<long int, std::pair<double, double>*> tripLog;
-    Road* currRoad;
+    
 	long int tripCount;
     double deltaXYTolerance;
     double toRadians(double degrees);
@@ -54,8 +56,9 @@ public:
     GPS(double refLat, double refLon);
     ~GPS();
     
-	void updateTripLog();
-    Road* getCurrentRoad(City* city);
+    std::pair<double, double>* updateTripLog();
+    Road* getCurrentRoad1(City* city);
+    Road* getCurrentRoad2(City* city, double lat, double lon);
 	GenericMap<long int, std::pair<double, double>*>* getTripLog();
     float deltaLatLonToXY(double lat1, double lon1, double lat2, double lon2);
     std::pair<double, double>* convertLatLonToXY(double lat, double lon);
@@ -63,7 +66,9 @@ public:
     std::pair<double, double> readGPS();
     bool isOnRoad(Road* road);
     bool isAtIntersection(Intersection* intersection);
-    float getDistAlongRoad(Road* road);
+    float getDistAlongRoad(Road* road, bool updateTripLog, bool headingIsStart2End);
+    bool isHeadingStart2EndOfCurrentRoad(Road* road);
+    double getHeadingAngle();
 };
 
 }

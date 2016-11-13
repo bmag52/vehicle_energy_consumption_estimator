@@ -68,6 +68,7 @@ public:
     void addRoad(Road* road);
     void addBounds(Bounds* bounds);
     void addIntersection(Intersection* intersection);
+    Route* getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>*>* trace);
 
 };
 

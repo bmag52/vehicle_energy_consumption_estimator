@@ -81,7 +81,8 @@ Intersection* City::getIntersection(long int intersectionNum) {
 	return this->intersections->getEntry(intersectionNum);
 }
 
-Route* City::getPath(Intersection* start, Intersection* end, std::vector<float>* conditions, int fastest) {
+Route* City::getPath(Intersection* start, Intersection* end, std::vector<float>* conditions, int fastest)
+{
 	GenericMap<long int, float> dist;
 	GenericMap<long int, long int> prev;
 	GenericMap<long int, float> unvisitedNodes;
@@ -446,6 +447,92 @@ void City::addBounds(Bounds* bounds)
 void City::addIntersection(Intersection* intersection)
 {
     this->intersections->addEntry(intersection->getIntersectionID(), intersection);
+}
+    
+Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>*>* trace)
+{
+    GPS gps;
+    Road* prevRoad = NULL;
+    Road* currRoad = NULL;
+    Intersection* nextIntersection = NULL;
+    
+    GenericMap<long int, Link*>* links = new GenericMap<long int, Link*>();
+    long int linkCount = 0;
+    
+    trace->initializeCounter();
+    GenericEntry<long int, std::pair<double, double>*>* nextMeas = trace->nextEntry();
+    
+    double lat = nextMeas->value->first;
+    double lon = nextMeas->value->second;
+    prevRoad = gps.getCurrentRoad2(this, lat, lon);
+    
+    nextMeas = trace->nextEntry();
+    
+    int sameRoadCount = 0;
+    while(nextMeas != NULL)
+    {
+        lat = nextMeas->value->first;
+        lon = nextMeas->value->second;
+        currRoad = gps.getCurrentRoad2(this, lat, lon);
+        
+        if(currRoad == NULL || prevRoad == NULL )
+        {
+            sameRoadCount = 0;
+            nextMeas = trace->nextEntry();
+            continue;
+        }
+        
+        if(currRoad->getRoadID() != prevRoad->getRoadID())
+        {
+            if(sameRoadCount > 2)
+            {
+                Intersection* start = prevRoad->getStartIntersection();
+                Intersection* end = prevRoad->getEndIntersection();
+                
+                float toStartIntDist = gps.deltaLatLonToXY(lat, lon, start->getLat(), start->getLon());
+                float toEndIntDist = gps.deltaLatLonToXY(lat, lon, end->getLat(), end->getLon());
+                
+                Link* link;
+                Intersection* currInt;
+                
+                if(toStartIntDist > toEndIntDist)
+                {
+                    link = Link().linkFromRoad(prevRoad, start);
+                    currInt = start;
+                }
+                else
+                {
+                    link = Link().linkFromRoad(prevRoad, end);
+                    currInt = end;
+                }
+                
+                if(currInt->getIntersectionID() == currRoad->getStartIntersection()->getIntersectionID())
+                {
+                    nextIntersection = currRoad->getEndIntersection();
+                }
+                else
+                {
+                    nextIntersection = currRoad->getStartIntersection();
+                }
+                
+                links->addEntry(linkCount, link);
+                linkCount++;
+            }
+            
+            sameRoadCount = 0;
+        }
+        else
+        {
+            sameRoadCount++;
+        }
+    
+        prevRoad = currRoad;
+        nextMeas = trace->nextEntry();
+    }
+    delete(nextMeas);
+    
+    Route* route = new Route(links, new Goal(nextIntersection->getIntersectionID()));
+    return route;
 }
 
 } /* namespace PredictivePowertrain */

@@ -13,6 +13,7 @@
 #include <math.h>
 
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -22,6 +23,9 @@
 #include <errno.h>
 #include <termios.h>
 #include <sys/ioctl.h>
+#include <vector>
+
+#include "../map/GenericMap.h"
 
 namespace PredictivePowertrain {
         
@@ -30,17 +34,34 @@ namespace PredictivePowertrain {
         
         int fd;
         
+        GenericMap<int, std::pair<float, float>*> fuelFlowParams;
+        int logCount = 0;
+        
+        std::string vehicleSpeed;
+        std::string engineLoad;
+        std::string airFlow;
+        std::string o2Data;
+        
+        float readO2();
+        float readMAF();
         void initializeDiagnosticsReader();
+        std::string readDiagnostics();
+        std::string getDiagnostsics(std::string cmd, int timeMultiplier);
+        
+        void clearRxBuffer();
         
     public:
         
         VehicleDiagnostics();
         virtual ~VehicleDiagnostics();
         
-        float readDiagnostics();
         float getSpeed();
         float getFuelFlow();
-        float getFuelPressure();
+        void logFuelFlowParams();
+        float hex2Float(std::string hex);
+        
+        void printLog();
+        
     };
     
 }

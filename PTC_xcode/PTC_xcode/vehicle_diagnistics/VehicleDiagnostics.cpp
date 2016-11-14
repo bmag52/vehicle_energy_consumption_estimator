@@ -31,6 +31,8 @@ void VehicleDiagnostics::initializeDiagnosticsReader()
         std::cout << "Unable to open /dev/tty." << std::endl;
     }
     
+    std::cout << "initializing vd" << std::endl;
+    
     struct termios theTermios;
     
     memset(&theTermios, 0, sizeof(struct termios));
@@ -142,25 +144,12 @@ float VehicleDiagnostics::readO2()
     return 2.0 / 65526.0 * (256.0 * o2Data_A + o2Data_B);
 }
     
-void VehicleDiagnostics::logFuelFlowParams()
+float VehicleDiagnostics::getEngineLoad()
 {
-    
     std::string engineLoadRaw = this->getDiagnostsics(this->engineLoad, 3000);
-    
-    // parse engine load
     float engineLoad_A = this->hex2Float(engineLoadRaw.substr(6,2));
     
-    float airFlow_i = this->readMAF();
-    float engineLoad_i = engineLoad_A / 2.55;
-
-    
-    std::cout << "------ " << this->logCount << " ------" << std::endl;
-    std::cout << "engine load: " << engineLoad_i << std::endl;
-    std::cout << "air flow: " << airFlow_i << std::endl;
-    
-    // add entry
-    std::pair<float, float>* logEnty = new std::pair<float, float>(engineLoad_i, airFlow_i);
-    this->fuelFlowParams.addEntry(this->logCount++, logEnty);
+    return engineLoad_A / 2.55;
 }
     
 std::string VehicleDiagnostics::getDiagnostsics(std::string cmd, int timeMultiplier)
@@ -191,26 +180,6 @@ float VehicleDiagnostics::hex2Float(std::string hex)
     ss << std::hex << hex;
     ss >> val;
     return val;
-}
-    
-void VehicleDiagnostics::printLog()
-{
-    std::ofstream myfile("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/subaru_gt_fuel_flow_tuning_params.csv");
-    myfile << "Engine Load (%), Air Flow (g/s)\n";
-    
-    this->fuelFlowParams.initializeCounter();
-    GenericEntry<int, std::pair<float, float>*>* nextLogEntry = this->fuelFlowParams.nextEntry();
-    
-    while(nextLogEntry != NULL)
-    {
-        myfile << nextLogEntry->value->first;
-        myfile << ",";
-        myfile << nextLogEntry->value->second;
-        myfile << "\n";
-        
-        nextLogEntry = this->fuelFlowParams.nextEntry();
-    }
-    delete(nextLogEntry);
 }
 
 void VehicleDiagnostics::clearRxBuffer()

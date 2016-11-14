@@ -24,6 +24,7 @@ void vehicleDiagnostics_ut()
         std::cout << "------ " << timeItr << " ------" << std::endl;
         std::cout << "fuel flow (g/a): " << vd.getFuelFlow() << std::endl;
         std::cout << "speed (mph): " << vd.getSpeed() * 2.23 << std::endl;
+        std::cout << "engine load (%): " << vd.getEngineLoad() << std::endl;
         
         auto start = std::chrono::system_clock::now();
         while(1)

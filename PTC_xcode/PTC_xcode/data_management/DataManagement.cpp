@@ -454,6 +454,7 @@ void DataManagement::addTripData(GenericMap<long int, std::pair<double, double>*
 
 RoutePrediction* DataManagement::getRoutePredictionData()
 {
+    std::cout << "getting route prediciton data" << std::endl;
 	try
     {
         
@@ -471,6 +472,7 @@ RoutePrediction* DataManagement::getRoutePredictionData()
             // LINKS
             if(!rpData.compare("LINKS"))
             {
+                std::cout << "in get rp, links" << std::endl;
                 BOOST_FOREACH(ptree::value_type &u, v.second)
                 {
                     long int linkNumber = lexical_cast<long int>(u.first.data());
@@ -605,6 +607,7 @@ RoutePrediction* DataManagement::getRoutePredictionData()
             // GOALS
             else if(!rpData.compare("GOALS"))
             {
+                std::cout << "in get rp, goals" << std::endl;
                 BOOST_FOREACH(ptree::value_type &u, v.second)
                 {
                     long int destinationNum = lexical_cast<long int>(u.first.data());
@@ -655,6 +658,7 @@ RoutePrediction* DataManagement::getRoutePredictionData()
             // LINK2STATE
             else if(!rpData.compare("LINK2STATE"))
             {
+                std::cout << "in get rp, link2state" << std::endl;
                 BOOST_FOREACH(ptree::value_type &u, v.second)
                 {
                     // iterate through each goal map entry
@@ -702,6 +706,7 @@ RoutePrediction* DataManagement::getRoutePredictionData()
             // GOAL2LINK
             else if(!rpData.compare("GOAL2LINK"))
             {
+                std::cout << "in get rp, goal2link" << std::endl;
                 BOOST_FOREACH(ptree::value_type &u, v.second)
                 {
                     long int goalHash = lexical_cast<long int>(u.first.data());
@@ -735,12 +740,12 @@ RoutePrediction* DataManagement::getRoutePredictionData()
 		std::cout << e.what() << std::endl;
 	}
     
-    return NULL;
+    return new RoutePrediction();
 }
 
 City* DataManagement::getCityData()
 {
-
+    std::cout << "getting city data" << std::endl;
     if(this->countFileLine(this->cityData) == 0)
     {
         return NULL;
@@ -762,8 +767,9 @@ City* DataManagement::getCityData()
 			BOOST_FOREACH(ptree::value_type& v, u.second)
 			{
 				std::string child = v.first.data();
-				if(!child.compare("roads")) {
-
+				if(!child.compare("roads"))
+                {
+                    std::cout << "in get city, roads" << std::endl;
 					BOOST_FOREACH(ptree::value_type& z, v.second)
 					{
 						GenericMap<int, double>* nodeLats = new GenericMap<int, double>();
@@ -840,7 +846,9 @@ City* DataManagement::getCityData()
 			BOOST_FOREACH(ptree::value_type& v, u.second)
 			{
 				std::string child = v.first.data();
-				if(!child.compare("intersections")) {
+				if(!child.compare("intersections"))
+                {
+                    std::cout << "in get city, intersections" << std::endl;
 					BOOST_FOREACH(ptree::value_type& z, v.second)
 					{
 						int intID = lexical_cast<int>(z.first.data());
@@ -869,6 +877,7 @@ City* DataManagement::getCityData()
 						intersections->addEntry(intID, newInt);
 					}
 				} else if(!child.compare("bounds")) {
+                    std::cout << "in get city, bounds" << std::endl;
 					double maxLat, maxLon, minLat, minLon;
 					BOOST_FOREACH(ptree::value_type& z, v.second)
 					{
@@ -943,11 +952,10 @@ GenericMap<long int, std::pair<double, double>*>* DataManagement::getMostRecentT
 						{
 							double lat = lexical_cast<double>(b.second.data());
 							lats->addEntry(latCount++, lat);
-							std::cout << subTree << " = " << lat << std::endl;
 						} else if(!subTree.compare("longitude")) {
 							double lon = lexical_cast<double>(b.second.data());
 							lons->addEntry(lonCount++, lon);
-							std::cout << subTree << " = " << lon << std::endl;
+
 						}
 					}
 

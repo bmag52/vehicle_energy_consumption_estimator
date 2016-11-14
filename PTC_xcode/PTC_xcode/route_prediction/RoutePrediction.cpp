@@ -31,7 +31,8 @@ void RoutePrediction::initialize()
     this->unknownRoute = new Route(new GenericMap<long int, Link*>(), unknownGoal);
     this->unknownRoute->addLink(unknownLink);
     
-    this->overRoute = new Route(new GenericMap<long int, Link*>(), overGoal);;
+    this->overRoute = new Route(new GenericMap<long int, Link*>(), overGoal);
+    this->overRoute->addLink(overLink);
     
     this->linkToState = new LinkToStateMap();
     this->goalToLink = new GoalToLinkMap();
@@ -394,8 +395,10 @@ void RoutePrediction::addPredictionElements(GenericMap<long int, Link*>* newLink
 }
 void RoutePrediction::addCity(City* newCity)
 {
-
-    delete(this->city);
+    if(this->city != NULL)
+    {
+        delete(this->city);
+    }
     this->city = newCity;
 }
     

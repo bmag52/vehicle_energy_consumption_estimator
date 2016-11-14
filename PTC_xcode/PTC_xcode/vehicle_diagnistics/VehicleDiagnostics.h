@@ -57,10 +57,8 @@ namespace PredictivePowertrain {
         
         float getSpeed();
         float getFuelFlow();
-        void logFuelFlowParams();
+        float getEngineLoad();
         float hex2Float(std::string hex);
-        
-        void printLog();
         
     };
     

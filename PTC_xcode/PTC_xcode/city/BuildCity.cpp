@@ -9,7 +9,9 @@
 
 namespace PredictivePowertrain {
     
-BuildCity::BuildCity() {
+BuildCity::BuildCity()
+{
+    
 }
     
 BuildCity::~BuildCity()
@@ -1330,28 +1332,42 @@ Bounds* BuildCity::getNewBounds()
     
 City* BuildCity::getUpdatedCity()
 {
-    GenericMap<long int, Road*>* newRoads = this->getNewRoads();
-    
-    newRoads->initializeCounter();
-    GenericEntry<long int, Road*>* nextRoad = newRoads->nextEntry();
-    while(nextRoad != NULL)
+    if(this->newBoundsFound)
     {
-        this->city->addRoad(nextRoad->value);
-        nextRoad = newRoads->nextEntry();
+        GenericMap<long int, Road*>* newRoads = this->getNewRoads();
+        
+        newRoads->initializeCounter();
+        GenericEntry<long int, Road*>* nextRoad = newRoads->nextEntry();
+        while(nextRoad != NULL)
+        {
+            this->city->addRoad(nextRoad->value);
+            nextRoad = newRoads->nextEntry();
+        }
+        delete(nextRoad);
+        
+        this->newInts->initializeCounter();
+        GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
+        while(nextInt != NULL)
+        {
+            this->city->addIntersection(nextInt->value);
+            nextInt = this->newInts->nextEntry();
+        }
+        delete(nextInt);
+        
+        this->city->addBounds(this->newBounds);
     }
-    delete(nextRoad);
-    
-    
-    this->newInts->initializeCounter();
-    GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
-    while(nextInt != NULL)
+    else if(this->hasNewBounds())
     {
-        this->city->addIntersection(nextInt->value);
-        nextInt = this->newInts->nextEntry();
+        this->updateGridDataXMLSpline();
+        this->printNewIntersectionsAndRoads();
+        
+        // incase no city data provided
+        if(this->city == NULL)
+        {
+            this->city = new City();
+        }
+        return this->getUpdatedCity();
     }
-    delete(nextInt);
-    
-    this->city->addBounds(this->newBounds);
     
     return this->city;
 }

@@ -15,6 +15,20 @@
 #include <sstream>
 #include <stdlib.h>
 
+#include <utility>
+#include <cmath>
+#include <math.h>
+
+#include <sstream>
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <vector>
+
 #include "BuildCity.h"
 #include "City.h"
 #include "DataManagement.h"
@@ -79,7 +93,7 @@ void saveRoute(Route* route, FILE* file, City* city)
 }
 
 // save route and speed
-void saveActualData(Route* actualRoute, std::vector<float>* actualSpeed, City* city)
+void saveActualData(Route* actualRoute, std::vector<float>* actualSpeed, std::vector<float>* fuelFlow, std::vector<float>* energy, City* city)
 {
     // ROUTE
     FILE* csvRoute = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_ROUTE.csv", "w");
@@ -89,13 +103,13 @@ void saveActualData(Route* actualRoute, std::vector<float>* actualSpeed, City* c
     fclose(csvRoute);
     
     // SPEED
-    FILE* csvSpeed = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_SPEED.csv", "w");
+    FILE* csvSpeedFuelFlowEnergy = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_SPEED_FUEL_FLOW.csv", "w");
     
     for(int i = 0; i < actualSpeed->size(); i++)
     {
-        fprintf(csvSpeed, "%f,", actualSpeed->at(i));
+        fprintf(csvSpeedFuelFlowEnergy, "%f,%f,%f\n", actualSpeed->at(i), fuelFlow->at(i), energy->at(i));
     }
-    fclose(csvSpeed);
+    fclose(csvSpeedFuelFlowEnergy);
 }
 
 // save pred data
@@ -112,7 +126,6 @@ void savePredData(DriverPrediction::PredData predData, Route* predRoute, City* c
     }
     
     saveRoute(predRoute, predRouteFile, city);
-    
     
     // data
     if(!predDataFile)
@@ -158,7 +171,7 @@ int main() {
     //    kinematics_ut();
     //    GPS_ut();
     //    driverPrediction_ut();
-        vehicleDiagnostics_ut();
+    //    vehicleDiagnostics_ut();
     
     // ************************************************************************************************************************************
     // ************************************************************************************************************************************
@@ -229,73 +242,97 @@ int main() {
     // ************************************************************************************************************************************
     // ************************************************************************************************************************************
     
-    bool isFirstPrediction = true;
-    
-    // set timer between time measurements to ensure distance covered is correct between predition intervals
-    auto t1 = std::chrono::system_clock::now();
-    
-    while(1)
+    if(city == NULL)
     {
-        // get vehicle speed
-        vehSpd = vd.getSpeed();
-        actualSpeed.push_back(vehSpd);
-        
-        // get fuel flow
-        fuelFlow.push_back(vd.getFuelFlow());
-        
-        // update current road if intersection happen
-        if(!gps.isOnRoad(currRoad))
+        std::string line;
+        while(vd.getEngineLoad() > 1.0)
         {
-            currRoad = gps.getCurrentRoad1(city);
-            headingIsStart2End = gps.isHeadingStart2EndOfCurrentRoad(currRoad);
-            if(headingIsStart2End)
+            auto start = std::chrono::system_clock::now();
+            while(1)
             {
-                currLink = Link().linkFromRoad(currRoad, currRoad->getEndIntersection());
-            }
-            else
-            {
-                currLink = Link().linkFromRoad(currRoad, currRoad->getStartIntersection());
+                auto end = std::chrono::system_clock::now();
+                std::chrono::duration<double> diff = end - start;
+                
+                if(diff.count() > 1.0) { break; }
             }
             
-            // start prediction
-            if(isFirstPrediction)
-            {
-                // get distance along road
-                distAlongRoad = gps.getDistAlongRoad(currRoad, true, headingIsStart2End);
-                predData = dp.startPrediction(currLink, vehSpd, &currConditions, distAlongRoad);
-                isFirstPrediction = false;
-            }
-            
-            savePredData(predData, dp.getRP()->getPredictedRoute(), city, false);
+            gps.updateTripLog();
         }
+    }
+    else
+    {
+        // to start driver prediction
+        bool isFirstPrediction = true;
         
-        // get distance along road
-        distAlongRoad = gps.getDistAlongRoad(currRoad, true, headingIsStart2End);
-
-        // predict iteratively along vehicle route
-        predData = dp.nextPrediction(currLink, vehSpd, distAlongRoad);
+        // set timer between time measurements to ensure distance covered is correct between predition intervals
+        auto t1 = std::chrono::system_clock::now();
         
-        // approximate energy usage from predicted speed and elevation change
-        energy.push_back(kin.runKinematics(predData.first, ds, predData.second, false));
-        
-        // ensure vehicle has traveled prediction interval distance before next prediction
-        while(1)
+        while(vd.getEngineLoad() > 1.0)
         {
-            // get new speed prediction
-            float vehSpdNew = vd.getSpeed();
+            // get vehicle speed
+            vehSpd = vd.getSpeed();
+            actualSpeed.push_back(vehSpd);
             
-            // get time update
-            auto t2 = std::chrono::system_clock::now();
-            std::chrono::duration<double> timeDur = t2 - t1;
-            float dt = timeDur.count();
+            // get fuel flow
+            fuelFlow.push_back(vd.getFuelFlow());
             
-            float accel = (vehSpd - vehSpdNew) / dt;
-            float dist = vehSpd * dt - 0.5 * accel * std::pow(dt, 2);
-            
-            if(dist > ds)
+            // update current road if intersection happen
+            if(!gps.isOnRoad(currRoad))
             {
-                t1 = t2;
-                break;
+                std::cout << "on new road" << std::endl;
+                
+                currRoad = gps.getCurrentRoad1(city);
+                headingIsStart2End = gps.isHeadingStart2EndOfCurrentRoad(currRoad);
+                
+                if(headingIsStart2End)
+                {
+                    currLink = Link().linkFromRoad(currRoad, currRoad->getEndIntersection());
+                }
+                else
+                {
+                    currLink = Link().linkFromRoad(currRoad, currRoad->getStartIntersection());
+                }
+                
+                // start prediction
+                if(isFirstPrediction)
+                {
+                    // get distance along road
+                    distAlongRoad = gps.getDistAlongRoad(currRoad, true, headingIsStart2End);
+                    predData = dp.startPrediction(currLink, vehSpd, &currConditions, distAlongRoad);
+                    isFirstPrediction = false;
+                }
+                
+                savePredData(predData, dp.getRP()->getPredictedRoute(), city, false);
+            }
+            
+            // get distance along road
+            distAlongRoad = gps.getDistAlongRoad(currRoad, true, headingIsStart2End);
+
+            // predict iteratively along vehicle route
+            predData = dp.nextPrediction(currLink, vehSpd, distAlongRoad);
+            
+            // approximate energy usage from predicted speed and elevation change
+            energy.push_back(kin.runKinematics(predData.first, ds, predData.second, false));
+            
+            // ensure vehicle has traveled prediction interval distance before next prediction
+            while(1)
+            {
+                // get new speed prediction
+                float vehSpdNew = vd.getSpeed();
+                
+                // get time update
+                auto t2 = std::chrono::system_clock::now();
+                std::chrono::duration<double> timeDur = t2 - t1;
+                float dt = timeDur.count();
+                
+                float accel = (vehSpd - vehSpdNew) / dt;
+                float dist = vehSpd * dt - 0.5 * accel * std::pow(dt, 2);
+                
+                if(dist > ds)
+                {
+                    t1 = t2;
+                    break;
+                }
             }
         }
     }
@@ -313,23 +350,27 @@ int main() {
     dm.addTripData(gps.getTripLog());
     
     // update city data
-    bc.updateGridDataXMLSpline();
-    bc.printNewIntersectionsAndRoads();
     city = bc.getUpdatedCity();
     
-    // get route from city using gps trace
-    Route* route = city->getRouteFromGPSTrace(gps.getTripLog());
-    
-    // parse route
-    dp.parseRoute(route);
+    if(gps.getTripLog()->getSize() > 100)
+    {
+        // get route from city using gps trace
+        Route* actualRoute = city->getRouteFromGPSTrace(gps.getTripLog());
+        
+        // parse route
+        dp.parseRoute(actualRoute);
+        
+        // save actual route
+        saveActualData(actualRoute, &actualSpeed, &fuelFlow, &energy, city);
+        
+        // store route prediction data
+        dm.addRoutePredictionData(dp.getRP());
+    }
     
     // store city data
     dm.addCityData(city);
-    
-    // store route prediction data
-    dm.addRoutePredictionData(dp.getRP());
 
-	std::cout << "finished" << std::endl;
+	std::cout << "finished driver prediction" << std::endl;
 
 	return 0;
 }

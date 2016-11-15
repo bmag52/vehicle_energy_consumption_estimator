@@ -290,6 +290,7 @@ void DataManagement::addCityData(City* city)
             newBounds = true;
         }
     }
+    
 	if(newBounds)
 	{
         // add road data
@@ -351,7 +352,7 @@ void DataManagement::addCityData(City* city)
 			GenericEntry<long int, Intersection*>* nextIntersection = intersectionMap->nextEntry();
 			while(nextIntersection != NULL)
 			{
-				if(nextIntersection->value->getBoudsID() == nextBounds->key)
+				if(nextIntersection->value->getBoudsID() == nextBounds->value->getID())
 				{
 					ptree intersection, roadCount, elevation, lat, lon;
 					roadCount.put("", nextIntersection->value->getRoadCount());
@@ -892,7 +893,7 @@ City* DataManagement::getCityData()
 							minLon = lexical_cast<double>(z.second.data());
 						}
 					}
-					Bounds* newBounds = new Bounds(maxLat, maxLon, minLat, minLon);
+					Bounds* newBounds = new Bounds(maxLat, minLat, maxLon, minLon);
 					newBounds->assignID(boundsID);
 					bounds->addEntry(boundsID, newBounds);
 				}

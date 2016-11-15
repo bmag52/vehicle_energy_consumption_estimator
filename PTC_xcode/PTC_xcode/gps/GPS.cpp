@@ -32,10 +32,12 @@ GPS::~GPS()
 std::pair<double, double>* GPS::updateTripLog()
 {
 	std::pair<double, double> latLonRef = this->readGPS();
-    std::cout << latLonRef.first << "," << latLonRef.second << std::endl;
+    std::cout << "GPS: " << latLonRef.first << "," << latLonRef.second << std::endl;
+    
     std::pair<double, double>* latLonPtr = new std::pair<double, double>(latLonRef.first, latLonRef.second);
 	this->tripLog.addEntry(this->tripCount, latLonPtr);
     this->tripCount++;
+    
     return latLonPtr;
 }
 

@@ -103,6 +103,7 @@ public:
     GenericMap<long int, Road*>* getNewRoads();
     Bounds* getNewBounds();
     City* getUpdatedCity();
+    City* updateCity();
 };
     
 }

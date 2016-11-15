@@ -19,8 +19,6 @@
 #include <cmath>
 #include <math.h>
 
-#include <sstream>
-#include <stdio.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -163,14 +161,15 @@ int main() {
     //                                                          Unit Tests
     // ************************************************************************************************************************************
     // ************************************************************************************************************************************
-    //    dataManagement_ut();
+    //    city_ut();
+        buildCity_ut();
     //    dataCollection_ut();
-    //    buildCity_ut();
-    //    speedPrediction_ut();
-    //    routePrediction_ut();
-    //    kinematics_ut();
-    //    GPS_ut();
+    //    dataManagement_ut();
     //    driverPrediction_ut();
+    //    GPS_ut();
+    //    kinematics_ut();
+    //    routePrediction_ut();
+    //    speedPrediction_ut();
     //    vehicleDiagnostics_ut();
     
     // ************************************************************************************************************************************
@@ -315,7 +314,7 @@ int main() {
             energy.push_back(kin.runKinematics(predData.first, ds, predData.second, false));
             
             // ensure vehicle has traveled prediction interval distance before next prediction
-            while(1)
+            while(vd.getEngineLoad() > 1.0)
             {
                 // get new speed prediction
                 float vehSpdNew = vd.getSpeed();
@@ -352,6 +351,9 @@ int main() {
     // update city data
     city = bc.getUpdatedCity();
     
+    // store city data
+    dm.addCityData(city);
+    
     if(gps.getTripLog()->getSize() > 100)
     {
         // get route from city using gps trace
@@ -360,15 +362,12 @@ int main() {
         // parse route
         dp.parseRoute(actualRoute);
         
-        // save actual route
-        saveActualData(actualRoute, &actualSpeed, &fuelFlow, &energy, city);
-        
         // store route prediction data
         dm.addRoutePredictionData(dp.getRP());
+        
+        // save actual route
+        saveActualData(actualRoute, &actualSpeed, &fuelFlow, &energy, city);
     }
-    
-    // store city data
-    dm.addCityData(city);
 
 	std::cout << "finished driver prediction" << std::endl;
 

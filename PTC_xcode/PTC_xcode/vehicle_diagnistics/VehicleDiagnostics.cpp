@@ -119,8 +119,11 @@ float VehicleDiagnostics::getFuelFlow()
 {
     float afr_i = this->readO2();
     float airFlow_i = this->readMAF();
+    float fuelFlow = airFlow_i / afr_i;
     
-    return airFlow_i / afr_i;
+    std::cout << "fuel flow: " << fuelFlow << std::endl;
+    
+    return fuelFlow;
 }
  
 float VehicleDiagnostics::readMAF()
@@ -130,8 +133,11 @@ float VehicleDiagnostics::readMAF()
     // parse air float
     float AF_A = this->hex2Float(airFlowRaw.substr(6,2));
     float AF_B = this->hex2Float(airFlowRaw.substr(9,2));
+    float MAF = (256.0 * AF_A + AF_B) / 4;
     
-    return (256.0 * AF_A + AF_B) / 4;
+    std::cout << "MAF: " << MAF << std::endl;
+    
+    return MAF;
 }
     
 float VehicleDiagnostics::readO2()
@@ -140,16 +146,22 @@ float VehicleDiagnostics::readO2()
     
     float o2Data_A = this->hex2Float(o2DataRaw_i.substr(6,2));
     float o2Data_B = this->hex2Float(o2DataRaw_i.substr(9,2));
-
-    return 2.0 / 65526.0 * (256.0 * o2Data_A + o2Data_B);
+    float AFR = 2.0 / 65526.0 * (256.0 * o2Data_A + o2Data_B);
+    
+    std::cout << "AFR: " << AFR << std::endl;
+    
+    return AFR;
 }
     
 float VehicleDiagnostics::getEngineLoad()
 {
     std::string engineLoadRaw = this->getDiagnostsics(this->engineLoad, 3000);
     float engineLoad_A = this->hex2Float(engineLoadRaw.substr(6,2));
+    float engineLoad = engineLoad_A / 2.55;
     
-    return engineLoad_A / 2.55;
+    std::cout << "engine load: " << engineLoad << std::endl;
+    
+    return engineLoad;
 }
     
 std::string VehicleDiagnostics::getDiagnostsics(std::string cmd, int timeMultiplier)

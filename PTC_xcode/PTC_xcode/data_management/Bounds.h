@@ -22,7 +22,7 @@ private:
 
 public:
 	Bounds();
-	Bounds(double maxLat, double maxLon, double minLat, double minLon);
+	Bounds(double maxLat, double minLat, double maxLon, double minLon);
 	double getMaxLat();
 	double getMaxLon();
 	double getMinLat();

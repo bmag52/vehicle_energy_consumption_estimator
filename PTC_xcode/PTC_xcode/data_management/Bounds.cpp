@@ -13,10 +13,10 @@ Bounds::Bounds()
 {
 }
 
-Bounds::Bounds(double maxLat, double maxLon, double minLat, double minLon) {
+Bounds::Bounds(double maxLat, double minLat, double maxLon, double minLon) {
 	this->maxLat = maxLat;
-	this->maxLon = maxLon;
-	this->minLat = minLat;
+    this->minLat = minLat;
+    this->maxLon = maxLon;
 	this->minLon = minLon;
 	this->id = -1;
 }

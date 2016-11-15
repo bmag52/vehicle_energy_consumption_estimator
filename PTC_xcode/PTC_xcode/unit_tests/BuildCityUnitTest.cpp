@@ -28,15 +28,20 @@ void buildCity_ut() {
 //    latLon->addEntry(8, new std::pair<double, double>(47.650, -117.410));
     
     // down town trip log big
-    latLon->addEntry(1, new std::pair<double, double>(47.656784, -122.307302));
-    latLon->addEntry(2, new std::pair<double, double>(47.560249, -122.379874));
+//    latLon->addEntry(1, new std::pair<double, double>(47.656784, -122.307302));
+//    latLon->addEntry(2, new std::pair<double, double>(47.560249, -122.379874));
+    
+    // test expansion
+    latLon->addEntry(1, new std::pair<double, double>(47.624523266249, -117.404426673014));
+    latLon->addEntry(2, new std::pair<double, double>(47.617837, -117.407554));
+    latLon->addEntry(3, new std::pair<double, double>(47.617673, -117.406049));
 
     // jsonify trip log -> delete existing jsons
     DataManagement dm;
     dm.addTripData(latLon);
     
     BuildCity bc;
-    bc.updateGridDataXMLSpline();
-    bc.printNewIntersectionsAndRoads();
-    bc.getUpdatedCity();
+    City* city = bc.getUpdatedCity();
+    
+    dm.addCityData(city);
 }

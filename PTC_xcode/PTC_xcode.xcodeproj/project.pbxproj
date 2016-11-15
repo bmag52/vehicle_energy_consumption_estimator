@@ -13,6 +13,7 @@
 		D3265C6D1DD287AC004DCDE8 /* DriverPrediction.h in Sources */ = {isa = PBXBuildFile; fileRef = D339C8341DBAA40400FA4229 /* DriverPrediction.h */; };
 		D3265C6E1DD287B1004DCDE8 /* Probability.h in Sources */ = {isa = PBXBuildFile; fileRef = D39E82E61DB2BFFF00B859A9 /* Probability.h */; };
 		D3265C701DD3D9B7004DCDE8 /* VehicleDiagnosticsUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3265C6F1DD3D9B7004DCDE8 /* VehicleDiagnosticsUnitTest.cpp */; };
+		D32D0BFE1DDA920500BD93B2 /* CityUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D32D0BFD1DDA920500BD93B2 /* CityUnitTest.cpp */; };
 		D3309D3F1DC148F500BB860D /* DriverPredictionUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D3309D3E1DC148F500BB860D /* DriverPredictionUnitTest.cpp */; };
 		D339C82E1DB7F73100FA4229 /* Kinematics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C82C1DB7F73100FA4229 /* Kinematics.cpp */; };
 		D339C8301DB82E4F00FA4229 /* KinematicsUnitTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D339C82F1DB82E4F00FA4229 /* KinematicsUnitTest.cpp */; };
@@ -218,6 +219,7 @@
 		D3265C681DD2733B004DCDE8 /* VehicleDiagnostics.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = VehicleDiagnostics.cpp; sourceTree = "<group>"; };
 		D3265C691DD2733B004DCDE8 /* VehicleDiagnostics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VehicleDiagnostics.h; sourceTree = "<group>"; };
 		D3265C6F1DD3D9B7004DCDE8 /* VehicleDiagnosticsUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VehicleDiagnosticsUnitTest.cpp; path = PTC_xcode/unit_tests/VehicleDiagnosticsUnitTest.cpp; sourceTree = "<group>"; };
+		D32D0BFD1DDA920500BD93B2 /* CityUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CityUnitTest.cpp; path = PTC_xcode/unit_tests/CityUnitTest.cpp; sourceTree = "<group>"; };
 		D3309D3E1DC148F500BB860D /* DriverPredictionUnitTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DriverPredictionUnitTest.cpp; path = PTC_xcode/unit_tests/DriverPredictionUnitTest.cpp; sourceTree = "<group>"; };
 		D339C82C1DB7F73100FA4229 /* Kinematics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Kinematics.cpp; sourceTree = "<group>"; };
 		D339C82D1DB7F73100FA4229 /* Kinematics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Kinematics.h; sourceTree = "<group>"; };
@@ -736,6 +738,7 @@
 			isa = PBXGroup;
 			children = (
 				D3FABC3D1CE524A400892002 /* BuildCityUnitTest.cpp */,
+				D32D0BFD1DDA920500BD93B2 /* CityUnitTest.cpp */,
 				D3FABC401CE524A400892002 /* CitySectionUnitTest.cpp */,
 				D3FABC3E1CE524A400892002 /* DataCollectionUnitTest.cpp */,
 				D3FABC411CE524A400892002 /* DataManagementUnitTest.cpp */,
@@ -969,6 +972,7 @@
 				D3FABCAC1CE524A500892002 /* Goal.h in Sources */,
 				D3F7F4441D57E0E300F682C4 /* SpeedPredictionUnitTest.cpp in Sources */,
 				D3FABCAD1CE524A500892002 /* GoalMapEntry.h in Sources */,
+				D32D0BFE1DDA920500BD93B2 /* CityUnitTest.cpp in Sources */,
 				D3FABCAE1CE524A500892002 /* LinkToStateMapEntry.h in Sources */,
 				D3FABCB01CE524A500892002 /* GenericMap.h in Sources */,
 				D339C82E1DB7F73100FA4229 /* Kinematics.cpp in Sources */,

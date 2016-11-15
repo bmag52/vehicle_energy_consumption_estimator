@@ -141,6 +141,7 @@ bool GenericMap<K, V>::erase(K key)
 	typename std::map<K,V>::iterator iter = this->map.find(key);
 	if (iter != this->map.end()) {
 		this->map.erase(iter);
+        
 		return true;
 	} else {
 		return false;

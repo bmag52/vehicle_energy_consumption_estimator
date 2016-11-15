@@ -398,7 +398,7 @@ void BuildCity::updateGridDataXMLSpline()
                         }
                         
                         bool foundUniqueRoad = true;
-                        GenericMap<long int, Road*>* adjacentIntConnectingRoads = refinedInts.getEntry(adjacentIntID)->getRoads();
+                        GenericMap<long int, Road*>* adjacentIntConnectingRoads = allInts.getEntry(adjacentIntID)->getRoads();
                         
                         adjacentIntConnectingRoads->initializeCounter();
                         GenericEntry<long int, Road*>* nextAdjacentIntConnectingRoad = adjacentIntConnectingRoads->nextEntry();
@@ -474,8 +474,8 @@ void BuildCity::updateGridDataXMLSpline()
                             newRoad->assignSpline(atomicRoadSpline);
                             newRoad->assignSplineLength(dist);
                             newRoad->setMinMaxLatLon();
-                            newRoad->setStartIntersection(refinedInts.getEntry(splineStartIntID));
-                            newRoad->setEndIntersection(refinedInts.getEntry(splineEndIntID));
+                            newRoad->setStartIntersection(allInts.getEntry(splineStartIntID));
+                            newRoad->setEndIntersection(allInts.getEntry(splineEndIntID));
                             newRoad->setBoundsID(this->newBounds->getID());
                         }
                         
@@ -493,8 +493,13 @@ void BuildCity::updateGridDataXMLSpline()
             }
             delete(nextConnectingRoad);
             
+            // replace connecting roads
             nextInt->value->replaceRoads(newConnectingRoads);
             
+            // set bounds id of intersection
+            nextInt->value->setBoundsID(this->newBounds->getID());
+            
+            // add intersection to new bounds
             this->newInts->addEntry(nextInt->key, nextInt->value);
             nextInt = refinedInts.nextEntry();
         }
@@ -515,7 +520,7 @@ void BuildCity::updateGridDataXMLSpline()
 
 void BuildCity::printNewIntersectionsAndRoads()
 {
-    if( this->newBoundsFound && this->newInts->getSize() > 0)
+    if(this->newBoundsFound && this->newInts->getSize() > 0)
     {
         // csv name
         std::string csvName = "/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/parsedMapData.csv";
@@ -1234,59 +1239,85 @@ std::pair<DataCollection*, Bounds*>* BuildCity::setupDataCollection() {
     return new std::pair<DataCollection*, Bounds*>(dc, newBoundsFromTrip);
 }
 
-bool BuildCity::hasNewBounds() {
+bool BuildCity::hasNewBounds()
+{
     DataManagement dm;
     GenericMap<long int, std::pair<double, double>*>* tripLatLon = dm.getMostRecentTripData();
+    GenericMap<long int, std::pair<double, double>*>* tripLatLonCopy = tripLatLon->copy();
+    
     this->city = dm.getCityData();
     
     this->maxLat = -DBL_MAX;
     this->maxLon = -DBL_MAX;
     this->minLat = DBL_MAX;
     this->minLon = DBL_MAX;
-    
-    tripLatLon->initializeCounter();
-    GenericEntry<long int, std::pair<double, double>*>* nextTripLatLon = tripLatLon->nextEntry();
+
     if(this->city != NULL)
     {
         // bounds data already exists
         GenericMap<int, Bounds*>* bounds = this->city->getBoundsMap();
-        while(nextTripLatLon != NULL)
+        
+        // erase in-bounds measurements
+        tripLatLonCopy->initializeCounter();
+        GenericEntry<long int, std::pair<double, double>*>* nextTripLatLonCopy = tripLatLonCopy->nextEntry();
+        while(nextTripLatLonCopy != NULL)
         {
+            double lat = nextTripLatLonCopy->value->first;
+            double lon = nextTripLatLonCopy->value->second;
+            
             bounds->initializeCounter();
             GenericEntry<int, Bounds*>* nextBounds = bounds->nextEntry();
             while(nextBounds != NULL)
             {
-                double lat = nextTripLatLon->value->first;
-                double lon = nextTripLatLon->value->second;
-                
                 Bounds* bound = nextBounds->value;
-                this->boundsID = bound->getID();
-                if(lat > bound->getMaxLat() || lat < bound->getMinLat() || lon > bound->getMaxLon() || lon < bound->getMinLon())
+
+                // measurement is in bounds
+                if(lat < bound->getMaxLat() && lat > bound->getMinLat() && lon < bound->getMaxLon() && lon > bound->getMinLon())
                 {
-                    this->newBoundsFound = true;
-                    if(lat > this->maxLat) { this->maxLat = lat; } if(lat < this->minLat) { this->minLat = lat; }
-                    if(lon > this->maxLon) { this->maxLon = lon; } if(lon < this->minLon) { this->minLon = lon; }
-                    
+                    tripLatLon->erase(nextTripLatLonCopy->key);
+                    break;
                 }
                 nextBounds = bounds->nextEntry();
             }
-            nextTripLatLon = tripLatLon->nextEntry();
+            nextTripLatLonCopy = tripLatLonCopy->nextEntry();
             delete(nextBounds);
         }
-    } else {
-        // no bounds data
+        delete(nextTripLatLonCopy);
+    }
+    
+    // find min / max of out of bounds measurements
+    if(tripLatLon->getSize() > 0)
+    {
         this->newBoundsFound = true;
+
+        tripLatLon->initializeCounter();
+        GenericEntry<long int, std::pair<double, double>*>* nextTripLatLon = tripLatLon->nextEntry();
         while(nextTripLatLon != NULL)
         {
             double lat = nextTripLatLon->value->first;
             double lon = nextTripLatLon->value->second;
             
-            if(lat > this->maxLat) { this->maxLat = lat; } if(lat < this->minLat) { this->minLat = lat; }
-            if(lon > this->maxLon) { this->maxLon = lon; } if(lon < this->minLon) { this->minLon = lon; }
+            if(lat > this->maxLat) { this->maxLat = lat; }
+            if(lat < this->minLat) { this->minLat = lat; }
+            
+            if(lon > this->maxLon) { this->maxLon = lon; }
+            if(lon < this->minLon) { this->minLon = lon; }
+            
             nextTripLatLon = tripLatLon->nextEntry();
         }
+        delete(nextTripLatLon);
     }
-    delete(nextTripLatLon);
+    
+    // expand min / max by a small margin
+    double expandMargin = .0001;
+    this->maxLat += expandMargin;
+    this->minLat -= expandMargin;
+    
+    this->maxLon += expandMargin;
+    this->minLon -= expandMargin;
+    
+    delete(tripLatLon);
+    delete(tripLatLonCopy);
     
     return this->newBoundsFound;
 }
@@ -1334,40 +1365,42 @@ City* BuildCity::getUpdatedCity()
 {
     if(this->newBoundsFound)
     {
-        GenericMap<long int, Road*>* newRoads = this->getNewRoads();
-        
-        newRoads->initializeCounter();
-        GenericEntry<long int, Road*>* nextRoad = newRoads->nextEntry();
-        while(nextRoad != NULL)
-        {
-            this->city->addRoad(nextRoad->value);
-            nextRoad = newRoads->nextEntry();
-        }
-        delete(nextRoad);
-        
-        this->newInts->initializeCounter();
-        GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
-        while(nextInt != NULL)
-        {
-            this->city->addIntersection(nextInt->value);
-            nextInt = this->newInts->nextEntry();
-        }
-        delete(nextInt);
-        
-        this->city->addBounds(this->newBounds);
-    }
-    else if(this->hasNewBounds())
-    {
         this->updateGridDataXMLSpline();
         this->printNewIntersectionsAndRoads();
-        
-        // incase no city data provided
-        if(this->city == NULL)
-        {
-            this->city = new City();
-        }
-        return this->getUpdatedCity();
     }
+    
+    // incase no city data provided
+    if(this->city == NULL)
+    {
+        this->city = new City();
+    }
+    
+    return this->updateCity();
+}
+    
+City* BuildCity::updateCity()
+{
+    GenericMap<long int, Road*>* newRoads = this->getNewRoads();
+    
+    newRoads->initializeCounter();
+    GenericEntry<long int, Road*>* nextRoad = newRoads->nextEntry();
+    while(nextRoad != NULL)
+    {
+        this->city->addRoad(nextRoad->value);
+        nextRoad = newRoads->nextEntry();
+    }
+    delete(nextRoad);
+    
+    this->newInts->initializeCounter();
+    GenericEntry<long int, Intersection*>* nextInt = this->newInts->nextEntry();
+    while(nextInt != NULL)
+    {
+        this->city->addIntersection(nextInt->value);
+        nextInt = this->newInts->nextEntry();
+    }
+    delete(nextInt);
+    
+    this->city->addBounds(this->newBounds);
     
     return this->city;
 }

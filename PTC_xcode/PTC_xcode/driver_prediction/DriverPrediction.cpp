@@ -54,17 +54,24 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
     
     // get predicted route and add currentLink to start of route
     Route* predRoute = this->rp->predict(currentLink)->copy();
-    predRoute->addLinkToFront(currentLink);
-    
-    // add NN values to route since route prediction always returns old links
-    this->addWeightedLinksToRoute(predRoute);
     
     // update current route
     this->predRoute = predRoute;
     
-    // get route speed and elevation data
-    Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
-    PredData predData = this->city->routeToData(this->predRoute, distAlongLink, this->sp, &spdIn);
+    PredData predData;
+    predData.first.push_back(-1);
+    predData.first.push_back(-1);
+    if(!predRoute->isEqual(this->rp->getUnknownRoute()) && !predRoute->isEqual(this->rp->getOverRoute()))
+    {
+        predRoute->addLinkToFront(currentLink);
+        
+        // add NN values to route since route prediction always returns old links
+        this->addWeightedLinksToRoute(predRoute);
+        
+        // get route speed and elevation data
+        Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
+        predData = this->city->routeToData(this->predRoute, distAlongLink, this->sp, &spdIn);
+    }
     
     return predData;
 }
@@ -82,15 +89,20 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
     // --- REPREDICT ROUTE AND TRAIN SPEED PREDICTION ---
     else if(!this->currLink->isEqual(currentLink))
     {
-        // quick train of speed prediction over last link
-        this->trainSpeedPredictionOverLastLink();
-        
+        if(!predRoute->isEqual(this->rp->getUnknownRoute()) && !predRoute->isEqual(this->rp->getOverRoute()))
+        {
+            // quick train of speed prediction over last link
+            this->trainSpeedPredictionOverLastLink();
+        }
         // perform route prediction
         Route* newPredRoute = this->rp->predict(currentLink)->copy();
         
         // add speed prediction vals to route and attached current link to front
-        newPredRoute->addLinkToFront(currentLink);
-        this->addWeightedLinksToRoute(newPredRoute);
+        if(!newPredRoute->isEqual(this->rp->getUnknownRoute()) && !newPredRoute->isEqual(this->rp->getOverRoute()))
+        {
+            newPredRoute->addLinkToFront(currentLink);
+            this->addWeightedLinksToRoute(newPredRoute);
+        }
         
         // update current link and predicted route
         this->currLink = currentLink;
@@ -98,8 +110,14 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
         this->predRoute = newPredRoute;
     }
     
-    Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
-    PredData predData = this->city->routeToData(this->predRoute, distAlongLink, this->sp, &spdIn);
+    PredData predData;
+    predData.first.push_back(-1);
+    predData.first.push_back(-1);
+    if(!this->predRoute->isEqual(this->rp->getUnknownRoute()) && !this->predRoute->isEqual(this->rp->getOverRoute()))
+    {
+        Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
+        predData = this->city->routeToData(this->predRoute, distAlongLink, this->sp, &spdIn);
+    }
 
     return predData;
 }

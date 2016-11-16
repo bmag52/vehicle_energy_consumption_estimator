@@ -1363,7 +1363,7 @@ Bounds* BuildCity::getNewBounds()
     
 City* BuildCity::getUpdatedCity()
 {
-    if(this->newBoundsFound)
+    if(!this->newBoundsFound)
     {
         this->updateGridDataXMLSpline();
         this->printNewIntersectionsAndRoads();
@@ -1375,7 +1375,14 @@ City* BuildCity::getUpdatedCity()
         this->city = new City();
     }
     
-    return this->updateCity();
+    if(this->newBoundsFound)
+    {
+        return this->updateCity();
+    }
+    else
+    {
+        return this->city;
+    }
 }
     
 City* BuildCity::updateCity()

@@ -139,6 +139,14 @@ Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::
     for(int i = 0; i < this->probabilities->size(); i++) { probabilitiesCopy->at(i) = this->probabilities->at(i); }
     
     this->predictedRoute = predictPrivate(NULL, this->states->copy(), probabilitiesCopy);
+    if(this->predictedRoute->isEqual(this->unknownRoute))
+    {
+        return this->unknownRoute;
+    }
+    else if(this->predictedRoute->isEqual(this->overRoute))
+    {
+        return this->overRoute;
+    }
 	return createRouteConditions(currentCondition);
 }
 
@@ -205,7 +213,15 @@ Route* RoutePrediction::predict(Link* linkTaken)
 	if(this->predictedRoute->isEmpty())
 	{
 		return this->predictedRoute;
-	}
+    }
+    else if(this->predictedRoute->isEqual(this->unknownRoute))
+    {
+        return this->unknownRoute;
+    }
+    else if(this->predictedRoute->isEqual(this->overRoute))
+    {
+        return this->overRoute;
+    }
     else if (this->predictedRoute->getLinkSize() == 1)
     {
 		return createRouteIntersection(this->city->getIntersectionFromLink(linkTaken, true), this->predictedGoal->getBins());
@@ -300,7 +316,7 @@ Route* RoutePrediction::predictPrivate(Route* currentRoute, GenericMap<int, std:
 	}
     
     // return unknown route if no probability associated with next goal in route
-    if(maxProbability == 0)
+    if(maxProbability <= 0 || currentStates->getSize() == 0)
     {
         return this->unknownRoute;
     }
@@ -410,6 +426,16 @@ Route* RoutePrediction::getPredictedRoute()
 City* RoutePrediction::getCity()
 {
     return this->city;
+}
+    
+Route* RoutePrediction::getUnknownRoute()
+{
+    return this->unknownRoute;
+}
+    
+Route* RoutePrediction::getOverRoute()
+{
+    return this->overRoute;
 }
     
 } /* namespace PredictivePowertrain */

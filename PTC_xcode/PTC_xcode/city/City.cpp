@@ -455,36 +455,82 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
     Road* prevRoad = NULL;
     Road* currRoad = NULL;
     Intersection* nextIntersection = NULL;
-    
-    GenericMap<long int, Link*>* links = new GenericMap<long int, Link*>();
     long int linkCount = 0;
+    int sameRoadCount = 0;
+    int latLonCount = 0;
     
+    // for splines
+    Eigen::MatrixXd points(2, trace->getSize());
+    
+    // set control points for spline
     trace->initializeCounter();
     GenericEntry<long int, std::pair<double, double>*>* nextMeas = trace->nextEntry();
-    
-    double lat = nextMeas->value->first;
-    double lon = nextMeas->value->second;
-    prevRoad = gps.getCurrentRoad2(this, lat, lon);
-    
-    nextMeas = trace->nextEntry();
-    
-    int sameRoadCount = 0;
     while(nextMeas != NULL)
     {
-        lat = nextMeas->value->first;
-        lon = nextMeas->value->second;
-        currRoad = gps.getCurrentRoad2(this, lat, lon);
+        double lat = nextMeas->value->first;
+        double lon = nextMeas->value->second;
         
-        if(currRoad == NULL || prevRoad == NULL )
+        // for splines
+        points(0, latLonCount) = lat;
+        points(1, latLonCount) = lon;
+        
+        nextMeas = trace->nextEntry();
+        latLonCount++;
+    }
+    delete(nextMeas);
+
+    // fit first order spline spline
+    typedef Eigen::Spline<double, 2> spline2f;
+    
+    // fit spline
+    spline2f traceSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
+    
+    // evaluate spline and save points to csv for viewing
+    Eigen::Spline<double,2>::PointType pt = traceSpline(0);
+    double prev_lat = pt(0,0);
+    double prev_lon = pt(1,0);
+    float dist = 0.0;
+    
+    // get distance of spline to set evaluation distance correctly
+    for(double u = 0; u <= 1; u += 0.025)
+    {
+        pt = traceSpline(u);
+        double curr_lat = pt(0,0);
+        double curr_lon = pt(1,0);
+        
+        // get distance of eval point along spline
+        dist += gps.deltaLatLonToXY(prev_lat, prev_lon, curr_lat, curr_lon);
+        
+        prev_lat = curr_lat;
+        prev_lon = curr_lon;
+    }
+    
+    // identify road using splined trace
+    GenericMap<long int, Link*>* links = new GenericMap<long int, Link*>();
+    
+    double evalStepSize = 5.0 / dist;
+    pt = traceSpline(0);
+    double lat = pt(0,0);
+    double lon = pt(1,0);
+    
+    prevRoad = gps.getCurrentRoad2(this, lat, lon);
+    dist = 0.0;
+    
+    for(double u = 0; u <= 1; u += evalStepSize)
+    {
+        pt = traceSpline(u);
+        lat = pt(0,0);
+        lon = pt(1,0);
+        
+        currRoad = gps.getCurrentRoad2(this, lat, lon);
+        if(currRoad == NULL)
         {
-            sameRoadCount = 0;
-            nextMeas = trace->nextEntry();
             continue;
         }
         
-        if(currRoad->getRoadID() != prevRoad->getRoadID())
+        if(prevRoad == NULL || currRoad->getRoadID() != prevRoad->getRoadID())
         {
-            if(sameRoadCount > 2)
+            if(sameRoadCount >= 2)
             {
                 Intersection* start = prevRoad->getStartIntersection();
                 Intersection* end = prevRoad->getEndIntersection();
@@ -495,7 +541,7 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                 Link* link;
                 Intersection* currInt;
                 
-                if(toStartIntDist > toEndIntDist)
+                if(toStartIntDist < toEndIntDist)
                 {
                     link = Link().linkFromRoad(prevRoad, start);
                     currInt = start;
@@ -525,11 +571,7 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
         {
             sameRoadCount++;
         }
-    
-        prevRoad = currRoad;
-        nextMeas = trace->nextEntry();
     }
-    delete(nextMeas);
     
     Route* route = new Route(links, new Goal(nextIntersection->getIntersectionID()));
     return route;

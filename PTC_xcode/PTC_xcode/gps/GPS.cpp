@@ -140,6 +140,11 @@ std::pair<double, double> GPS::readGPS()
                     std::getline(ss, token, ',');
                     std::getline(ss, lonString, ',');
                     
+                    // break if bad read
+                    if(latString.length() == 0 || lonString.length() == 0)
+                    {
+                        break;
+                    }
                     // get raw deg / min values
                     double latRaw = std::stod(latString);
                     double lonRaw = std::stod(lonString);

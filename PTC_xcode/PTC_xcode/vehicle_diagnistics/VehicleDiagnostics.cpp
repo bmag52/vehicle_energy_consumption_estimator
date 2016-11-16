@@ -12,6 +12,7 @@ namespace PredictivePowertrain {
 VehicleDiagnostics::VehicleDiagnostics()
 {
     this->fd =  -1;
+    this->timeMultiplierSFFEL = 2000;
     this->initializeDiagnosticsReader();
     
     this->vehicleSpeed = "01 0D\r";
@@ -107,7 +108,7 @@ std::string VehicleDiagnostics::readDiagnostics()
 
 float VehicleDiagnostics::getSpeed()
 {
-    std::string vehSpdRaw = this->getDiagnostsics(this->vehicleSpeed, 200);
+    std::string vehSpdRaw = this->getDiagnostsics(this->vehicleSpeed, this->timeMultiplierSFFEL);
     
     // get val
     float spdkph = this->hex2Float(vehSpdRaw.substr(6,2));
@@ -128,7 +129,7 @@ float VehicleDiagnostics::getFuelFlow()
  
 float VehicleDiagnostics::readMAF()
 {
-    std::string airFlowRaw = this->getDiagnostsics(this->airFlow, 3000);
+    std::string airFlowRaw = this->getDiagnostsics(this->airFlow, this->timeMultiplierSFFEL);
     
     // parse air float
     float AF_A = this->hex2Float(airFlowRaw.substr(6,2));
@@ -142,7 +143,7 @@ float VehicleDiagnostics::readMAF()
     
 float VehicleDiagnostics::readO2()
 {
-    std::string o2DataRaw_i = this->getDiagnostsics(this->o2Data, 3000);
+    std::string o2DataRaw_i = this->getDiagnostsics(this->o2Data, this->timeMultiplierSFFEL);
     
     float o2Data_A = this->hex2Float(o2DataRaw_i.substr(6,2));
     float o2Data_B = this->hex2Float(o2DataRaw_i.substr(9,2));
@@ -155,7 +156,7 @@ float VehicleDiagnostics::readO2()
     
 float VehicleDiagnostics::getEngineLoad()
 {
-    std::string engineLoadRaw = this->getDiagnostsics(this->engineLoad, 3000);
+    std::string engineLoadRaw = this->getDiagnostsics(this->engineLoad, this->timeMultiplierSFFEL);
     float engineLoad_A = this->hex2Float(engineLoadRaw.substr(6,2));
     float engineLoad = engineLoad_A / 2.55;
     

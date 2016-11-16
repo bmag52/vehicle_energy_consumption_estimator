@@ -33,9 +33,7 @@ namespace PredictivePowertrain {
     private:
         
         int fd;
-        
-        GenericMap<int, std::pair<float, float>*> fuelFlowParams;
-        int logCount = 0;
+        int timeMultiplierSFFEL;
         
         std::string vehicleSpeed;
         std::string engineLoad;
@@ -49,6 +47,7 @@ namespace PredictivePowertrain {
         std::string getDiagnostsics(std::string cmd, int timeMultiplier);
         
         void clearRxBuffer();
+        float hex2Float(std::string hex);
         
     public:
         
@@ -58,8 +57,6 @@ namespace PredictivePowertrain {
         float getSpeed();
         float getFuelFlow();
         float getEngineLoad();
-        float hex2Float(std::string hex);
-        
     };
     
 }

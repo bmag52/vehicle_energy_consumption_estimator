@@ -71,6 +71,8 @@ public:
     void addCity(City* newCity);
     Route* getPredictedRoute();
     City* getCity();
+    Route* getUnknownRoute();
+    Route* getOverRoute();
 };
 
 

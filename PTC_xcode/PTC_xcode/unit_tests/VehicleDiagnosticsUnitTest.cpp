@@ -14,9 +14,6 @@ void vehicleDiagnostics_ut()
 {
     VehicleDiagnostics vd;
     
-    std::cout << vd.hex2Float("0xAD") << std::endl;
-    std::cout << vd.hex2Float("AD") << std::endl;
-    
     // log values for duration of time
     int timeItr = 0;
     while(timeItr < 360)

@@ -105,8 +105,23 @@ void saveActualData(Route* actualRoute, std::vector<float>* actualSpeed, std::ve
     
     for(int i = 0; i < actualSpeed->size(); i++)
     {
-        fprintf(csvSpeedFuelFlowEnergy, "%f,%f,%f\n", actualSpeed->at(i), fuelFlow->at(i), energy->at(i));
+        fprintf(csvSpeedFuelFlowEnergy, "%f,", actualSpeed->at(i));
     }
+    
+    fprintf(csvSpeedFuelFlowEnergy, "\n");
+    
+    for(int i = 0; i < fuelFlow->size(); i++)
+    {
+        fprintf(csvSpeedFuelFlowEnergy, "%f,", fuelFlow->at(i));
+    }
+    
+    fprintf(csvSpeedFuelFlowEnergy, "\n");
+    
+    for(int i = 0; i < energy->size(); i++)
+    {
+        fprintf(csvSpeedFuelFlowEnergy, "%f,", energy->at(i));
+    }
+    
     fclose(csvSpeedFuelFlowEnergy);
 }
 
@@ -161,8 +176,8 @@ int main() {
     //                                                          Unit Tests
     // ************************************************************************************************************************************
     // ************************************************************************************************************************************
-    //    city_ut();
-        buildCity_ut();
+        city_ut();
+    //    buildCity_ut();
     //    dataCollection_ut();
     //    dataManagement_ut();
     //    driverPrediction_ut();
@@ -268,20 +283,21 @@ int main() {
         
         while(vd.getEngineLoad() > 1.0)
         {
-            // get vehicle speed
-            vehSpd = vd.getSpeed();
-            actualSpeed.push_back(vehSpd);
-            
             // get fuel flow
             fuelFlow.push_back(vd.getFuelFlow());
+            
+            // get vehicle speed
+            vehSpd = vd.getSpeed();
+            std::cout << "veh speed: " << vehSpd << std::endl;
+            actualSpeed.push_back(vehSpd);
             
             // update current road if intersection happen
             if(!gps.isOnRoad(currRoad))
             {
-                std::cout << "on new road" << std::endl;
-                
                 currRoad = gps.getCurrentRoad1(city);
                 headingIsStart2End = gps.isHeadingStart2EndOfCurrentRoad(currRoad);
+                
+                std::cout << "on new road: " << currRoad->getRoadID() << std::endl;
                 
                 if(headingIsStart2End)
                 {
@@ -301,7 +317,10 @@ int main() {
                     isFirstPrediction = false;
                 }
                 
-                savePredData(predData, dp.getRP()->getPredictedRoute(), city, false);
+                if(predData.first.at(0) != -1 && predData.second.at(0) != -1)
+                {
+                    savePredData(predData, dp.getRP()->getPredictedRoute(), city, false);
+                }
             }
             
             // get distance along road
@@ -311,7 +330,10 @@ int main() {
             predData = dp.nextPrediction(currLink, vehSpd, distAlongRoad);
             
             // approximate energy usage from predicted speed and elevation change
-            energy.push_back(kin.runKinematics(predData.first, ds, predData.second, false));
+            if(predData.first.at(0) != -1 && predData.second.at(0) != -1)
+            {
+                energy.push_back(kin.runKinematics(predData.first, ds, predData.second, false));
+            }
             
             // ensure vehicle has traveled prediction interval distance before next prediction
             while(vd.getEngineLoad() > 1.0)
@@ -329,6 +351,8 @@ int main() {
                 
                 if(dist > ds)
                 {
+                    std::cout << "prediction distance: " << dist << std::endl;
+                    std::cout << "*******************************************" << std::endl;
                     t1 = t2;
                     break;
                 }
@@ -353,21 +377,18 @@ int main() {
     
     // store city data
     dm.addCityData(city);
+
+    // get route from city using gps trace
+    Route* actualRoute = city->getRouteFromGPSTrace(dm.getMostRecentTripData());
     
-    if(gps.getTripLog()->getSize() > 100)
-    {
-        // get route from city using gps trace
-        Route* actualRoute = city->getRouteFromGPSTrace(gps.getTripLog());
-        
-        // parse route
-        dp.parseRoute(actualRoute);
-        
-        // store route prediction data
-        dm.addRoutePredictionData(dp.getRP());
-        
-        // save actual route
-        saveActualData(actualRoute, &actualSpeed, &fuelFlow, &energy, city);
-    }
+    // parse route
+    dp.parseRoute(actualRoute);
+    
+    // store route prediction data
+    dm.addRoutePredictionData(dp.getRP());
+    
+    // save actual route
+    saveActualData(actualRoute, &actualSpeed, &fuelFlow, &energy, city);
 
 	std::cout << "finished driver prediction" << std::endl;
 

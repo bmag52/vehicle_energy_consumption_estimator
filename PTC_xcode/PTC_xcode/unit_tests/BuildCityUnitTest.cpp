@@ -33,8 +33,8 @@ void buildCity_ut() {
     
     // test expansion
     latLon->addEntry(1, new std::pair<double, double>(47.624523266249, -117.404426673014));
-    latLon->addEntry(2, new std::pair<double, double>(47.617837, -117.407554));
-    latLon->addEntry(3, new std::pair<double, double>(47.617673, -117.406049));
+    latLon->addEntry(2, new std::pair<double, double>(47.617847, -117.407564));
+    latLon->addEntry(3, new std::pair<double, double>(47.617683, -117.406059));
 
     // jsonify trip log -> delete existing jsons
     DataManagement dm;

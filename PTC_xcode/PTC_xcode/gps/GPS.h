@@ -50,6 +50,7 @@ private:
     int fd;
     
     void initializeGPSReader();
+    void interpolateTripLog(GenericMap<long int, std::pair<double, double>*>* before, GenericMap<long int, std::pair<double, double>*>* after);
 
 public:
 	GPS();
@@ -59,7 +60,7 @@ public:
     std::pair<double, double>* updateTripLog();
     Road* getCurrentRoad1(City* city);
     Road* getCurrentRoad2(City* city, double lat, double lon);
-	GenericMap<long int, std::pair<double, double>*>* getTripLog();
+	GenericMap<long int, std::pair<double, double>*>* getTripLog(bool interpolated);
     float deltaLatLonToXY(double lat1, double lon1, double lat2, double lon2);
     std::pair<double, double>* convertLatLonToXY(double lat, double lon);
     std::pair<double, double>* convertXYToLatLon(double x, double y);
@@ -69,6 +70,7 @@ public:
     float getDistAlongRoad(Road* road, bool updateTripLog, bool headingIsStart2End);
     bool isHeadingStart2EndOfCurrentRoad(Road* road);
     double getHeadingAngle();
+    double getDeltaXYTolerance();
 };
 
 }

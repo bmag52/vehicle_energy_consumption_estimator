@@ -41,11 +41,13 @@ namespace PredictivePowertrain {
         void setCurrentLink(Link* currentLink);
         PredData startPrediction(Link* currentLink, float spd, std::vector<float>* currentConditions, float distAlongLink);
         PredData nextPrediction(Link* currentLink, float spd, float distAlongLink);
-        void parseRoute(Route* currRoute);
+        void parseRoute(Route* currRoute, std::vector<float>* speeds);
         RoutePrediction* getRP();
         SpeedPrediction* getSP();
         Eigen::MatrixXd getSpeedPredInpunt(float spd);
         void trainSpeedPredictionOverLastLink();
+        void updateSpeedsByVec(std::vector<float>* spds);
+        void updateSpeedsbyVal(float spd);
         
         
     };

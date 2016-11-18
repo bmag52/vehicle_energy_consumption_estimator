@@ -41,8 +41,49 @@ std::pair<double, double>* GPS::updateTripLog()
     return latLonPtr;
 }
 
-GenericMap<long int, std::pair<double, double>*>* GPS::getTripLog() {
-	return &this->tripLog;
+GenericMap<long int, std::pair<double, double>*>* GPS::getTripLog(bool interpolated)
+{
+    if(interpolated)
+    {
+        GenericMap<long int, std::pair<double, double>*> beforeInterpTripLog;
+        GenericMap<long int, std::pair<double, double>*> afterInterpTripLog;
+        this->interpolateTripLog(&this->tripLog, &beforeInterpTripLog);
+        
+        for(int i = 0; i < 3; i++)
+        {
+            this->interpolateTripLog(&beforeInterpTripLog, &afterInterpTripLog);
+            beforeInterpTripLog = afterInterpTripLog;
+        }
+        
+        return afterInterpTripLog.copy();
+    }
+    
+    return &this->tripLog;
+}
+
+void GPS::interpolateTripLog(GenericMap<long int, std::pair<double, double>*>* before, GenericMap<long int, std::pair<double, double>*>* after)
+{
+    long int latLonCount = 0;
+    
+    before->initializeCounter();
+    GenericEntry<long int, std::pair<double, double>*>* prevMeas = before->nextEntry();
+    GenericEntry<long int, std::pair<double, double>*>* currMeas = before->nextEntry();
+    while(currMeas != NULL)
+    {
+        double midLat = (prevMeas->value->first + currMeas->value->first) / 2;
+        double midLon = (prevMeas->value->second + currMeas->value->second) / 2;
+        
+        after->addEntry(latLonCount++, new std::pair<double, double>(prevMeas->value->first, prevMeas->value->second));
+        after->addEntry(latLonCount++, new std::pair<double, double>(midLat, midLon));
+        
+        prevMeas = currMeas;
+        currMeas = before->nextEntry();
+    }
+    after->addEntry(latLonCount++, new std::pair<double, double>(prevMeas->value->first, prevMeas->value->second));
+    
+    delete(prevMeas);
+    delete(currMeas);
+    
 }
     
 float GPS::deltaLatLonToXY(double lat1, double lon1, double lat2, double lon2)
@@ -361,4 +402,8 @@ double GPS::getHeadingAngle()
     return angle;
 }
     
+double GPS::getDeltaXYTolerance()
+{
+    return this->deltaXYTolerance;
+}
 }

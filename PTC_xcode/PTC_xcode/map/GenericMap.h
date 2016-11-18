@@ -56,8 +56,8 @@ GenericMap<K, V>::GenericMap(GenericMap& other)
 {
 	this->map = std::map<K,V>();
 	this->iter = map.end();
-	this->hashCounter = 0;
-	this->arrayCounter = 0;
+//	this->hashCounter = 0;
+//	this->arrayCounter = 0;
 	this->hasNextEntry = false;
 }
 

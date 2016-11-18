@@ -122,9 +122,58 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
     return predData;
 }
 
-void DriverPrediction::parseRoute(Route* currRoute)
+void DriverPrediction::parseRoute(Route* currRoute, std::vector<float>* spds)
 {
+    // train routpe prediction
     this->rp->parseRoute(currRoute);
+    
+    // train speed prediction
+    this->beforeLinkSpds.clear();
+    this->linkSpds.clear();
+    std::queue<float> empty;
+    std::swap(this->lastSpds, empty);
+    
+    std::vector<float> spdsCopy(*spds);
+    float spdDist = spds->size() * this->sp->getDS();
+    
+    currRoute->getLinks()->initializeCounter();
+    GenericEntry<long int, Link*>* nextLink = currRoute->getLinks()->nextEntry();
+    while(nextLink != NULL && !nextLink->value->isFinalLink())
+    {
+        // get necessary road data
+        Road* road_i = this->city->getRoads()->getEntry(nextLink->value->getNumber());
+        float roadDist_i = road_i->getSplineLength();
+        float roadSpdIndices_i = (float) roadDist_i / spdDist * spds->size();
+        
+        std::vector<float> roadSpds_i;
+        
+        // get road speeds from arbitrary trace of continuous speed values.
+        for(int i = 0; i < roadSpdIndices_i; i++)
+        {
+            roadSpds_i.push_back(spdsCopy.front());
+            spdsCopy.erase(spdsCopy.begin());
+        }
+        
+        // train for speed at beginnging of next link
+        roadSpds_i.push_back(spdsCopy.at(0));
+        
+        // set current link
+        this->setCurrentLink(nextLink->value);
+        
+        // populate link speed buffers
+        while(roadSpds_i.size() > 0)
+        {
+            this->updateSpeedsbyVal(roadSpds_i.front());
+            roadSpds_i.erase(roadSpds_i.begin());
+        }
+        
+        // train
+        this->trainSpeedPredictionOverLastLink();
+        
+        nextLink = currRoute->getLinks()->nextEntry();
+    }
+    delete(nextLink);
+
 }
     
 void DriverPrediction::trainSpeedPredictionOverLastLink()
@@ -216,7 +265,16 @@ void DriverPrediction::trainSpeedPredictionOverLastLink()
     this->currLink->setWeights(spVals->at(0), spVals->at(1), spVals->at(2), this->currLink->getDirection());
 }
     
-Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
+void DriverPrediction::updateSpeedsByVec(std::vector<float>* spds)
+{
+    while(spds->size() > 0)
+    {
+        this->updateSpeedsbyVal(spds->front());
+        spds->erase(spds->begin());
+    }
+}
+
+void DriverPrediction::updateSpeedsbyVal(float spd)
 {
     // because before links speeds doesn't exist on startup, use repeated first measurement.
     if(this->beforeLinkSpds.size() == 0)
@@ -236,6 +294,12 @@ Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
     {
         this->lastSpds.pop();
     }
+}
+    
+Eigen::MatrixXd DriverPrediction::getSpeedPredInpunt(float spd)
+{
+    // update speeds
+    this->updateSpeedsbyVal(spd);
 
     // create a matrix of zero input
     Eigen::MatrixXd spdIn = Eigen::MatrixXd::Zero(1, this->sp->getI() + 1);

@@ -68,7 +68,7 @@ void saveRoute(Route* route, FILE* file, City* city)
             // intersections
             fprintf(file, "%ld,", intersection->getIntersectionID());
             fprintf(file, "Lat & Lon: %.12f %.12f,", intersection->getLat(), intersection->getLon());
-            fprintf(file, "red,");
+            fprintf(file, "blue,");
             fprintf(file, "%.12f,%.12f\n", intersection->getLat(), intersection->getLon());
         }
         
@@ -77,7 +77,7 @@ void saveRoute(Route* route, FILE* file, City* city)
         while(nextNode != NULL)
         {
             // road nodes
-            fprintf(file, "%ld,", nextNode->value->getID());
+            fprintf(file, "%ld,", currRoad->getRoadID());
             fprintf(file, "Lat & Lon: %.12f %.12f,", nextNode->value->getLat(), nextNode->value->getLon());
             fprintf(file, "red,");
             fprintf(file, "%.12f,%.12f\n", nextNode->value->getLat(), nextNode->value->getLon());
@@ -238,6 +238,8 @@ int main() {
     
     // vehicle speed;
     float vehSpd;
+    float travelDist;
+    std::vector<float> spdBuf;
     
     // vehicle speed prediction distance between predictions
     float ds = SpeedPrediction().getDS();
@@ -277,19 +279,18 @@ int main() {
     {
         // to start driver prediction
         bool isFirstPrediction = true;
-        
-        // set timer between time measurements to ensure distance covered is correct between predition intervals
-        auto t1 = std::chrono::system_clock::now();
+
+        std::pair<double, double> prevLatLon = gps.readGPS();
         
         while(vd.getEngineLoad() > 1.0)
         {
-            // get fuel flow
-            fuelFlow.push_back(vd.getFuelFlow());
-            
             // get vehicle speed
             vehSpd = vd.getSpeed();
             std::cout << "veh speed: " << vehSpd << std::endl;
             actualSpeed.push_back(vehSpd);
+            
+            // get fuel flow
+            fuelFlow.push_back(vd.getFuelFlow());
             
             // update current road if intersection happen
             if(!gps.isOnRoad(currRoad))
@@ -338,22 +339,27 @@ int main() {
             // ensure vehicle has traveled prediction interval distance before next prediction
             while(vd.getEngineLoad() > 1.0)
             {
-                // get new speed prediction
-                float vehSpdNew = vd.getSpeed();
+                std::pair<double, double> currLatLon = gps.readGPS();
+                travelDist = gps.deltaLatLonToXY(prevLatLon.first, prevLatLon.second, currLatLon.first, currLatLon.second);
                 
-                // get time update
-                auto t2 = std::chrono::system_clock::now();
-                std::chrono::duration<double> timeDur = t2 - t1;
-                float dt = timeDur.count();
+                float distRatio = travelDist / ds;
                 
-                float accel = (vehSpd - vehSpdNew) / dt;
-                float dist = vehSpd * dt - 0.5 * accel * std::pow(dt, 2);
-                
-                if(dist > ds)
+                if(distRatio >= 1)
                 {
-                    std::cout << "prediction distance: " << dist << std::endl;
+                    // buffer speed values is distance travel is greater than prediction interval distance
+                    if(distRatio >= 2)
+                    {
+                        for(int i = 1; i <= distRatio; i++)
+                        {
+                            actualSpeed.push_back(vehSpd);
+                            spdBuf.push_back(vehSpd);
+                        }
+                        dp.updateSpeedsByVec(&spdBuf);
+                    }
+                    
+                    std::cout << "prediction distance: " << travelDist << std::endl;
                     std::cout << "*******************************************" << std::endl;
-                    t1 = t2;
+                    prevLatLon = currLatLon;
                     break;
                 }
             }
@@ -370,7 +376,7 @@ int main() {
     BuildCity bc;
     
     // get and store trip data
-    dm.addTripData(gps.getTripLog());
+    dm.addTripData(gps.getTripLog(true));
     
     // update city data
     city = bc.getUpdatedCity();
@@ -382,7 +388,7 @@ int main() {
     Route* actualRoute = city->getRouteFromGPSTrace(dm.getMostRecentTripData());
     
     // parse route
-    dp.parseRoute(actualRoute);
+    dp.parseRoute(actualRoute, &actualSpeed);
     
     // store route prediction data
     dm.addRoutePredictionData(dp.getRP());

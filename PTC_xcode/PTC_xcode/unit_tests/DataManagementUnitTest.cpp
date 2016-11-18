@@ -8,12 +8,26 @@
 
 #include "UnitTests.h"
 #include "../data_management/DataManagement.h"
+#include "../driver_prediction/DriverPrediction.h"
+#include "../route_prediction/RoutePrediction.h"
 
 using namespace PredictivePowertrain;
 
 void dataManagement_ut() {
 
 	DataManagement testDM;
+    
+    // test storage of rp data
+    City* city_rp = testDM.getCityData();
+    Route* route = city_rp->getRouteFromGPSTrace(testDM.getMostRecentTripData());
+    
+    DriverPrediction dp(new RoutePrediction());
+    
+    std::vector<float> spd;
+    dp.parseRoute(route, &spd);
+    
+    testDM.addRoutePredictionData(dp.getRP());
+    RoutePrediction* rp1 = testDM.getRoutePredictionData();
 
 	// test trip log add and get
 	GenericMap<long int, std::pair<double, double>*>* latLon = new GenericMap<long int, std::pair<double, double>*>();

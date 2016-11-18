@@ -603,6 +603,10 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                     
                     links->addEntry(newLink->getHash(), newLink);
                 }
+                
+                // add final link because link to state include final link
+                Link* finalLink = Link().finalLink();
+                links->addEntry(finalLink->getHash(), finalLink);
             }
             
             // GOALS

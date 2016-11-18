@@ -55,7 +55,7 @@ void saveRoute_ut(Route* route, FILE* file, City* city)
             // intersections
             fprintf(file, "%ld,", intersection->getIntersectionID());
             fprintf(file, "Lat & Lon: %.12f %.12f,", intersection->getLat(), intersection->getLon());
-            fprintf(file, "red,");
+            fprintf(file, "blue,");
             fprintf(file, "%.12f,%.12f\n", intersection->getLat(), intersection->getLon());
         }
         
@@ -64,7 +64,7 @@ void saveRoute_ut(Route* route, FILE* file, City* city)
         while(nextNode != NULL)
         {
             // road nodes
-            fprintf(file, "%ld,", nextNode->value->getID());
+            fprintf(file, "%ld,", currRoad->getRoadID());
             fprintf(file, "Lat & Lon: %.12f %.12f,", nextNode->value->getLat(), nextNode->value->getLon());
             fprintf(file, "red,");
             fprintf(file, "%.12f,%.12f\n", nextNode->value->getLat(), nextNode->value->getLon());
@@ -82,6 +82,7 @@ void city_ut()
     DataManagement dm;
     
     City* city = dm.getCityData();
+    city->printIntersectionsAndRoads();
     Route* route = city->getRouteFromGPSTrace(dm.getMostRecentTripData());
     
     FILE* csvRoute = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/CITY_TRACE_2_ROUTE.csv", "w");

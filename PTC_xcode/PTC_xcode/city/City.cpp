@@ -455,83 +455,121 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
     Road* prevRoad = NULL;
     Road* currRoad = NULL;
     Intersection* nextIntersection = NULL;
-    long int linkCount = 0;
-    int sameRoadCount = 0;
-    int latLonCount = 0;
     
-    // for splines
-    Eigen::MatrixXd points(2, trace->getSize());
-    
-    // set control points for spline
-    trace->initializeCounter();
-    GenericEntry<long int, std::pair<double, double>*>* nextMeas = trace->nextEntry();
-    while(nextMeas != NULL)
-    {
-        double lat = nextMeas->value->first;
-        double lon = nextMeas->value->second;
-        
-        // for splines
-        points(0, latLonCount) = lat;
-        points(1, latLonCount) = lon;
-        
-        nextMeas = trace->nextEntry();
-        latLonCount++;
-    }
-    delete(nextMeas);
-
-    // fit first order spline spline
-    typedef Eigen::Spline<double, 2> spline2f;
-    
-    // fit spline
-    spline2f traceSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
-    
-    // evaluate spline and save points to csv for viewing
-    Eigen::Spline<double,2>::PointType pt = traceSpline(0);
-    double prev_lat = pt(0,0);
-    double prev_lon = pt(1,0);
-    float dist = 0.0;
-    
-    // get distance of spline to set evaluation distance correctly
-    for(double u = 0; u <= 1; u += 0.025)
-    {
-        pt = traceSpline(u);
-        double curr_lat = pt(0,0);
-        double curr_lon = pt(1,0);
-        
-        // get distance of eval point along spline
-        dist += gps.deltaLatLonToXY(prev_lat, prev_lon, curr_lat, curr_lon);
-        
-        prev_lat = curr_lat;
-        prev_lon = curr_lon;
-    }
-    
-    // identify road using splined trace
     GenericMap<long int, Link*>* links = new GenericMap<long int, Link*>();
     
-    double evalStepSize = 5.0 / dist;
-    pt = traceSpline(0);
-    double lat = pt(0,0);
-    double lon = pt(1,0);
+    GenericMap<long int, std::pair<double, double>*>* traceCopy = trace->copy();
+    
+    long int linkCount = 0;
+    bool isFirstRoad = true;
+    
+    // create new csv
+    std::string csvName = "/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/TRACE.csv";
+    FILE* csv = std::fopen(csvName.c_str(), "w");
+    
+    // add header to csv
+    fprintf(csv, "name, description, color, latitude, longitude\n");
+
+    trace->initializeCounter();
+    GenericEntry<long int, std::pair<double, double>*>* nextMeas = trace->nextEntry();
+    double lat = nextMeas->value->first;
+    double lon = nextMeas->value->second;
     
     prevRoad = gps.getCurrentRoad2(this, lat, lon);
-    dist = 0.0;
     
-    for(double u = 0; u <= 1; u += evalStepSize)
+    nextMeas = trace->nextEntry();
+    
+    while(nextMeas != NULL)
     {
-        pt = traceSpline(u);
-        lat = pt(0,0);
-        lon = pt(1,0);
+        // to csv
+        fprintf(csv, "%ld,", nextMeas->key);
+        fprintf(csv, "Lat & Lon: %.12f %.12f,", lat, lon);
+        fprintf(csv, "red,");
+        fprintf(csv, "%.12f,%.12f\n", lat, lon);
+        
+        lat = nextMeas->value->first;
+        lon = nextMeas->value->second;
         
         currRoad = gps.getCurrentRoad2(this, lat, lon);
+        
         if(currRoad == NULL)
         {
+            nextMeas = trace->nextEntry();
+            continue;
+        }
+        else if(prevRoad == NULL)
+        {
+            prevRoad = currRoad;
+            nextMeas = trace->nextEntry();
             continue;
         }
         
-        if(prevRoad == NULL || currRoad->getRoadID() != prevRoad->getRoadID())
+        if(currRoad->getRoadID() != prevRoad->getRoadID())
         {
-            if(sameRoadCount >= 2)
+            int closeNodeCount = 0;
+            prevRoad->getNodes()->initializeCounter();
+            GenericEntry<long int, Node*>* prevNode = prevRoad->getNodes()->nextEntry();
+            GenericEntry<long int, Node*>* currNode = prevRoad->getNodes()->nextEntry();
+            while(currNode != NULL)
             {
+                traceCopy->initializeCounter();
+                GenericEntry<long int, std::pair<double, double>*>* prevMeasCopy = traceCopy->nextEntry();
+                GenericEntry<long int, std::pair<double, double>*>* currMeasCopy = traceCopy->nextEntry();
+                while(currMeasCopy != NULL)
+                {
+                    double currRoadLat = currNode->value->getLat();
+                    double currRoadLon = currNode->value->getLon();
+                    
+                    double currTraceLat = currMeasCopy->value->first;
+                    double currTraceLon = currMeasCopy->value->second;
+                    
+                    float dist = gps.deltaLatLonToXY(currRoadLat, currRoadLon, currTraceLat, currTraceLon);
+                    
+                    // check proximity
+                    if(dist < gps.getDeltaXYTolerance())
+                    {
+                        // check heading
+                        double prevRoadLat = currNode->value->getLat();
+                        double prevRoadLon = currNode->value->getLon();
+                        
+                        double prevTraceLat = currMeasCopy->value->first;
+                        double prevTraceLon = currMeasCopy->value->second;
+                        
+                        double roadAngle = std::atan2(prevRoadLat - currRoadLat, prevRoadLon - currRoadLon);
+                        double traceAngle = std::atan2(prevTraceLat - currTraceLat, prevTraceLon - currTraceLon);
+                        
+                        if(roadAngle < 0)
+                        {
+                            roadAngle += M_PI;
+                        }
+                        
+                        if(traceAngle < 0)
+                        {
+                            traceAngle += M_PI;
+                        }
+                        
+                        if(std::abs(roadAngle - traceAngle) < M_PI / 4)
+                        {
+                            closeNodeCount++;
+                        }
+                        break;
+                    }
+                    
+                    prevMeasCopy = currMeasCopy;
+                    currMeasCopy = traceCopy->nextEntry();
+                }
+                delete(prevMeasCopy);
+                delete(currMeasCopy);
+                
+                prevNode = currNode;
+                currNode = prevRoad->getNodes()->nextEntry();
+            }
+            delete(prevNode);
+            delete(currNode);
+            
+            if(closeNodeCount > .75 * (float) prevRoad->getNodes()->getSize() || isFirstRoad)
+            {
+                isFirstRoad = false;
                 Intersection* start = prevRoad->getStartIntersection();
                 Intersection* end = prevRoad->getEndIntersection();
                 
@@ -565,16 +603,109 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                 linkCount++;
             }
             
-            sameRoadCount = 0;
+            prevRoad = currRoad;
         }
-        else
-        {
-            sameRoadCount++;
-        }
+        
+        nextMeas = trace->nextEntry();
     }
+    delete(nextMeas);
+    
+    delete(trace);
+    delete(traceCopy);
+    
+    fclose(csv);
+    
+    // add last road
+    Link* link = Link().linkFromRoad(currRoad, nextIntersection);
+    links->addEntry(linkCount, link);
     
     Route* route = new Route(links, new Goal(nextIntersection->getIntersectionID()));
     return route;
+}
+    
+void City::printIntersectionsAndRoads()
+{
+    // csv name
+    std::string csvName = "/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/CITY_INTERSECTIONS_AND_ROADS.csv";
+    
+    // delete existing csv if found
+    std::string rm = "rm " + csvName;
+    system(rm.c_str());
+    
+    // create new csv
+    FILE* csv;
+    csv = std::fopen(csvName.c_str(), "w");
+    
+    // add header to csv
+    fprintf(csv, "name,icon,description,color,latitude,longitude\n");
+    
+    std::cout << "**** printing intersection lat/lon ****" << std::endl;
+    this->intersections->initializeCounter();
+    GenericEntry<long int, Intersection*>* nextInt = this->intersections->nextEntry();
+    while(nextInt != NULL)
+    {
+        // print intersection lat/lon to console
+        printf("%.12f,%.12f\n", nextInt->value->getLat(), nextInt->value->getLon());
+        
+        // print intersection lat/lon to csv
+        fprintf(csv, "%ld,", nextInt->value->getIntersectionID());
+        fprintf(csv, "googlemini,");
+        fprintf(csv, "Int ID: %ld | ", nextInt->value->getIntersectionID());
+        fprintf(csv, "Int Ele: %f | ", nextInt->value->getElevation());
+        fprintf(csv, "Lat & Lon: %.12f %.12f | ", nextInt->value->getLat(), nextInt->value->getLon());
+        fprintf(csv, "Connecting Roads: ");
+        
+        nextInt->value->getRoads()->initializeCounter();
+        GenericEntry<long int, Road*>* nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
+        while(nextConnectingRoad != NULL)
+        {
+            fprintf(csv, "%ld ", nextConnectingRoad->key);
+            nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
+        }
+        delete(nextConnectingRoad);
+        
+        fprintf(csv, ",");
+        fprintf(csv, "red,");
+        fprintf(csv, "%.12f,%.12f\n", nextInt->value->getLat(), nextInt->value->getLon());
+        
+        // print road spline to csv
+        nextInt->value->getRoads()->initializeCounter();
+        nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
+        while(nextConnectingRoad != NULL)
+        {
+            // iterate along connecting road spline control points
+            nextConnectingRoad->value->getNodes()->initializeCounter();
+            GenericEntry<long int, Node*>* nextNode = nextConnectingRoad->value->getNodes()->nextEntry();
+            
+            // burn a node so they are not superimposed on intersection
+            nextNode = nextConnectingRoad->value->getNodes()->nextEntry();
+            
+            int iterCount = 1;
+            while(iterCount < nextConnectingRoad->value->getNodes()->getSize() - 1)
+            {
+                fprintf(csv, "%ld,", nextConnectingRoad->value->getRoadID());
+                fprintf(csv, "cirlce,");
+                fprintf(csv, "Road ID: %ld | ", nextConnectingRoad->value->getRoadID());
+                fprintf(csv, "Start Int ID: %ld | ", nextConnectingRoad->value->getStartIntersection()->getIntersectionID());
+                fprintf(csv, "Node Ele: %f | ", nextNode->value->getEle());
+                fprintf(csv, "End Int ID: %ld | ", nextConnectingRoad->value->getEndIntersection()->getIntersectionID());
+                fprintf(csv, "Lat & Lon: %.12f %.12f,", nextNode->value->getLat(), nextNode->value->getLon());
+                fprintf(csv, "blue,");
+                fprintf(csv, "%.12f,%.12f\n", nextNode->value->getLat(), nextNode->value->getLon());
+                
+                nextNode = nextConnectingRoad->value->getNodes()->nextEntry();
+                iterCount++;
+            }
+            delete(nextNode);
+            
+            nextConnectingRoad = nextInt->value->getRoads()->nextEntry();
+        }
+        delete(nextConnectingRoad);
+        
+        nextInt = this->intersections->nextEntry();
+    }
+    delete(nextInt);
+    fclose(csv);
 }
 
 } /* namespace PredictivePowertrain */

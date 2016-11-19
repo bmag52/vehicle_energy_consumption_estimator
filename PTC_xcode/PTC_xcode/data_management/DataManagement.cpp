@@ -477,7 +477,8 @@ RoutePrediction* DataManagement::getRoutePredictionData()
             // LINKS
             if(!rpData.compare("LINKS"))
             {
-                bool hasNNVals = false;
+                bool hasANNVals = false;
+                bool hasBNNVals = false;
                 
                 std::cout << "in get rp, links" << std::endl;
                 BOOST_FOREACH(ptree::value_type &u, v.second)
@@ -572,37 +573,37 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                             
                             if(!linkDataType.compare("wtsA"))
                             {
-                                hasNNVals = true;
+                                hasANNVals = true;
                                 wtsA = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("wtsB"))
                             {
-                                hasNNVals = true;
+                                hasANNVals = true;
                                 wtsB = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("yHidA"))
                             {
-                                hasNNVals = true;
+                                hasANNVals = true;
                                 yHidA = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("yHidB"))
                             {
-                                hasNNVals = true;
+                                hasBNNVals = true;
                                 yHidB = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("yInHidA"))
                             {
-                                hasNNVals = true;
+                                hasBNNVals = true;
                                 yInHidA = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("yInHidB"))
                             {
-                                hasNNVals = true;
+                                hasBNNVals = true;
                                 yInHidB = newMatRay;
                             }
                         }
@@ -610,11 +611,14 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                     
                     Link* newLink = new Link(linkDirection, linkNumber);
                     
-                    if(hasNNVals)
+                    if(hasANNVals)
                     {
                         newLink->setWeights(wtsA, yHidA, yInHidA, 1);
+                    }
+                    
+                    if(hasBNNVals)
+                    {
                         newLink->setWeights(wtsB, yHidB, yInHidB, 0);
-                        newLink->setNumNNLayers((int)wtsA->size());
                     }
                     
                     links->addEntry(newLink->getHash(), newLink);

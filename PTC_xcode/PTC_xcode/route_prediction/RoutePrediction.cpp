@@ -388,7 +388,14 @@ void RoutePrediction::parseRoute(Route* route)
 
 		this->linkToState->incrementTransition(lj, route->getGoal(), li);
 		this->goalToLink->linkTraversed(lj, route->getGoal());
-		this->links->addEntry(lj->getHash(), lj);
+        if(this->links->hasEntry(lj->getHash()))
+        {
+            this->links->updateEntry(lj->getHash(), lj);
+        }
+        else
+        {
+            this->links->addEntry(lj->getHash(), lj);
+        }
 	}
 }
     

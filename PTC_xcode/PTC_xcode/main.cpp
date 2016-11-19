@@ -11,7 +11,6 @@
 #include <fstream>
 #include <stdio.h>
 #include <iostream>
-#include <fstream>
 #include <sstream>
 #include <stdlib.h>
 
@@ -46,59 +45,14 @@ using namespace PredictivePowertrain;
 //                                                   DP Diagnostics Reporting
 // ************************************************************************************************************************************
 // ************************************************************************************************************************************
-// save route
-void saveRoute(Route* route, FILE* file, City* city)
-{
-    route->getLinks()->initializeCounter();
-    GenericEntry<long int, Link*>* nextLink = route->getLinks()->nextEntry();
-    while(nextLink != NULL)
-    {
-        
-        Road* currRoad = city->getRoads()->getEntry(nextLink->value->getNumber());
-        
-        // intersections
-        for(int i = 0; i < 2; i++)
-        {
-            Intersection* intersection = currRoad->getStartIntersection();
-            if(i == 1)
-            {
-                intersection = currRoad->getEndIntersection();
-            }
-            
-            // intersections
-            fprintf(file, "%ld,", intersection->getIntersectionID());
-            fprintf(file, "Lat & Lon: %.12f %.12f,", intersection->getLat(), intersection->getLon());
-            fprintf(file, "blue,");
-            fprintf(file, "%.12f,%.12f\n", intersection->getLat(), intersection->getLon());
-        }
-        
-        currRoad->getNodes()->initializeCounter();
-        GenericEntry<long int, Node*>* nextNode = currRoad->getNodes()->nextEntry();
-        while(nextNode != NULL)
-        {
-            // road nodes
-            fprintf(file, "%ld,", currRoad->getRoadID());
-            fprintf(file, "Lat & Lon: %.12f %.12f,", nextNode->value->getLat(), nextNode->value->getLon());
-            fprintf(file, "red,");
-            fprintf(file, "%.12f,%.12f\n", nextNode->value->getLat(), nextNode->value->getLon());
-            nextNode = currRoad->getNodes()->nextEntry();
-        }
-        delete(nextNode);
-        
-        nextLink = route->getLinks()->nextEntry();
-    }
-    delete(nextLink);
-}
 
-// save route and speed
+// save actual route and speed
 void saveActualData(Route* actualRoute, std::vector<float>* actualSpeed, std::vector<float>* fuelFlow, std::vector<float>* energy, City* city)
 {
     // ROUTE
     FILE* csvRoute = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_ROUTE.csv", "w");
     
-    fprintf(csvRoute, "name, description, color, latitude, longitude\n");
-    saveRoute(actualRoute, csvRoute, city);
-    fclose(csvRoute);
+    actualRoute->saveRoute2CSV(csvRoute, city, true);
     
     // SPEED
     FILE* csvSpeedFuelFlowEnergy = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_SPEED_FUEL_FLOW.csv", "w");
@@ -138,7 +92,7 @@ void savePredData(DriverPrediction::PredData predData, Route* predRoute, City* c
         fprintf(predRouteFile, "name, description, color, latitude, longitude\n");
     }
     
-    saveRoute(predRoute, predRouteFile, city);
+    predRoute->saveRoute2CSV(predRouteFile, city, false);
     
     // data
     if(!predDataFile)
@@ -239,7 +193,6 @@ int main() {
     // vehicle speed;
     float vehSpd;
     float travelDist;
-    std::vector<float> spdBuf;
     
     // vehicle speed prediction distance between predictions
     float ds = SpeedPrediction().getDS();
@@ -346,15 +299,14 @@ int main() {
                 
                 if(distRatio >= 1)
                 {
-                    // buffer speed values is distance travel is greater than prediction interval distance
-                    if(distRatio >= 2)
+                    std::cout << distRatio << std::endl;
+                    
+                    // if dist ratio is more than 2x prediction interval distance, buffer speed
+                    for(int i = 1; i <= distRatio; i++)
                     {
-                        for(int i = 1; i <= distRatio; i++)
-                        {
-                            actualSpeed.push_back(vehSpd);
-                            spdBuf.push_back(vehSpd);
-                        }
-                        dp.updateSpeedsByVec(&spdBuf);
+                        std::cout << vehSpd << std::endl;
+                        actualSpeed.push_back(vehSpd);
+                        dp.updateSpeedsbyVal(vehSpd);
                     }
                     
                     std::cout << "prediction distance: " << travelDist << std::endl;
@@ -372,6 +324,9 @@ int main() {
     // ************************************************************************************************************************************
     // ************************************************************************************************************************************
     
+    // add -1 to end of speed trace for later parsing
+    actualSpeed.push_back(-1);
+    
     // create build city module to add new data if needed
     BuildCity bc;
     
@@ -385,16 +340,16 @@ int main() {
     dm.addCityData(city);
 
     // get route from city using gps trace
-    Route* actualRoute = city->getRouteFromGPSTrace(dm.getMostRecentTripData());
-    
-    // parse route
-    dp.parseRoute(actualRoute, &actualSpeed);
-    
-    // store route prediction data
-    dm.addRoutePredictionData(dp.getRP());
+    Route* actualRoute = city->getRouteFromGPSTrace(gps.getTripLog(true));
     
     // save actual route
     saveActualData(actualRoute, &actualSpeed, &fuelFlow, &energy, city);
+    
+    // parse route
+    dp.parseRoute(actualRoute, &actualSpeed, gps.getTripLog(true));
+    
+    // store route prediction data
+    dm.addRoutePredictionData(dp.getRP());
 
 	std::cout << "finished driver prediction" << std::endl;
 

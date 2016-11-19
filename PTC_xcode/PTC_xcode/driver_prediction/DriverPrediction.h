@@ -12,6 +12,7 @@
 #include "../speed_prediction/SpeedPrediction.h"
 #include "../city/City.h"
 #include "Link.h"
+#include "../gps/GPS.h"
 
 #include <queue> 
 #include <vector>
@@ -41,7 +42,7 @@ namespace PredictivePowertrain {
         void setCurrentLink(Link* currentLink);
         PredData startPrediction(Link* currentLink, float spd, std::vector<float>* currentConditions, float distAlongLink);
         PredData nextPrediction(Link* currentLink, float spd, float distAlongLink);
-        void parseRoute(Route* currRoute, std::vector<float>* speeds);
+        void parseRoute(Route* currRoute, std::vector<float>* speeds, GenericMap<long int, std::pair<double, double>*>* trace);
         RoutePrediction* getRP();
         SpeedPrediction* getSP();
         Eigen::MatrixXd getSpeedPredInpunt(float spd);

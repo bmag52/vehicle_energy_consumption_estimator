@@ -55,69 +55,73 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
         ptree link_ptree;
         
         // print NN weights and activations
-        int numNNLayers = nextLink->value->getNumNNLayers();
-        
-        if(numNNLayers > 0)
+        if(nextLink->value->linkHasWeights())
         {
             // get NN data
-            std::vector<std::vector<Eigen::MatrixXd*>*>* nnAData = nextLink->value->getWeights(1);
-            std::vector<std::vector<Eigen::MatrixXd*>*>* nnBData = nextLink->value->getWeights(0);
+            std::vector<std::vector<std::vector<Eigen::MatrixXd*>*>*> nnData;
+            std::vector<std::string> nnDataType;
             
-            for(int i = 0; i < nnAData->size(); i++)
+            if(nextLink->value->linkHasAWeights())
             {
-                ptree typeA_ptree, typeB_ptree;
-                
-                typeA_ptree.put("SIZE", nnAData->at(i)->size());
-                typeB_ptree.put("SIZE", nnBData->at(i)->size());
-                
-                for(int j = 0; j < nnAData->at(i)->size(); j++)
+                nnData.push_back(nextLink->value->getWeights(1));
+                nnDataType.push_back("A");
+            }
+            
+            if(nextLink->value->linkHasBWeights())
+            {
+                nnData.push_back(nextLink->value->getWeights(0));
+                nnDataType.push_back("B");
+            }
+            
+            for(int h = 0; h < nnData.size(); h++)
+            {
+                for(int i = 0; i < nnData.at(h)->size(); i++)
                 {
-                    ptree typeAi_ptree, typeBi_ptree;
+                    ptree type_ptree;
                     
-                    typeAi_ptree.put("ROWS", nnAData->at(i)->at(j)->rows());
-                    typeAi_ptree.put("COLS", nnAData->at(i)->at(j)->cols());
+                    type_ptree.put("SIZE", nnData.at(h)->at(i)->size());
                     
-                    typeBi_ptree.put("ROWS", nnBData->at(i)->at(j)->rows());
-                    typeBi_ptree.put("COLS", nnBData->at(i)->at(j)->cols());
-                    
-                    for(int row = 0; row < nnAData->at(i)->at(j)->rows(); row++)
+                    for(int j = 0; j < nnData.at(h)->at(i)->size(); j++)
                     {
-                        ptree typeAiRow_ptree, typeBiRow_ptree;
+                        ptree type_i_ptree;
                         
-                        for(int col = 0; col < nnAData->at(i)->at(j)->cols(); col++)
+                        type_i_ptree.put("ROWS", nnData.at(h)->at(i)->at(j)->rows());
+                        type_i_ptree.put("COLS", nnData.at(h)->at(i)->at(j)->cols());
+                        
+                        for(int row = 0; row < nnData.at(h)->at(i)->at(j)->rows(); row++)
                         {
+                            ptree type_i_row_ptree;
                             
-                            typeAiRow_ptree.put(lexical_cast<std::string>(col), nnAData->at(i)->at(j)->coeffRef(row, col));
-                            typeBiRow_ptree.put(lexical_cast<std::string>(col), nnBData->at(i)->at(j)->coeffRef(row, col));
+                            for(int col = 0; col < nnData.at(h)->at(i)->at(j)->cols(); col++)
+                            {
+                        
+                                type_i_row_ptree.put(lexical_cast<std::string>(col), nnData.at(h)->at(i)->at(j)->coeffRef(row, col));
+                                
+                            }
+                            
+                            type_i_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), type_i_row_ptree));
                             
                         }
                         
-                        typeAi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), typeAiRow_ptree));
-                        typeBi_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), typeBiRow_ptree));
+                        type_ptree.push_back(std::make_pair(lexical_cast<std::string>(j), type_i_ptree));
                         
                     }
                     
-                    typeA_ptree.push_back(std::make_pair(lexical_cast<std::string>(j), typeAi_ptree));
-                    typeB_ptree.push_back(std::make_pair(lexical_cast<std::string>(j), typeBi_ptree));
+                    std::string type = "wts";
+                    if(i == 1)
+                    {
+                        type = "yHid";
+                    }
+                    
+                    else if(i == 2)
+                    {
+                        type = "yInHid";
+                    }
+                    
+                    link_ptree.push_back(std::make_pair(type + nnDataType.at(h), type_ptree));
                     
                 }
-                
-                std::string type = "wts";
-                if(i == 1)
-                {
-                    type = "yHid";
-                }
-                
-                else if(i == 2)
-                {
-                    type = "yInHid";
-                }
-                
-                link_ptree.push_back(std::make_pair(type + "A", typeA_ptree));
-                link_ptree.push_back(std::make_pair(type + "B", typeB_ptree));
-                
             }
-            
         }
         
         link_ptree.put("DIRECTION", nextLink->value->getDirection());
@@ -473,6 +477,8 @@ RoutePrediction* DataManagement::getRoutePredictionData()
             // LINKS
             if(!rpData.compare("LINKS"))
             {
+                bool hasNNVals = false;
+                
                 std::cout << "in get rp, links" << std::endl;
                 BOOST_FOREACH(ptree::value_type &u, v.second)
                 {
@@ -566,40 +572,50 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                             
                             if(!linkDataType.compare("wtsA"))
                             {
+                                hasNNVals = true;
                                 wtsA = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("wtsB"))
                             {
+                                hasNNVals = true;
                                 wtsB = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("yHidA"))
                             {
+                                hasNNVals = true;
                                 yHidA = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("yHidB"))
                             {
+                                hasNNVals = true;
                                 yHidB = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("yInHidA"))
                             {
+                                hasNNVals = true;
                                 yInHidA = newMatRay;
                             }
                             
                             else if(!linkDataType.compare("yInHidB"))
                             {
+                                hasNNVals = true;
                                 yInHidB = newMatRay;
                             }
                         }
                     }
                     
                     Link* newLink = new Link(linkDirection, linkNumber);
-                    newLink->setWeights(wtsA, yHidA, yInHidA, 1);
-                    newLink->setWeights(wtsB, yHidB, yInHidB, 0);
-                    newLink->setNumNNLayers((int)wtsA->size());
+                    
+                    if(hasNNVals)
+                    {
+                        newLink->setWeights(wtsA, yHidA, yInHidA, 1);
+                        newLink->setWeights(wtsB, yHidB, yInHidB, 0);
+                        newLink->setNumNNLayers((int)wtsA->size());
+                    }
                     
                     links->addEntry(newLink->getHash(), newLink);
                 }

@@ -70,6 +70,7 @@ public:
     void addIntersection(Intersection* intersection);
     Route* getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>*>* trace);
     void printIntersectionsAndRoads();
+    bool roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, double>*>* trace);
 
 };
 

@@ -8,11 +8,17 @@
 #ifndef ROUTE_H_
 #define ROUTE_H_
 
+#include <iostream>
+#include <fstream>
+
 #include "Goal.h"
 #include "../driver_prediction/Link.h"
 #include "../city/Intersection.h"
+#include "../city/City.h"
 
 namespace PredictivePowertrain {
+    
+class City;         // forward delcaration
 
 class Route {
 private:
@@ -45,6 +51,7 @@ public:
 	void removeFirstLink();
     void addLinkToFront(Link* frontLink);
     void replaceLinks(GenericMap<long int, Link*>* newLinks);
+    void saveRoute2CSV(FILE* file, City* city, bool includeheaderAndCloseFile);
 };
 
 }

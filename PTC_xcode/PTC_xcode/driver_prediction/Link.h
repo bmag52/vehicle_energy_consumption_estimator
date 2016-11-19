@@ -29,11 +29,13 @@ private:
     std::vector<Eigen::MatrixXd*>* WtsA;		// matrix of weights
     std::vector<Eigen::MatrixXd*>* yHidA;	// hidden layer outputs
     std::vector<Eigen::MatrixXd*>* yInHidA;	// hidden layer inputs
+    bool hasAWeights;
     
     // input weights on B-end of link
     std::vector<Eigen::MatrixXd*>* WtsB;		// matrix of weights
     std::vector<Eigen::MatrixXd*>* yHidB;	// hidden layer outputs
     std::vector<Eigen::MatrixXd*>* yInHidB;	// hidden layer inputs
+    bool hasBWeights;
     
     int numNNLayers;
     bool hasWeights;
@@ -57,6 +59,8 @@ public:
     void setNumNNLayers(int num);
     int getNumNNLayers();
     bool linkHasWeights();
+    bool linkHasAWeights();
+    bool linkHasBWeights();
 };
 
 } /* namespace PredictivePowertrain */

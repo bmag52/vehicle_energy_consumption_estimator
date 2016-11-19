@@ -378,14 +378,8 @@ std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route
     bool isFirstLink = true;
 	route->getLinks()->initializeCounter();
 	GenericEntry<long int, Link*>* nextLink = route->getLinks()->nextEntry();
-	while(nextLink != NULL)
+	while(nextLink != NULL && !nextLink->value->isFinalLink())
 	{
-        if(nextLink->value->isFinalLink())
-        {
-            delete(nextLink);
-            return std::pair<std::vector<float>, std::vector<float>>(spdData, elevData);
-        }
-        
         // get road from link
         assert(this->roads->hasEntry(nextLink->value->getNumber()));
         Road* roadFromLink = this->roads->getEntry(nextLink->value->getNumber());
@@ -506,68 +500,11 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
         
         if(currRoad->getRoadID() != prevRoad->getRoadID())
         {
-            int closeNodeCount = 0;
-            prevRoad->getNodes()->initializeCounter();
-            GenericEntry<long int, Node*>* prevNode = prevRoad->getNodes()->nextEntry();
-            GenericEntry<long int, Node*>* currNode = prevRoad->getNodes()->nextEntry();
-            while(currNode != NULL)
-            {
-                traceCopy->initializeCounter();
-                GenericEntry<long int, std::pair<double, double>*>* prevMeasCopy = traceCopy->nextEntry();
-                GenericEntry<long int, std::pair<double, double>*>* currMeasCopy = traceCopy->nextEntry();
-                while(currMeasCopy != NULL)
-                {
-                    double currRoadLat = currNode->value->getLat();
-                    double currRoadLon = currNode->value->getLon();
-                    
-                    double currTraceLat = currMeasCopy->value->first;
-                    double currTraceLon = currMeasCopy->value->second;
-                    
-                    float dist = gps.deltaLatLonToXY(currRoadLat, currRoadLon, currTraceLat, currTraceLon);
-                    
-                    // check proximity
-                    if(dist < gps.getDeltaXYTolerance())
-                    {
-                        // check heading
-                        double prevRoadLat = currNode->value->getLat();
-                        double prevRoadLon = currNode->value->getLon();
-                        
-                        double prevTraceLat = currMeasCopy->value->first;
-                        double prevTraceLon = currMeasCopy->value->second;
-                        
-                        double roadAngle = std::atan2(prevRoadLat - currRoadLat, prevRoadLon - currRoadLon);
-                        double traceAngle = std::atan2(prevTraceLat - currTraceLat, prevTraceLon - currTraceLon);
-                        
-                        if(roadAngle < 0)
-                        {
-                            roadAngle += M_PI;
-                        }
-                        
-                        if(traceAngle < 0)
-                        {
-                            traceAngle += M_PI;
-                        }
-                        
-                        if(std::abs(roadAngle - traceAngle) < M_PI / 4)
-                        {
-                            closeNodeCount++;
-                        }
-                        break;
-                    }
-                    
-                    prevMeasCopy = currMeasCopy;
-                    currMeasCopy = traceCopy->nextEntry();
-                }
-                delete(prevMeasCopy);
-                delete(currMeasCopy);
-                
-                prevNode = currNode;
-                currNode = prevRoad->getNodes()->nextEntry();
-            }
-            delete(prevNode);
-            delete(currNode);
+            // ensure previous road was on trace
+            bool prevRoadIsOnTrace = this->roadIsOnTrace(prevRoad, traceCopy);
+            bool currRoadIsOnTrace = this->roadIsOnTrace(currRoad, traceCopy);
             
-            if(closeNodeCount > .75 * (float) prevRoad->getNodes()->getSize() || isFirstRoad)
+            if((prevRoadIsOnTrace && currRoadIsOnTrace) || isFirstRoad)
             {
                 isFirstRoad = false;
                 Intersection* start = prevRoad->getStartIntersection();
@@ -599,28 +536,116 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                     nextIntersection = currRoad->getStartIntersection();
                 }
                 
-                links->addEntry(linkCount, link);
-                linkCount++;
+                // ensure link does not already exist
+                bool linkAlreadyExists = false;
+                links->initializeCounter();
+                GenericEntry<long int, Link*>* nextLink = links->nextEntry();
+                while(nextLink !=  NULL)
+                {
+                    if(nextLink->value->isEqual(link))
+                    {
+                        linkAlreadyExists = true;
+                        break;
+                    }
+                    nextLink = links->nextEntry();
+                }
+                delete(nextLink);
+                
+                if(!linkAlreadyExists)
+                {
+                    links->addEntry(linkCount, link);
+                    linkCount++;
+                }
+                
+                prevRoad = currRoad;
             }
-            
-            prevRoad = currRoad;
         }
         
         nextMeas = trace->nextEntry();
     }
     delete(nextMeas);
     
-    delete(trace);
     delete(traceCopy);
     
     fclose(csv);
     
     // add last road
     Link* link = Link().linkFromRoad(currRoad, nextIntersection);
-    links->addEntry(linkCount, link);
+    links->addEntry(linkCount++, link);
+    
+    // add final link
+    links->addEntry(linkCount, Link().finalLink());
     
     Route* route = new Route(links, new Goal(nextIntersection->getIntersectionID()));
     return route;
+}
+    
+bool City::roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, double>*>* trace)
+{
+    GPS gps;
+    
+    int closeNodeCount = 0;
+    road->getNodes()->initializeCounter();
+    GenericEntry<long int, Node*>* prevNode = road->getNodes()->nextEntry();
+    GenericEntry<long int, Node*>* currNode = road->getNodes()->nextEntry();
+    while(currNode != NULL)
+    {
+        trace->initializeCounter();
+        GenericEntry<long int, std::pair<double, double>*>* prevMeasCopy = trace->nextEntry();
+        GenericEntry<long int, std::pair<double, double>*>* currMeasCopy = trace->nextEntry();
+        while(currMeasCopy != NULL)
+        {
+            double currRoadLat = currNode->value->getLat();
+            double currRoadLon = currNode->value->getLon();
+            
+            double currTraceLat = currMeasCopy->value->first;
+            double currTraceLon = currMeasCopy->value->second;
+            
+            float dist = gps.deltaLatLonToXY(currRoadLat, currRoadLon, currTraceLat, currTraceLon);
+            
+            // check proximity
+            if(dist < gps.getDeltaXYTolerance())
+            {
+                // check heading
+                double prevRoadLat = currNode->value->getLat();
+                double prevRoadLon = currNode->value->getLon();
+                
+                double prevTraceLat = currMeasCopy->value->first;
+                double prevTraceLon = currMeasCopy->value->second;
+                
+                double roadAngle = std::atan2(prevRoadLat - currRoadLat, prevRoadLon - currRoadLon);
+                double traceAngle = std::atan2(prevTraceLat - currTraceLat, prevTraceLon - currTraceLon);
+                
+                if(roadAngle < 0)
+                {
+                    roadAngle += M_PI;
+                }
+                
+                if(traceAngle < 0)
+                {
+                    traceAngle += M_PI;
+                }
+                
+                if(std::abs(roadAngle - traceAngle) < M_PI / 4)
+                {
+                    closeNodeCount++;
+                }
+                break;
+            }
+            
+            prevMeasCopy = currMeasCopy;
+            currMeasCopy = trace->nextEntry();
+        }
+        delete(prevMeasCopy);
+        delete(currMeasCopy);
+        
+        prevNode = currNode;
+        currNode = road->getNodes()->nextEntry();
+    }
+    delete(prevNode);
+    delete(currNode);
+    
+    return closeNodeCount > .50 * (float) road->getNodes()->getSize();
 }
     
 void City::printIntersectionsAndRoads()

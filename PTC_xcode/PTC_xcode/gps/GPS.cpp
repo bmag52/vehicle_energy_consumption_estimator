@@ -49,7 +49,7 @@ GenericMap<long int, std::pair<double, double>*>* GPS::getTripLog(bool interpola
         GenericMap<long int, std::pair<double, double>*> afterInterpTripLog;
         this->interpolateTripLog(&this->tripLog, &beforeInterpTripLog);
         
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 1; i++)
         {
             this->interpolateTripLog(&beforeInterpTripLog, &afterInterpTripLog);
             beforeInterpTripLog = afterInterpTripLog;
@@ -58,7 +58,7 @@ GenericMap<long int, std::pair<double, double>*>* GPS::getTripLog(bool interpola
         return afterInterpTripLog.copy();
     }
     
-    return &this->tripLog;
+    return this->tripLog.copy();
 }
 
 void GPS::interpolateTripLog(GenericMap<long int, std::pair<double, double>*>* before, GenericMap<long int, std::pair<double, double>*>* after)

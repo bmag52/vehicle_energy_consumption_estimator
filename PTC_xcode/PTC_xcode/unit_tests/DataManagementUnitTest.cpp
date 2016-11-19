@@ -19,12 +19,16 @@ void dataManagement_ut() {
     
     // test storage of rp data
     City* city_rp = testDM.getCityData();
-    Route* route = city_rp->getRouteFromGPSTrace(testDM.getMostRecentTripData());
+    GenericMap<long int, std::pair<double, double>*>* trace = testDM.getMostRecentTripData();
     
-    DriverPrediction dp(new RoutePrediction());
+    Route* route = city_rp->getRouteFromGPSTrace(trace);
+    RoutePrediction rp0(city_rp);
+    
+    DriverPrediction dp(&rp0);
     
     std::vector<float> spd;
-    dp.parseRoute(route, &spd);
+
+    dp.parseRoute(route, &spd, trace);
     
     testDM.addRoutePredictionData(dp.getRP());
     RoutePrediction* rp1 = testDM.getRoutePredictionData();

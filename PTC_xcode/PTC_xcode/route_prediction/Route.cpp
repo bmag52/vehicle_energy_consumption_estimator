@@ -130,6 +130,59 @@ void Route::removeFirstLink() {
     this->linkCount--;
 }
     
+void Route::saveRoute2CSV(FILE* file, City* city, bool includeheaderAndCloseFile)
+{
+    if(includeheaderAndCloseFile)
+    {
+        fprintf(file, "name, description, color, latitude, longitude\n");
+    }
+    
+    this->links->initializeCounter();
+    GenericEntry<long int, Link*>* nextLink = this->links->nextEntry();
+    while(nextLink != NULL && !nextLink->value->isFinalLink())
+    {
+        
+        Road* currRoad = city->getRoads()->getEntry(nextLink->value->getNumber());
+        
+        // intersections
+        for(int i = 0; i < 2; i++)
+        {
+            Intersection* intersection = currRoad->getStartIntersection();
+            if(i == 1)
+            {
+                intersection = currRoad->getEndIntersection();
+            }
+            
+            // intersections
+            fprintf(file, "%ld,", intersection->getIntersectionID());
+            fprintf(file, "Lat & Lon: %.12f %.12f,", intersection->getLat(), intersection->getLon());
+            fprintf(file, "blue,");
+            fprintf(file, "%.12f,%.12f\n", intersection->getLat(), intersection->getLon());
+        }
+        
+        currRoad->getNodes()->initializeCounter();
+        GenericEntry<long int, Node*>* nextNode = currRoad->getNodes()->nextEntry();
+        while(nextNode != NULL)
+        {
+            // road nodes
+            fprintf(file, "%ld,", currRoad->getRoadID());
+            fprintf(file, "Lat & Lon: %.12f %.12f,", nextNode->value->getLat(), nextNode->value->getLon());
+            fprintf(file, "red,");
+            fprintf(file, "%.12f,%.12f\n", nextNode->value->getLat(), nextNode->value->getLon());
+            nextNode = currRoad->getNodes()->nextEntry();
+        }
+        delete(nextNode);
+        
+        nextLink = this->links->nextEntry();
+    }
+    delete(nextLink);
+    
+    if(includeheaderAndCloseFile)
+    {
+        fclose(file);
+    }
+}
+    
 void Route::printLinks()
 {
     this->links->initializeCounter();

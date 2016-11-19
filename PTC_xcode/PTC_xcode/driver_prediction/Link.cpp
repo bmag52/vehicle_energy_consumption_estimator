@@ -26,10 +26,12 @@ void Link::initialize()
     this->WtsA = NULL;
     this->yHidA = NULL;
     this->yInHidA = NULL;
+    this->hasAWeights = false;
     
     this->WtsB = NULL;
     this->yHidB = NULL;
     this->yInHidB = NULL;
+    this->hasBWeights = false;
     
     this->numNNLayers = 0;
     this->hasWeights = false;
@@ -104,6 +106,16 @@ bool Link::linkHasWeights()
     return this->hasWeights;
 }
     
+bool Link::linkHasAWeights()
+{
+    return this->hasAWeights;
+}
+
+bool Link::linkHasBWeights()
+{
+    return this->hasBWeights;
+}
+    
 std::vector<std::vector<Eigen::MatrixXd*>*>* Link::getWeights(int direction)
 {
     std::vector<std::vector<Eigen::MatrixXd*>*>* returnList = new std::vector<std::vector<Eigen::MatrixXd*>*>(3);
@@ -112,12 +124,14 @@ std::vector<std::vector<Eigen::MatrixXd*>*>* Link::getWeights(int direction)
         returnList->at(0) = this->WtsA;
         returnList->at(1) = this->yHidA;
         returnList->at(2) = this->yInHidA;
+        this->hasAWeights = true;
     }
     else
     {
         returnList->at(0) = this->WtsB;
         returnList->at(1) = this->yHidB;
         returnList->at(2) = this->yInHidB;
+        this->hasBWeights = true;
     }
     return returnList;
 }

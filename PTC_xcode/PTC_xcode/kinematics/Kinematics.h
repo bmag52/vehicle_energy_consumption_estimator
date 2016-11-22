@@ -13,6 +13,7 @@
 #include <vector>
 #include <utility>
 #include <cmath>
+#include <algorithm>
 
 namespace PredictivePowertrain {
     

@@ -54,6 +54,9 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
     {
         ptree link_ptree;
         
+        link_ptree.put("NUMBER", nextLink->value->getNumber());
+        link_ptree.put("DIRECTION", nextLink->value->getDirection());
+        
         // print NN weights and activations
         if(nextLink->value->linkHasWeights())
         {
@@ -124,8 +127,7 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
             }
         }
         
-        link_ptree.put("DIRECTION", nextLink->value->getDirection());
-        links_ptree.push_back(std::make_pair(lexical_cast<std::string>(nextLink->value->getNumber()),link_ptree));
+        links_ptree.push_back(std::make_pair(lexical_cast<std::string>(nextLink->value->getHash()),link_ptree));
         
         nextLink = rp->getLinks()->nextEntry();
     }
@@ -483,8 +485,9 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                 std::cout << "in get rp, links" << std::endl;
                 BOOST_FOREACH(ptree::value_type &u, v.second)
                 {
-                    long int linkNumber = lexical_cast<long int>(u.first.data());
                     int linkDirection;
+                    long int linkNumber;
+                    long int linkHash = lexical_cast<long int>(u.first.data());
                     
                     std::vector<Eigen::MatrixXd*>* wtsA;
                     std::vector<Eigen::MatrixXd*>* wtsB;
@@ -502,7 +505,11 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                         {
                             linkDirection = lexical_cast<int>(s.second.data());
                         }
-                        
+                        // read link number
+                        else if(!linkDataType.compare("NUMBER"))
+                        {
+                            linkNumber = lexical_cast<long int>(s.second.data());
+                        }
                         // read one of the NN matrices
                         else
                         {
@@ -579,7 +586,7 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                             
                             else if(!linkDataType.compare("wtsB"))
                             {
-                                hasANNVals = true;
+                                hasBNNVals = true;
                                 wtsB = newMatRay;
                             }
                             
@@ -597,7 +604,7 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                             
                             else if(!linkDataType.compare("yInHidA"))
                             {
-                                hasBNNVals = true;
+                                hasANNVals = true;
                                 yInHidA = newMatRay;
                             }
                             
@@ -621,7 +628,7 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                         newLink->setWeights(wtsB, yHidB, yInHidB, 0);
                     }
                     
-                    links->addEntry(newLink->getHash(), newLink);
+                    links->addEntry(linkHash, newLink);
                 }
                 
                 // add final link because link to state include final link

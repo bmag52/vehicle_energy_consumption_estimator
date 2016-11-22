@@ -61,7 +61,9 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
     PredData predData;
     predData.first.push_back(-1);
     predData.first.push_back(-1);
-    if(!predRoute->isEqual(this->rp->getUnknownRoute()) && !predRoute->isEqual(this->rp->getOverRoute()))
+    if(!predRoute->isEqual(this->rp->getUnknownRoute())
+       && !predRoute->isEqual(this->rp->getOverRoute())
+       && this->allLinksHaveWeigths(predRoute))
     {
         predRoute->addLinkToFront(currentLink);
         
@@ -80,6 +82,13 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
                                                                 float spd,
                                                                 float distAlongLink)
 {
+    // current link
+    std::cout << "current link: " << this->currLink->getNumber() << std::endl;
+    
+    // print current predicted route
+    std::cout << "predicted route: " << std::endl;
+    this->predRoute->printLinks();
+    
     // --- AT END OF PREDICTION ---
     if(currentLink->isFinalLink())
     {
@@ -113,7 +122,9 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
     PredData predData;
     predData.first.push_back(-1);
     predData.first.push_back(-1);
-    if(!this->predRoute->isEqual(this->rp->getUnknownRoute()) && !this->predRoute->isEqual(this->rp->getOverRoute()))
+    if(!this->predRoute->isEqual(this->rp->getUnknownRoute())
+       && !this->predRoute->isEqual(this->rp->getOverRoute())
+       && this->allLinksHaveWeigths(this->predRoute))
     {
         Eigen::MatrixXd spdIn = this->getSpeedPredInpunt(spd);
         predData = this->city->routeToData(this->predRoute, distAlongLink, this->sp, &spdIn);
@@ -124,6 +135,8 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
 
 void DriverPrediction::parseRoute(Route* currRoute, std::vector<float>* spds, GenericMap<long int, std::pair<double, double>*>* trace)
 {
+    std::cout << "in driver prediction: parsing route" << std::endl;
+    
     // train speed prediction
     GPS gps;
     
@@ -188,6 +201,8 @@ void DriverPrediction::parseRoute(Route* currRoute, std::vector<float>* spds, Ge
             nextLink = currRoute->getLinks()->nextEntry();
             continue;
         }
+        
+        std::cout << nextLink->value->getNumber() << std::endl;
         
         // get necessary road data
         Road* road_i = this->city->getRoads()->getEntry(nextLink->value->getNumber());
@@ -408,5 +423,23 @@ SpeedPrediction* DriverPrediction::getSP()
     return this->sp;
 }
 
+bool DriverPrediction::allLinksHaveWeigths(Route* route)
+{
+    bool allLinksAreWeighted = true;
+    
+    route->getLinks()->initializeCounter();
+    GenericEntry<long int, Link*>* nextLink = route->getLinks()->nextEntry();
+    while(nextLink != NULL)
+    {
+        if(!nextLink->value->linkHasWeights())
+        {
+            return false;
+        }
+        nextLink = route->getLinks()->nextEntry();
+    }
+    delete(nextLink);
+    
+    return allLinksAreWeighted;
+}
     
 } /* namespace PredictivePowertrain */

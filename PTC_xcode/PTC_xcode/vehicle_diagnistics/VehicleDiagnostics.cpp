@@ -12,7 +12,7 @@ namespace PredictivePowertrain {
 VehicleDiagnostics::VehicleDiagnostics()
 {
     this->fd =  -1;
-    this->timeMultiplierSFFEL = 2500;
+    this->timeMultiplierSFFEL = 3000;
     this->initializeDiagnosticsReader();
     
     this->vehicleSpeed = "01 0D\r";
@@ -157,6 +157,7 @@ float VehicleDiagnostics::readO2()
 float VehicleDiagnostics::getEngineLoad()
 {
     std::string engineLoadRaw = this->getDiagnostsics(this->engineLoad, this->timeMultiplierSFFEL);
+    
     float engineLoad_A = this->hex2Float(engineLoadRaw.substr(6,2));
     float engineLoad = engineLoad_A / 2.55;
     
@@ -178,7 +179,14 @@ std::string VehicleDiagnostics::getDiagnostsics(std::string cmd, int timeMultipl
     
     usleep((25 * cmd.length()) * timeMultiplier);
     
-    return this->readDiagnostics();
+    std::string response = this->readDiagnostics();
+    
+    if(!response.find("NO DATA"))
+    {
+        response = "000000000000000";
+    }
+    
+    return response;
 }
     
 float VehicleDiagnostics::hex2Float(std::string hex)

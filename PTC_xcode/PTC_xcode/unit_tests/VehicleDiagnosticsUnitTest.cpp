@@ -23,14 +23,14 @@ void vehicleDiagnostics_ut()
         std::cout << "speed (mph): " << vd.getSpeed() * 2.23 << std::endl;
         std::cout << "engine load (%): " << vd.getEngineLoad() << std::endl;
         
-        auto start = std::chrono::system_clock::now();
-        while(1)
-        {
-            auto end = std::chrono::system_clock::now();
-            std::chrono::duration<double> diff = end - start;
-            
-            if(diff.count() > 1.0) { break; }
-        }
+//        auto start = std::chrono::system_clock::now();
+//        while(1)
+//        {
+//            auto end = std::chrono::system_clock::now();
+//            std::chrono::duration<double> diff = end - start;
+//            
+//            if(diff.count() > 1.0) { break; }
+//        }
         
         timeItr++;
     }

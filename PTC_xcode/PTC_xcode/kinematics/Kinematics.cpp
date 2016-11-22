@@ -30,7 +30,8 @@ float Kinematics::runKinematics(std::vector<float> predictedSpeed,
 {
     // calculate tractive energy usage over look ahead distance
     float tractiveEnergy = 0.0;
-    for (int i = 0; i < this->distLookAhead; i++)
+    int maxLookAhead = std::min(this->distLookAhead, (int)predictedSpeed.size()-2);
+    for (int i = 0; i < maxLookAhead; i++)
     {
         // acceleration
         float va = predictedSpeed.at(i);

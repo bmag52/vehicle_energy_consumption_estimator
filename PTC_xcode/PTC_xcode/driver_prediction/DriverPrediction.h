@@ -31,6 +31,7 @@ namespace PredictivePowertrain {
         City* city;
         
         void addWeightedLinksToRoute(Route* unweightedRoute);
+        bool allLinksHaveWeigths(Route* route);
         void intitalize();
         
     public:

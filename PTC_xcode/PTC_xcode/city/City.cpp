@@ -502,9 +502,8 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
         {
             // ensure previous road was on trace
             bool prevRoadIsOnTrace = this->roadIsOnTrace(prevRoad, traceCopy);
-            bool currRoadIsOnTrace = this->roadIsOnTrace(currRoad, traceCopy);
             
-            if((prevRoadIsOnTrace && currRoadIsOnTrace) || isFirstRoad)
+            if((prevRoadIsOnTrace) || isFirstRoad)
             {
                 isFirstRoad = false;
                 Intersection* start = prevRoad->getStartIntersection();
@@ -556,9 +555,9 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                     links->addEntry(linkCount, link);
                     linkCount++;
                 }
-                
-                prevRoad = currRoad;
             }
+            
+            prevRoad = currRoad;
         }
         
         nextMeas = trace->nextEntry();
@@ -590,14 +589,14 @@ bool City::roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, doub
     GenericEntry<long int, Node*>* currNode = road->getNodes()->nextEntry();
     while(currNode != NULL)
     {
+        double currRoadLat = currNode->value->getLat();
+        double currRoadLon = currNode->value->getLon();
+        
         trace->initializeCounter();
         GenericEntry<long int, std::pair<double, double>*>* prevMeasCopy = trace->nextEntry();
         GenericEntry<long int, std::pair<double, double>*>* currMeasCopy = trace->nextEntry();
         while(currMeasCopy != NULL)
         {
-            double currRoadLat = currNode->value->getLat();
-            double currRoadLon = currNode->value->getLon();
-            
             double currTraceLat = currMeasCopy->value->first;
             double currTraceLon = currMeasCopy->value->second;
             
@@ -607,11 +606,11 @@ bool City::roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, doub
             if(dist < gps.getDeltaXYTolerance())
             {
                 // check heading
-                double prevRoadLat = currNode->value->getLat();
-                double prevRoadLon = currNode->value->getLon();
+                double prevRoadLat = prevNode->value->getLat();
+                double prevRoadLon = prevNode->value->getLon();
                 
-                double prevTraceLat = currMeasCopy->value->first;
-                double prevTraceLon = currMeasCopy->value->second;
+                double prevTraceLat = prevMeasCopy->value->first;
+                double prevTraceLon = prevMeasCopy->value->second;
                 
                 double roadAngle = std::atan2(prevRoadLat - currRoadLat, prevRoadLon - currRoadLon);
                 double traceAngle = std::atan2(prevTraceLat - currTraceLat, prevTraceLon - currTraceLon);
@@ -626,7 +625,8 @@ bool City::roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, doub
                     traceAngle += M_PI;
                 }
                 
-                if(std::abs(roadAngle - traceAngle) < M_PI / 4)
+                float angleDiff = std::abs(roadAngle - traceAngle);
+                if(angleDiff < M_PI / 4 || angleDiff - M_PI < M_PI / 4)
                 {
                     closeNodeCount++;
                 }

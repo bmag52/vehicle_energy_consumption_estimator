@@ -593,8 +593,8 @@ std::string DataCollection::getMapPNGName() {
 }
 
 // lat lon increase L->R and B->T
-int DataCollection::getElevation(double lat, double lon) {
-
+int DataCollection::getElevation(double lat, double lon)
+{
 	double nextLat, nextLon, latEleDiff, lonEleDiff, latScalar, lonScalar;
 
 	for(int k = this->numEleLatsSRTM; k >= 0; k--)
@@ -613,7 +613,8 @@ int DataCollection::getElevation(double lat, double lon) {
 					{
 						std::cout << "------- void elevation -------" << std::endl;
 						return elevation;
-					} else if((k < this->numEleLonsSRTM-1) && (l < this->numEleLatsSRTM-1))
+					}
+                    else if((k < this->numEleLonsSRTM-1) && (l < this->numEleLatsSRTM-1))
 					{
 						latEleDiff = this->eleDataSRTM[l][k] - this->eleDataSRTM[l+1][k];
 						lonEleDiff = this->eleDataSRTM[l][k] - this->eleDataSRTM[l][k+1];
@@ -645,8 +646,8 @@ GenericMap<int, Way*>* DataCollection::getWayMap() {
 }
 
 // for loading into http://www.gpsvisualizer.com/
-GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
-    
+GenericMap<long int, Road*>* DataCollection::makeRawRoads()
+{
     GPS converter;
 
 	std::cout << "making raw roads" << std::endl;
@@ -803,7 +804,8 @@ GenericMap<long int, Road*>* DataCollection::makeRawRoads() {
 	return rawRoads;
 }
 
-int DataCollection::getVoidEle() {
+int DataCollection::getVoidEle()
+{
 	return this->voidEle;
 }
 

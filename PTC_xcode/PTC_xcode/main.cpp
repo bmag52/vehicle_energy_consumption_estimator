@@ -51,26 +51,26 @@ void saveActualData(Route* actualRoute, std::vector<float>* actualSpeed, std::ve
 {
     // ROUTE
     FILE* csvRoute = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_ROUTE.csv", "w");
-    
     actualRoute->saveRoute2CSV(csvRoute, city, true);
     
-    // SPEED
+    // SPEED FUEL FLOW and CALCULATED ENERGY
     FILE* csvSpeedFuelFlowEnergy = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_SPEED_FUEL_FLOW.csv", "w");
-    
+
+    // speed
     for(int i = 0; i < actualSpeed->size(); i++)
     {
         fprintf(csvSpeedFuelFlowEnergy, "%f,", actualSpeed->at(i));
     }
-    
     fprintf(csvSpeedFuelFlowEnergy, "\n");
     
+    // fuel flow
     for(int i = 0; i < fuelFlow->size(); i++)
     {
         fprintf(csvSpeedFuelFlowEnergy, "%f,", fuelFlow->at(i));
     }
-    
     fprintf(csvSpeedFuelFlowEnergy, "\n");
     
+    // calculated energy from prediction data
     for(int i = 0; i < energy->size(); i++)
     {
         fprintf(csvSpeedFuelFlowEnergy, "%f,", energy->at(i));
@@ -80,47 +80,27 @@ void saveActualData(Route* actualRoute, std::vector<float>* actualSpeed, std::ve
 }
 
 // save pred data
-void savePredData(DriverPrediction::PredData predData, Route* predRoute, City* city, bool close)
+void savePredData(DriverPrediction::PredData predData, Route* predRoute, City* city, FILE* predDataFile, FILE* predRouteFile)
 {
-    static FILE* predRouteFile;
-    static FILE* predDataFile;
-    
     // route
-    if(!predRouteFile)
-    {
-        predRouteFile = fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_PRED_ROUTE.csv", "w");
-        fprintf(predRouteFile, "name, description, color, latitude, longitude\n");
-    }
-    
     predRoute->saveRoute2CSV(predRouteFile, city, false);
     
-    // data
-    if(!predDataFile)
-    {
-        predRouteFile = fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_PRED_DATA.csv", "w");
-    }
-    
+    // other prediction data
     fprintf(predDataFile, "--- spd n ele ---\n");
     
+    // pred speed
     for(int i = 0; i < predData.first.size(); i++)
     {
         fprintf(predDataFile, "%f,", predData.first.at(i));
     }
-    
     fprintf(predDataFile, "\n");
 
+    // pred elevation
     for(int i = 0; i < predData.second.size(); i++)
     {
         fprintf(predDataFile, "%f,", predData.second.at(i));
     }
-    
     fprintf(predDataFile, "\n");
-    
-    if(close)
-    {
-        fclose(predRouteFile);
-        fclose(predDataFile);
-    }
 }
 
 int main() {
@@ -130,7 +110,7 @@ int main() {
     //                                                          Unit Tests
     // ************************************************************************************************************************************
     // ************************************************************************************************************************************
-        city_ut();
+    //    city_ut();
     //    buildCity_ut();
     //    dataCollection_ut();
     //    dataManagement_ut();
@@ -192,7 +172,7 @@ int main() {
     
     // vehicle speed;
     float vehSpd;
-    float travelDist;
+    float totalDist = 0;
     
     // vehicle speed prediction distance between predictions
     float ds = SpeedPrediction().getDS();
@@ -205,12 +185,17 @@ int main() {
     std::vector<float> fuelFlow;
     std::vector<float> energy;
     
+    FILE* predDataFile = fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_PRED_DATA.csv", "w");
+    FILE* predRouteFile = fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_PRED_ROUTE.csv", "w");
+    fprintf(predRouteFile, "name, description, color, latitude, longitude\n");
+    
     // ************************************************************************************************************************************
     // ******************************************************************v*****************************************************************
     //                                                      Run Program
     // ************************************************************************************************************************************
     // ************************************************************************************************************************************
     
+    // record trip data to build map
     if(city == NULL)
     {
         std::string line;
@@ -273,7 +258,7 @@ int main() {
                 
                 if(predData.first.at(0) != -1 && predData.second.at(0) != -1)
                 {
-                    savePredData(predData, dp.getRP()->getPredictedRoute(), city, false);
+                    savePredData(predData, dp.getRP()->getPredictedRoute(), city, predDataFile, predRouteFile);
                 }
             }
             
@@ -293,23 +278,24 @@ int main() {
             while(vd.getEngineLoad() > 1.0)
             {
                 std::pair<double, double> currLatLon = gps.readGPS();
-                travelDist = gps.deltaLatLonToXY(prevLatLon.first, prevLatLon.second, currLatLon.first, currLatLon.second);
+                float travelDist_i = gps.deltaLatLonToXY(prevLatLon.first, prevLatLon.second, currLatLon.first, currLatLon.second);
                 
-                float distRatio = travelDist / ds;
-                
-                if(distRatio >= 1)
+                if(travelDist_i > ds)
                 {
-                    std::cout << distRatio << std::endl;
+                    // get left over dist from previous dist measurement and add to current dist measurement
+                    float distRatio = (std::fmodf(totalDist, ds) + travelDist_i) / ds;
+                    
+                    totalDist += travelDist_i;
+                    std::cout << "total dist traveled: " << totalDist << std::endl;
                     
                     // if dist ratio is more than 2x prediction interval distance, buffer speed
                     for(int i = 1; i <= distRatio; i++)
                     {
-                        std::cout << vehSpd << std::endl;
                         actualSpeed.push_back(vehSpd);
                         dp.updateSpeedsbyVal(vehSpd);
                     }
                     
-                    std::cout << "prediction distance: " << travelDist << std::endl;
+                    std::cout << "prediction distance: " << travelDist_i << std::endl;
                     std::cout << "*******************************************" << std::endl;
                     prevLatLon = currLatLon;
                     break;
@@ -350,6 +336,9 @@ int main() {
     
     // store route prediction data
     dm.addRoutePredictionData(dp.getRP());
+    
+    fclose(predRouteFile);
+    fclose(predDataFile);
 
 	std::cout << "finished driver prediction" << std::endl;
 

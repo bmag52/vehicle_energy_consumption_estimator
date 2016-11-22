@@ -215,7 +215,8 @@ std::pair<double, double> GPS::readGPS()
                     return latLon;
                     break;
                 }
-                else{
+                else
+                {
                     break;
                 }
             }
@@ -406,4 +407,5 @@ double GPS::getDeltaXYTolerance()
 {
     return this->deltaXYTolerance;
 }
+    
 }

@@ -93,7 +93,7 @@ void Link::setWeights(std::vector<Eigen::MatrixXd*>* wts, std::vector<Eigen::Mat
         this->yInHidA = yInHid;
         this->hasAWeights = true;
     }
-    else
+    else if(direction == 0)
     {
         this->WtsB = wts;
         this->yHidB = yHid;
@@ -121,13 +121,13 @@ bool Link::linkHasBWeights()
 std::vector<std::vector<Eigen::MatrixXd*>*>* Link::getWeights(int direction)
 {
     std::vector<std::vector<Eigen::MatrixXd*>*>* returnList = new std::vector<std::vector<Eigen::MatrixXd*>*>(3);
-    if(direction == 1)
+    if(direction == 1 && this->hasAWeights)
     {
         returnList->at(0) = this->WtsA;
         returnList->at(1) = this->yHidA;
         returnList->at(2) = this->yInHidA;
     }
-    else
+    else if(direction == 0 && this->hasBWeights)
     {
         returnList->at(0) = this->WtsB;
         returnList->at(1) = this->yHidB;

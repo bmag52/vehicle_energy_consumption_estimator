@@ -541,7 +541,8 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                 GenericEntry<long int, Link*>* nextLink = links->nextEntry();
                 while(nextLink !=  NULL)
                 {
-                    if(nextLink->value->isEqual(link))
+                    // can go down the same road in opossite directions but cannot go in circles
+                    if(nextLink->value->isEqual(link) || (nextLink->value->getNumber() == link->getNumber() && linkCount == nextLink->key + 1))
                     {
                         linkAlreadyExists = true;
                         break;

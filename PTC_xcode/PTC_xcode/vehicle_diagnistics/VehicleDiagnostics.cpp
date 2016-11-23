@@ -12,7 +12,7 @@ namespace PredictivePowertrain {
 VehicleDiagnostics::VehicleDiagnostics()
 {
     this->fd =  -1;
-    this->timeMultiplierSFFEL = 3000;
+    this->timeMultiplierSFFEL = 3500;
     this->initializeDiagnosticsReader();
     
     this->vehicleSpeed = "01 0D\r";

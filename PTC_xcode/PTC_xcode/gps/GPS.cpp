@@ -371,15 +371,44 @@ bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
     double dLat = pt1(0,0) - pt2(0,0);
     double dLon = pt1(0,1) - pt2(0,1);
     
+    // evaluate spline heading
     double angleSpline = std::atan2(dLat, dLon);
     if(angleSpline < 0)
     {
         angleSpline += M_PI;
     }
     
+    // get gps heading
     double angleHeading = this->getHeadingAngle();
     
-    if(std::abs(angleHeading - angleSpline) < M_PI / 2)
+    // discern direction of travel relative to eval orientation of spline
+    bool evalUp = false;
+    if(std::abs(angleHeading - angleSpline) < M_PI / 4)
+    {
+        evalUp = true;
+    }
+    
+    // determine where start and end intersections are located
+    Eigen::Spline<double,2>::PointType splineEndPtWRTHeading;
+    if(evalUp)
+    {
+        splineEndPtWRTHeading = road->getSpline()(1.0);
+    }
+    else
+    {
+        splineEndPtWRTHeading = road->getSpline()(0.0);
+    }
+    
+    double endLat = splineEndPtWRTHeading(0,0);
+    double endLon = splineEndPtWRTHeading(0,1);
+    
+    Intersection* startInt = road->getStartIntersection();
+    Intersection* endInt = road->getEndIntersection();
+    
+    float startDist = this->deltaLatLonToXY(endLat, endLon, startInt->getLat(), startInt->getLon());
+    float endDist = this->deltaLatLonToXY(endLat, endLon, endInt->getLat(), endInt->getLon());
+    
+    if(endDist < startDist)
     {
         return true;
     }

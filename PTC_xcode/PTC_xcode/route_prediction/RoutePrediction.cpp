@@ -354,9 +354,16 @@ Route* RoutePrediction::createRouteConditions(std::vector<float>* currentConditi
 
 Route* RoutePrediction::createRouteIntersection(Intersection* intersection, std::vector<float>* currentConditions)
 {
+    // delete old goal
 	delete(this->predictedGoal);
+    
+    // add new goal
 	this->predictedGoal = new Goal(intersection->getIntersectionID(), currentConditions);
+    
+    // assign goal
     this->predictedRoute->assignGoal(predictedGoal);
+    
+    // return new route
 	Route* route = new Route(this->predictedRoute->getLinks(), this->predictedGoal);
 	return route;
 }
@@ -443,6 +450,11 @@ Route* RoutePrediction::getUnknownRoute()
 Route* RoutePrediction::getOverRoute()
 {
     return this->overRoute;
+}
+    
+Route* RoutePrediction::getCurrentRoute()
+{
+    return this->currentRoute;
 }
     
 } /* namespace PredictivePowertrain */

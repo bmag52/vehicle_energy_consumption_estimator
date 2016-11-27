@@ -55,6 +55,9 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
     // get predicted route and add currentLink to start of route
     Route* predRoute = this->rp->predict(currentLink)->copy();
     
+    // add current link to route
+    this->rp->getCurrentRoute()->addLink(currLink);
+    
     // update current route
     this->predRoute = predRoute;
     

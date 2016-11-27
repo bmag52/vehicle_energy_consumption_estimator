@@ -47,36 +47,48 @@ using namespace PredictivePowertrain;
 // ************************************************************************************************************************************
 
 // save actual route and speed
-void saveActualData(Route* actualRoute, std::vector<float>* actualSpeed, std::vector<float>* fuelFlow, std::vector<float>* energy, City* city)
+void saveActualData(Route* actualRoute,
+                    std::vector<float>* actualSpeed,
+                    std::vector<float>* fuelFlow,
+                    std::vector<float>* energy,
+                    std::vector<float>* time,
+                    City* city)
 {
     // ROUTE
     FILE* csvRoute = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_ROUTE.csv", "w");
     actualRoute->saveRoute2CSV(csvRoute, city, true);
     
     // SPEED FUEL FLOW and CALCULATED ENERGY
-    FILE* csvSpeedFuelFlowEnergy = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_SPEED_FUEL_FLOW.csv", "w");
+    FILE* csvSpeedFuelFlowEnergyTime = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_SPEED_FUEL_FLOW.csv", "w");
 
     // speed
     for(int i = 0; i < actualSpeed->size(); i++)
     {
-        fprintf(csvSpeedFuelFlowEnergy, "%f,", actualSpeed->at(i));
+        fprintf(csvSpeedFuelFlowEnergyTime, "%f,", actualSpeed->at(i));
     }
-    fprintf(csvSpeedFuelFlowEnergy, "\n");
+    fprintf(csvSpeedFuelFlowEnergyTime, "\n");
     
     // fuel flow
     for(int i = 0; i < fuelFlow->size(); i++)
     {
-        fprintf(csvSpeedFuelFlowEnergy, "%f,", fuelFlow->at(i));
+        fprintf(csvSpeedFuelFlowEnergyTime, "%f,", fuelFlow->at(i));
     }
-    fprintf(csvSpeedFuelFlowEnergy, "\n");
+    fprintf(csvSpeedFuelFlowEnergyTime, "\n");
     
     // calculated energy from prediction data
     for(int i = 0; i < energy->size(); i++)
     {
-        fprintf(csvSpeedFuelFlowEnergy, "%f,", energy->at(i));
+        fprintf(csvSpeedFuelFlowEnergyTime, "%f,", energy->at(i));
+    }
+    fprintf(csvSpeedFuelFlowEnergyTime, "\n");
+    
+    // time
+    for(int i = 0; i < time->size(); i++)
+    {
+        fprintf(csvSpeedFuelFlowEnergyTime, "%f,", time->at(i));
     }
     
-    fclose(csvSpeedFuelFlowEnergy);
+    fclose(csvSpeedFuelFlowEnergyTime);
 }
 
 // save pred data
@@ -184,6 +196,7 @@ int main() {
     std::vector<float> actualSpeed;
     std::vector<float> fuelFlow;
     std::vector<float> energy;
+    std::vector<float> time;
     
     FILE* predDataFile = fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_PRED_DATA.csv", "w");
     FILE* predRouteFile = fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_PRED_ROUTE.csv", "w");
@@ -217,9 +230,11 @@ int main() {
     {
         // to start driver prediction
         bool isFirstPrediction = true;
-
+        
+        auto start = std::chrono::system_clock::now();
         std::pair<double, double> prevLatLon = gps.readGPS();
         
+        // while car is running
         while(vd.getEngineLoad() > 1.0)
         {
             // get vehicle speed
@@ -301,6 +316,11 @@ int main() {
                     break;
                 }
             }
+            
+            auto end = std::chrono::system_clock::now();
+            std::chrono::duration<double> diff = end - start;
+            time.push_back(diff.count());
+            start = end;
         }
     }
     
@@ -329,7 +349,7 @@ int main() {
     Route* actualRoute = city->getRouteFromGPSTrace(gps.getTripLog(true));
     
     // save actual route
-    saveActualData(actualRoute, &actualSpeed, &fuelFlow, &energy, city);
+    saveActualData(actualRoute, &actualSpeed, &fuelFlow, &energy, &time, city);
     
     // parse route
     dp.parseRoute(actualRoute, &actualSpeed, gps.getTripLog(true));

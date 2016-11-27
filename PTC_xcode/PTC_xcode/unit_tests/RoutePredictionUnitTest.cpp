@@ -113,10 +113,10 @@ RoutePrediction* routePrediction_ut()
     
     // add trainging iterations here (simulates driving over the route multiple times)
     rp->parseRoute(actualRoute);
-    rp->parseRoute(actualRoute);
-    rp->parseRoute(actualRoute);
-    rp->parseRoute(actualRoute);
-    rp->parseRoute(actualRoute);
+//    rp->parseRoute(actualRoute);
+//    rp->parseRoute(actualRoute);
+//    rp->parseRoute(actualRoute);
+//    rp->parseRoute(actualRoute);
     
     // create number of random routes to include in test set
     int num_rand_routes = 4;

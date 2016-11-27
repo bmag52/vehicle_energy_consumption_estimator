@@ -73,6 +73,7 @@ public:
     City* getCity();
     Route* getUnknownRoute();
     Route* getOverRoute();
+    Route* getCurrentRoute();
 };
 
 

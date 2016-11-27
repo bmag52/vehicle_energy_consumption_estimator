@@ -49,14 +49,12 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
     this->currLink = currentLink;
     
     // prep for route and speed predictions across route
-    Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, false);
+    Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, true);
     this->rp->startPrediction(startIntersection, currentConditions);
     
     // get predicted route and add currentLink to start of route
     Route* predRoute = this->rp->predict(currentLink)->copy();
     
-    // add current link to route
-    this->rp->getCurrentRoute()->addLink(currLink);
     
     // update current route
     this->predRoute = predRoute;
@@ -434,7 +432,7 @@ bool DriverPrediction::allLinksHaveWeigths(Route* route)
     GenericEntry<long int, Link*>* nextLink = route->getLinks()->nextEntry();
     while(nextLink != NULL)
     {
-        if(!nextLink->value->linkHasWeights())
+        if(!nextLink->value->linkHasWeights() && !nextLink->value->finalLink())
         {
             return false;
         }

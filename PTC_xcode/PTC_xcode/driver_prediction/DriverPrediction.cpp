@@ -49,7 +49,7 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
     this->currLink = currentLink;
     
     // get start intersection
-    Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, true);
+    Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, false);
     
     // get pred route
     Route* predRoute = this->rp->startPrediction(startIntersection, currentConditions);

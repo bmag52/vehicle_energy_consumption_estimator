@@ -53,8 +53,20 @@ GenericMap<long int, Link*>* City::getNextLinks(Link* otherLink) {
 	{
 		if(nextRoad->value->getRoadID() != currentRoad->getRoadID())
 		{
+            /* OLD
 			Link* newLink = otherLink->linkFromRoad(nextRoad->value, nextIntersection);
 			nextLinks->addEntry(count, newLink);
+            count++;
+             */
+            
+            // every road is now bi directional
+            Link* link0 = new Link(1, nextRoad->value->getRoadID());
+            Link* link1 = new Link(0, nextRoad->value->getRoadID());
+            
+            nextLinks->addEntry(count, link0);
+            count++;
+            
+            nextLinks->addEntry(count, link1);
             count++;
 		}
 		nextRoad = connectingRoads->nextEntry();
@@ -505,7 +517,6 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
             
             if((prevRoadIsOnTrace) || isFirstRoad)
             {
-                isFirstRoad = false;
                 Intersection* start = prevRoad->getStartIntersection();
                 Intersection* end = prevRoad->getEndIntersection();
                 
@@ -547,6 +558,8 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                     
                     toStartIntDist = nearestStartDist;
                     toEndIntDist = nearestEndDist;
+                    
+                    isFirstRoad = false;
                 }
                 
                 Link* link;
@@ -554,12 +567,12 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                 
                 if(toStartIntDist < toEndIntDist)
                 {
-                    link = Link().linkFromRoad(prevRoad, end);
+                    link = Link().linkFromRoad(prevRoad, start);
                     currInt = start;
                 }
                 else
                 {
-                    link = Link().linkFromRoad(prevRoad, start);
+                    link = Link().linkFromRoad(prevRoad, end);
                     currInt = end;
                 }
                 

@@ -113,10 +113,10 @@ RoutePrediction* routePrediction_ut()
     
     // add trainging iterations here (simulates driving over the route multiple times)
     rp->parseRoute(actualRoute);
-//    rp->parseRoute(actualRoute);
-//    rp->parseRoute(actualRoute);
-//    rp->parseRoute(actualRoute);
-//    rp->parseRoute(actualRoute);
+    rp->parseRoute(actualRoute);
+    rp->parseRoute(actualRoute);
+    rp->parseRoute(actualRoute);
+    rp->parseRoute(actualRoute);
     
     // create number of random routes to include in test set
     int num_rand_routes = 4;
@@ -154,13 +154,13 @@ RoutePrediction* routePrediction_ut()
         predRoute->printLinks();
         
         // check if predicted route is actual route
-//        if(actualRoute->isEqual(predRoute))
-//        {
-//            std::cout << "predicted routed before reaching end destination!" << std::endl;
-//            std::cout << "Links traversed: " << predIter << endl;
-//            std::cout << "Links in route: " << actualRoute->getLinkSize() << std::endl;
-//            break;
-//        }
+        if(actualRoute->isEqual(predRoute))
+        {
+            std::cout << "predicted routed before reaching end destination!" << std::endl;
+            std::cout << "Links traversed: " << predIter << std::endl;
+            std::cout << "Links in route: " << actualRoute->getLinkSize() << std::endl;
+            break;
+        }
         
         predIter++;
     

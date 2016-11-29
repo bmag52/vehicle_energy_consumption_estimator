@@ -4915,11 +4915,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/Intersection.cpp"
-            timestampString = "498090451.767788"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
             landmarkName = "Intersection::getOutgoingLinks()"
             landmarkType = "7">
          </BreakpointContent>
@@ -6881,11 +6881,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/unit_tests/GPSUnitTest.cpp"
-            timestampString = "498682233.408108"
+            timestampString = "502063807.092298"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "20"
-            endingLineNumber = "20"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
             landmarkName = "GPS_ut()"
             landmarkType = "9">
          </BreakpointContent>
@@ -7169,11 +7169,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "256"
-            endingLineNumber = "256"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
             landmarkName = "DriverPrediction::trainSpeedPredictionOverLastLink()"
             landmarkType = "7">
          </BreakpointContent>
@@ -7185,11 +7185,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "255"
-            endingLineNumber = "255"
+            startingLineNumber = "253"
+            endingLineNumber = "253"
             landmarkName = "DriverPrediction::trainSpeedPredictionOverLastLink()"
             landmarkType = "7">
          </BreakpointContent>
@@ -7233,11 +7233,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "131"
-            endingLineNumber = "131"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
             landmarkName = "DriverPrediction::nextPrediction(Link* currentLink, float spd, float distAlongLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -7409,11 +7409,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
             landmarkName = "DriverPrediction::nextPrediction(Link* currentLink, float spd, float distAlongLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -7425,11 +7425,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "DriverPrediction::nextPrediction(Link* currentLink, float spd, float distAlongLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -7489,11 +7489,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "499902892.82908"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "54"
-            endingLineNumber = "54"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "DriverPrediction::startPrediction(Link* currentLink, float spd, std::vector&lt;float&gt;* currentConditions, float distAlongLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -7665,11 +7665,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
             landmarkName = "DriverPrediction::nextPrediction(Link* currentLink, float spd, float distAlongLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -7761,11 +7761,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/route_prediction/Route.cpp"
-            timestampString = "501182514.809972"
+            timestampString = "502071172.749798"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "216"
-            endingLineNumber = "216"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
             landmarkName = "Route::addLinkToFront(Link* frontLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -7793,11 +7793,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "268"
-            endingLineNumber = "268"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
             landmarkName = "DriverPrediction::trainSpeedPredictionOverLastLink()"
             landmarkType = "7">
          </BreakpointContent>
@@ -7841,11 +7841,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "257"
-            endingLineNumber = "257"
+            startingLineNumber = "255"
+            endingLineNumber = "255"
             landmarkName = "DriverPrediction::trainSpeedPredictionOverLastLink()"
             landmarkType = "7">
          </BreakpointContent>
@@ -7857,11 +7857,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "394"
-            endingLineNumber = "394"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
             landmarkName = "DriverPrediction::getSpeedPredInpunt(float spd)"
             landmarkType = "7">
          </BreakpointContent>
@@ -7873,11 +7873,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "269"
-            endingLineNumber = "269"
+            startingLineNumber = "267"
+            endingLineNumber = "267"
             landmarkName = "DriverPrediction::trainSpeedPredictionOverLastLink()"
             landmarkType = "7">
          </BreakpointContent>
@@ -7889,11 +7889,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
+            startingLineNumber = "286"
+            endingLineNumber = "286"
             landmarkName = "DriverPrediction::trainSpeedPredictionOverLastLink()"
             landmarkType = "7">
          </BreakpointContent>
@@ -7905,11 +7905,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "293"
-            endingLineNumber = "293"
+            startingLineNumber = "291"
+            endingLineNumber = "291"
             landmarkName = "DriverPrediction::trainSpeedPredictionOverLastLink()"
             landmarkType = "7">
          </BreakpointContent>
@@ -8065,11 +8065,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
             landmarkName = "DriverPrediction::trainSpeedPredictionOverLastLink()"
             landmarkType = "7">
          </BreakpointContent>
@@ -8737,11 +8737,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/City.cpp"
-            timestampString = "501543670.570985"
+            timestampString = "502070931.554263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "579"
-            endingLineNumber = "579"
+            startingLineNumber = "616"
+            endingLineNumber = "616"
             landmarkName = "City::getRouteFromGPSTrace(GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9153,11 +9153,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
+            startingLineNumber = "192"
+            endingLineNumber = "192"
             landmarkName = "DriverPrediction::parseRoute(Route* currRoute, std::vector&lt;float&gt;* spds, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9169,11 +9169,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "188"
+            endingLineNumber = "188"
             landmarkName = "DriverPrediction::parseRoute(Route* currRoute, std::vector&lt;float&gt;* spds, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9185,7 +9185,23 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "207"
+            endingLineNumber = "207"
+            landmarkName = "DriverPrediction::parseRoute(Route* currRoute, std::vector&lt;float&gt;* spds, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "209"
@@ -9201,27 +9217,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "211"
-            endingLineNumber = "211"
-            landmarkName = "DriverPrediction::parseRoute(Route* currRoute, std::vector&lt;float&gt;* spds, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
+            startingLineNumber = "212"
+            endingLineNumber = "212"
             landmarkName = "DriverPrediction::parseRoute(Route* currRoute, std::vector&lt;float&gt;* spds, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9233,11 +9233,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/unit_tests/CityUnitTest.cpp"
-            timestampString = "501196661.742358"
+            timestampString = "502059829.078503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "48"
-            endingLineNumber = "48"
+            startingLineNumber = "51"
+            endingLineNumber = "51"
             landmarkName = "city_ut()"
             landmarkType = "9">
          </BreakpointContent>
@@ -9249,11 +9249,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "195"
-            endingLineNumber = "195"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
             landmarkName = "DriverPrediction::parseRoute(Route* currRoute, std::vector&lt;float&gt;* spds, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9265,11 +9265,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/unit_tests/CityUnitTest.cpp"
-            timestampString = "501206282.517721"
+            timestampString = "502059829.078503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
+            startingLineNumber = "77"
+            endingLineNumber = "77"
             landmarkName = "city_ut()"
             landmarkType = "9">
          </BreakpointContent>
@@ -9281,11 +9281,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/unit_tests/CityUnitTest.cpp"
-            timestampString = "501196661.742358"
+            timestampString = "502059829.078503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "60"
-            endingLineNumber = "60"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
             landmarkName = "city_ut()"
             landmarkType = "9">
          </BreakpointContent>
@@ -9297,11 +9297,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
+            startingLineNumber = "240"
+            endingLineNumber = "240"
             landmarkName = "DriverPrediction::parseRoute(Route* currRoute, std::vector&lt;float&gt;* spds, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9313,11 +9313,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
+            startingLineNumber = "235"
+            endingLineNumber = "235"
             landmarkName = "DriverPrediction::parseRoute(Route* currRoute, std::vector&lt;float&gt;* spds, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9329,11 +9329,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "333"
-            endingLineNumber = "333"
+            startingLineNumber = "331"
+            endingLineNumber = "331"
             landmarkName = "DriverPrediction::trainSpeedPredictionOverLastLink()"
             landmarkType = "7">
          </BreakpointContent>
@@ -9345,11 +9345,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/unit_tests/CityUnitTest.cpp"
-            timestampString = "501207099.447887"
+            timestampString = "502059829.078503"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
             landmarkName = "city_ut()"
             landmarkType = "9">
          </BreakpointContent>
@@ -9361,11 +9361,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "244"
-            endingLineNumber = "244"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
             landmarkName = "DriverPrediction::parseRoute(Route* currRoute, std::vector&lt;float&gt;* spds, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9585,11 +9585,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/City.cpp"
-            timestampString = "501543670.570985"
+            timestampString = "502070931.554263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "631"
-            endingLineNumber = "631"
+            startingLineNumber = "668"
+            endingLineNumber = "668"
             landmarkName = "City::roadIsOnTrace(Road* road, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9601,11 +9601,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/City.cpp"
-            timestampString = "501543670.570985"
+            timestampString = "502070931.554263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "632"
-            endingLineNumber = "632"
+            startingLineNumber = "669"
+            endingLineNumber = "669"
             landmarkName = "City::roadIsOnTrace(Road* road, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9617,11 +9617,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/City.cpp"
-            timestampString = "501543670.570985"
+            timestampString = "502070931.554263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "629"
-            endingLineNumber = "629"
+            startingLineNumber = "666"
+            endingLineNumber = "666"
             landmarkName = "City::roadIsOnTrace(Road* road, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9633,11 +9633,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/City.cpp"
-            timestampString = "501543670.570985"
+            timestampString = "502070931.554263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "649"
-            endingLineNumber = "649"
+            startingLineNumber = "686"
+            endingLineNumber = "686"
             landmarkName = "City::roadIsOnTrace(Road* road, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9649,11 +9649,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/City.cpp"
-            timestampString = "501543670.570985"
+            timestampString = "502070931.554263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "619"
-            endingLineNumber = "619"
+            startingLineNumber = "656"
+            endingLineNumber = "656"
             landmarkName = "City::roadIsOnTrace(Road* road, GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9665,11 +9665,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/City.cpp"
-            timestampString = "501543670.570985"
+            timestampString = "502070931.554263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "547"
-            endingLineNumber = "547"
+            startingLineNumber = "584"
+            endingLineNumber = "584"
             landmarkName = "City::getRouteFromGPSTrace(GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9681,11 +9681,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/city/City.cpp"
-            timestampString = "501543670.570985"
+            timestampString = "502070931.554263"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "558"
-            endingLineNumber = "558"
+            startingLineNumber = "595"
+            endingLineNumber = "595"
             landmarkName = "City::getRouteFromGPSTrace(GenericMap&lt;long int, std::pair&lt;double, double&gt;*&gt;* trace)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9697,11 +9697,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501903931.952598"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "106"
+            endingLineNumber = "106"
             landmarkName = "DriverPrediction::nextPrediction(Link* currentLink, float spd, float distAlongLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9761,11 +9761,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501904967.918337"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "370"
-            endingLineNumber = "370"
+            startingLineNumber = "368"
+            endingLineNumber = "368"
             landmarkName = "DriverPrediction::getSpeedPredInpunt(float spd)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9777,11 +9777,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501905023.128802"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "130"
-            endingLineNumber = "130"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
             landmarkName = "DriverPrediction::nextPrediction(Link* currentLink, float spd, float distAlongLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9793,11 +9793,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501905261.754567"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "126"
-            endingLineNumber = "126"
+            startingLineNumber = "124"
+            endingLineNumber = "124"
             landmarkName = "DriverPrediction::nextPrediction(Link* currentLink, float spd, float distAlongLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9841,11 +9841,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501906353.331184"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
+            startingLineNumber = "125"
+            endingLineNumber = "125"
             landmarkName = "DriverPrediction::nextPrediction(Link* currentLink, float spd, float distAlongLink)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9857,11 +9857,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501906388.025663"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "429"
-            endingLineNumber = "429"
+            startingLineNumber = "427"
+            endingLineNumber = "427"
             landmarkName = "DriverPrediction::allLinksHaveWeigths(Route* route)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9873,11 +9873,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501906408.029043"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "438"
-            endingLineNumber = "438"
+            startingLineNumber = "436"
+            endingLineNumber = "436"
             landmarkName = "DriverPrediction::allLinksHaveWeigths(Route* route)"
             landmarkType = "7">
          </BreakpointContent>
@@ -9889,12 +9889,252 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
-            timestampString = "501906409.161025"
+            timestampString = "502072280.376363"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "437"
-            endingLineNumber = "437"
+            startingLineNumber = "435"
+            endingLineNumber = "435"
             landmarkName = "DriverPrediction::allLinksHaveWeigths(Route* route)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/main.cpp"
+            timestampString = "502058433.339097"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
+            landmarkName = "main()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
+            timestampString = "502072280.376363"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "DriverPrediction::startPrediction(Link* currentLink, float spd, std::vector&lt;float&gt;* currentConditions, float distAlongLink)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/unit_tests/GPSUnitTest.cpp"
+            timestampString = "502063652.201143"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "26"
+            endingLineNumber = "26"
+            landmarkName = "GPS_ut()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/unit_tests/GPSUnitTest.cpp"
+            timestampString = "502064033.933683"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
+            landmarkName = "GPS_ut()"
+            landmarkType = "9">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/gps/GPS.cpp"
+            timestampString = "502067511.003333"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "398"
+            endingLineNumber = "398"
+            landmarkName = "GPS::isHeadingStart2EndOfCurrentRoad(Road* road)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/gps/GPS.cpp"
+            timestampString = "502067511.003333"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "416"
+            endingLineNumber = "416"
+            landmarkName = "GPS::isHeadingStart2EndOfCurrentRoad(Road* road)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/gps/GPS.cpp"
+            timestampString = "502067511.003333"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "414"
+            endingLineNumber = "414"
+            landmarkName = "GPS::isHeadingStart2EndOfCurrentRoad(Road* road)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/gps/GPS.cpp"
+            timestampString = "502067511.003333"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "449"
+            endingLineNumber = "449"
+            landmarkName = "GPS::getHeadingAngle()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/gps/GPS.cpp"
+            timestampString = "502067511.003333"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "457"
+            endingLineNumber = "457"
+            landmarkName = "GPS::getHeadingAngle()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/driver_prediction/DriverPrediction.cpp"
+            timestampString = "502072267.694629"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "DriverPrediction::startPrediction(Link* currentLink, float spd, std::vector&lt;float&gt;* currentConditions, float distAlongLink)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/route_prediction/RoutePrediction.cpp"
+            timestampString = "502072407.917276"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
+            landmarkName = "RoutePrediction::startPrediction(Intersection* currentIntersection, std::vector&lt;float&gt;* currentCondition)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/route_prediction/RoutePrediction.cpp"
+            timestampString = "502072468.760114"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
+            landmarkName = "RoutePrediction::predictPrivate(Route* currentRoute, GenericMap&lt;int, std::pair&lt;Link*,Goal*&gt;*&gt;* currentStates, std::vector&lt;float&gt;* currentProbabilities)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/route_prediction/RoutePrediction.cpp"
+            timestampString = "502072745.727389"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "239"
+            endingLineNumber = "239"
+            landmarkName = "RoutePrediction::updateStates(Link* chosenLink, GenericMap&lt;int, std::pair&lt;Link*,Goal*&gt;*&gt;* oldStates, std::vector&lt;float&gt;* oldProbabilites)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/route_prediction/RoutePrediction.cpp"
+            timestampString = "502072799.195971"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
+            landmarkName = "RoutePrediction::startPrediction(Intersection* currentIntersection, std::vector&lt;float&gt;* currentCondition)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PTC_xcode/route_prediction/RoutePrediction.cpp"
+            timestampString = "502073032.964822"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
+            landmarkName = "RoutePrediction::updateStates(Link* chosenLink, GenericMap&lt;int, std::pair&lt;Link*,Goal*&gt;*&gt;* oldStates, std::vector&lt;float&gt;* oldProbabilites)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

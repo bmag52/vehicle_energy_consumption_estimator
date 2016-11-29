@@ -512,17 +512,54 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                 float toStartIntDist = gps.deltaLatLonToXY(lat, lon, start->getLat(), start->getLon());
                 float toEndIntDist = gps.deltaLatLonToXY(lat, lon, end->getLat(), end->getLon());
                 
+                // find nearest distances to start and end int of first road
+                if(isFirstRoad)
+                {
+                    traceCopy->initializeCounter();
+                    GenericEntry<long int, std::pair<double, double>*>* nextMeasCopy = traceCopy->nextEntry();
+                    
+                    float nearestStartDist = FLT_MAX;
+                    float nearestEndDist = FLT_MAX;
+                    
+                    while(nextMeasCopy != NULL)
+                    {
+                        // next measurement cop lat / lon
+                        double nmcLat = nextMeasCopy->value->first;
+                        double nmcLon = nextMeasCopy->value->second;
+                        
+                        // calc start and end distances to measurement ith
+                        float startDist_i = gps.deltaLatLonToXY(nmcLat, nmcLon, start->getLat(), start->getLon());
+                        float endDist_i = gps.deltaLatLonToXY(nmcLat, nmcLon, end->getLat(), end->getLon());
+                        
+                        if(startDist_i < nearestStartDist)
+                        {
+                            nearestStartDist = startDist_i;
+                        }
+                        
+                        if(endDist_i < nearestEndDist)
+                        {
+                            nearestEndDist = endDist_i;
+                        }
+                        
+                        nextMeasCopy = traceCopy->nextEntry();
+                    }
+                    delete(nextMeasCopy);
+                    
+                    toStartIntDist = nearestStartDist;
+                    toEndIntDist = nearestEndDist;
+                }
+                
                 Link* link;
                 Intersection* currInt;
                 
                 if(toStartIntDist < toEndIntDist)
                 {
-                    link = Link().linkFromRoad(prevRoad, start);
+                    link = Link().linkFromRoad(prevRoad, end);
                     currInt = start;
                 }
                 else
                 {
-                    link = Link().linkFromRoad(prevRoad, end);
+                    link = Link().linkFromRoad(prevRoad, start);
                     currInt = end;
                 }
                 
@@ -618,12 +655,12 @@ bool City::roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, doub
                 
                 if(roadAngle < 0)
                 {
-                    roadAngle += M_PI;
+                    roadAngle += 2 * M_PI;
                 }
                 
                 if(traceAngle < 0)
                 {
-                    traceAngle += M_PI;
+                    traceAngle += 2 * M_PI;
                 }
                 
                 float angleDiff = std::abs(roadAngle - traceAngle);
@@ -719,8 +756,12 @@ void City::printIntersectionsAndRoads()
                 fprintf(csv, "blue,");
                 fprintf(csv, "%.12f,%.12f\n", nextNode->value->getLat(), nextNode->value->getLon());
                 
-                nextNode = nextConnectingRoad->value->getNodes()->nextEntry();
-                iterCount++;
+                // print every other or so control point for faster visuals
+                for(int i = 0; i < 3; i++)
+                {
+                    nextNode = nextConnectingRoad->value->getNodes()->nextEntry();
+                    iterCount++;
+                }
             }
             delete(nextNode);
             

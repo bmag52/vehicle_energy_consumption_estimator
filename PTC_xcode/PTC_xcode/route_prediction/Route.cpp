@@ -162,13 +162,21 @@ void Route::saveRoute2CSV(FILE* file, City* city, bool includeheaderAndCloseFile
         
         currRoad->getNodes()->initializeCounter();
         GenericEntry<long int, Node*>* nextNode = currRoad->getNodes()->nextEntry();
-        while(nextNode != NULL)
+        
+        // skip first node
+        nextNode = currRoad->getNodes()->nextEntry();
+        int nodeCount = 1;
+        
+        while(nodeCount < currRoad->getNodes()->getSize() - 1)
         {
             // road nodes
             fprintf(file, "%ld,", currRoad->getRoadID());
             fprintf(file, "Lat & Lon: %.12f %.12f,", nextNode->value->getLat(), nextNode->value->getLon());
             fprintf(file, "red,");
             fprintf(file, "%.12f,%.12f\n", nextNode->value->getLat(), nextNode->value->getLon());
+            
+            nodeCount++;
+            
             nextNode = currRoad->getNodes()->nextEntry();
         }
         delete(nextNode);

@@ -48,13 +48,11 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
     // update current link
     this->currLink = currentLink;
     
-    // prep for route and speed predictions across route
+    // get start intersection
     Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, true);
-    this->rp->startPrediction(startIntersection, currentConditions);
     
-    // get predicted route and add currentLink to start of route
-    Route* predRoute = this->rp->predict(currentLink)->copy();
-    
+    // get pred route
+    Route* predRoute = this->rp->startPrediction(startIntersection, currentConditions);
     
     // update current route
     this->predRoute = predRoute;

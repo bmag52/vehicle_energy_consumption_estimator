@@ -853,18 +853,31 @@ City* DataManagement::getCityData()
                         assert(nodeLats->getSize() == nodeLons->getSize());
                         assert(nodeLons->getSize() == nodeEles->getSize());
                         assert(nodeEles->getSize() == nodeIDs->getSize());
+                        
+                        // for splines
+                        Eigen::MatrixXd points(2, nodeLats->getSize());
 
 						GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
 						for(int i = 0; i < nodeLats->getSize(); i++)
 						{
+                            points(0, i) = nodeLats->getEntry(i);
+                            points(1, i) = nodeLons->getEntry(i);
+                            
 							nodes->addEntry(i, new Node(nodeLats->getEntry(i), nodeLons->getEntry(i), nodeEles->getEntry(i), nodeIDs->getEntry(i)));
 						}
 						delete(nodeLats); delete(nodeLons); delete(nodeEles); delete(nodeIDs);
-
+                        
+                        // fit spline
+                        typedef Eigen::Spline<double, 2> spline2f;
+                        spline2f roadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
+                
 						roadIntersections->addEntry(roadID, new std::pair<int, int>(startNodeID, endNodeID));
                         
                         Road* road = new Road(roadType, roadID, nodes);
+                        road->assignSpline(roadSpline);
                         road->assignSplineLength(splineLength);
+                        road->setMinMaxLatLon();
+                        road->setBoundsID(boundsID);
 						roads->addEntry(roadID, road);
 					}
 				}

@@ -70,10 +70,11 @@ void Intersection::replaceRoads(GenericMap<long int, Road*>* roads)
     this->roads = roads;
 }
 
-GenericMap<long int, Link*>* Intersection::getOutgoingLinks() {
+GenericMap<long int, Link*>* Intersection::getOutgoingLinks()
+{
 	GenericMap<long int, Link*>* outGoingLinks = new GenericMap<long int, Link*>();
-
 	long int linkCount = 0;
+    
 	this->roads->initializeCounter();
 	GenericEntry<long int, Road*>* nextRoad = this->roads->nextEntry();
 	while(nextRoad != NULL)
@@ -86,6 +87,7 @@ GenericMap<long int, Link*>* Intersection::getOutgoingLinks() {
 
 	}
 	delete(nextRoad);
+    
 	return outGoingLinks;
 }
 

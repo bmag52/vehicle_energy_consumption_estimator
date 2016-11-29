@@ -357,25 +357,52 @@ float GPS::getDistAlongRoad(Road* road, bool updateTripLog, bool headingIsStart2
     
 bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
 {
-    // assume road is current road
-    float distAlongRoad = this->getDistAlongRoad(road, false, true);
-    float evalSVal1 = distAlongRoad / road->getSplineLength();
-    float evalSVal2 = (distAlongRoad + 5.0) / road->getSplineLength();
+    // get lat lon
+    std::pair<double, double> latLon = this->readGPS();
+    double lat = latLon.first;
+    double lon = latLon.second;
     
-    // cap eval2 s-value at 1.0
-    evalSVal2 = std::max((float)1.0, evalSVal2);
+    // get road nodes
+    GenericMap<long int, Node*>* nodes = road->getNodes();
+    nodes->initializeCounter();
+    GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
     
-    Eigen::Spline<double,2>::PointType pt1 = road->getSpline()(evalSVal1);
-    Eigen::Spline<double,2>::PointType pt2 = road->getSpline()(evalSVal2);
+    double prevLat = nextNode->value->getLat();
+    double prevLon = nextNode->value->getLon();
     
-    double dLat = pt1(0,0) - pt2(0,0);
-    double dLon = pt1(0,1) - pt2(0,1);
+    nextNode = nodes->nextEntry();
+  
+    double currLat = nextNode->value->getLat();
+    double currLon = nextNode->value->getLon();
+    
+    while(nextNode != NULL)
+    {
+        // stop tracking distance once in proximity to current lat / lon
+        if(this->deltaLatLonToXY(lat, lon, currLat, currLon) < this->deltaXYTolerance)
+        {
+            break;
+        }
+        
+        // update prev
+        prevLat = currLat;
+        prevLon = currLon;
+        
+        // update curr
+        currLat = nextNode->value->getLat();
+        currLon = nextNode->value->getLon();
+        
+        nextNode = nodes->nextEntry();
+    }
+    delete(nextNode);
+    
+    double dLat = prevLat - currLat;
+    double dLon = prevLon - currLon;
     
     // evaluate spline heading
     double angleSpline = std::atan2(dLat, dLon);
     if(angleSpline < 0)
     {
-        angleSpline += M_PI;
+        angleSpline += 2 * M_PI;
     }
     
     // get gps heading
@@ -383,24 +410,26 @@ bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
     
     // discern direction of travel relative to eval orientation of spline
     bool evalUp = false;
-    if(std::abs(angleHeading - angleSpline) < M_PI / 4)
+    float angleDiff = std::abs(angleHeading - angleSpline);
+    if(angleDiff < M_PI / 4)
     {
         evalUp = true;
     }
     
     // determine where start and end intersections are located
-    Eigen::Spline<double,2>::PointType splineEndPtWRTHeading;
+    Node* endNodeWRTHeading;
     if(evalUp)
     {
-        splineEndPtWRTHeading = road->getSpline()(1.0);
+        int nodeSize = road->getNodes()->getSize() - 1;
+        endNodeWRTHeading = road->getNodes()->getEntry(nodeSize);
     }
     else
     {
-        splineEndPtWRTHeading = road->getSpline()(0.0);
+        endNodeWRTHeading = road->getNodes()->getEntry(0);
     }
     
-    double endLat = splineEndPtWRTHeading(0,0);
-    double endLon = splineEndPtWRTHeading(0,1);
+    double endLat = endNodeWRTHeading->getLat();
+    double endLon = endNodeWRTHeading->getLon();
     
     Intersection* startInt = road->getStartIntersection();
     Intersection* endInt = road->getEndIntersection();
@@ -408,11 +437,7 @@ bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
     float startDist = this->deltaLatLonToXY(endLat, endLon, startInt->getLat(), startInt->getLon());
     float endDist = this->deltaLatLonToXY(endLat, endLon, endInt->getLat(), endInt->getLon());
     
-    if(endDist < startDist)
-    {
-        return true;
-    }
-    return false;
+    return endDist < startDist;
 }
     
 double GPS::getHeadingAngle()
@@ -426,7 +451,7 @@ double GPS::getHeadingAngle()
     double angle = std::atan2(dLat, dLon);
     if(angle < 0)
     {
-        angle += M_PI;
+        angle += 2 * M_PI;
     }
     
     return angle;

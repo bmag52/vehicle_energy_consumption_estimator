@@ -255,11 +255,11 @@ int main() {
                 
                 if(headingIsStart2End)
                 {
-                    currLink = Link().linkFromRoad(currRoad, currRoad->getEndIntersection());
+                    currLink = Link().linkFromRoad(currRoad, currRoad->getStartIntersection());
                 }
                 else
                 {
-                    currLink = Link().linkFromRoad(currRoad, currRoad->getStartIntersection());
+                    currLink = Link().linkFromRoad(currRoad, currRoad->getEndIntersection());
                 }
                 
                 // start prediction
@@ -311,7 +311,7 @@ int main() {
                     }
                     
                     std::cout << "prediction distance: " << travelDist_i << std::endl;
-                    std::cout << "*******************************************" << std::endl;
+                    std::cout << "**************************************************************************************" << std::endl;
                     prevLatLon = currLatLon;
                     break;
                 }

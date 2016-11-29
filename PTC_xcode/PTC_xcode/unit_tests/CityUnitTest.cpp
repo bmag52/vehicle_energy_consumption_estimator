@@ -40,10 +40,13 @@ void city_ut()
 {
     DataManagement dm;
     
-    RoutePrediction* rp = dm.getRoutePredictionData();
+    // print city
     City* city = dm.getCityData();
-    rp->addCity(city);
     city->printIntersectionsAndRoads();
+    
+    // get route prediction
+    RoutePrediction* rp = dm.getRoutePredictionData();
+    rp->addCity(city);
     
     GenericMap<long int, std::pair<double, double>*>* trace = dm.getMostRecentTripData();
     Route* route = city->getRouteFromGPSTrace(trace);

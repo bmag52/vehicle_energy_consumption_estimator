@@ -562,20 +562,18 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                     isFirstRoad = false;
                 }
                 
-                Link* link;
-                Intersection* currInt;
+                Link* link = new Link(toStartIntDist <= toEndIntDist, prevRoad->getRoadID());
                 
-                if(toStartIntDist < toEndIntDist)
+                Intersection* currInt;
+                if(toStartIntDist <= toEndIntDist)
                 {
-                    link = Link().linkFromRoad(prevRoad, start);
                     currInt = start;
                 }
                 else
                 {
-                    link = Link().linkFromRoad(prevRoad, end);
                     currInt = end;
                 }
-                
+        
                 if(currInt->getIntersectionID() == currRoad->getStartIntersection()->getIntersectionID())
                 {
                     nextIntersection = currRoad->getEndIntersection();

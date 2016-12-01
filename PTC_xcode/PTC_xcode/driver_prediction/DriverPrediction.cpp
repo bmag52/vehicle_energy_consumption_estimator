@@ -50,6 +50,7 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
     
     // get start intersection
     Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, false);
+    std::cout << "start intersection: " << startIntersection->getIntersectionID() << std::endl;
     
     // get pred route
     Route* predRoute = this->rp->startPrediction(startIntersection, currentConditions);
@@ -424,13 +425,11 @@ SpeedPrediction* DriverPrediction::getSP()
 
 bool DriverPrediction::allLinksHaveWeigths(Route* route)
 {
-    bool allLinksAreWeighted = true;
-    
     route->getLinks()->initializeCounter();
     GenericEntry<long int, Link*>* nextLink = route->getLinks()->nextEntry();
     while(nextLink != NULL)
     {
-        if(!nextLink->value->linkHasWeights() && !nextLink->value->finalLink())
+        if(!nextLink->value->linkHasWeights() && !nextLink->value->isFinalLink())
         {
             return false;
         }
@@ -438,7 +437,7 @@ bool DriverPrediction::allLinksHaveWeigths(Route* route)
     }
     delete(nextLink);
     
-    return allLinksAreWeighted;
+    return true;
 }
     
 } /* namespace PredictivePowertrain */

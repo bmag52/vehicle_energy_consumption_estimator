@@ -186,7 +186,7 @@ Route* RoutePrediction::predict(Link* linkTaken)
 		this->predictedRoute = this->unknownRoute;
 		return this->unknownRoute;
 	}
-    else if (linkTaken->isFinalLink())
+    else if(linkTaken->isFinalLink())
     {
 		this->predictedRoute = this->overRoute;
 		return this->overRoute;

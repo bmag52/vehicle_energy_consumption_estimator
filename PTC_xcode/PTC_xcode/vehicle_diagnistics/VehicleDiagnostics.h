@@ -61,6 +61,4 @@ namespace PredictivePowertrain {
     
 }
 
-
-
 #endif /* VEHICLE_DIAGNOSTICS_GPS_H_ */

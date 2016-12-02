@@ -103,7 +103,7 @@ RoutePrediction* routePrediction_ut()
     RoutePrediction* rp = new RoutePrediction(city);
     Link link = links[0];
     int routeLength = 10;
-    Intersection* startIntersection = city->getIntersectionFromLink(&link, false);
+    Intersection* startIntersection = city->getIntersectionFromLink(&link, true);
     
     // generate random actual route
     Route startRoute;
@@ -136,13 +136,10 @@ RoutePrediction* routePrediction_ut()
     
     // predict actual route as it is 'driven' over
     int predIter = 1;
-    Route* predRoute = rp->startPrediction(startIntersection, conditions);
-    while(actualRoute->getLinkSize() > 1)
+    Route* predRoute = rp->startPrediction(actualRoute->getLinks()->getEntry(0), startIntersection, conditions);
+    while(actualRoute->getLinkSize() > 2)
     {
         std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
-        
-        // predict route
-        predRoute = rp->predict(actualRoute->getLinks()->getEntry(0));
         
         // update actual route as it's 'driven' over
         actualRoute->removeFirstLink();
@@ -152,6 +149,9 @@ RoutePrediction* routePrediction_ut()
         
         // print predicted route
         predRoute->printLinks();
+        
+        // predict route
+        predRoute = rp->predict(actualRoute->getLinks()->getEntry(0));
         
         // check if predicted route is actual route
         if(actualRoute->isEqual(predRoute))

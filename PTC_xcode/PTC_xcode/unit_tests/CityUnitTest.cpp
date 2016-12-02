@@ -88,16 +88,13 @@ void city_ut()
     conditions->at(0) = 1;
     conditions->at(1) = 2;
     
-    Intersection* startIntersection = city->getIntersectionFromLink(route->getLinks()->getEntry(0), false);
+    Intersection* startIntersection = city->getIntersectionFromLink(route->getLinks()->getEntry(0), true);
     
     int predIter = 1;
-    Route* predRoute = rp->startPrediction(startIntersection, conditions);
-    while(route->getLinkSize() > 1)
+    Route* predRoute = rp->startPrediction(route2->getLinks()->getEntry(0), startIntersection, conditions);
+    while(route->getLinkSize() > 2)
     {
         std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
-        
-        // predict route
-        predRoute = rp->predict(route->getLinks()->getEntry(0));
         
         // update actual route as it's 'driven' over
         route->removeFirstLink();
@@ -107,6 +104,9 @@ void city_ut()
         
         // print predicted route
         predRoute->printLinks();
+        
+        // predict route
+        predRoute = rp->predict(route->getLinks()->getEntry(0));
         
         // check if predicted route is actual route
 //        if(route->isEqual(predRoute))
@@ -127,13 +127,10 @@ void city_ut()
     rp2->addCity(city);
     
     predIter = 1;
-    predRoute = rp2->startPrediction(startIntersection, conditions);
-    while(route2->getLinkSize() > 1)
+    predRoute = rp2->startPrediction(route2->getLinks()->getEntry(0), startIntersection, conditions);
+    while(route2->getLinkSize() > 2)
     {
         std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
-        
-        // predict route
-        predRoute = rp2->predict(route2->getLinks()->getEntry(0));
         
         // update actual route as it's 'driven' over
         route2->removeFirstLink();
@@ -143,6 +140,9 @@ void city_ut()
         
         // print predicted route
         predRoute->printLinks();
+        
+        // predict route
+        predRoute = rp2->predict(route2->getLinks()->getEntry(0));
         
         // check if predicted route is actual route
 //        if(route->isEqual(predRoute))

@@ -38,6 +38,7 @@ public:
 	virtual ~Intersection();
 	void addRoad(Road* road, int roadDir);
 	GenericMap<long int, Link*>* getOutgoingLinks();
+    GenericMap<long int, Link*>* getOutgoingLinks(Link* excluded);
 	int getRoadCount();
 	long int getIntersectionID();
 	float getElevation();

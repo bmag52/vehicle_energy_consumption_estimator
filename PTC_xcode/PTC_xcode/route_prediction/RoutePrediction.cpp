@@ -85,12 +85,12 @@ GoalToLinkMap* RoutePrediction::getGoalToLink()
     return this->goalToLink;
 }
 
-Route* RoutePrediction::startPrediction(Intersection* currentIntersection, std::vector<float>* currentCondition)
+Route* RoutePrediction::startPrediction(Link* linkTaken, Intersection* currentIntersection, std::vector<float>* currentCondition)
 {
     delete(this->predictedGoal);
 	this->predictedGoal = new Goal(1, currentCondition);
 
-	GenericMap<long int, Link*>* nextLinks = currentIntersection->getOutgoingLinks();
+	GenericMap<long int, Link*>* nextLinks = currentIntersection->getOutgoingLinks(linkTaken);
     this->probabilities = new std::vector<float>(nextLinks->getSize() * this->goals->getSize());
 
 	// creating the probability of each goal based on its relation to the conditions
@@ -155,7 +155,7 @@ Route* RoutePrediction::predict(Link* linkTaken)
 	GenericMap<long int, Link*>* legalLinks;
 	if(this->currentRoute->isIntersection())
 	{
-		legalLinks = this->currentRoute->getIntersection()->getOutgoingLinks();
+		legalLinks = this->currentRoute->getIntersection()->getOutgoingLinks(linkTaken);
 		this->currentRoute = new Route();
 	}
     else

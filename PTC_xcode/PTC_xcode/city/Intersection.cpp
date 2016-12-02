@@ -70,6 +70,43 @@ void Intersection::replaceRoads(GenericMap<long int, Road*>* roads)
     this->roads = roads;
 }
 
+GenericMap<long int, Link*>* Intersection::getOutgoingLinks(Link* excluded)
+{
+    GenericMap<long int, Link*>* outGoingLinks = new GenericMap<long int, Link*>();
+    long int linkCount = 0;
+    
+    this->roads->initializeCounter();
+    GenericEntry<long int, Road*>* nextRoad = this->roads->nextEntry();
+    while(nextRoad != NULL)
+    {
+        
+        if(nextRoad->value->getRoadID() != excluded->getNumber())
+        {
+            /* OLD
+             Link* newLink = this->link->linkFromRoad(nextRoad->value, this);
+             outGoingLinks->addEntry(linkCount, newLink);
+             linkCount++;
+             */ 
+            
+            // every road is now bi directional
+            Link* link0 = new Link(1, nextRoad->value->getRoadID());
+            Link* link1 = new Link(0, nextRoad->value->getRoadID());
+            
+            outGoingLinks->addEntry(linkCount, link0);
+            linkCount++;
+            
+            outGoingLinks->addEntry(linkCount, link1);
+            linkCount++;
+        }
+        
+        nextRoad = this->roads->nextEntry();
+        
+    }
+    delete(nextRoad);
+    
+    return outGoingLinks;
+}
+    
 GenericMap<long int, Link*>* Intersection::getOutgoingLinks()
 {
 	GenericMap<long int, Link*>* outGoingLinks = new GenericMap<long int, Link*>();

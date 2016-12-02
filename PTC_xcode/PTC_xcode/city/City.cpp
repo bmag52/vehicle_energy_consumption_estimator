@@ -613,17 +613,70 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
     }
     delete(nextMeas);
     
-    delete(traceCopy);
-    
     fclose(csv);
     
     // add last road
-    Link* link = Link().linkFromRoad(currRoad, nextIntersection);
-    links->addEntry(linkCount++, link);
+    if(this->roadIsOnTrace(currRoad, traceCopy))
+    {
+        Intersection* start = currRoad->getStartIntersection();
+        Intersection* end = currRoad->getEndIntersection();
+        
+        std::pair<double, double>* lastMeas = trace->getEntry(trace->getSize() - 1);
+        double lat = lastMeas->first;
+        double lon = lastMeas->second;
+        
+        float startDist = gps.deltaLatLonToXY(lat, lon, start->getLat(), start->getLon());
+        float endDist = gps.deltaLatLonToXY(lat, lon, end->getLat(), end->getLon());
+        
+        Link* link = new Link(startDist <= endDist, currRoad->getRoadID());
+        links->addEntry(linkCount++, link);
+        
+        // find nearest measurement between start and end intersections of last link
+        traceCopy->initializeCounter();
+        GenericEntry<long int, std::pair<double, double>*>* nextMeasCopy = traceCopy->nextEntry();
+        
+        float nearestStartDist = FLT_MAX;
+        float nearestEndDist = FLT_MAX;
+        
+        while(nextMeasCopy != NULL)
+        {
+            // next measurement cop lat / lon
+            double nmcLat = nextMeasCopy->value->first;
+            double nmcLon = nextMeasCopy->value->second;
+            
+            // calc start and end distances to measurement ith
+            float startDist_i = gps.deltaLatLonToXY(nmcLat, nmcLon, start->getLat(), start->getLon());
+            float endDist_i = gps.deltaLatLonToXY(nmcLat, nmcLon, end->getLat(), end->getLon());
+            
+            if(startDist_i < nearestStartDist)
+            {
+                nearestStartDist = startDist_i;
+            }
+            
+            if(endDist_i < nearestEndDist)
+            {
+                nearestEndDist = endDist_i;
+            }
+            
+            nextMeasCopy = traceCopy->nextEntry();
+        }
+        delete(nextMeasCopy);
+        
+        if(nearestEndDist > nearestStartDist)
+        {
+            nextIntersection = currRoad->getEndIntersection();
+        }
+        else
+        {
+            nextIntersection = currRoad->getStartIntersection();
+        }
+    }
+    delete(traceCopy);
     
     // add final link
     links->addEntry(linkCount, Link().finalLink());
     
+    // create route
     Route* route = new Route(links, new Goal(nextIntersection->getIntersectionID()));
     return route;
 }

@@ -171,7 +171,9 @@ void Route::saveRoute2CSV(FILE* file, City* city, bool includeheaderAndCloseFile
         {
             // road nodes
             fprintf(file, "%ld,", currRoad->getRoadID());
-            fprintf(file, "Lat & Lon: %.12f %.12f,", nextNode->value->getLat(), nextNode->value->getLon());
+            fprintf(file, "Lat & Lon: %.12f %.12f | ", nextNode->value->getLat(), nextNode->value->getLon());
+            fprintf(file, "Start Intersection: %ld | ", currRoad->getStartIntersection()->getIntersectionID());
+            fprintf(file, "End Intersection: %ld,", currRoad->getEndIntersection()->getIntersectionID());
             fprintf(file, "red,");
             fprintf(file, "%.12f,%.12f\n", nextNode->value->getLat(), nextNode->value->getLon());
             

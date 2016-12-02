@@ -49,11 +49,11 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
     this->currLink = currentLink;
     
     // get start intersection
-    Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, false);
+    Intersection* startIntersection = this->city->getIntersectionFromLink(currentLink, true);
     std::cout << "start intersection: " << startIntersection->getIntersectionID() << std::endl;
     
     // get pred route
-    Route* predRoute = this->rp->startPrediction(startIntersection, currentConditions);
+    Route* predRoute = this->rp->startPrediction(currentLink, startIntersection, currentConditions);
     
     // update current route
     this->predRoute = predRoute;
@@ -245,7 +245,7 @@ void DriverPrediction::parseRoute(Route* currRoute, std::vector<float>* spds, Ge
     
 void DriverPrediction::trainSpeedPredictionOverLastLink()
 {
-    int trainIters = 10;
+    int trainIters = 1;
     
     // matrices for speed prediction
     Eigen::MatrixXd spdIn(1,this->sp->getI()+1);

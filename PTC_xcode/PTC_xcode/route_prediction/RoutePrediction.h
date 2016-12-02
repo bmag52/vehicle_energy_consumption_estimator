@@ -57,7 +57,7 @@ public:
 	RoutePrediction();
 	RoutePrediction(City* city);
     virtual ~RoutePrediction();
-    Route* startPrediction(Intersection* currentIntersection, std::vector<float>* currentCondition);
+    Route* startPrediction(Link* linkTaken, Intersection* currentIntersection, std::vector<float>* currentCondition);
 	Route* predict(Link* linkTaken);
 	void parseRoute(Route* route);
     GenericMap<long int, Link*>* getLinks();

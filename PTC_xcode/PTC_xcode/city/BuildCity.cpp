@@ -16,7 +16,10 @@ BuildCity::BuildCity()
     
 BuildCity::~BuildCity()
 {
-    delete(this->rawRoads);
+    if(this->newBoundsFound)
+    {
+        delete(this->rawRoads);
+    }
 }
 
 std::pair<GenericMap<int, Intersection*> *, GenericMap<long int, Road*>*>* BuildCity::parseAdjMat() {

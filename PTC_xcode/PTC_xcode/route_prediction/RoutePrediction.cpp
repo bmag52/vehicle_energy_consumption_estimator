@@ -210,7 +210,7 @@ Route* RoutePrediction::predict(Link* linkTaken)
 		this->predictedRoute = predictPrivate(NULL, this->states->copy(), probabilitiesCopy);
 	}
 
-	if(this->predictedRoute->isEmpty())
+	if(!this->predictedRoute->isEmpty())
 	{
 		return this->predictedRoute;
     }

@@ -115,7 +115,6 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
         
         // update current link and predicted route
         this->currLink = currentLink;
-        delete(this->predRoute);
         this->predRoute = newPredRoute;
     }
     

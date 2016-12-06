@@ -161,7 +161,7 @@ Route* RoutePrediction::predict(Link* linkTaken)
     else
     {
 		assert(!linkTaken->isFinalLink());
-		legalLinks = this->city->getNextLinks(this->currentRoute->getLastLink());
+		legalLinks = this->city->getNextLinks(linkTaken);
 	}
 
 	// make sure that the link given is legal

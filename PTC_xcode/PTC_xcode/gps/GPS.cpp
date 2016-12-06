@@ -118,7 +118,7 @@ std::pair<double, double>* GPS::convertXYToLatLon(double x, double y)
     
 double GPS::toDegrees(double radians)
 {
-    return radians / (2* M_PI) * 360.0;
+    return radians / (2 * M_PI) * 360.0;
 }
     
 double GPS::toRadians(double degrees)
@@ -279,6 +279,15 @@ Road* GPS::getCurrentRoad2(City* city, double lat, double lon)
             float currDist = this->deltaLatLonToXY(lat, lon, nextNode->value->getLat(), nextNode->value->getLon());
             if(currDist < closestDist)
             {
+//                bool headingIsStart2End = this->isHeadingStart2EndOfCurrentRoad(nextRoad->value);
+//                float distAlongRoad = this->getDistAlongRoad(nextRoad->value, false, headingIsStart2End);
+//                
+//                if(city->roadIsOnTrace(nextRoad->value, &this->tripLog, distAlongRoad / nextRoad->value->getSplineLength() - .1))
+//                {
+//                    closestDist = currDist;
+//                    closestRoad = nextRoad->value;
+//                }
+                
                 closestDist = currDist;
                 closestRoad = nextRoad->value;
             }
@@ -364,6 +373,8 @@ bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
     
     // get road nodes
     GenericMap<long int, Node*>* nodes = road->getNodes();
+    
+    // iterate over road nodes
     nodes->initializeCounter();
     GenericEntry<long int, Node*>* nextNode = nodes->nextEntry();
     
@@ -372,11 +383,14 @@ bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
     
     nextNode = nodes->nextEntry();
   
-    double currLat = nextNode->value->getLat();
-    double currLon = nextNode->value->getLon();
+    double currLat = prevLat;
+    double currLon = prevLon;
     
     while(nextNode != NULL)
     {
+        currLat = nextNode->value->getLat();
+        currLon = nextNode->value->getLon();
+        
         // stop tracking distance once in proximity to current lat / lon
         if(this->deltaLatLonToXY(lat, lon, currLat, currLon) < this->deltaXYTolerance)
         {
@@ -387,10 +401,6 @@ bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
         prevLat = currLat;
         prevLon = currLon;
         
-        // update curr
-        currLat = nextNode->value->getLat();
-        currLon = nextNode->value->getLon();
-        
         nextNode = nodes->nextEntry();
     }
     delete(nextNode);
@@ -400,10 +410,7 @@ bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
     
     // evaluate spline heading
     double angleSpline = std::atan2(dLat, dLon);
-    if(angleSpline < 0)
-    {
-        angleSpline += 2 * M_PI;
-    }
+    angleSpline = this->boundTheta(angleSpline);
     
     // get gps heading
     double angleHeading = this->getHeadingAngle();
@@ -411,7 +418,7 @@ bool GPS::isHeadingStart2EndOfCurrentRoad(Road* road)
     // discern direction of travel relative to eval orientation of spline
     bool evalUp = false;
     float angleDiff = std::abs(angleHeading - angleSpline);
-    if(angleDiff < M_PI / 4)
+    if(angleDiff < M_PI / 4 || angleDiff > 2 * M_PI - M_PI / 4)
     {
         evalUp = true;
     }
@@ -449,12 +456,24 @@ double GPS::getHeadingAngle()
     double dLon = latLon1.second - latLon2.second;
     
     double angle = std::atan2(dLat, dLon);
-    if(angle < 0)
-    {
-        angle += 2 * M_PI;
-    }
+    angle = this->boundTheta(angle);
     
     return angle;
+}
+    
+double GPS::boundTheta(double theta)
+{
+    while(theta < 0)
+    {
+        theta += 2 * M_PI;
+    }
+    
+    while(theta > 2 * M_PI)
+    {
+        theta -= 2 * M_PI;
+    }
+    
+    return theta;
 }
     
 double GPS::getDeltaXYTolerance()

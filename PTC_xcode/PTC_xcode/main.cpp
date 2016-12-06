@@ -303,11 +303,14 @@ int main()
                     totalDist += travelDist_i;
                     std::cout << "total dist traveled: " << totalDist << std::endl;
                     
-                    // if dist ratio is more than 2x prediction interval distance, buffer speed
-                    for(int i = 1; i <= distRatio; i++)
+                    if(distRatio > 2)
                     {
-                        actualSpeed.push_back(vehSpd);
-                        dp.updateSpeedsbyVal(vehSpd);
+                        // if dist ratio is more than 2x prediction interval distance, buffer speed
+                        for(int i = 1; i <= distRatio; i++)
+                        {
+                            actualSpeed.push_back(vehSpd);
+                            dp.updateSpeedsbyVal(vehSpd);
+                        }
                     }
                     
                     std::cout << "prediction distance: " << travelDist_i << std::endl;

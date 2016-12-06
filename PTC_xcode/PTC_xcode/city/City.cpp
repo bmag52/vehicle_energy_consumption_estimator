@@ -513,9 +513,9 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
         if(currRoad->getRoadID() != prevRoad->getRoadID())
         {
             // ensure previous road was on trace
-            bool prevRoadIsOnTrace = this->roadIsOnTrace(prevRoad, traceCopy);
+            bool prevRoadIsOnTrace = this->roadIsOnTrace(prevRoad, traceCopy, .50);
             
-            if((prevRoadIsOnTrace) || isFirstRoad)
+            if(prevRoadIsOnTrace || isFirstRoad)
             {
                 Intersection* start = prevRoad->getStartIntersection();
                 Intersection* end = prevRoad->getEndIntersection();
@@ -616,7 +616,7 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
     fclose(csv);
     
     // add last road
-    if(this->roadIsOnTrace(currRoad, traceCopy))
+    if(this->roadIsOnTrace(currRoad, traceCopy, .25))
     {
         Intersection* start = currRoad->getStartIntersection();
         Intersection* end = currRoad->getEndIntersection();
@@ -681,7 +681,7 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
     return route;
 }
     
-bool City::roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, double>*>* trace)
+bool City::roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, double>*>* trace, float thresh)
 {
     GPS gps;
     
@@ -717,18 +717,13 @@ bool City::roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, doub
                 double roadAngle = std::atan2(prevRoadLat - currRoadLat, prevRoadLon - currRoadLon);
                 double traceAngle = std::atan2(prevTraceLat - currTraceLat, prevTraceLon - currTraceLon);
                 
-                if(roadAngle < 0)
-                {
-                    roadAngle += 2 * M_PI;
-                }
-                
-                if(traceAngle < 0)
-                {
-                    traceAngle += 2 * M_PI;
-                }
+                roadAngle = gps.boundTheta(roadAngle);
+                traceAngle = gps.boundTheta(traceAngle);
                 
                 float angleDiff = std::abs(roadAngle - traceAngle);
-                if(angleDiff < M_PI / 4 || angleDiff - M_PI < M_PI / 4)
+                
+                //      same heading             opposite heading                same heading
+                if(angleDiff < M_PI / 4 || angleDiff - M_PI < M_PI / 4 || angleDiff > 2 * M_PI - M_PI / 4)
                 {
                     closeNodeCount++;
                 }
@@ -747,7 +742,7 @@ bool City::roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, doub
     delete(prevNode);
     delete(currNode);
     
-    return closeNodeCount > .50 * (float) road->getNodes()->getSize();
+    return closeNodeCount > thresh * (float) road->getNodes()->getSize();
 }
     
 void City::printIntersectionsAndRoads()

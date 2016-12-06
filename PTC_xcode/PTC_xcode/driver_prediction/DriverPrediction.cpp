@@ -104,7 +104,7 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
             this->trainSpeedPredictionOverLastLink();
         }
         // perform route prediction
-        Route* newPredRoute = this->rp->predict(currentLink)->copy();
+        Route* newPredRoute = this->rp->predict(currentLink);
         
         // add speed prediction vals to route and attached current link to front
         if(!newPredRoute->isEqual(this->rp->getUnknownRoute()) && !newPredRoute->isEqual(this->rp->getOverRoute()))

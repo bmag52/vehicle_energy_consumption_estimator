@@ -71,6 +71,7 @@ public:
     bool isHeadingStart2EndOfCurrentRoad(Road* road);
     double getHeadingAngle();
     double getDeltaXYTolerance();
+    double boundTheta(double theta);
 };
 
 }

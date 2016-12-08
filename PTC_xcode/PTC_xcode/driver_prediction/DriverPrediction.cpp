@@ -136,107 +136,110 @@ void DriverPrediction::parseRoute(Route* currRoute, std::vector<float>* spds, Ge
 {
     std::cout << "in driver prediction: parsing route" << std::endl;
     
-    // train speed prediction
-    GPS gps;
-    
-    // clear out dp buffers since no longer training NN on the fly
-    this->beforeLinkSpds.clear();
-    this->linkSpds.clear();
-    std::queue<float> empty;
-    std::swap(this->lastSpds, empty);
-    
-    // make copy of actual speed values since this will be mutilated
-    std::vector<float> spdsCopy(*spds);
-    
-    // trim off actual speed measurements taken over first link
-    Link* firstRouteLink = currRoute->getLinks()->getEntry(0);
-    
-    // erase from front of speed trace
-    Road* road_i = this->city->getRoads()->getEntry(firstRouteLink->getNumber());
-    
-    road_i->getNodes()->initializeCounter();
-    GenericEntry<long int, Node*>* nextNode = road_i->getNodes()->nextEntry();
-    while(nextNode != NULL)
+    if(spds->size() > 0)
     {
-        trace->initializeCounter();
-        GenericEntry<long int, std::pair<double, double>*>* nextMeas = trace->nextEntry();
-        while(nextMeas != NULL)
+        // train speed prediction
+        GPS gps;
+        
+        // clear out dp buffers since no longer training NN on the fly
+        this->beforeLinkSpds.clear();
+        this->linkSpds.clear();
+        std::queue<float> empty;
+        std::swap(this->lastSpds, empty);
+        
+        // make copy of actual speed values since this will be mutilated
+        std::vector<float> spdsCopy(*spds);
+        
+        // trim off actual speed measurements taken over first link
+        Link* firstRouteLink = currRoute->getLinks()->getEntry(0);
+        
+        // erase from front of speed trace
+        Road* road_i = this->city->getRoads()->getEntry(firstRouteLink->getNumber());
+        
+        road_i->getNodes()->initializeCounter();
+        GenericEntry<long int, Node*>* nextNode = road_i->getNodes()->nextEntry();
+        while(nextNode != NULL)
         {
-            double nodeLat = nextNode->value->getLat();
-            double nodeLon = nextNode->value->getLon();
-            
-            double traceLat = nextMeas->value->first;
-            double traceLon = nextMeas->value->second;
-            
-            float dist = gps.deltaLatLonToXY(nodeLat, nodeLon, traceLat, traceLon);
-            
-            if(dist < gps.getDeltaXYTolerance())
+            trace->initializeCounter();
+            GenericEntry<long int, std::pair<double, double>*>* nextMeas = trace->nextEntry();
+            while(nextMeas != NULL)
             {
-                spdsCopy.erase(spdsCopy.begin());
-                break;
+                double nodeLat = nextNode->value->getLat();
+                double nodeLon = nextNode->value->getLon();
+                
+                double traceLat = nextMeas->value->first;
+                double traceLon = nextMeas->value->second;
+                
+                float dist = gps.deltaLatLonToXY(nodeLat, nodeLon, traceLat, traceLon);
+                
+                if(dist < gps.getDeltaXYTolerance())
+                {
+                    spdsCopy.erase(spdsCopy.begin());
+                    break;
+                }
+                
+                nextMeas = trace->nextEntry();
+            }
+            delete(nextMeas);
+            
+            nextNode = road_i->getNodes()->nextEntry();
+        }
+        delete(nextNode);
+        
+        // get distance covered from trimmed actual speed trace
+        float spdDist = spdsCopy.size() * this->sp->getDS();
+        
+        // begin training loop over link that have actual speed
+        // measurements from start to end
+        currRoute->getLinks()->initializeCounter();
+        GenericEntry<long int, Link*>* nextLink = currRoute->getLinks()->nextEntry();
+        while(nextLink != NULL && !nextLink->value->isFinalLink())
+        {
+            // exclude first and last link since we only want links with
+            // actual speed measurements over they're entirety
+            if(nextLink->key == 0 || nextLink->key == currRoute->getLinks()->getSize() - 2)
+            {
+                nextLink = currRoute->getLinks()->nextEntry();
+                continue;
             }
             
-            nextMeas = trace->nextEntry();
-        }
-        delete(nextMeas);
-        
-        nextNode = road_i->getNodes()->nextEntry();
-    }
-    delete(nextNode);
-    
-    // get distance covered from trimmed actual speed trace
-    float spdDist = spdsCopy.size() * this->sp->getDS();
-    
-    // begin training loop over link that have actual speed
-    // measurements from start to end
-    currRoute->getLinks()->initializeCounter();
-    GenericEntry<long int, Link*>* nextLink = currRoute->getLinks()->nextEntry();
-    while(nextLink != NULL && !nextLink->value->isFinalLink())
-    {
-        // exclude first and last link since we only want links with
-        // actual speed measurements over they're entirety
-        if(nextLink->key == 0 || nextLink->key == currRoute->getLinks()->getSize() - 2)
-        {
+            std::cout << nextLink->value->getNumber() << std::endl;
+            
+            // get necessary road data
+            Road* road_i = this->city->getRoads()->getEntry(nextLink->value->getNumber());
+            float roadDist_i = road_i->getSplineLength();
+            float roadSpdIndices_i = (float) roadDist_i / spdDist * spds->size();
+            
+            // vector containing actual speed values for given link
+            std::vector<float> roadSpds_i;
+            
+            // get road speeds from actual trace of speed values.
+            for(int i = 0; i < roadSpdIndices_i; i++)
+            {
+                roadSpds_i.push_back(spdsCopy.front());
+                spdsCopy.erase(spdsCopy.begin());
+            }
+            
+            // train for speed at beginnging of next link
+            roadSpds_i.push_back(spdsCopy.at(0));
+            
+            // set current link
+            this->setCurrentLink(nextLink->value);
+            
+            // populate link speed buffers
+            while(roadSpds_i.size() > 0)
+            {
+                this->updateSpeedsbyVal(roadSpds_i.front());
+                roadSpds_i.erase(roadSpds_i.begin());
+            }
+            
+            // train
+            this->trainSpeedPredictionOverLastLink();
+            
             nextLink = currRoute->getLinks()->nextEntry();
-            continue;
         }
-        
-        std::cout << nextLink->value->getNumber() << std::endl;
-        
-        // get necessary road data
-        Road* road_i = this->city->getRoads()->getEntry(nextLink->value->getNumber());
-        float roadDist_i = road_i->getSplineLength();
-        float roadSpdIndices_i = (float) roadDist_i / spdDist * spds->size();
-        
-        // vector containing actual speed values for given link
-        std::vector<float> roadSpds_i;
-        
-        // get road speeds from actual trace of speed values.
-        for(int i = 0; i < roadSpdIndices_i; i++)
-        {
-            roadSpds_i.push_back(spdsCopy.front());
-            spdsCopy.erase(spdsCopy.begin());
-        }
-        
-        // train for speed at beginnging of next link
-        roadSpds_i.push_back(spdsCopy.at(0));
-        
-        // set current link
-        this->setCurrentLink(nextLink->value);
-        
-        // populate link speed buffers
-        while(roadSpds_i.size() > 0)
-        {
-            this->updateSpeedsbyVal(roadSpds_i.front());
-            roadSpds_i.erase(roadSpds_i.begin());
-        }
-        
-        // train
-        this->trainSpeedPredictionOverLastLink();
-        
-        nextLink = currRoute->getLinks()->nextEntry();
+        delete(nextLink);
     }
-    delete(nextLink);
     
     // train routpe prediction
     this->rp->parseRoute(currRoute);

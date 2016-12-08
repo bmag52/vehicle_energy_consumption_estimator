@@ -13,25 +13,47 @@
 
 using namespace PredictivePowertrain;
 
-void dataManagement_ut() {
-
+void dataManagement_ut()
+{
+    
 	DataManagement testDM;
     
-    // test storage of rp data
-    City* city_rp = testDM.getCityData();
+    // print city
+    City* cityStore = testDM.getCityData();
+    
+    // get route prediction
+    RoutePrediction* rpStore = testDM.getRoutePredictionData();
+    rpStore->addCity(cityStore);
+    
     GenericMap<long int, std::pair<double, double>*>* trace = testDM.getMostRecentTripData();
+    Route* route = cityStore->getRouteFromGPSTrace(trace);
+    Route* route2 = route->copy();
     
-    Route* route = city_rp->getRouteFromGPSTrace(trace);
-    RoutePrediction rp0(city_rp);
+    std::ifstream input("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_SPEED_FUEL_FLOW.csv");
     
-    DriverPrediction dp(&rp0);
+    std::string num;
+    std::vector<float> actualSpds;
     
-    std::vector<float> spd;
-
-    dp.parseRoute(route, &spd, trace);
+    // read in speed from csv
+    while(1)
+    {
+        std::getline(input, num, ',');
+        std::stringstream fs(num);
+        float f = 0.0;
+        fs >> f;
+        
+        if(f == -1)
+        {
+            break;
+        }
+        
+        actualSpds.push_back(f);
+    }
+    
+    DriverPrediction dp(rpStore);
+    dp.parseRoute(route, &actualSpds, trace);
     
     testDM.addRoutePredictionData(dp.getRP());
-    RoutePrediction* rp1 = testDM.getRoutePredictionData();
 
 	// test trip log add and get
 	GenericMap<long int, std::pair<double, double>*>* latLon = new GenericMap<long int, std::pair<double, double>*>();
@@ -202,10 +224,6 @@ void dataManagement_ut() {
     
     // retrieve stored route prediction data
     RoutePrediction* storedrp = testDM.getRoutePredictionData();
-//    LinkToStateMap* storedLink2State = storedrp->getLinkToState();
-//    GoalToLinkMap* storeGoal2Link = storedrp->getGoalToLink();
-//    GenericMap<long int, Link*>* storedLinks = storedrp->getLinks();
-//    GenericMap<long int, Goal*>* storedGoals = storedrp->getGoals();
     
 }
 

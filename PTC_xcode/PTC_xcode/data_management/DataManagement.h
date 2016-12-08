@@ -37,7 +37,10 @@ private:
 	std::string routePredictionData = saveFolder + "routePrediction.json";
 	std::string cityData = saveFolder + "cities.json";
 	std::string tripData = saveFolder + "tripLogs.json";
-
+    std::string nnDataLoc = saveFolder + "nnData.bin";
+    
+    bool jsonifyLinkNNData = false;
+    
     int countFileLine(std::string fileLoc);
     
 public:
@@ -48,6 +51,11 @@ public:
 	RoutePrediction* getRoutePredictionData();
 	City* getCityData();
 	GenericMap<long int, std::pair<double, double>*>* getMostRecentTripData();
+    
+    // for serializing matrices
+    template<class Matrix> void write_binary(std::ofstream& out, const Matrix& matrix, int matrixType, int layerNum, long int linkHash);
+    template<class Matrix> void read_binary(std::ifstream& in, Matrix& matrix, int& matrixTypeNum, int& layerNum, long int& linkHash);
+
 };
 
 } /* namespace PredictivePowertrain */

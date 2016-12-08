@@ -48,6 +48,9 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
 {
     // links
     ptree links_ptree;
+    
+    std::ofstream out(this->nnDataLoc.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
+    
     rp->getLinks()->initializeCounter();
     GenericEntry<long int, Link*>* nextLink = rp->getLinks()->nextEntry();
     while(nextLink != NULL)
@@ -76,53 +79,77 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
                 nnDataType.push_back("B");
             }
             
-            for(int h = 0; h < nnData.size(); h++)
+            // write to json
+            if(this->jsonifyLinkNNData)
             {
-                for(int i = 0; i < nnData.at(h)->size(); i++)
+                for(int h = 0; h < nnData.size(); h++)
                 {
-                    ptree type_ptree;
-                    
-                    type_ptree.put("SIZE", nnData.at(h)->at(i)->size());
-                    
-                    for(int j = 0; j < nnData.at(h)->at(i)->size(); j++)
+                    for(int i = 0; i < nnData.at(h)->size(); i++)
                     {
-                        ptree type_i_ptree;
+                        ptree type_ptree;
                         
-                        type_i_ptree.put("ROWS", nnData.at(h)->at(i)->at(j)->rows());
-                        type_i_ptree.put("COLS", nnData.at(h)->at(i)->at(j)->cols());
+                        type_ptree.put("SIZE", nnData.at(h)->at(i)->size());
                         
-                        for(int row = 0; row < nnData.at(h)->at(i)->at(j)->rows(); row++)
+                        for(int j = 0; j < nnData.at(h)->at(i)->size(); j++)
                         {
-                            ptree type_i_row_ptree;
+                            ptree type_i_ptree;
                             
-                            for(int col = 0; col < nnData.at(h)->at(i)->at(j)->cols(); col++)
+                            type_i_ptree.put("ROWS", nnData.at(h)->at(i)->at(j)->rows());
+                            type_i_ptree.put("COLS", nnData.at(h)->at(i)->at(j)->cols());
+                            
+                            for(int row = 0; row < nnData.at(h)->at(i)->at(j)->rows(); row++)
                             {
-                        
-                                type_i_row_ptree.put(lexical_cast<std::string>(col), nnData.at(h)->at(i)->at(j)->coeffRef(row, col));
+                                ptree type_i_row_ptree;
+                                
+                                for(int col = 0; col < nnData.at(h)->at(i)->at(j)->cols(); col++)
+                                {
+                            
+                                    type_i_row_ptree.put(lexical_cast<std::string>(col), nnData.at(h)->at(i)->at(j)->coeffRef(row, col));
+                                    
+                                }
+                                
+                                type_i_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), type_i_row_ptree));
                                 
                             }
                             
-                            type_i_ptree.push_back(std::make_pair(lexical_cast<std::string>(row), type_i_row_ptree));
+                            type_ptree.push_back(std::make_pair(lexical_cast<std::string>(j), type_i_ptree));
                             
                         }
                         
-                        type_ptree.push_back(std::make_pair(lexical_cast<std::string>(j), type_i_ptree));
+                        std::string type = "wts";
+                        if(i == 1)
+                        {
+                            type = "yHid";
+                        }
+                        
+                        else if(i == 2)
+                        {
+                            type = "yInHid";
+                        }
+                        
+                        link_ptree.push_back(std::make_pair(type + nnDataType.at(h), type_ptree));
                         
                     }
-                    
-                    std::string type = "wts";
-                    if(i == 1)
+                }
+            }
+            
+            // binary serialization
+            else
+            {
+                // type A or B
+                for(int h = 0; h < nnData.size(); h++)
+                {
+                    // wts or yHidAct or yInAct
+                    for(int i = 0; i < nnData.at(h)->size(); i++)
                     {
-                        type = "yHid";
+                        // layer
+                        for(int j = 0; j < nnData.at(h)->at(i)->size(); j++)
+                        {
+                            Eigen::MatrixXd* nnMat = nnData.at(h)->at(i)->at(j);
+                            
+                            this->write_binary(out, *nnMat, i, j, nextLink->value->getHash());
+                        }
                     }
-                    
-                    else if(i == 2)
-                    {
-                        type = "yInHid";
-                    }
-                    
-                    link_ptree.push_back(std::make_pair(type + nnDataType.at(h), type_ptree));
-                    
                 }
             }
         }
@@ -132,6 +159,7 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
         nextLink = rp->getLinks()->nextEntry();
     }
     delete(nextLink);
+    out.close();
     
     // goals
     ptree goals_ptree;
@@ -511,7 +539,7 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                             linkNumber = lexical_cast<long int>(s.second.data());
                         }
                         // read one of the NN matrices
-                        else
+                        else if(this->jsonifyLinkNNData)
                         {
                             // get matrix array size
                             int matRaySize;
@@ -634,6 +662,77 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                 // add final link because link to state include final link
                 Link* finalLink = Link().finalLink();
                 links->addEntry(finalLink->getHash(), finalLink);
+                
+                // read binary data if available
+                if(!this->jsonifyLinkNNData && this->countFileLine(this->nnDataLoc) > 2)
+                {
+                    // need copy of speed prediction to get the number of layers used
+                    SpeedPrediction sp;
+                    
+                    // map nn data to link hash
+                    GenericMap<long int, std::vector<std::vector<Eigen::MatrixXd*>*>*> nnDataMap;
+                    
+                    // open binary containing link nn data
+                    std::ifstream in(this->nnDataLoc.c_str(), std::ios::in | std::ios::binary);
+                    
+                    // matrix and matrix identifiers
+                    Eigen::MatrixXd nnMat;
+                    int matrixTypeNum;
+                    int layerNum;
+                    long int matLinkHash;
+                    
+                    // begin reading binary
+                    while(!in.eof())
+                    {
+                        // read binary
+                        this->read_binary(in, nnMat, matrixTypeNum, layerNum, matLinkHash);
+                        
+                        // create new mat pointer and pointer to nn data container
+                        Eigen::MatrixXd* newNNMat = new Eigen::MatrixXd(nnMat);
+                        std::vector<std::vector<Eigen::MatrixXd*>*>* nnData;
+                        
+                        // grab nn data container if available
+                        if(nnDataMap.hasEntry(matLinkHash))
+                        {
+                            nnData = nnDataMap.getEntry(matLinkHash);
+                        }
+                        
+                        // create new container if not
+                        else
+                        {
+                            nnData = new std::vector<std::vector<Eigen::MatrixXd*>*>(3);
+                            
+                            for(int i = 0; i < nnData->size(); i++)
+                            {
+                                nnData->at(i) = new std::vector<Eigen::MatrixXd*>(sp.getNumLayers());
+                            }
+                            
+                            // add new nn data container to map of nn data to link hashes
+                            nnDataMap.addEntry(matLinkHash, nnData);
+                        }
+                        
+                        // update the map
+                        nnData->at(matrixTypeNum)->at(layerNum) = newNNMat;
+                    }
+                    in.close();
+                    
+                    // iterate through map of link nn data and update map of links
+                    nnDataMap.initializeCounter();
+                    GenericEntry<long int, std::vector<std::vector<Eigen::MatrixXd*>*>*>* nextNNData = nnDataMap.nextEntry();
+                    while(nextNNData != NULL)
+                    {
+                        long int nextLinkHash = nextNNData->key;
+                        std::vector<std::vector<Eigen::MatrixXd*>*>* nnData = nextNNData->value;
+                        
+                        assert(links->hasEntry(nextLinkHash));
+                        
+                        Link* storedLink = links->getEntry(nextLinkHash);
+                        storedLink->setWeights(nnData->at(0), nnData->at(1), nnData->at(2), storedLink->getDirection());
+                        
+                        nextNNData = nnDataMap.nextEntry();
+                    }
+                    delete(nextNNData);
+                }
             }
             
             // GOALS
@@ -1039,6 +1138,37 @@ GenericMap<long int, std::pair<double, double>*>* DataManagement::getMostRecentT
 		std::cout << e.what() << std::endl;
 	}
 	return NULL;
+}
+    
+template<class Matrix>
+void DataManagement::write_binary(std::ofstream& out, const Matrix& matrix, int matrixTypeNum, int layerNum, long int linkHash)
+{
+    // matrix id
+    out.write((char*) (&matrixTypeNum), sizeof(matrixTypeNum));
+    out.write((char*) (&layerNum), sizeof(layerNum));
+    out.write((char*) (&linkHash), sizeof(linkHash));
+    
+    // save matrix
+    typename Matrix::Index rows=matrix.rows(), cols=matrix.cols();
+    out.write((char*) (&rows), sizeof(typename Matrix::Index));
+    out.write((char*) (&cols), sizeof(typename Matrix::Index));
+    out.write((char*) matrix.data(), rows*cols*sizeof(typename Matrix::Scalar) );
+}
+    
+template<class Matrix>
+void DataManagement::read_binary(std::ifstream& in, Matrix& matrix, int& matrixTypeNum, int& layerNum, long int& linkHash)
+{
+    // get matrix id
+    in.read((char*) (&matrixTypeNum), sizeof(matrixTypeNum));
+    in.read((char*) (&layerNum), sizeof(layerNum));
+    in.read((char*) (&linkHash), sizeof(linkHash));
+    
+    // get matrix
+    typename Matrix::Index rows=0, cols=0;
+    in.read((char*) (&rows),sizeof(typename Matrix::Index));
+    in.read((char*) (&cols),sizeof(typename Matrix::Index));
+    matrix.resize(rows, cols);
+    in.read( (char *) matrix.data() , rows*cols*sizeof(typename Matrix::Scalar) );
 }
 
 }

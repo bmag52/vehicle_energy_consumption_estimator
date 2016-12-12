@@ -147,7 +147,7 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
                         {
                             Eigen::MatrixXd* nnMat = nnData.at(h)->at(i)->at(j);
                             
-                            this->write_binary(out, *nnMat, i, j, nextLink->value->getHash());
+                            this->writeBinaryNNMat(out, *nnMat, i, j, nextLink->value->getHash());
                         }
                     }
                 }
@@ -333,53 +333,86 @@ void DataManagement::addCityData(City* city)
 		while(nextBounds != NULL)
 		{
 			ptree boundsData, roads_ptree, intersections_ptree;
+            
+            std::ofstream out(this->nodeDataLoc.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
+            
 			roadMap->initializeCounter();
 			GenericEntry<long int, Road*>* nextRoad = roadMap->nextEntry();
 			while(nextRoad != NULL)
 			{
 				if(nextRoad->value->getBoundsID() == nextBounds->value->getID())
 				{
-					ptree road, startNode, endNode, roadType, nodes, splineLength;
+					ptree road, startNode, endNode, roadType, splineLength;
 					startNode.put("", nextRoad->value->getStartIntersection()->getIntersectionID());
 					endNode.put("", nextRoad->value->getEndIntersection()->getIntersectionID());
 					roadType.put("", nextRoad->value->getRoadType());
                     splineLength.put("", nextRoad->value->getSplineLength());
 
-					ptree lats, lons, nodeElevations, nodeIDs;
-					nextRoad->value->getNodes()->initializeCounter();
-					GenericEntry<long int, Node*>* nextNode = nextRoad->value->getNodes()->nextEntry();
-					while(nextNode != NULL)
-					{
-						Node* node = nextNode->value;
-						ptree lat, lon, ele, id;
-						lat.put("", node->getLat());
-						lon.put("", node->getLon());
-						ele.put("", node->getEle());
-						id.put("", node->getID());
+                    if(this->jsonifyRoadNodes)
+                    {
+                        ptree lats, lons, nodeElevations, nodeIDs, nodes;
+                        nextRoad->value->getNodes()->initializeCounter();
+                        GenericEntry<long int, Node*>* nextNode = nextRoad->value->getNodes()->nextEntry();
+                        while(nextNode != NULL)
+                        {
+                            Node* node = nextNode->value;
+                            ptree lat, lon, ele, id;
+                            lat.put("", node->getLat());
+                            lon.put("", node->getLon());
+                            ele.put("", node->getEle());
+                            id.put("", node->getID());
 
-						lats.push_back(std::make_pair("", lat));
-						lons.push_back(std::make_pair("", lon));
-						nodeElevations.push_back(std::make_pair("", ele));
-						nodeIDs.push_back(std::make_pair("", id));
+                            lats.push_back(std::make_pair("", lat));
+                            lons.push_back(std::make_pair("", lon));
+                            nodeElevations.push_back(std::make_pair("", ele));
+                            nodeIDs.push_back(std::make_pair("", id));
 
-						nextNode = nextRoad->value->getNodes()->nextEntry();
-					}
-					nodes.push_back(std::make_pair("latitude", lats));
-					nodes.push_back(std::make_pair("longitude", lons));
-					nodes.push_back(std::make_pair("elevation", nodeElevations));
-					nodes.push_back(std::make_pair("nodeIDs", nodeIDs));
-
+                            nextNode = nextRoad->value->getNodes()->nextEntry();
+                        }
+                        delete(nextNode);
+                        
+                        nodes.push_back(std::make_pair("latitude", lats));
+                        nodes.push_back(std::make_pair("longitude", lons));
+                        nodes.push_back(std::make_pair("elevation", nodeElevations));
+                        nodes.push_back(std::make_pair("nodeIDs", nodeIDs));
+                        road.push_back(std::make_pair("nodes", nodes));
+                    }
+                    else
+                    {
+                        Eigen::MatrixXd nodesMat(nextRoad->value->getNodes()->getSize(), 4);
+                        int nodeRow = 0;
+                        
+                        nextRoad->value->getNodes()->initializeCounter();
+                        GenericEntry<long int, Node*>* nextNode = nextRoad->value->getNodes()->nextEntry();
+                        while(nextNode != NULL)
+                        {
+                            Node* node = nextNode->value;
+                            
+                            nodesMat.coeffRef(nodeRow, 0) = node->getLat();
+                            nodesMat.coeffRef(nodeRow, 1) = node->getLon();
+                            nodesMat.coeffRef(nodeRow, 2) = node->getEle();
+                            nodesMat.coeffRef(nodeRow, 3) = node->getID();
+                            nodeRow++;
+                            
+                            nextNode = nextRoad->value->getNodes()->nextEntry();
+                        }
+                        delete(nextNode);
+                        
+                        this->writeBinaryNodeMat(out, nodesMat, nextRoad->value->getRoadID());
+                    }
+                    
 					road.push_back(std::make_pair("startNodeID", startNode));
 					road.push_back(std::make_pair("endNodeID", endNode));
 					road.push_back(std::make_pair("roadType", roadType));
                     road.push_back(std::make_pair("splineLength", splineLength));
-					road.push_back(std::make_pair("nodes", nodes));
 
 					roads_ptree.add_child(lexical_cast<std::string>(nextRoad->value->getRoadID()), road);
 				}
 				nextRoad = roadMap->nextEntry();
 			}
             delete(nextRoad);
+            
+            out.close();
 
             // add intersecion data
 			intersectionMap->initializeCounter();
@@ -685,7 +718,7 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                     while(!in.eof())
                     {
                         // read binary
-                        this->read_binary(in, nnMat, matrixTypeNum, layerNum, matLinkHash);
+                        this->readBinaryNNMat(in, nnMat, matrixTypeNum, layerNum, matLinkHash);
                         
                         // create new mat pointer and pointer to nn data container
                         Eigen::MatrixXd* newNNMat = new Eigen::MatrixXd(nnMat);
@@ -900,13 +933,46 @@ City* DataManagement::getCityData()
 				std::string child = v.first.data();
 				if(!child.compare("roads"))
                 {
+                    
+                    GenericMap<long int, GenericMap<long int, Node*>*> roadsNodes;
+                    
+                    if(!this->jsonifyRoadNodes)
+                    {
+                        std::ifstream in(this->nodeDataLoc.c_str(), std::ios::in | std::ios::binary);
+                        
+                        Eigen::MatrixXd nodeMat;
+                        long int roadID;
+                        
+                        while(!in.eof())
+                        {
+                            this->readBinaryNodeMat(in, nodeMat, roadID);
+                            
+                            GenericMap<long int, Node*>* roadNodes = new GenericMap<long int, Node*>();
+                            for(int i = 0; i < nodeMat.rows(); i++)
+                            {
+                                double lat = nodeMat.coeffRef(i, 0);
+                                double lon = nodeMat.coeffRef(i, 1);
+                                float ele = nodeMat.coeffRef(i, 2);
+                                long int id = nodeMat.coeffRef(i, 3);
+                                
+                                Node* newNode = new Node(lat, lon, ele, id);
+                                
+                                roadNodes->addEntry(i, newNode);
+                            }
+                            
+                            roadsNodes.addEntry(roadID, roadNodes);
+                        }
+                        
+                        in.close();
+                    }
+                    
                     std::cout << "in get city, roads" << std::endl;
 					BOOST_FOREACH(ptree::value_type& z, v.second)
 					{
-						GenericMap<int, double>* nodeLats = new GenericMap<int, double>();
-						GenericMap<int, double>* nodeLons = new GenericMap<int, double>();
-						GenericMap<int, int>* nodeEles = new GenericMap<int, int>();
-						GenericMap<int, long int>* nodeIDs = new GenericMap<int, long int>();
+                        GenericMap<int, double> nodeLats;
+                        GenericMap<int, double> nodeLons;
+                        GenericMap<int, int> nodeEles;
+                        GenericMap<int, long int> nodeIDs;
 
 						long int roadID = lexical_cast<long int>(z.first.data());
 						long int startNodeID, endNodeID;
@@ -924,7 +990,7 @@ City* DataManagement::getCityData()
 								roadType = a.second.data();
                             }else if(!roadFeature.compare("splineLength")) {
                                 splineLength = lexical_cast<float>(a.second.data());
-							} else if(!roadFeature.compare("nodes")) {
+							} else if(!roadFeature.compare("nodes") && this->jsonifyRoadNodes) {
 								int latCount = 0; int lonCount = 0; int eleCount = 0; int idCount = 0;
 								BOOST_FOREACH(ptree::value_type& b, a.second)
 								{
@@ -932,16 +998,16 @@ City* DataManagement::getCityData()
 									BOOST_FOREACH(ptree::value_type& c, b.second)
 									{
 										if(!nodeFeature.compare("latitude")) {
-											nodeLats->addEntry(latCount, lexical_cast<double>(c.second.data()));
+											nodeLats.addEntry(latCount, lexical_cast<double>(c.second.data()));
                                             latCount++;
 										} else if(!nodeFeature.compare("longitude")) {
-											nodeLons->addEntry(lonCount, lexical_cast<double>(c.second.data()));
+											nodeLons.addEntry(lonCount, lexical_cast<double>(c.second.data()));
                                             lonCount++;
 										} else if(!nodeFeature.compare("elevation")) {
-											nodeEles->addEntry(eleCount, lexical_cast<int>(c.second.data()));
+											nodeEles.addEntry(eleCount, lexical_cast<int>(c.second.data()));
                                             eleCount++;
 										} else if(!nodeFeature.compare("nodeIDs")) {
-											nodeIDs->addEntry(idCount, lexical_cast<long int>(c.second.data()));
+											nodeIDs.addEntry(idCount, lexical_cast<long int>(c.second.data()));
                                             idCount++;
 										}
 									}
@@ -949,32 +1015,55 @@ City* DataManagement::getCityData()
 							}
 						}
                         
-                        assert(nodeLats->getSize() == nodeLons->getSize());
-                        assert(nodeLons->getSize() == nodeEles->getSize());
-                        assert(nodeEles->getSize() == nodeIDs->getSize());
-                        
-                        // for splines
-                        Eigen::MatrixXd points(2, nodeLats->getSize());
-
-						GenericMap<long int, Node*>* nodes = new GenericMap<long int, Node*>();
-						for(int i = 0; i < nodeLats->getSize(); i++)
-						{
-                            points(0, i) = nodeLats->getEntry(i);
-                            points(1, i) = nodeLons->getEntry(i);
-                            
-							nodes->addEntry(i, new Node(nodeLats->getEntry(i), nodeLons->getEntry(i), nodeEles->getEntry(i), nodeIDs->getEntry(i)));
-						}
-						delete(nodeLats); delete(nodeLons); delete(nodeEles); delete(nodeIDs);
+                        GenericMap<long int, Node*>* nodes;
                         
                         // fit spline
                         typedef Eigen::Spline<double, 2> spline2f;
-                        spline2f roadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
+                        spline2f roadSpline;
+                        
+                        if(this->jsonifyRoadNodes)
+                        {
+                            assert(nodeLats.getSize() == nodeLons.getSize());
+                            assert(nodeLons.getSize() == nodeEles.getSize());
+                            assert(nodeEles.getSize() == nodeIDs.getSize());
+                            
+                            // for splines
+                            Eigen::MatrixXd points(2, nodeLats.getSize());
+
+                            nodes = new GenericMap<long int, Node*>();
+                            for(int i = 0; i < nodeLats.getSize(); i++)
+                            {
+                                points(0, i) = nodeLats.getEntry(i);
+                                points(1, i) = nodeLons.getEntry(i);
+                                
+                                nodes->addEntry(i, new Node(nodeLats.getEntry(i), nodeLons.getEntry(i), nodeEles.getEntry(i), nodeIDs.getEntry(i)));
+                            }
+                            
+                            roadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
+                        }
+                        else
+                        {
+                            assert(roadsNodes.hasEntry(roadID));
+                            nodes = roadsNodes.getEntry(roadID);
+                            
+                            // for splines
+                            Eigen::MatrixXd points(2, nodes->getSize());
+                            
+                            for(int i = 0; i < nodes->getSize(); i++)
+                            {
+                                points(0, i) = nodes->getEntry(i)->getLat();
+                                points(1, i) = nodes->getEntry(i)->getLon();
+                            }
+                            
+                            roadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
+                        }
                 
 						roadIntersections->addEntry(roadID, new std::pair<int, int>(startNodeID, endNodeID));
                         
                         Road* road = new Road(roadType, roadID, nodes);
-                        road->assignSpline(roadSpline);
+                        
                         road->assignSplineLength(splineLength);
+                        road->assignSpline(roadSpline);
                         road->setMinMaxLatLon();
                         road->setBoundsID(boundsID);
 						roads->addEntry(roadID, road);
@@ -1141,7 +1230,7 @@ GenericMap<long int, std::pair<double, double>*>* DataManagement::getMostRecentT
 }
     
 template<class Matrix>
-void DataManagement::write_binary(std::ofstream& out, const Matrix& matrix, int matrixTypeNum, int layerNum, long int linkHash)
+void DataManagement::writeBinaryNNMat(std::ofstream& out, const Matrix& matrix, int matrixTypeNum, int layerNum, long int linkHash)
 {
     // matrix id
     out.write((char*) (&matrixTypeNum), sizeof(matrixTypeNum));
@@ -1156,7 +1245,7 @@ void DataManagement::write_binary(std::ofstream& out, const Matrix& matrix, int 
 }
     
 template<class Matrix>
-void DataManagement::read_binary(std::ifstream& in, Matrix& matrix, int& matrixTypeNum, int& layerNum, long int& linkHash)
+void DataManagement::readBinaryNNMat(std::ifstream& in, Matrix& matrix, int& matrixTypeNum, int& layerNum, long int& linkHash)
 {
     // get matrix id
     in.read((char*) (&matrixTypeNum), sizeof(matrixTypeNum));
@@ -1171,6 +1260,33 @@ void DataManagement::read_binary(std::ifstream& in, Matrix& matrix, int& matrixT
     in.read( (char *) matrix.data() , rows*cols*sizeof(typename Matrix::Scalar) );
 }
 
+template<class Matrix>
+void DataManagement::writeBinaryNodeMat(std::ofstream& out, const Matrix& matrix, long int roadID)
+{
+    // matrix id
+    out.write((char*) (&roadID), sizeof(roadID));
+    
+    // save matrix
+    typename Matrix::Index rows=matrix.rows(), cols=matrix.cols();
+    out.write((char*) (&rows), sizeof(typename Matrix::Index));
+    out.write((char*) (&cols), sizeof(typename Matrix::Index));
+    out.write((char*) matrix.data(), rows*cols*sizeof(typename Matrix::Scalar) );
+}
+
+template<class Matrix>
+void DataManagement::readBinaryNodeMat(std::ifstream& in, Matrix& matrix, long int& roadID)
+{
+    // get matrix id
+    in.read((char*) (&roadID), sizeof(roadID));
+    
+    // get matrix
+    typename Matrix::Index rows=0, cols=0;
+    in.read((char*) (&rows),sizeof(typename Matrix::Index));
+    in.read((char*) (&cols),sizeof(typename Matrix::Index));
+    matrix.resize(rows, cols);
+    in.read( (char *) matrix.data() , rows*cols*sizeof(typename Matrix::Scalar) );
+}
+    
 }
 
 

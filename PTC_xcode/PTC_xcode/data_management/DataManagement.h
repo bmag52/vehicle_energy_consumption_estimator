@@ -38,8 +38,10 @@ private:
 	std::string cityData = saveFolder + "cities.json";
 	std::string tripData = saveFolder + "tripLogs.json";
     std::string nnDataLoc = saveFolder + "nnData.bin";
+    std::string nodeDataLoc = saveFolder + "nodeData.bin";
     
     bool jsonifyLinkNNData = false;
+    bool jsonifyRoadNodes = false;
     
     int countFileLine(std::string fileLoc);
     
@@ -52,9 +54,13 @@ public:
 	City* getCityData();
 	GenericMap<long int, std::pair<double, double>*>* getMostRecentTripData();
     
-    // for serializing matrices
-    template<class Matrix> void write_binary(std::ofstream& out, const Matrix& matrix, int matrixType, int layerNum, long int linkHash);
-    template<class Matrix> void read_binary(std::ifstream& in, Matrix& matrix, int& matrixTypeNum, int& layerNum, long int& linkHash);
+    // for serializing NN matrices
+    template<class Matrix> void writeBinaryNNMat(std::ofstream& out, const Matrix& matrix, int matrixType, int layerNum, long int linkHash);
+    template<class Matrix> void readBinaryNNMat(std::ifstream& in, Matrix& matrix, int& matrixTypeNum, int& layerNum, long int& linkHash);
+    
+    // for serializing node matrices
+    template<class Matrix> void writeBinaryNodeMat(std::ofstream& out, const Matrix& matrix, long int roadID);
+    template<class Matrix> void readBinaryNodeMat(std::ifstream& in, Matrix& matrix, long int& roadID);
 
 };
 

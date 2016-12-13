@@ -44,14 +44,20 @@ void city_ut()
     City* city = dm.getCityData();
     city->printIntersectionsAndRoads();
     
-    // get route prediction
-    RoutePrediction* rp = dm.getRoutePredictionData();
-    rp->addCity(city);
-    
     GenericMap<long int, std::pair<double, double>*>* trace = dm.getMostRecentTripData();
     Route* route = city->getRouteFromGPSTrace(trace);
     Route* route2 = route->copy();
     
+    Intersection* startIntersection = city->getIntersectionFromLink(route->getLinks()->getEntry(0), true);
+    
+    std::vector<float>* conditions = new std::vector<float>(2);
+    conditions->at(0) = 1;
+    conditions->at(1) = 2;
+
+    // get route prediction
+    RoutePrediction* rp = dm.getRoutePredictionData();
+    rp->addCity(city);
+
     std::ifstream input("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_SPEED_FUEL_FLOW.csv");
     
     std::string num;
@@ -78,59 +84,53 @@ void city_ut()
     
     dm.addRoutePredictionData(dp.getRP());
     
-    FILE* csvRoute = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/UNIT_TEST_CITY_TRACE_2_ROUTE.csv", "w");
+    FILE* csvRoute = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_ROUTE.csv", "w");
     route->saveRoute2CSV(csvRoute, city, true);
     
-    // test rp across generated route
-    std::cout << " --------------------- original rp --------------------- " << std::endl;
-    
-    std::vector<float>* conditions = new std::vector<float>(2);
-    conditions->at(0) = 1;
-    conditions->at(1) = 2;
-    
-    Intersection* startIntersection = city->getIntersectionFromLink(route->getLinks()->getEntry(0), true);
-    
-    int predIter = 1;
-    Route* predRoute = rp->startPrediction(route2->getLinks()->getEntry(0), startIntersection, conditions);
-    while(route->getLinkSize() > 2)
-    {
-        std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
-        
-        // update actual route as it's 'driven' over
-        route->removeFirstLink();
-        
-        // print actual route
-        route->printLinks();
-        
-        // print predicted route
-        predRoute->printLinks();
-        
-        // predict route
-        predRoute = rp->predict(route->getLinks()->getEntry(0));
-        
-        // check if predicted route is actual route
-//        if(route->isEqual(predRoute))
-//        {
-//            std::cout << "predicted routed before reaching end destination!" << std::endl;
-//            std::cout << "Links traversed: " << predIter << std::endl;
-//            std::cout << "Links in route: " << route->getLinkSize() << std::endl;
-//            break;
-//        }
-        
-        predIter++;
-        
-    }
+//    // test rp across generated route
+//    std::cout << " --------------------- original rp --------------------- " << std::endl;
+//    
+//    int predIter = 1;
+//    Route* predRoute = rp->startPrediction(route2->getLinks()->getEntry(0), startIntersection, conditions);
+//    while(route->getLinkSize() > 2)
+//    {
+//        std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
+//        
+//        // update actual route as it's 'driven' over
+//        route->removeFirstLink();
+//        
+//        // print actual route
+//        route->printLinks();
+//        
+//        // print predicted route
+//        predRoute->printLinks();
+//        
+//        // predict route
+//        predRoute = rp->predict(route->getLinks()->getEntry(0));
+//        
+//        // check if predicted route is actual route
+////        if(route->isEqual(predRoute))
+////        {
+////            std::cout << "predicted routed before reaching end destination!" << std::endl;
+////            std::cout << "Links traversed: " << predIter << std::endl;
+////            std::cout << "Links in route: " << route->getLinkSize() << std::endl;
+////            break;
+////        }
+//        
+//        predIter++;
+//        
+//    }
     
     // test rp across stored route
     std::cout << " --------------------- stored rp --------------------- " << std::endl;
     RoutePrediction* rp2 = dm.getRoutePredictionData();
     rp2->addCity(city);
     
-    predIter = 1;
-    predRoute = rp2->startPrediction(route2->getLinks()->getEntry(0), startIntersection, conditions);
+    int predIter2 = 1;
+    Route* predRoute2 = rp2->startPrediction(route2->getLinks()->getEntry(0), startIntersection, conditions);
     while(route2->getLinkSize() > 2)
     {
-        std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
+        std::cout << "--- route prediction iteration " << predIter2 << " ---" << std::endl;
         
         // update actual route as it's 'driven' over
         route2->removeFirstLink();
@@ -139,10 +139,10 @@ void city_ut()
         route2->printLinks();
         
         // print predicted route
-        predRoute->printLinks();
+        predRoute2->printLinks();
         
         // predict route
-        predRoute = rp2->predict(route2->getLinks()->getEntry(0));
+        predRoute2 = rp2->predict(route2->getLinks()->getEntry(0));
         
         // check if predicted route is actual route
 //        if(route->isEqual(predRoute))
@@ -153,7 +153,7 @@ void city_ut()
 //            break;
 //        }
         
-        predIter++;
+        predIter2++;
     }
     
     int test = 2;

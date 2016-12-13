@@ -46,6 +46,7 @@ int DataManagement::countFileLine(std::string fileLoc)
 
 void DataManagement::addRoutePredictionData(RoutePrediction* rp)
 {
+    std::cout << "updating route predicition data" << std::endl;
     // links
     ptree links_ptree;
     
@@ -136,6 +137,8 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
             // binary serialization
             else
             {
+                bool addedLink = false;
+                
                 // type A or B
                 for(int h = 0; h < nnData.size(); h++)
                 {
@@ -147,9 +150,21 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
                         {
                             Eigen::MatrixXd* nnMat = nnData.at(h)->at(i)->at(j);
                             
-                            this->writeBinaryNNMat(out, *nnMat, i, j, nextLink->value->getHash());
+                            if(nnMat != NULL)
+                            {
+                                addedLink = true;
+                                
+                                // write it twice becuase last mat written sometimes doesnt get picked up in read
+                                this->writeBinaryNNMat(out, *nnMat, i, j, nextLink->value->getHash());
+                                this->writeBinaryNNMat(out, *nnMat, i, j, nextLink->value->getHash());
+                            }
                         }
                     }
+                }
+                
+                if(addedLink)
+                {
+                    std::cout << nextLink->value->getNumber() << std::endl;
                 }
             }
         }
@@ -280,6 +295,7 @@ void DataManagement::addRoutePredictionData(RoutePrediction* rp)
 
 void DataManagement::addCityData(City* city)
 {
+    std::cout << "updating city data" << std::endl;
 	GenericMap<long int, Road*>* roadMap = city->getRoads();
 	GenericMap<long int, Intersection*>* intersectionMap = city->getIntersections();
 	GenericMap<int, Bounds*>* boundsMap = city->getBoundsMap();
@@ -473,8 +489,10 @@ void DataManagement::addCityData(City* city)
 	}
 }
 
-void DataManagement::addTripData(GenericMap<long int, std::pair<double, double>*>* latLon) {
-
+void DataManagement::addTripData(GenericMap<long int, std::pair<double, double>*>* latLon)
+{
+    std::cout << "updating trip log" << std::endl;
+    
 	int tripID = 0;
 	ptree tripLogs;
 
@@ -745,7 +763,10 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                         }
                         
                         // update the map
-                        nnData->at(matrixTypeNum)->at(layerNum) = newNNMat;
+                        if(nnData->at(matrixTypeNum)->at(layerNum) == NULL)
+                        {
+                            nnData->at(matrixTypeNum)->at(layerNum) = newNNMat;
+                        }
                     }
                     in.close();
                     
@@ -760,6 +781,9 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                         assert(links->hasEntry(nextLinkHash));
                         
                         Link* storedLink = links->getEntry(nextLinkHash);
+                        
+                        std::cout << storedLink->getNumber() << std::endl;
+                        
                         storedLink->setWeights(nnData->at(0), nnData->at(1), nnData->at(2), storedLink->getDirection());
                         
                         nextNNData = nnDataMap.nextEntry();
@@ -1017,9 +1041,9 @@ City* DataManagement::getCityData()
                         
                         GenericMap<long int, Node*>* nodes;
                         
-                        // fit spline
-                        typedef Eigen::Spline<double, 2> spline2f;
-                        spline2f roadSpline;
+//                        // fit spline
+//                        typedef Eigen::Spline<double, 2> spline2f;
+//                        spline2f roadSpline;
                         
                         if(this->jsonifyRoadNodes)
                         {
@@ -1027,35 +1051,35 @@ City* DataManagement::getCityData()
                             assert(nodeLons.getSize() == nodeEles.getSize());
                             assert(nodeEles.getSize() == nodeIDs.getSize());
                             
-                            // for splines
-                            Eigen::MatrixXd points(2, nodeLats.getSize());
+//                            // for splines
+//                            Eigen::MatrixXd points(2, nodeLats.getSize());
 
                             nodes = new GenericMap<long int, Node*>();
                             for(int i = 0; i < nodeLats.getSize(); i++)
                             {
-                                points(0, i) = nodeLats.getEntry(i);
-                                points(1, i) = nodeLons.getEntry(i);
+//                                points(0, i) = nodeLats.getEntry(i);
+//                                points(1, i) = nodeLons.getEntry(i);
                                 
                                 nodes->addEntry(i, new Node(nodeLats.getEntry(i), nodeLons.getEntry(i), nodeEles.getEntry(i), nodeIDs.getEntry(i)));
                             }
                             
-                            roadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
+//                            roadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
                         }
                         else
                         {
                             assert(roadsNodes.hasEntry(roadID));
                             nodes = roadsNodes.getEntry(roadID);
                             
-                            // for splines
-                            Eigen::MatrixXd points(2, nodes->getSize());
-                            
-                            for(int i = 0; i < nodes->getSize(); i++)
-                            {
-                                points(0, i) = nodes->getEntry(i)->getLat();
-                                points(1, i) = nodes->getEntry(i)->getLon();
-                            }
-                            
-                            roadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
+//                            // for splines
+//                            Eigen::MatrixXd points(2, nodes->getSize());
+//                            
+//                            for(int i = 0; i < nodes->getSize(); i++)
+//                            {
+//                                points(0, i) = nodes->getEntry(i)->getLat();
+//                                points(1, i) = nodes->getEntry(i)->getLon();
+//                            }
+//                            
+//                            roadSpline = Eigen::SplineFitting<spline2f>::Interpolate(points, 1);
                         }
                 
 						roadIntersections->addEntry(roadID, new std::pair<int, int>(startNodeID, endNodeID));
@@ -1063,7 +1087,7 @@ City* DataManagement::getCityData()
                         Road* road = new Road(roadType, roadID, nodes);
                         
                         road->assignSplineLength(splineLength);
-                        road->assignSpline(roadSpline);
+//                        road->assignSpline(roadSpline);
                         road->setMinMaxLatLon();
                         road->setBoundsID(boundsID);
 						roads->addEntry(roadID, road);

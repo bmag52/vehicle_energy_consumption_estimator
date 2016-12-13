@@ -48,6 +48,7 @@ using namespace PredictivePowertrain;
 
 // save actual route and speed
 void saveActualData(Route* actualRoute,
+                    std::vector<long int>* actualLabels,
                     std::vector<float>* actualSpeed,
                     std::vector<float>* fuelFlow,
                     std::vector<float>* energy,
@@ -61,6 +62,13 @@ void saveActualData(Route* actualRoute,
     // SPEED FUEL FLOW and CALCULATED ENERGY
     FILE* csvSpeedFuelFlowEnergyTime = std::fopen("/Users/Brian/Desktop/the_goods/git/predictive_thermo_controller/data/DP_ACTUAL_SPEED_FUEL_FLOW.csv", "w");
 
+    // labels
+    for(int i = 0; i < actualLabels->size(); i++)
+    {
+        fprintf(csvSpeedFuelFlowEnergyTime, "%ld,", actualLabels->at(i));
+    }
+    fprintf(csvSpeedFuelFlowEnergyTime, "\n");
+    
     // speed
     for(int i = 0; i < actualSpeed->size(); i++)
     {
@@ -92,13 +100,25 @@ void saveActualData(Route* actualRoute,
 }
 
 // save pred data
-void savePredData(DriverPrediction::PredData predData, Route* predRoute, City* city, FILE* predDataFile, FILE* predRouteFile)
+void savePredData(DriverPrediction::PredData predData,
+                  std::vector<long int> labels,
+                  Route* predRoute,
+                  City* city,
+                  FILE* predDataFile,
+                  FILE* predRouteFile)
 {
     // route
     predRoute->saveRoute2CSV(predRouteFile, city, false);
     
     // other prediction data
     fprintf(predDataFile, "--- spd n ele ---\n");
+    
+    // pred labels
+    for(int i = 0; i < labels.size(); i++)
+    {
+        fprintf(predDataFile, "%ld,", labels.at(i));
+    }
+    fprintf(predDataFile, "\n");
     
     // pred speed
     for(int i = 0; i < predData.first.size(); i++)
@@ -193,6 +213,7 @@ int main()
     bool headingIsStart2End = true;
     
     // containers for actual fuel and speed
+    std::vector<long int> actualLabels;
     std::vector<float> actualSpeed;
     std::vector<float> fuelFlow;
     std::vector<float> energy;
@@ -271,11 +292,15 @@ int main()
                     isFirstPrediction = false;
                 }
                 
-                if(predData.first.at(0) != -1 && predData.second.at(0) != -1)
+                if(predData.first.size() > 0 && predData.second.size() > 0)
                 {
-                    savePredData(predData, dp.getRP()->getPredictedRoute(), city, predDataFile, predRouteFile);
+                    std::vector<long int> predLabels = dp.getRouteDataLabels();
+                    savePredData(predData, predLabels, dp.getRP()->getPredictedRoute(), city, predDataFile, predRouteFile);
                 }
             }
+            
+            // update current road label
+            actualLabels.push_back(currRoad->getRoadID());
             
             // get distance along road
             distAlongRoad = gps.getDistAlongRoad(currRoad, true, headingIsStart2End);
@@ -284,7 +309,7 @@ int main()
             predData = dp.nextPrediction(currLink, vehSpd, distAlongRoad);
             
             // approximate energy usage from predicted speed and elevation change
-            if(predData.first.at(0) != -1 && predData.second.at(0) != -1)
+            if(predData.first.size() > 0 && predData.second.size() > 0)
             {
                 energy.push_back(kin.runKinematics(predData.first, ds, predData.second, false));
             }
@@ -309,6 +334,7 @@ int main()
                         for(int i = 1; i <= distRatio; i++)
                         {
                             actualSpeed.push_back(vehSpd);
+                            actualLabels.push_back(currRoad->getRoadID());
                             dp.updateSpeedsbyVal(vehSpd);
                         }
                     }
@@ -352,7 +378,7 @@ int main()
     Route* actualRoute = city->getRouteFromGPSTrace(gps.getTripLog(true));
     
     // save actual route
-    saveActualData(actualRoute, &actualSpeed, &fuelFlow, &energy, &time, city);
+    saveActualData(actualRoute, &actualLabels, &actualSpeed, &fuelFlow, &energy, &time, city);
     
     // parse route
     dp.parseRoute(actualRoute, &actualSpeed, gps.getTripLog(true));

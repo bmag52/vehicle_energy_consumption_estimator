@@ -33,7 +33,7 @@ float Kinematics::runKinematics(std::vector<float> predictedSpeed,
     int maxLookAhead = std::min(this->distLookAhead, (int)predictedSpeed.size()-2);
     for (int i = 0; i < maxLookAhead; i++)
     {
-        // acceleration
+        // acceleration (assumes linear acceleration between speed measurements)
         float va = predictedSpeed.at(i);
         float vb = predictedSpeed.at(i + 1);
         float vehicleAcceleration_i = (std::pow(vb, 2) - std::pow(va, 2)) / (2 * ds);

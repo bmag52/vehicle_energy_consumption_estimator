@@ -47,6 +47,8 @@ private:
 	GenericMap<int, Bounds*>* boundsMap;
 	Road* getConnectingRoad(Intersection* one, Intersection* two);
     
+    std::vector<long int> routeDataLabels;
+    
 public:
 	City();
 	City(GenericMap<long int, Intersection*>* intersections, GenericMap<long int, Road*>* roads, GenericMap<int, Bounds*>* boundsMap) ;
@@ -71,6 +73,7 @@ public:
     Route* getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>*>* trace);
     void printIntersectionsAndRoads();
     bool roadIsOnTrace(Road* road, GenericMap<long int, std::pair<double, double>*>* trace, float thresh);
+    std::vector<long int> getRouteDataLabels();
 
 };
 

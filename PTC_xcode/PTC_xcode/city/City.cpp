@@ -230,6 +230,7 @@ std::pair<std::vector<float>, std::vector<float>> City::getData(Road* road, int 
                 
                 spdOut.push_back((spdOut_i.coeffRef(0, i) - sp->getSpeedOffset()) * sp->getMaxSpeed());
                 elevDataInterp.push_back(elevData.at(prevElevMeasIdx) + interpFactor * prev2NextElevDelta);
+                this->routeDataLabels.push_back(road->getRoadID());
             }
             else if(spdDist > road->getSplineLength())
             {
@@ -380,8 +381,12 @@ bool City::legalRoute(Route* route) {
 	return true;
 }
 
-std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route, float dist, SpeedPrediction* sp, Eigen::MatrixXd* spdIn) {
-
+std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route, float dist, SpeedPrediction* sp, Eigen::MatrixXd* spdIn)
+{
+    // clear route data labels
+    this->routeDataLabels.clear();
+    
+    // container for speed and elevation
     std::vector<float> elevData;
     std::vector<float> spdData;
     
@@ -390,7 +395,9 @@ std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route
     bool isFirstLink = true;
 	route->getLinks()->initializeCounter();
 	GenericEntry<long int, Link*>* nextLink = route->getLinks()->nextEntry();
-	while(nextLink != NULL && !nextLink->value->isFinalLink())
+	while(nextLink != NULL
+          && !nextLink->value->isFinalLink()
+          && nextLink->key != route->getLinks()->getSize() - 2)
 	{
         // get road from link
         assert(this->roads->hasEntry(nextLink->value->getNumber()));
@@ -832,6 +839,11 @@ void City::printIntersectionsAndRoads()
     }
     delete(nextInt);
     fclose(csv);
+}
+    
+std::vector<long int> City::getRouteDataLabels()
+{
+    return this->routeDataLabels;
 }
 
 } /* namespace PredictivePowertrain */

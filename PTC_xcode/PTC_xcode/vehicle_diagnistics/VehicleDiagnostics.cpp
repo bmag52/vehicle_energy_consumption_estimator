@@ -80,7 +80,7 @@ void VehicleDiagnostics::initializeDiagnosticsReader()
     }
     
     // initialize
-    std::cout << this->getDiagnostsics(startup.at(9), 10000) << std::endl;
+    std::cout << this->getDiagnostsics(startup.at(9), 30000) << std::endl;
     
     this->clearRxBuffer();
 }

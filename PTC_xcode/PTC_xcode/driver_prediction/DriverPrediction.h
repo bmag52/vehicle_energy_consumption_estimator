@@ -50,7 +50,7 @@ namespace PredictivePowertrain {
         void trainSpeedPredictionOverLastLink();
         void updateSpeedsByVec(std::vector<float>* spds);
         void updateSpeedsbyVal(float spd);
-        
+        std::vector<long int> getRouteDataLabels();
         
     };
     

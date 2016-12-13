@@ -59,8 +59,6 @@ DriverPrediction::PredData DriverPrediction::startPrediction(Link* currentLink,
     this->predRoute = predRoute;
     
     PredData predData;
-    predData.first.push_back(-1);
-    predData.first.push_back(-1);
     if(!predRoute->isEqual(this->rp->getUnknownRoute())
        && !predRoute->isEqual(this->rp->getOverRoute())
        && this->allLinksHaveWeigths(predRoute))
@@ -98,7 +96,8 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
     // --- REPREDICT ROUTE AND TRAIN SPEED PREDICTION ---
     else if(!this->currLink->isEqual(currentLink))
     {
-        if(!predRoute->isEqual(this->rp->getUnknownRoute()) && !predRoute->isEqual(this->rp->getOverRoute()))
+        if(!predRoute->isEqual(this->rp->getUnknownRoute())
+           && !predRoute->isEqual(this->rp->getOverRoute()))
         {
             // quick train of speed prediction over last link
             this->trainSpeedPredictionOverLastLink();
@@ -107,7 +106,8 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
         Route* newPredRoute = this->rp->predict(currentLink);
         
         // add speed prediction vals to route and attached current link to front
-        if(!newPredRoute->isEqual(this->rp->getUnknownRoute()) && !newPredRoute->isEqual(this->rp->getOverRoute()))
+        if(!newPredRoute->isEqual(this->rp->getUnknownRoute())
+           && !newPredRoute->isEqual(this->rp->getOverRoute()))
         {
             newPredRoute->addLinkToFront(currentLink);
             this->addWeightedLinksToRoute(newPredRoute);
@@ -119,8 +119,6 @@ DriverPrediction::PredData DriverPrediction::nextPrediction(Link* currentLink,
     }
     
     PredData predData;
-    predData.first.push_back(-1);
-    predData.first.push_back(-1);
     if(!this->predRoute->isEqual(this->rp->getUnknownRoute())
        && !this->predRoute->isEqual(this->rp->getOverRoute())
        && this->allLinksHaveWeigths(this->predRoute))
@@ -431,7 +429,13 @@ bool DriverPrediction::allLinksHaveWeigths(Route* route)
     GenericEntry<long int, Link*>* nextLink = route->getLinks()->nextEntry();
     while(nextLink != NULL)
     {
-        if(!nextLink->value->linkHasWeights() && !nextLink->value->isFinalLink())
+        if(nextLink->key == route->getLinks()->getSize() - 2)
+        {
+            break;
+        }
+        
+        if(!nextLink->value->linkHasWeights() &&
+           !nextLink->value->isFinalLink())
         {
             return false;
         }
@@ -440,6 +444,11 @@ bool DriverPrediction::allLinksHaveWeigths(Route* route)
     delete(nextLink);
     
     return true;
+}
+    
+std::vector<long int> DriverPrediction::getRouteDataLabels()
+{
+    return this->city->getRouteDataLabels();
 }
     
 } /* namespace PredictivePowertrain */

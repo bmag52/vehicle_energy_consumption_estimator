@@ -26,22 +26,26 @@ Goal::Goal(long int destination, std::vector<float>* bins)
 
 Goal::Goal(Goal * other)
 {
-	this->destination = other->destination;
-//    if(other->getBins()->size() > 0 && other->getBins()->size() < 5)
-//    {
-//        this->bins = new std::vector<float>(other->getBins()->size());
-//        for (int i = 0; i < this->bins->size(); i++)
-//        {
-//            this->bins->at(i) = other->bins->at(i);
-//        }
-//    }
-//    else
-//    {
-//        this->bins = new std::vector<float>();
-//    }
-    this->bins = new std::vector<float>(1);
-    this->bins->at(0) = -1;
-	this->numSeen = other->numSeen;
+    if(other != NULL)
+    {
+        this->destination = other->destination;
+        if(other->getBins() != NULL && other->getBins()->size() > 0)
+        {
+            this->bins = new std::vector<float>(other->getBins()->size());
+            for (int i = 0; i < this->bins->size(); i++)
+            {
+                this->bins->at(i) = other->bins->at(i);
+            }
+        }
+        else
+        {
+            this->bins = new std::vector<float>();
+            this->bins = new std::vector<float>(1);
+            this->bins->at(0) = -1;
+        }
+
+        this->numSeen = other->numSeen;
+    }
 }
 
 bool Goal::isSimilar(Goal * other)

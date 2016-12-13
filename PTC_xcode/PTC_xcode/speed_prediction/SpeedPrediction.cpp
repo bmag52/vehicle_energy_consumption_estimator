@@ -248,7 +248,10 @@ std::vector<std::vector<Eigen::MatrixXd*>*>* SpeedPrediction::getVals()
     std::vector<Eigen::MatrixXd*>* newWtsVec = new std::vector<Eigen::MatrixXd*>(this->Wts->size());
     for(int i = 0; i < this->Wts->size(); i++)
     {
-        newWtsVec->at(i) = new Eigen::MatrixXd(*this->Wts->at(i));
+        if(this->Wts->at(i) != NULL)
+        {
+            newWtsVec->at(i) = new Eigen::MatrixXd(*this->Wts->at(i));
+        }
     }
 	returnList->at(0) = newWtsVec;
     
@@ -256,7 +259,10 @@ std::vector<std::vector<Eigen::MatrixXd*>*>* SpeedPrediction::getVals()
     std::vector<Eigen::MatrixXd*>* newYHidVec = new std::vector<Eigen::MatrixXd*>(this->yHid->size());
     for(int i = 0; i < this->yHid->size(); i++)
     {
-        newYHidVec->at(i) = new Eigen::MatrixXd(*this->yHid->at(i));
+        if(this->yHid->at(i) != NULL)
+        {
+            newYHidVec->at(i) = new Eigen::MatrixXd(*this->yHid->at(i));
+        }
     }
 	returnList->at(1) = newYHidVec;
     
@@ -264,7 +270,10 @@ std::vector<std::vector<Eigen::MatrixXd*>*>* SpeedPrediction::getVals()
     std::vector<Eigen::MatrixXd*>* newYInHidVec = new std::vector<Eigen::MatrixXd*>(this->yInHid->size());
     for(int i = 0; i < this->yInHid->size(); i++)
     {
-        newYInHidVec->at(i) = new Eigen::MatrixXd(*this->yInHid->at(i));
+        if(this->yInHid->at(i) != NULL)
+        {
+            newYInHidVec->at(i) = new Eigen::MatrixXd(*this->yInHid->at(i));
+        }
     }
 	returnList->at(2) = newYInHidVec;
 	return returnList;

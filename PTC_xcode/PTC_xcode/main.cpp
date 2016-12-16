@@ -198,9 +198,8 @@ int main()
     float distAlongRoad = 0.0;
     
     // start driver prediction
-    std::vector<float> currConditions(2);
-    currConditions.at(0) = 1;
-    currConditions.at(1) = 2;
+    std::vector<float> currConditions(1);
+    currConditions.at(0) = -1;
     
     // vehicle speed;
     float vehSpd;

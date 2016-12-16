@@ -45,6 +45,15 @@ private:
     
     int countFileLine(std::string fileLoc);
     
+    // for serializing NN matrices
+    template<class Matrix> void writeBinaryNNMat(std::ofstream& out, const Matrix& matrix, int matrixType, int layerNum, long int linkHash);
+    template<class Matrix> void readBinaryNNMat(std::ifstream& in, Matrix& matrix, int& matrixTypeNum, int& layerNum, long int& linkHash);
+    
+    // for serializing node matrices
+    template<class Matrix> void writeBinaryNodeMat(std::ofstream& out, const Matrix& matrix, long int roadID);
+    template<class Matrix> void readBinaryNodeMat(std::ifstream& in, Matrix& matrix, long int& roadID);
+
+    
 public:
 	DataManagement();
 	void addRoutePredictionData(RoutePrediction* rp);
@@ -53,14 +62,6 @@ public:
 	RoutePrediction* getRoutePredictionData();
 	City* getCityData();
 	GenericMap<long int, std::pair<double, double>*>* getMostRecentTripData();
-    
-    // for serializing NN matrices
-    template<class Matrix> void writeBinaryNNMat(std::ofstream& out, const Matrix& matrix, int matrixType, int layerNum, long int linkHash);
-    template<class Matrix> void readBinaryNNMat(std::ifstream& in, Matrix& matrix, int& matrixTypeNum, int& layerNum, long int& linkHash);
-    
-    // for serializing node matrices
-    template<class Matrix> void writeBinaryNodeMat(std::ofstream& out, const Matrix& matrix, long int roadID);
-    template<class Matrix> void readBinaryNodeMat(std::ifstream& in, Matrix& matrix, long int& roadID);
 
 };
 

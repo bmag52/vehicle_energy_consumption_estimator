@@ -778,14 +778,13 @@ RoutePrediction* DataManagement::getRoutePredictionData()
                         long int nextLinkHash = nextNNData->key;
                         std::vector<std::vector<Eigen::MatrixXd*>*>* nnData = nextNNData->value;
                         
-                        assert(links->hasEntry(nextLinkHash));
-                        
-                        Link* storedLink = links->getEntry(nextLinkHash);
-                        
-                        std::cout << storedLink->getNumber() << std::endl;
-                        
-                        storedLink->setWeights(nnData->at(0), nnData->at(1), nnData->at(2), storedLink->getDirection());
-                        
+                        if(links->hasEntry(nextLinkHash))
+                        {                        
+                            Link* storedLink = links->getEntry(nextLinkHash);
+                            std::cout << storedLink->getNumber() << std::endl;
+                            storedLink->setWeights(nnData->at(0), nnData->at(1), nnData->at(2), storedLink->getDirection());
+                        }
+                            
                         nextNNData = nnDataMap.nextEntry();
                     }
                     delete(nextNNData);

@@ -86,6 +86,7 @@ void GPS::interpolateTripLog(GenericMap<long int, std::pair<double, double>*>* b
     
 }
     
+// http://www.movable-type.co.uk/scripts/latlong.html
 float GPS::deltaLatLonToXY(double lat1, double lon1, double lat2, double lon2)
 {
     double dLat = toRadians(lat2-lat1);
@@ -356,7 +357,17 @@ float GPS::getDistAlongRoad(Road* road, bool updateTripLog, bool headingIsStart2
     }
     delete(nextNode);
     
-    if(!headingIsStart2End)
+    Node* startNode = road->getNodes()->getEntry(0);
+
+    Intersection* startInt = road->getStartIntersection();
+    Intersection* endInt = road->getEndIntersection();
+    
+    float start2StartDist = this->deltaLatLonToXY(startNode->getLat(), startNode->getLon(), startInt->getLat(), startInt->getLon());
+    float start2endDist = this->deltaLatLonToXY(startNode->getLat(), startNode->getLon(), endInt->getLat(), endInt->getLon());
+    
+    bool nodeIsStart2End = start2StartDist < start2endDist;
+    
+    if(headingIsStart2End != nodeIsStart2End)
     {
         distAlongRoad = road->getSplineLength() - distAlongRoad;
     }

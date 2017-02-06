@@ -63,8 +63,9 @@ GenericMap<long int, int>* LinkToStateMapEntry::getEntries()
     return this->entries;
 }
 
-int LinkToStateMapEntry::totalM(LinkToStateMapEntry* linkToStateMapEntry) {
-		return linkToStateMapEntry->getTotalM();
+int LinkToStateMapEntry::totalM(LinkToStateMapEntry* linkToStateMapEntry)
+{
+    return linkToStateMapEntry->getTotalM();
 }
 
 } /* namespace PredictivePowertrain */

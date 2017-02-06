@@ -27,7 +27,6 @@ private:
 	GenericMap<long int, GoalMapEntry<long int, LinkToStateMapEntry*>*>* goalMap;
 
 public:
-    GenericMap<long int, LinkToStateMapEntry*>* getLinkMap();
     GenericMap<long int, GoalMapEntry<long int, LinkToStateMapEntry*>*>* getGoalMap();
 	int incrementTransition(Link* lj, Goal* gj, Link* li);
 	float getProbability(Link* li, Link* lj, Goal* gj, bool isSimilar);

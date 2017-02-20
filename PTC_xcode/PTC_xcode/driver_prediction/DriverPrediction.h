@@ -32,6 +32,7 @@ namespace PredictivePowertrain {
         
         void addWeightedLinksToRoute(Route* unweightedRoute);
         bool allLinksHaveWeigths(Route* route);
+        Route* copyRoute(Route* route);
         void intitalize();
         
     public:
@@ -51,6 +52,7 @@ namespace PredictivePowertrain {
         void updateSpeedsByVec(std::vector<float>* spds);
         void updateSpeedsbyVal(float spd);
         std::vector<long int> getRouteDataLabels();
+        Route* getPredRoute();
         
     };
     

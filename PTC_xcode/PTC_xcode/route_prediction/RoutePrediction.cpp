@@ -103,12 +103,20 @@ Route* RoutePrediction::startPrediction(Link* linkTaken, Intersection* currentIn
 		GenericEntry<long int, Link*>* nextLink = nextLinks->nextEntry();
 		while(nextLink != NULL)
 		{
+            // get goal probability
 			float goalProbability = this->goalToLink->probabilityOfGoalGivenLink(nextLink->value, nextGoal->value, false);
-			if(this->predictedGoal->isSimilar(nextGoal->value))
+            
+            // to prevent link jitter
+            Intersection* nextLinkInt = this->city->getIntersectionFromLink(nextLink->value, true);
+            bool linkJitter = nextLinkInt->getIntersectionID() == currentIntersection->getIntersectionID();
+            
+			if(this->predictedGoal->isSimilar(nextGoal->value) && !linkJitter)
 			{
 				// high probability since condition is right
 				goalProbability *= (float)nextGoal->value->getNumSeen();
-			} else {
+			}
+            else
+            {
 				// lower probability since condition is wrong
 				goalProbability *= .1 * (float)nextGoal->value->getNumSeen();
 			}
@@ -202,6 +210,11 @@ Route* RoutePrediction::predict(Link* linkTaken)
 	{
 		this->predictedRoute->removeFirstLink();
 	}
+    else if(this->predictedRoute->getLinks()->getSize() >= 2 && linkTaken->isEqual(this->predictedRoute->getEntry(1)))
+    {
+        this->predictedRoute->removeFirstLink();
+        this->predictedRoute->removeFirstLink();
+    }
     else
     {
         std::vector<float>* probabilitiesCopy = new std::vector<float>(this->probabilities->size());
@@ -263,18 +276,33 @@ RoutePrediction::updateStates(Link* chosenLink, GenericMap<int, std::pair<Link*,
             gi = nextGoal->value;
             std::pair<Link*, Goal*>* si = new std::pair<Link*, Goal*>(li, gi);
 			pSi = 0;
-			for(int j = 0; j < oldStates->getSize(); j++)
-			{
-				sj = oldStates->getEntry(j);
-				if(sj->first->isEqual(chosenLink))
-				{
-					gj = sj->second;
-					minProbability = this->minInitialProbability / ((float)this->goals->getSize());
-					pGl = this->goalToLink->probabilityOfGoalGivenLink(li, gi, 0);
-					pLs = this->linkToState->getProbability(li, chosenLink, gj, false);
-                    pSi += std::max(minProbability, oldProbabilites->at(j)) * std::max(minProbability, pLs) * std::max(minProbability, pGl);
-				}
-			}
+            
+            // for link jitter
+            bool linkJitter = false;
+            if(!chosenLink->isFinalLink() && !li->isFinalLink())
+            {
+                Intersection* chosenLinkInt = this->city->getIntersectionFromLink(chosenLink, true);
+                Intersection* nextLinkInt = this->city->getIntersectionFromLink(li, true);
+                
+                linkJitter = chosenLinkInt->getIntersectionID() == nextLinkInt->getIntersectionID();
+            }
+            
+            if(!linkJitter)
+            {
+                for(int j = 0; j < oldStates->getSize(); j++)
+                {
+                    sj = oldStates->getEntry(j);
+                    if(sj->first->isEqual(chosenLink))
+                    {
+                        gj = sj->second;
+                        minProbability = this->minInitialProbability / ((float)this->goals->getSize());
+                        pGl = this->goalToLink->probabilityOfGoalGivenLink(li, gi, 0);
+                        pLs = this->linkToState->getProbability(li, chosenLink, gj, false);
+                        pSi += std::max(minProbability, oldProbabilites->at(j)) * std::max(minProbability, pLs) * std::max(minProbability, pGl);
+                    }
+                }
+            }
+            
             // add new state to new states
 			newStates->addEntry(counter, si);
 			newProbabilities->at(counter) = pSi;

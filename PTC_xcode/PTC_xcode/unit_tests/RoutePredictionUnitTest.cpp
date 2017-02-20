@@ -113,10 +113,12 @@ RoutePrediction* routePrediction_ut()
     
     // add trainging iterations here (simulates driving over the route multiple times)
     rp->parseRoute(actualRoute);
-    rp->parseRoute(actualRoute);
-    rp->parseRoute(actualRoute);
-    rp->parseRoute(actualRoute);
-    rp->parseRoute(actualRoute);
+//    rp->parseRoute(actualRoute);
+//    rp->parseRoute(actualRoute);
+//    rp->parseRoute(actualRoute);
+//    rp->parseRoute(actualRoute);
+//    rp->parseRoute(actualRoute);
+    
     
     // create number of random routes to include in test set
     int num_rand_routes = 4;
@@ -135,36 +137,54 @@ RoutePrediction* routePrediction_ut()
     }
     
     // predict actual route as it is 'driven' over
-    int predIter = 1;
-    Route* predRoute = rp->startPrediction(actualRoute->getLinks()->getEntry(0), startIntersection, conditions);
-    while(actualRoute->getLinkSize() > 2)
+
+    int traversalNum = 14;
+    int totPredIters = 0;
+    
+    for(int i = 1; i <= traversalNum; i++)
     {
-        std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
+        std::cout << "+++++++++++++++++++++++++++++++++++++++ Route Traversal: " << i << " +++++++++++++++++++++++++++++++++++++++" << std::endl;
         
-        // update actual route as it's 'driven' over
-        actualRoute->removeFirstLink();
-        
-        // print actual route
-        actualRoute->printLinks();
-        
-        // print predicted route
-        predRoute->printLinks();
-        
-        // predict route
-        predRoute = rp->predict(actualRoute->getLinks()->getEntry(0));
-        
-        // check if predicted route is actual route
-        if(actualRoute->isEqual(predRoute))
+        int predIter = 1;
+        Route* actualRouteCopy = actualRoute->copy();
+        Route* predRoute = rp->startPrediction(actualRouteCopy->getLinks()->getEntry(0), startIntersection, conditions);
+        while(actualRouteCopy->getLinkSize() > 2)
         {
-            std::cout << "predicted routed before reaching end destination!" << std::endl;
-            std::cout << "Links traversed: " << predIter << std::endl;
-            std::cout << "Links in route: " << actualRoute->getLinkSize() << std::endl;
-            break;
+            std::cout << "--- route prediction iteration " << predIter << " ---" << std::endl;
+            
+            // update actual route as it's 'driven' over
+            actualRouteCopy->removeFirstLink();
+            
+            // print actual route
+            actualRouteCopy->printLinks();
+            
+            // print predicted route
+            predRoute->printLinks();
+            
+            // check if predicted route is actual route
+            if(actualRouteCopy->isEqual(predRoute))
+            {
+                std::cout << "predicted routed before reaching end destination!" << std::endl;
+                std::cout << "Links traversed: " << predIter << std::endl;
+                std::cout << "Links in route: " << actualRouteCopy->getLinkSize() << std::endl;
+                break;
+            }
+            else
+            {
+                totPredIters++;
+            }
+            
+            // predict route
+            predRoute = rp->predict(actualRouteCopy->getLinks()->getEntry(0));
+            
+            predIter++;
+        
         }
         
-        predIter++;
-    
+        rp->parseRoute(actualRoute);
     }
+    
+    std::cout << "prediction accuracy: " << 1.0 - (float)totPredIters / ((float)traversalNum * (actualRoute->getLinks()->getSize() - 1)) << std::endl;
     
     return rp;
 

@@ -271,8 +271,6 @@ int main()
                 currRoad = gps.getCurrentRoad1(city);
                 headingIsStart2End = gps.isHeadingStart2EndOfCurrentRoad(currRoad);
                 
-                std::cout << "on new road: " << currRoad->getRoadID() << std::endl;
-                
                 if(headingIsStart2End)
                 {
                     currLink = Link().linkFromRoad(currRoad, currRoad->getStartIntersection());
@@ -281,6 +279,8 @@ int main()
                 {
                     currLink = Link().linkFromRoad(currRoad, currRoad->getEndIntersection());
                 }
+                
+                std::cout << "on new road: " << currLink->getNumber() << " - " << currLink->getDirection() << std::endl;
                 
                 // start prediction
                 if(isFirstPrediction)
@@ -294,7 +294,7 @@ int main()
                 if(predData.first.size() > 0 && predData.second.size() > 0)
                 {
                     std::vector<long int> predLabels = dp.getRouteDataLabels();
-                    savePredData(predData, predLabels, dp.getRP()->getPredictedRoute(), city, predDataFile, predRouteFile);
+                    savePredData(predData, predLabels, dp.getPredRoute(), city, predDataFile, predRouteFile);
                 }
             }
             
@@ -362,13 +362,13 @@ int main()
     actualSpeed.push_back(-1);
     
     // create build city module to add new data if needed
-    BuildCity bc;
+    // BuildCity bc;
     
     // get and store trip data
     dm.addTripData(gps.getTripLog(true));
     
     // update city data
-    city = bc.getUpdatedCity();
+    // city = bc.getUpdatedCity();
     
     // store city data
     dm.addCityData(city);

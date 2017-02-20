@@ -19,7 +19,7 @@ Kinematics::Kinematics()
     this->airDensity = 0.3;
     this->frontSurfaceArea = 3;
     this->dragCoefficient = .3;
-    this->rollCoefficient = 0.06;
+    this->rollCoefficient = 0.006;
     this->gravityAcceleration = 9.81;
 }
 
@@ -46,8 +46,8 @@ float Kinematics::runKinematics(std::vector<float> predictedSpeed,
         // tractive force
         float intertialForce = vehicleMass * vehicleAcceleration_i + vehicleMass * gravityAcceleration * std::sin(elevationAngle_i);
         float dragForce = 0.5 * airDensity * frontSurfaceArea * dragCoefficient * std::pow(predictedSpeed.at(i), 2);
-        float rollingForce = rollCoefficient * vehicleMass * gravityAcceleration * std::cos(elevationAngle_i);
-        float tractiveForce = intertialForce - dragForce - rollingForce;
+        float rollingForce = rollCoefficient * vehicleMass * gravityAcceleration;
+        float tractiveForce = intertialForce + dragForce + rollingForce;
                                 
         // tractive energy
         tractiveEnergy += tractiveForce * this->distInterval;

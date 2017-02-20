@@ -181,7 +181,7 @@ std::string VehicleDiagnostics::getDiagnostsics(std::string cmd, int timeMultipl
     
     std::string response = this->readDiagnostics();
     
-    if(!response.find("NO DATA"))
+    if(!response.find("NO DATA") || response.size() < 6)
     {
         response = "000000000000000";
     }

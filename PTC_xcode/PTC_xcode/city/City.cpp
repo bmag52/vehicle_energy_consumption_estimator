@@ -80,7 +80,7 @@ Intersection* City::getIntersectionFromLink(Link* link, bool isIntersection) {
 	assert(!link->isFinalLink());
 	Road* road = this->roads->getEntry(link->getNumber());
 
-	if(!(link->getDirection() == 0) != !isIntersection)
+    if(link->getDirection() == 0 != isIntersection)
 	{
 		return road->getStartIntersection();
 	} else {
@@ -411,19 +411,22 @@ std::pair<std::vector<float>, std::vector<float>> City::routeToData(Route* route
         }
         
         // get spd and elevation data
-        sp->setVals(nextLink->value->getWeights(nextLink->value->getDirection()));
-        std::pair<std::vector<float>, std::vector<float>> linkData = this->getData(roadFromLink, nextLink->value->getDirection(), sp, &spdIn_i, distAlongLink);
-        std::vector<float> spdOut_i = linkData.first;
-        std::vector<float> elevData_i = linkData.second;
-        
-        // adjust speed input for next link speed prediction
-        Eigen::MatrixXd spdOutMat_i(1, spdOut_i.size());
-        for(int i = 0; i < spdOut_i.size(); i++) { spdOutMat_i.coeffRef(0, i)  = spdOut_i.at(i); }
-        sp->output2Input(&spdIn_i, &spdOutMat_i);
+        if(nextLink->value->linkHasWeights())
+        {
+            sp->setVals(nextLink->value->getWeights(nextLink->value->getDirection()));
+            std::pair<std::vector<float>, std::vector<float>> linkData = this->getData(roadFromLink, nextLink->value->getDirection(), sp, &spdIn_i, distAlongLink);
+            std::vector<float> spdOut_i = linkData.first;
+            std::vector<float> elevData_i = linkData.second;
+            
+            // adjust speed input for next link speed prediction
+            Eigen::MatrixXd spdOutMat_i(1, spdOut_i.size());
+            for(int i = 0; i < spdOut_i.size(); i++) { spdOutMat_i.coeffRef(0, i)  = spdOut_i.at(i); }
+            sp->output2Input(&spdIn_i, &spdOutMat_i);
 
-        // concatenate data
-        for(int i = 0; i < spdOut_i.size(); i++) { spdData.push_back(spdOut_i.at(i)); }
-        for(int i = 0; i < elevData_i.size(); i++) { elevData.push_back(elevData_i.at(i)); }
+            // concatenate data
+            for(int i = 0; i < spdOut_i.size(); i++) { spdData.push_back(spdOut_i.at(i)); }
+            for(int i = 0; i < elevData_i.size(); i++) { elevData.push_back(elevData_i.at(i)); }
+        }
         
 		nextLink = route->getLinks()->nextEntry();
 	}
@@ -517,18 +520,22 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
             continue;
         }
         
-        if(currRoad->getRoadID() != prevRoad->getRoadID())
+        if(currRoad->getRoadID() != prevRoad->getRoadID() && this->roadIsOnTrace(currRoad, traceCopy, .10))
         {
             // ensure previous road was on trace
             bool prevRoadIsOnTrace = this->roadIsOnTrace(prevRoad, traceCopy, .50);
             
             if(prevRoadIsOnTrace || isFirstRoad)
             {
+                std::cout << "********" << prevRoad->getRoadID() << "********" << std::endl;
+                
                 Intersection* start = prevRoad->getStartIntersection();
                 Intersection* end = prevRoad->getEndIntersection();
                 
                 float toStartIntDist = gps.deltaLatLonToXY(lat, lon, start->getLat(), start->getLon());
                 float toEndIntDist = gps.deltaLatLonToXY(lat, lon, end->getLat(), end->getLon());
+                
+                int direction;
                 
                 // find nearest distances to start and end int of first road
                 if(isFirstRoad)
@@ -566,10 +573,36 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
                     toStartIntDist = nearestStartDist;
                     toEndIntDist = nearestEndDist;
                     
+                    if(toStartIntDist > toEndIntDist)
+                    {
+                        direction = 0;
+                    }
+                    else
+                    {
+                        direction = 1;
+                    }
+                    
                     isFirstRoad = false;
                 }
+                else
+                {
+                    if(toEndIntDist < toStartIntDist)
+                    {
+                        direction = 0;
+                    }
+                    else
+                    {
+                        direction = 1;
+                    }
+                }
                 
-                Link* link = new Link(toStartIntDist <= toEndIntDist, prevRoad->getRoadID());
+                printf("curr: %.6f,%.6f\n", lat, lon);
+                std::cout << "curr->start dist: " << toStartIntDist << std::endl;
+                std::cout << "curr->end dist: " << toEndIntDist << std::endl;
+                std::cout << "dir: " << direction << std::endl;
+                std::cout << "next road: " << currRoad->getRoadID() << std::endl;
+                
+                Link* link = new Link(direction, prevRoad->getRoadID());
                 
                 Intersection* currInt;
                 if(toStartIntDist <= toEndIntDist)
@@ -614,6 +647,7 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
             }
             
             prevRoad = currRoad;
+            
         }
         
         nextMeas = trace->nextEntry();
@@ -627,16 +661,6 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
     {
         Intersection* start = currRoad->getStartIntersection();
         Intersection* end = currRoad->getEndIntersection();
-        
-        std::pair<double, double>* lastMeas = trace->getEntry(trace->getSize() - 1);
-        double lat = lastMeas->first;
-        double lon = lastMeas->second;
-        
-        float startDist = gps.deltaLatLonToXY(lat, lon, start->getLat(), start->getLon());
-        float endDist = gps.deltaLatLonToXY(lat, lon, end->getLat(), end->getLon());
-        
-        Link* link = new Link(startDist <= endDist, currRoad->getRoadID());
-        links->addEntry(linkCount++, link);
         
         // find nearest measurement between start and end intersections of last link
         traceCopy->initializeCounter();
@@ -668,6 +692,25 @@ Route* City::getRouteFromGPSTrace(GenericMap<long int, std::pair<double, double>
             nextMeasCopy = traceCopy->nextEntry();
         }
         delete(nextMeasCopy);
+        
+        int direction;
+        if(nearestEndDist < nearestStartDist)
+        {
+            direction = 1;
+        }
+        else
+        {
+            direction = 0;
+        }
+        
+        std::cout << "********" << currRoad->getRoadID() << "********" << std::endl;
+        printf("curr: %.6f,%.6f\n", lat, lon);
+        std::cout << "curr->start dist: " << nearestStartDist << std::endl;
+        std::cout << "curr->end dist: " << nearestEndDist << std::endl;
+        std::cout << "dir: " << direction << std::endl;
+        
+        Link* link = new Link(direction, currRoad->getRoadID());
+        links->addEntry(linkCount++, link);
         
         if(nearestEndDist > nearestStartDist)
         {
